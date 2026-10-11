@@ -48,8 +48,15 @@ bin/console beffroi:keys:list --check
 ```
 
 That opens the keys in use, and the ones about to be, with the key management service, and fails on one it
-cannot open. It is worth running in a deployment pipeline: a key the provider cannot open is an outage at
-the first token request, not at the next rotation.
+cannot open or one that has worked past its age with nothing staged behind it. It is worth running in a
+deployment pipeline: a key the provider cannot open is an outage at the first token request, not at the
+next rotation.
+
+A key works for an age, ninety days unless the configuration says otherwise, counted from the moment it
+became active. Reaching it is not an outage either: a timed step stages a successor without anybody asking
+for one. That is what `--check` reports of an active key, in one of three answers: it has not worked past
+its age, it has and a successor is staged behind it, or it has and nothing is staged. The last one fails
+the run, because a planning that has stopped looks exactly like that from outside.
 
 ## A user
 

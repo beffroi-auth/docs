@@ -5,18 +5,23 @@ description: Every command the bundle adds, what it does, and whether it writes.
 
 # Console commands
 
-Every command of the bundle is prefixed `beffroi:`, and each one acts on the tenant the configuration
-names. A command that reads is never the command that writes: `beffroi:user:show` reads,
+Every command of the bundle is prefixed `beffroi:`, and those that act on identity act on the tenant the
+configuration names. A command that reads is never the command that writes: `beffroi:user:show` reads,
 `beffroi:user:profile` writes, and they are two classes.
 
 Run `bin/console beffroi:<group>:<command> --help` for the arguments and the options of one of them; the
 table below is the map.
 
-## The tenant
+## The deployment and the tenant
 
 | Command | What it does |
 |---|---|
+| `beffroi:doctor` | Say whether this deployment holds together: one line per point looked at, and what to do about the ones it does not answer for. Reads and writes nothing, so it is safe on a provider serving traffic, and it fails when a point is red so a deployment pipeline can ask the question too. |
 | `beffroi:tenant:synchronize` | Write the row of the tenant of the configuration: created, renamed, or left alone. |
+
+What `beffroi:doctor` looks at is what is wired, one class per point, so a deployment that adds a point
+adds a class. It looks at every one of them before it answers: a doctor that stops on the first thing that
+is broken never reaches the second.
 
 ## Users, their credentials and what they agreed to
 
@@ -50,7 +55,7 @@ table below is the map.
 |---|---|
 | `beffroi:keys:activate` | Make a staged key the active one of its algorithm before its staging delay elapsed; the key it takes over from starts retiring. |
 | `beffroi:keys:generate` | Generate a key, seal it with the configured KMS and make it the active one of its algorithm at once; "beffroi:keys:rotate" is the rotation without an outage. |
-| `beffroi:keys:list` | List the keys of the tenant with their use, status and dates: the published ones, or every key with --all; --check opens the keys in use, or about to be, with the KMS and fails on one it cannot open. |
+| `beffroi:keys:list` | List the keys of the tenant with their use, status and dates: the published ones, or every key with `--all`; `--check` opens the keys in use, or about to be, with the KMS and fails on one it cannot open, or that has worked past its age with nothing staged behind it. |
 | `beffroi:keys:retire` | Take a retiring key out of the JWK Set: one key by its identifier, before its retirement date with --force; or every key past its date with --due. |
 | `beffroi:keys:rotate` | Stage a new key, sealed by the configured KMS and published at once; it takes over once the staging delay elapsed, or at once with --now; --compromised retires the previous key with no window. |
 
@@ -61,6 +66,17 @@ table below is the map.
 | `beffroi:data-keys:destroy` | Erase the data keys of the tenant, which makes every personal datum it had sealed unreadable for good. Asks for the slug to be typed back. Cannot be undone. |
 | `beffroi:data-keys:list` | List the data keys of the tenant by scope, with when each was minted, the master key that wraps it and the KMS client that opens it; reads only, and never opens a key. |
 | `beffroi:data-keys:rewrap` | Wrap the data keys of the tenant with another KMS client from now on, or with another master key of the same one; --dry-run lists what would move. No sealed value is read or rewritten. |
+
+## Addresses
+
+| Command | What it does |
+|---|---|
+| `beffroi:geoip:refresh` | Download the GeoLite2 databases of addresses now, refuse what is not one of the editions the enrichment reads, and store them for the enrichment of a provenance; `--url` for a mirror or a database already unpacked. |
+
+A timed step runs the same object once a week, which is the cadence the databases are published at, so the
+command is for installing them the day a deployment subscribes and for reading why a refresh was refused.
+A deployment that names no licence key downloads nothing and serves every flow with a provenance that says
+an address and no place.
 
 ## Passkeys and FIDO metadata
 
