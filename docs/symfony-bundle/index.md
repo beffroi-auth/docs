@@ -19,7 +19,7 @@ two packages underneath usable without a framework.
 | [Security](security.md) | The firewalls, the authenticators, and what a session carries |
 | [Key management](key-management.md) | The key management client the private keys are sealed with |
 | [Pages](pages.md) | Login, consent, logout, device, and how to make them yours |
-| [Translations](translations.md) | Every user-facing string, in XLIFF, with the locale read from `ui_locales` |
+| [Translations](translations.md) | Every user-facing string, in XLIFF, and how a page decides which language it speaks |
 | [Messenger](messenger.md) | Which writes are asynchronous, and which ones the protocol waits for |
 | [The account pages](account.md) | What a person sees of themselves, and what they can take back |
 | [Console commands](console-commands.md) | Tenant, users, clients, keys, data keys, FIDO metadata |
@@ -42,10 +42,12 @@ Knowing these makes the rest of this section predictable.
 - **A route name carries its plane**: `beffroi_protocol_*` is server to server, `beffroi_interaction_*` is a
   browser. Nothing is ambiguous, and a process can be restricted to one of the two.
 - **A value object a column holds whole goes in one column**, with a DBAL type of the bundle that reads it
-  back through the object's own constructor. There is no Doctrine embeddable fixing one type per field for
-  the whole model.
+  back through the object's own constructor, rather than a Doctrine embeddable fixing one type per field
+  for the whole model. One embeddable is left in the mapping, embedded by one entity, and it is named where
+  the mapping is described.
 - **No write is synchronous unless the protocol needs its result in the same request.** Every exception is
   listed in the Messenger configuration with the reason it is one.
-- **Every user-facing string is translated**, and the locale of an interaction comes from `ui_locales`, then
-  `Accept-Language`, never from the URL.
+- **Every user-facing string is translated.** A signed-in person reads the pages in the language of their
+  record; for anybody else the language comes from what the browser asked for, then `ui_locales`, then
+  `Accept-Language`, and never from the URL.
 - **A test never sleeps.** Time moves with a mocked clock, which survives a kernel reboot.
