@@ -3285,14 +3285,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3356,14 +3348,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4066,10 +4050,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-tenant" class="md-nav__link">
+  <a href="#the-deployment-and-the-tenant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The tenant
+        The deployment and the tenant
       
     </span>
   </a>
@@ -4114,6 +4098,17 @@
     <span class="md-ellipsis">
       
         Data keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#addresses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Addresses
       
     </span>
   </a>
@@ -4328,10 +4323,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-tenant" class="md-nav__link">
+  <a href="#the-deployment-and-the-tenant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The tenant
+        The deployment and the tenant
       
     </span>
   </a>
@@ -4376,6 +4371,17 @@
     <span class="md-ellipsis">
       
         Data keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#addresses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Addresses
       
     </span>
   </a>
@@ -4430,12 +4436,12 @@
 
 
 <h1 id="console-commands">Console commands<a class="headerlink" href="#console-commands" title="Link to this section">&para;</a></h1>
-<p>Every command of the bundle is prefixed <code>beffroi:</code>, and each one acts on the tenant the configuration
-names. A command that reads is never the command that writes: <code>beffroi:user:show</code> reads,
+<p>Every command of the bundle is prefixed <code>beffroi:</code>, and those that act on identity act on the tenant the
+configuration names. A command that reads is never the command that writes: <code>beffroi:user:show</code> reads,
 <code>beffroi:user:profile</code> writes, and they are two classes.</p>
 <p>Run <code>bin/console beffroi:&lt;group&gt;:&lt;command&gt; --help</code> for the arguments and the options of one of them; the
 table below is the map.</p>
-<h2 id="the-tenant">The tenant<a class="headerlink" href="#the-tenant" title="Link to this section">&para;</a></h2>
+<h2 id="the-deployment-and-the-tenant">The deployment and the tenant<a class="headerlink" href="#the-deployment-and-the-tenant" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -4445,11 +4451,18 @@ table below is the map.</p>
 </thead>
 <tbody>
 <tr>
+<td><code>beffroi:doctor</code></td>
+<td>Say whether this deployment holds together: one line per point looked at, and what to do about the ones it does not answer for. Reads and writes nothing, so it is safe on a provider serving traffic, and it fails when a point is red so a deployment pipeline can ask the question too.</td>
+</tr>
+<tr>
 <td><code>beffroi:tenant:synchronize</code></td>
 <td>Write the row of the tenant of the configuration: created, renamed, or left alone.</td>
 </tr>
 </tbody>
 </table>
+<p>What <code>beffroi:doctor</code> looks at is what is wired, one class per point, so a deployment that adds a point
+adds a class. It looks at every one of them before it answers: a doctor that stops on the first thing that
+is broken never reaches the second.</p>
 <h2 id="users-their-credentials-and-what-they-agreed-to">Users, their credentials and what they agreed to<a class="headerlink" href="#users-their-credentials-and-what-they-agreed-to" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4555,7 +4568,7 @@ table below is the map.</p>
 </tr>
 <tr>
 <td><code>beffroi:keys:list</code></td>
-<td>List the keys of the tenant with their use, status and dates: the published ones, or every key with --all; --check opens the keys in use, or about to be, with the KMS and fails on one it cannot open.</td>
+<td>List the keys of the tenant with their use, status and dates: the published ones, or every key with <code>--all</code>; <code>--check</code> opens the keys in use, or about to be, with the KMS and fails on one it cannot open, or that has worked past its age with nothing staged behind it.</td>
 </tr>
 <tr>
 <td><code>beffroi:keys:retire</code></td>
@@ -4590,6 +4603,25 @@ table below is the map.</p>
 </tr>
 </tbody>
 </table>
+<h2 id="addresses">Addresses<a class="headerlink" href="#addresses" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi:geoip:refresh</code></td>
+<td>Download the GeoLite2 databases of addresses now, refuse what is not one of the editions the enrichment reads, and store them for the enrichment of a provenance; <code>--url</code> for a mirror or a database already unpacked.</td>
+</tr>
+</tbody>
+</table>
+<p>A timed step runs the same object once a week, which is the cadence the databases are published at, so the
+command is for installing them the day a deployment subscribes and for reading why a refresh was refused.
+A deployment that names no licence key downloads nothing and serves every flow with a provenance that says
+an address and no place.</p>
 <h2 id="passkeys-and-fido-metadata">Passkeys and FIDO metadata<a class="headerlink" href="#passkeys-and-fido-metadata" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4634,7 +4666,7 @@ tenant to be typed back before it runs.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 08:02:16 UTC">October 11, 2026</span>
   </span>
 
     

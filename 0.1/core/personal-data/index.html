@@ -3297,14 +3297,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3368,14 +3360,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4234,6 +4218,15 @@ service, so a database alone reads nothing. The lookups that must still work use
 a readable column.</p>
 <p>The data keys can be rewrapped onto another key management client while the provider serves sign-ins, and
 destroying them is the one operation that cannot be undone.</p>
+<p>The same rule holds past the database. The body of every message the provider writes to a transport is
+sealed as well, so a broker or the table of a transport holds nothing readable, and the journal of the
+acts, what a record used to say and the archive a person asks for are sealed where they sit like every
+other column of a person.</p>
+<p><strong>The archive is the one file in which all of it stands in clear at once</strong>, so it is held by rules rather
+than by settings: it is sealed at rest in a scope of its own, it expires a week after it was asked for,
+and that week is a figure in the code. It leaves under a passphrase of the person's choosing when they
+ask for one.</p>
+<p><a href="../../symfony-bundle/account/#your-data"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Your data, on the account pages</a></p>
 <p>This page will describe what is sealed, what is indexed blind, the scopes a data key covers, and the
 rewrapping.</p>
 
@@ -4256,7 +4249,7 @@ rewrapping.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 08:02:24 UTC">October 11, 2026</span>
   </span>
 
     

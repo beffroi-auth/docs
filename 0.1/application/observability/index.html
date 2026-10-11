@@ -3285,14 +3285,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3356,14 +3348,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4232,6 +4216,17 @@
 <p>Every session and every event carries a request context: address, user agent, and what is derived from them,
 enriched asynchronously so that a sign-in never waits on it. What is recorded, and for how long, is a
 property of the deployment.</p>
+<p><strong>The acts of the provider are written down, kept and read</strong>: who did what, when and from where. Nothing
+turns the journal on; what a deployment configures is how long an act is kept, six months by default,
+which is the duration the CNIL deliberation 2021-122 holds for a log of connections. A deployment under
+another obligation says its own, and a timed step forgets what is past it. What a person reads of their own
+sign-ins comes from that journal, and what their record used to say is kept the same way and for the same
+duration.</p>
+<p><strong>A provenance says from where and not only from which address.</strong> The enrichment reads the GeoLite2
+databases of addresses, refreshed weekly by a timed step and installed by <code>beffroi:geoip:refresh</code>. They are
+published by MaxMind under their own licence, so nothing is shipped and nothing is downloaded without a
+licence key: a deployment that names none serves every flow with a provenance that says an address and no
+place.</p>
 <p>This page will describe the logs, the metrics, the audit records, and the retention.</p>
 
 
@@ -4253,7 +4248,7 @@ property of the deployment.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 08:02:24 UTC">October 11, 2026</span>
   </span>
 
     

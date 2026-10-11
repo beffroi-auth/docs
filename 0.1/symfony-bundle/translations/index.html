@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Every string translated, and the locale read from the request.">
+        <meta name="description" content="Every string translated, the two lists of languages, and how a page decides which one it speaks.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -3282,6 +3282,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3296,16 +3314,73 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#two-lists-of-languages-two-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two lists of languages, two questions
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#which-language-a-page-speaks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which language a page speaks
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-a-person-chooses-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How a person chooses one
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dates
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3368,14 +3443,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4205,6 +4272,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#two-lists-of-languages-two-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two lists of languages, two questions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#which-language-a-page-speaks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which language a page speaks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-a-person-chooses-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How a person chooses one
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dates
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4229,10 +4348,122 @@
 
 
 <h1 id="translations">Translations<a class="headerlink" href="#translations" title="Link to this section">&para;</a></h1>
-<p>Every user-facing string is in XLIFF, in the <code>beffroi</code> domain, with intl-icu for plurals and parameters. The
-locale of an interaction comes from <code>ui_locales</code> when the client sent one, then from <code>Accept-Language</code>, and
-never from the URL.</p>
-<p>This page will describe the domains, the locales shipped, how to add one, and how a person changes theirs.</p>
+<p>Every user-facing string goes through the translator, in XLIFF with <code>intl-icu</code> for plurals and parameters,
+in the <code>beffroi</code> domain. The bundle ships <code>en</code> and <code>fr</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>translations/beffroi+intl-icu.en.xlf
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>translations/beffroi+intl-icu.fr.xlf
+</span></code></pre></div>
+<p>An application replaces a sentence by putting the same key in its own
+<code>translations/beffroi+intl-icu.fr.xlf</code>, which Symfony loads after the catalogues of the bundles. Adding a
+language is one more catalogue of the same domain, and <code>framework.enabled_locales</code> naming it.</p>
+<div class="admonition info">
+<p class="admonition-title">The <code>error_description</code> of the protocol is not translated</p>
+<p>It is addressed to the developer of the client, in ASCII, as RFC 6749 §4.1.2.1 asks. What a person
+reads on the error page is the translated sentence of the error code, and the description sits under
+it, in the language of the specification.</p>
+</div>
+<h2 id="two-lists-of-languages-two-questions">Two lists of languages, two questions<a class="headerlink" href="#two-lists-of-languages-two-questions" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>List</th>
+<th>What it answers</th>
+<th>Where it comes from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The languages this deployment serves</td>
+<td>What a page can be written in</td>
+<td><code>framework.enabled_locales</code>, with <code>framework.default_locale</code> in front</td>
+</tr>
+<tr>
+<td>The languages a person can say they read</td>
+<td>What the <code>locale</code> claim of a person may name</td>
+<td>Every locale ICU has data for, each under its own name in itself</td>
+</tr>
+</tbody>
+</table>
+<p>They are two lists because they answer two questions: <code>locale</code> is a claim of OIDC Core §5.1 and not a
+setting of this provider, so a provider whose pages speak two languages still holds the claim of somebody
+who reads a third. What that claim names is read against the first list wherever it is the language of a
+page or of a message.</p>
+<p>A tag is matched as Symfony matches an <code>Accept-Language</code>: <code>fr-CA</code> gives <code>fr_CA</code> when that locale is
+served and <code>fr</code> otherwise, a script subtag is kept, and a tag no served locale matches is ignored rather
+than refused.</p>
+<h2 id="which-language-a-page-speaks">Which language a page speaks<a class="headerlink" href="#which-language-a-page-speaks" title="Link to this section">&para;</a></h2>
+<p><strong>A signed-in person reads the pages in the language of their record</strong>, and changes it where that record
+is changed. That is the first answer tried, before anything the browser asked for. A record that names
+nothing, or names a language this deployment does not serve, leaves the rest of the chain untouched.</p>
+<p>For a visitor who is not known yet, the language of an interaction is chosen once, on arrival at
+<code>/authorize</code>, and kept on the interaction so the next page of the same journey reads in it:</p>
+<ol>
+<li>the language this browser asked for;</li>
+<li><code>ui_locales</code> of the request, read against the served languages;</li>
+<li><code>Accept-Language</code>, read the same way;</li>
+<li>the default locale of the deployment.</li>
+</ol>
+<p>What the visitor asked for comes before <code>ui_locales</code> because <code>ui_locales</code> is an end-user preference the
+client passes on (OIDC Core §3.1.2.1), which is a second hand, and somebody who has just named their
+language on the page is the first. Pages with no interaction behind them, an error before the first step
+of an authorization, an unknown page, the logout confirmation and the page after it, speak the language of
+the browser; the logout reads the <code>ui_locales</code> of its own request first, as RP-Initiated Logout §2 allows.</p>
+<p>The language is never in the URL. The relying party does not know it, and a login URL that changes with
+the language is a second address for every page.</p>
+<h2 id="how-a-person-chooses-one">How a person chooses one<a class="headerlink" href="#how-a-person-chooses-one" title="Link to this section">&para;</a></h2>
+<p>A form and no script: <code>POST /locale</code>, one button per language the deployment serves, rendered wherever the
+layout of the application includes the switcher. Below two languages there is nothing to offer and the
+control is not rendered at all, and a page whose language was decided by the record of a signed-in person
+says so, so the control offers nothing there either.</p>
+<p>What is asked for is read against the served languages, and a tag nobody serves changes nothing. The
+choice is then written in three places, because they answer three questions:</p>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What it answers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The <code>locale</code> slot of the preferences of this browser</td>
+<td>The language the next journey from this browser starts in</td>
+</tr>
+<tr>
+<td>The interaction in progress</td>
+<td>The language its next page is read in</td>
+</tr>
+<tr>
+<td>The <code>locale</code> claim of the account, when somebody is signed in</td>
+<td>The language this provider writes to that person in, outside any request of theirs</td>
+</tr>
+</tbody>
+</table>
+<p>The claim is written on a lane, nothing in the request waiting on the result, and it replaces that claim
+and nothing else: describing a whole profile is what provisioning does, and it clears what it is not told.</p>
+<p><strong>The preferences of a browser travel on one cookie</strong>, <code>__Host-beffroi_preferences</code>, with a slot per
+preference: the language this visitor asked for, the theme they read the pages in, and whatever a
+preference wired beside them declares. It is read by no script, never leaves the requests of that browser,
+goes out over TLS only and is worth a year, so somebody who said it once is not asked again. It is not the
+HTTP session, deliberately: the protocol plane opens no session, a language in one would open a session
+for every visitor who never signed in, and signing out invalidates a session whole, which would lose a
+choice made for a year.</p>
+<h2 id="dates">Dates<a class="headerlink" href="#dates" title="Link to this section">&para;</a></h2>
+<p>A date a person reads says which clock it is on, and neither of the two things that decide it belongs to
+the provider.</p>
+<ul>
+<li><strong>The clock is the one that person holds.</strong> <code>zoneinfo</code> is a claim of OIDC Core §5.1, so it is read as a
+  zone rather than taken for one: it may be absent, and it may name a zone this process cannot resolve, in
+  which case the clock of the deployment answers.</li>
+<li><strong>The words and the order are ICU's</strong>, in the language the page is written in. A date is not a string to
+  translate but a convention of a locale, so a deployment that serves a language gets the dates of that
+  language without writing a catalogue entry for them.</li>
+</ul>
+<p>The zone is always named, by its abbreviation when it has one and by its offset otherwise: an hour without
+its zone is an hour a reader cannot check. The machine readable form stays in the <code>datetime</code> attribute of
+the element that carries it, which gives the instant with its offset. The dates the console prints do not
+go through any of this, an administrator reading them beside a server.</p>
+<p>The bundle requires <code>ext-intl</code>, which its own <code>+intl-icu</code> catalogues already needed.</p>
 
 
 
@@ -4253,7 +4484,7 @@ never from the URL.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 08:02:24 UTC">October 11, 2026</span>
   </span>
 
     
