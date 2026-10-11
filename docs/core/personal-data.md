@@ -13,5 +13,17 @@ a readable column.
 The data keys can be rewrapped onto another key management client while the provider serves sign-ins, and
 destroying them is the one operation that cannot be undone.
 
+The same rule holds past the database. The body of every message the provider writes to a transport is
+sealed as well, so a broker or the table of a transport holds nothing readable, and the journal of the
+acts, what a record used to say and the archive a person asks for are sealed where they sit like every
+other column of a person.
+
+**The archive is the one file in which all of it stands in clear at once**, so it is held by rules rather
+than by settings: it is sealed at rest in a scope of its own, it expires a week after it was asked for,
+and that week is a figure in the code. It leaves under a passphrase of the person's choosing when they
+ask for one.
+
+[:octicons-arrow-right-24: Your data, on the account pages](../symfony-bundle/account.md#your-data)
+
 This page will describe what is sealed, what is indexed blind, the scopes a data key covers, and the
 rewrapping.

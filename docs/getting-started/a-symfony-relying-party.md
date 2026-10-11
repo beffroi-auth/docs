@@ -20,6 +20,8 @@ verifying an `at+jwt` itself.
 
 Until it is written, the reference relying party is
 [beffroi-php/oidc-demo](https://github.com/beffroi-php/oidc-demo): a Symfony application on `oidc_login`, a
-resource server that checks the same access token several ways, and a ladder of demonstration clients from
-the simplest to one that pushes a signed request, reads a signed response, holds a bound token and opens an
-encrypted ID token.
+resource server that checks the same access token several ways, an API Platform API behind the
+introspection endpoint where every operation names the scope it needs, and a forge where a client is
+composed option by option out of what the provider announces and registered on the spot, from one that
+puts the whole authorization request in the URL of a browser to one that pushes it signed, reads a signed
+response, holds a bound token and opens an encrypted ID token.
