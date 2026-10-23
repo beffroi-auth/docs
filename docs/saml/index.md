@@ -35,9 +35,9 @@ canonicalisation.
 
 | Package | What it holds |
 |---|---|
-| [`xml-security`](https://github.com/beffroi-php/xml-security) | The safe DOM, the identifier index, canonicalisation, signature and encryption |
-| [`saml2-model`](https://github.com/beffroi-php/saml2-model) | The `samlp`, `saml` and `md` objects, strict parsing, the validity rules, the `NameID` formats. No HTTP |
-| [`saml2-bindings`](https://github.com/beffroi-php/saml2-bindings) | HTTP-Redirect and HTTP-POST, on strings and arrays, never on a `Request` |
+| [`xml-security`](https://github.com/beffroi-auth/xml-security) | The safe DOM, the identifier index, canonicalisation, signature and encryption |
+| [`saml2-model`](https://github.com/beffroi-auth/saml2-model) | The `samlp`, `saml` and `md` objects, strict parsing, the validity rules, the `NameID` formats. No HTTP |
+| [`saml2-bindings`](https://github.com/beffroi-auth/saml2-bindings) | HTTP-Redirect and HTTP-POST, on strings and arrays, never on a `Request` |
 
 ## What will judge it
 

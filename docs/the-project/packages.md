@@ -5,16 +5,16 @@ description: The four packages of Beffroi, what each one depends on, and which o
 
 # Packages
 
-Beffroi is developed as one monorepo, [`beffroi-php/beffroi`](https://github.com/beffroi-php/beffroi), and
+Beffroi is developed as one monorepo, [`beffroi-auth/beffroi`](https://github.com/beffroi-auth/beffroi), and
 published as four packages. Each package is split read-only into its own repository, so you can read the
 history of one part without the rest.
 
 | Package | Namespace | Repository |
 |---|---|---|
-| `beffroi/core` | `Beffroi\Core` | [beffroi-php/core](https://github.com/beffroi-php/core) |
-| `beffroi/oidc` | `Beffroi\Oidc` | [beffroi-php/oidc](https://github.com/beffroi-php/oidc) |
-| `beffroi/symfony-bundle` | `Beffroi\Bundle` | [beffroi-php/symfony-bundle](https://github.com/beffroi-php/symfony-bundle) |
-| `beffroi/op` | `App` | [beffroi-php/op](https://github.com/beffroi-php/op) |
+| `beffroi/core` | `Beffroi\Core` | [beffroi-auth/core](https://github.com/beffroi-auth/core) |
+| `beffroi/oidc` | `Beffroi\Oidc` | [beffroi-auth/oidc](https://github.com/beffroi-auth/oidc) |
+| `beffroi/symfony-bundle` | `Beffroi\Bundle` | [beffroi-auth/symfony-bundle](https://github.com/beffroi-auth/symfony-bundle) |
+| `beffroi/op` | `App` | [beffroi-auth/op](https://github.com/beffroi-auth/op) |
 
 ## Which one do I install?
 

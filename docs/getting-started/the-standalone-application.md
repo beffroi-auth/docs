@@ -16,4 +16,4 @@ machine that only answers clients.
 
 This page will carry the deployment itself: the image, the environment, the migrations, and the first
 start. Until it is written, [the application section](../application/index.md) holds what is settled, and
-the repository of the application is [beffroi-php/op](https://github.com/beffroi-php/op).
+the repository of the application is [beffroi-auth/op](https://github.com/beffroi-auth/op).

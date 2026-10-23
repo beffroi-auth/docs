@@ -28,5 +28,5 @@ guide. A team that wants to make them differently still can: the bundle is the s
 | [Operating it](operating.md) | Rotating keys, rewrapping data keys, migrations, backups |
 | [Observability](observability.md) | What the provider records of a request, a session and a token |
 
-The repository is [beffroi-php/op](https://github.com/beffroi-php/op). It lives inside a working copy of the
+The repository is [beffroi-auth/op](https://github.com/beffroi-auth/op). It lives inside a working copy of the
 monorepo during development, and is published on its own.

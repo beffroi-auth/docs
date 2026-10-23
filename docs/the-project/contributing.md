@@ -9,8 +9,8 @@ description: How to report a problem, send a patch, and build this documentation
 
 | What | Where |
 |---|---|
-| A bug, a question about the protocol, a missing feature | [beffroi-php/beffroi](https://github.com/beffroi-php/beffroi/issues) |
-| A page of this site that is wrong, unclear or missing | [beffroi-php/docs](https://github.com/beffroi-php/docs/issues) |
+| A bug, a question about the protocol, a missing feature | [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi/issues) |
+| A page of this site that is wrong, unclear or missing | [beffroi-auth/docs](https://github.com/beffroi-auth/docs/issues) |
 | A vulnerability | Privately, through the security advisories of the code repository. Never in a public issue |
 
 ## Sending a patch to the code
@@ -32,7 +32,7 @@ Every page has a pencil at the top right that opens it in GitHub, on the branch 
 reading. For more than a typo, clone the repository and run the site locally:
 
 ``` bash
-git clone git@github.com:beffroi-php/docs.git
+git clone git@github.com:beffroi-auth/docs.git
 cd docs
 make install
 make serve

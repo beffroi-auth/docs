@@ -1,11 +1,11 @@
 site_name: Beffroi
 site_description: An identity provider for the Symfony ecosystem. OAuth 2.0 and OpenID Connect first, on a pure-PHP core.
-site_url: https://beffroi-php.github.io/docs/
+site_url: https://beffroi-auth.github.io/docs/
 site_author: The Beffroi contributors
 copyright: Released under the MIT licence
-repo_url: https://github.com/beffroi-php/beffroi
-repo_name: beffroi-php/beffroi
-edit_uri: https://github.com/beffroi-php/docs/edit/0.1/docs/
+repo_url: https://github.com/beffroi-auth/beffroi
+repo_name: beffroi-auth/beffroi
+edit_uri: https://github.com/beffroi-auth/docs/edit/0.1/docs/
 
 docs_dir: docs
 site_dir: site
@@ -137,7 +137,7 @@ extra:
     default: latest
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/beffroi-php
+      link: https://github.com/beffroi-auth
       name: Beffroi on GitHub
     - icon: fontawesome/brands/php
       link: https://packagist.org/packages/beffroi/

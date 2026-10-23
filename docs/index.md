@@ -81,7 +81,7 @@ the code, not settings of a file.
 
 ## Where the rest lives
 
-The code is one monorepo, [`beffroi-php/beffroi`](https://github.com/beffroi-php/beffroi), split read-only
+The code is one monorepo, [`beffroi-auth/beffroi`](https://github.com/beffroi-auth/beffroi), split read-only
 into one repository per package. This site is written in
-[`beffroi-php/docs`](https://github.com/beffroi-php/docs), one branch per version of the packages it
+[`beffroi-auth/docs`](https://github.com/beffroi-auth/docs), one branch per version of the packages it
 describes.

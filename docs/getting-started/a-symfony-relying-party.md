@@ -19,7 +19,7 @@ This page will carry that configuration, both halves of it: the firewall that si
 verifying an `at+jwt` itself.
 
 Until it is written, the reference relying party is
-[beffroi-php/oidc-demo](https://github.com/beffroi-php/oidc-demo): a Symfony application on `oidc_login`, a
+[beffroi-auth/oidc-demo](https://github.com/beffroi-auth/oidc-demo): a Symfony application on `oidc_login`, a
 resource server that checks the same access token several ways, an API Platform API behind the
 introspection endpoint where every operation names the scope it needs, and a forge where a client is
 composed option by option out of what the provider announces and registered on the spot, from one that

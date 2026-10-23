@@ -9,8 +9,8 @@ packages: `beffroi/core` (identity), `beffroi/oidc` (OAuth 2.0 and OpenID Connec
 (the Symfony integration) and `beffroi/op` (the standalone application). SCIM and SAML 2.0 have a section
 each, and both say they are not implemented.
 
-The code lives in `beffroi-php/beffroi`, cloned at `~/Projects/idp/code`. Its design, its decisions and its
-spikes live in `beffroi-php/design`, cloned at `~/Projects/idp`. **Neither of those is this repository, and
+The code lives in `beffroi-auth/beffroi`, cloned at `~/Projects/idp/code`. Its design, its decisions and its
+spikes live in `beffroi-auth/design`, cloned at `~/Projects/idp`. **Neither of those is this repository, and
 neither is the audience of this one**: `design` is internal and in French, this site is public and in
 English.
 

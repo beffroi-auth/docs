@@ -1,12 +1,12 @@
 # The documentation of Beffroi
 
-The public documentation of [Beffroi](https://github.com/beffroi-php/beffroi), an identity provider for the
+The public documentation of [Beffroi](https://github.com/beffroi-auth/beffroi), an identity provider for the
 Symfony ecosystem: the identity core, the OAuth 2.0 and OpenID Connect module, the Symfony bundle and the
 standalone application.
 
 Published with [MkDocs](https://www.mkdocs.org/) and
 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) on GitHub Pages:
-**<https://beffroi-php.github.io/docs/>**
+**<https://beffroi-auth.github.io/docs/>**
 
 ## Writing
 
@@ -63,7 +63,7 @@ specification is cited by number and section. The whole list is on
 [the contributing page](docs/the-project/contributing.md).
 
 Issues about the documentation go here. Issues about the code go to
-[beffroi-php/beffroi](https://github.com/beffroi-php/beffroi/issues).
+[beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi/issues).
 
 ## Licence
 

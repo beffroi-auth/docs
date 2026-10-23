@@ -16,7 +16,7 @@ Until `1.0` the public API may change between minor versions, and what changes i
 
 ## This documentation
 
-One branch of [`beffroi-php/docs`](https://github.com/beffroi-php/docs) per version of the packages, with
+One branch of [`beffroi-auth/docs`](https://github.com/beffroi-auth/docs) per version of the packages, with
 the same name. The selector at the top of the page switches between them, and `latest` points at the
 newest released version, which is what the root of the site serves.
 
