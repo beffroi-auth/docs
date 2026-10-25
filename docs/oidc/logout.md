@@ -19,6 +19,7 @@ the `post_logout_redirect_uri`: [single logout](../saml/single-logout.md) says h
 **Every end of a session revokes what was issued under it.** At the end session endpoint, from the page of the
 account, by the console, by a SAML logout request or replaced by a new login: the refresh tokens issued in the
 session are revoked and its opaque access tokens removed, beside the back-channel logout tokens sent to its
-clients.
+clients, and the provider refuses every token of that session from then on. A resource server that verifies a
+self-contained access token offline accepts it until it expires.
 
 This page will describe each one, what a client registers for it, and what a logout can and cannot promise.

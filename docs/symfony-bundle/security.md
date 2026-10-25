@@ -10,8 +10,9 @@ The bundle brings its own authenticators for the interaction plane and expects n
 application's security configuration beyond a firewall to put them on. The provider's session is its own: it
 records what was proven, and it is not the host application's login session.
 
-The standalone application declares two firewalls: the protocol endpoints, which authenticate their clients
-themselves and open no session, and the interaction pages, where the logins of the provider live.
+Besides the one of its development tools, the standalone application declares two firewalls: the protocol
+endpoints, which authenticate their clients themselves and open no session, and the interaction pages, where
+the logins of the provider live.
 
 ``` yaml title="config/packages/security.yaml"
 security:
@@ -36,14 +37,17 @@ security:
 
 Each authenticator is one way in: a password, a passkey, the code of a second factor, and the assertion an
 [upstream SAML identity provider](../saml/federated-sign-in.md) posts to the assertion consumer service. Every
-one of them ends in the same place, the core opening or refreshing the session under the floor of the
-tenant, so the order of a login is written once whichever door it came through.
+one of them ends in the same place: the core opens the session under the floor of the tenant, or records the
+new proofs on the session the browser already holds for that person, so the order of a login is written once
+whichever door it came through.
 
-**A post from another site never sets a session cookie.** Under `SameSite=Lax` a browser keeps the session
-cookie back from a `POST` that comes from another site. A page of the interaction plane answering such a post
-with the cookie of a new session would replace the one the browser holds and sign it out of the provider, so
-that cookie is taken off the answer. The four endpoints another site posts a browser to on purpose, the
-authorization endpoint, the end session endpoint and the SAML single sign-on and single logout services, post
-the request again from the provider's own origin instead, and the second post carries the session.
+**A post from another site sets no session cookie.** Under `SameSite=Lax` a browser keeps the session cookie
+back from a `POST` that comes from another site. A page of the interaction plane answering such a post with the
+cookie of a new session would replace the one the browser holds and sign it out of the provider, so that
+cookie is taken off the answer. The five endpoints another site posts a browser to on purpose, the
+authorization endpoint, the end session endpoint, the SAML single sign-on and single logout services and the
+assertion consumer service, post the request again from the provider's own origin instead, and the second
+post carries the session. Both read where the post comes from in `Sec-Fetch-Site` (Fetch Metadata Request
+Headers): a browser that does not send it is answered as it always was.
 
 This page will describe the authenticators in full, and the rate limits that apply.

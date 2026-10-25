@@ -24,9 +24,10 @@ graph LR
   b -- "AuthnRequest" --> up["The identity provider<br/>of an organisation<br/><small>upstream</small>"]
 ```
 
-Both roles are off by default, and each is a switch of its own. A deployment that turns neither on serves no
-SAML endpoint and draws no SAML key, so nothing of this section costs anything to a provider that does not
-use it.
+Both roles are off by default, and each is a switch of its own. A deployment that turns neither on draws no
+SAML key and publishes no metadata, and every message that reaches its single sign-on or single logout service
+is refused, nobody being declared to send one: nothing of this section costs anything to a provider that does
+not use it.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
@@ -52,9 +53,11 @@ Paths are relative to the issuer, as every route of the bundle.
 | `GET` | `/saml/sp/metadata/{identity provider}` | service provider | The same metadata with the encryption certificates meant for one upstream identity provider |
 | `POST` | `/saml/sp/acs` | service provider | The assertion consumer service, over HTTP-POST |
 
-A role the deployment did not turn on answers `404` at its endpoints, whatever keys the tenant holds.
-[The endpoints](../reference/endpoints.md#saml-20) lists the routes behind them, the ones a login sends a
-browser back through included.
+A role the deployment did not turn on serves nothing. The metadata of that role answer `404`, and so do the
+sign-on and the assertion consumer service of the service provider; the single sign-on and single logout
+services of the identity provider refuse every message, as one of an issuer nobody declared. [The
+endpoints](../reference/endpoints.md#saml-20) lists the routes behind them, the ones a login sends a browser
+back through included.
 
 ## What is always true
 
@@ -63,7 +66,7 @@ needs one of them relaxed is a peer this provider does not serve.
 
 | Rule | Why |
 |---|---|
-| Every assertion is signed, and every response over it, under RSA-SHA256 | A service provider that verifies either finds a signature, and an assertion stands alone as the statement of the tenant |
+| Every assertion the identity provider writes is signed, and every response over it, under RSA-SHA256. Every assertion the service provider takes is covered by a signature, its own or its response's | A service provider that verifies either finds a signature, an assertion stands alone as the statement of the tenant, and nothing unsigned is read as a statement of anybody |
 | SHA-1, MD5, HMAC, DSA and ECDSA are refused, in an XML signature and over the query string of HTTP-Redirect | A verifier that honours the algorithm a message names verifies what the attacker made verifiable |
 | An assertion sent encrypted is encrypted under AES-256-GCM, its key under RSA-OAEP. Nothing is ever encrypted in CBC | CBC authenticates nothing, which is what padding oracles are made of |
 | A message is read only in what a signature covers | Signature wrapping hands the verifier one element and the reader another |
@@ -74,8 +77,8 @@ needs one of them relaxed is a peer this provider does not serve.
 | A response nobody asked for is refused, and no assertion is sent unasked | Nothing binds an unsolicited response to the browser that carries it, which is how a victim is signed in to an attacker's account |
 
 The XML underneath goes through one hardened loader, which refuses a document type declaration, an entity,
-two elements under the same identifier and a document past its bounds before anything reads it, and
-nothing else in the provider parses XML. [The SAML packages](packages.md) says what each of the libraries
+two elements under the same identifier and a document past its bounds before anything reads it, and a SAML
+message, a metadata document or a signature is never parsed any other way. [The SAML packages](packages.md) says what each of the libraries
 guarantees.
 
 ## What is not served

@@ -68,8 +68,9 @@ service providers and the [upstream identity providers](upstream-identity-provid
 refusal to the log as an error: the refused document comes back at every hour while the accepted one goes
 on serving, which is something an operator wants to be alerted on.
 
-**How they are fetched.** A file is read whole. A URL is fetched with one `GET`, no redirect followed, ten
-seconds at most, any status but `2xx` refused, and the body refused as soon as it passes one mebibyte.
+**How they are fetched.** A URL is fetched with one `GET`, no redirect followed, ten seconds at most, and any
+status but `2xx` refused. A file or a body is refused as soon as it passes one mebibyte, which no metadata
+the loader accepts reaches.
 
 **What is refused**, at the first reading as at every refresh, the accepted document being kept each time:
 
@@ -82,8 +83,9 @@ seconds at most, any status but `2xx` refused, and the body refused as soon as i
 - a document read under pinned signers that carries no `validUntil`, or whose `validUntil` is earlier than
   the one of the document already accepted.
 
-Endpoints on other bindings than HTTP-Redirect and HTTP-POST are dropped, and the other role descriptors
-skipped, so that the metadata of a real deployment load.
+Endpoints on other bindings than HTTP-Redirect and HTTP-POST are dropped, an assertion consumer service on
+anything but HTTP-POST too, since no other binding the provider sends over can carry a response, and the
+other role descriptors are skipped, so that the metadata of a real deployment load.
 
 **Signed metadata never go back.** An older document signed by the same key verifies as well as the newer
 one, so under pinned signers a document older than the accepted one is refused, which is the rollback the

@@ -77,8 +77,9 @@ Each is how the provider behaves for every service provider, with no setting to 
 - **Every signature carries the certificate.** A response whose signatures carry no `KeyInfo` is refused by
   Entra with `AADSTS5000810: Unable to verify token signature. Signing key identifier is missing.`
 - **The `Conditions` carry a `NotBefore`.** An assertion without one is refused with `AADSTS500089`.
-- **The certificate expires.** A certificate dated to the year 9999 is refused by the portal; the one around
-  the SAML key is valid ten years.
+- **The certificate expires.** The portal refused a certificate valid until the year 9999, written in
+  `GeneralizedTime`, whether for the date or for its encoding; the one around the SAML key is valid ten years,
+  written in `UTCTime`.
 - **The request is posted from Entra's site, unsigned**, with a `RelayState` of several hundred bytes: it is
   posted again from the provider's own origin, so the session cookie comes with it, and its `RelayState` is
   given back as it came.
@@ -140,7 +141,7 @@ beffroi:
 |---|---|
 | `domains` | The domain of the addresses of the organisation's people |
 | `email_attribute` | The claim type Entra sends the user's mail under. Every attribute is named by its claim type, the URI, and not by the short name the portal shows |
-| `subject_attribute` | The request asks for a persistent `NameID`, which Entra answers with an identifier of the person for this application. Should the application send an address as its `NameID` instead, the object ID of the user, which Entra always sends and never changes, names the person |
+| `subject_attribute` | The request asks for a persistent `NameID`, which Entra answers with an identifier of the person for this application: that is the subject. Should the application be set to send its `NameID` in another format, the e-mail address its portal offers among them, the object ID of the user, a value that does not change, names the person instead. A persistent `NameID` whose value is the address of the person is refused |
 | `groups` | Entra sends security groups as their object IDs, which a group renamed in the portal does not change, so the map is keyed by object ID |
 | `address_parameter` | Entra reads `login_hint` on its sign-in URL and prefills its form with it, so the person types their address once |
 

@@ -80,7 +80,7 @@ not.
 
 | What | Which |
 |---|---|
-| PHP | 8.4 or later, with `intl`; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding |
+| PHP | 8.4 or later, with `intl`; `zip` for the bundle; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding |
 | Symfony | 8.2, for the bundle and the application |
 | Database | PostgreSQL, through Doctrine ORM |
 | Licence | MIT, for all eight packages |

@@ -27,7 +27,7 @@ titles below are the ones the English catalogue carries.
 | Applications you have allowed | `/account/consents` | One line per client in force, with the scopes it holds, and a page per application behind it |
 | Where you are signed in | `/account/sessions` | Where this person is signed in at this moment, what each session proved, and where it was last seen |
 | Your password | `/account/password` | When the password was last written, and the form that replaces it |
-| What happened to your account | `/account/acts` | Every act the provider wrote down in their name: who signed in as them and with what, the attempts that were refused, what signed out and what changed of the account. Its card counts the refused attempts among the last twenty acts, since a failure is what somebody comes to look for |
+| What happened to your account | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the means of signing in and what they did of their own record. Its card counts the refused attempts the journal holds, twenty at most, since a failure is what somebody comes to look for |
 | Notifications | `/account/notifications` | The browsers this provider can reach by web push |
 | Your data | `/account/archive` | The one file holding everything the provider knows of them, and where their last request for it has got to |
 
@@ -59,7 +59,9 @@ no sign-in waits on somebody else's service, and the answer outlives the request
 
 So the person is not left to find it: the next login that serves no authorization request sends them to this
 page, which says why, before the page they were going to, and asks again at every such login until the
-password is replaced. A login a client is waiting on is interrupted by nothing.
+password is replaced. A login that answers an authorization request of OpenID Connect is not diverted; the
+logins a page of the provider asks for are, the pages of the account, the approval of a device or of a
+backchannel request, and the single sign-on of a SAML service provider among them.
 
 A password posed here is typed twice and the two are compared in constant time, and the counter beside the
 field is local to the browser: what the page says of a password as it is typed asks nobody anything, and a
