@@ -23,7 +23,7 @@ than by settings: it is sealed at rest in a scope of its own, it expires a week 
 and that week is a figure in the code. It leaves under a passphrase of the person's choosing when they
 ask for one.
 
-[:octicons-arrow-right-24: Your data, on the account pages](../symfony-bundle/account.md#your-data)
+[:beffroi-arrow-right: Your data, on the account pages](../symfony-bundle/account.md#your-data)
 
 This page will describe what is sealed, what is indexed blind, the scopes a data key covers, and the
 rewrapping.

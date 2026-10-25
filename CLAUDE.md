@@ -51,7 +51,8 @@ description: One sentence, used by search engines and by the social card.
 - One page, one subject, named by its title. The navigation in `mkdocs.yml` is the table of contents, and a
   page absent from it fails the build.
 - Internal links are relative paths to the `.md` file (`../core/keys.md`), never to the built URL.
-- Hints are Material admonitions (`!!! info`, `!!! warning`), not GitBook `{% hint %}` blocks.
+- Hints are Material admonitions, not GitBook `{% hint %}` blocks, and there are three: `!!! note` (or
+  `info`, `tip`), `!!! warning` and `!!! danger`. Each one shows its word above its title.
 - Tabs for alternatives the reader chooses between (`=== "In a Symfony application"`), a table for facts.
 - A code block carries its filename when the reader has to put it somewhere:
   ` ```yaml title="config/packages/beffroi.yaml" `.
@@ -65,9 +66,29 @@ description: One sentence, used by search engines and by the social card.
 
 ## The look
 
-`docs/assets/stylesheets/beffroi.css` makes Material look like GitBook. Its first block is the tokens:
-accent, foreground, background, border, radius, column widths, in both colour schemes. Change a colour
-there and the whole site follows; do not add a hex value further down the file.
+The site follows the brand guidelines of Beffroi, v1.0. The kit lives in the private repository
+`beffroi-auth/brand`, cloned at `~/Projects/idp/Design`. There, `v1.0/Charte Graphique.md` states every rule
+as text, and its section on the documentation (p. 47) is the one this site follows.
+
+`docs/assets/stylesheets/beffroi.css` applies them on top of Material. Its first blocks are the tokens: the
+brand colours, then the roles they play on paper and on ink. Change a value there and the whole site
+follows; do not add a hex value further down the file.
+
+- Light by default. The ink scheme follows the rules of the dark grounds: paper text, cold light for
+  accent text.
+- One accent, ultramarine: the active page, the primary button, the note, the square of a label. Accent
+  text on paper is accent ink.
+- Chakra Petch for headings and buttons, Archivo for every sentence, Martian Mono for labels and code. All
+  three are served from `docs/assets/fonts`, never from a third party.
+- Corners cut at 45 degrees, north-east and south-west, never rounded; 2 px rules; no shadow, glow or
+  gradient.
+- The lockup in the header carries the name, so a heading never spells it.
+- The icons of a page come from the brand's set: copy the file from `Icones/svg/currentColor/` in the kit
+  to `docs/overrides/.icons/beffroi/` and write `:beffroi-<name>:`. Third-party logos, GitHub or
+  Packagist, keep their own.
+- A page never says Beffroi is certified: the provider passes the OpenID conformance suite, and
+  `the-project/conformance.md` says which plans.
+- The logo, the favicons, the share image and the fonts are copies of files of the kit, never redrawn.
 
 ## Versions
 

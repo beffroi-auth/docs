@@ -31,8 +31,10 @@ docker run --rm -p 8000:8000 -v "$PWD":/docs squidfunk/mkdocs-material
 |---|---|
 | `mkdocs.yml` | The site: theme, extensions, plugins, and the whole navigation |
 | `docs/` | The pages, one directory per section of the navigation |
-| `docs/assets/stylesheets/beffroi.css` | The look. The tokens at the top of the file carry the colours, the borders and the widths |
-| `docs/overrides/` | Theme partials, when a page needs more than CSS |
+| `docs/assets/stylesheets/beffroi.css` | The look, from the brand guidelines. The tokens at the top of the file carry the colours, the type, the rules and the cuts |
+| `docs/assets/fonts/`, `docs/assets/images/` | The typefaces with their licences, the logo, the favicons and the share image, copied from the brand kit |
+| `docs/overrides/` | Theme partials: the logo in the colourway of the ground, and the head of every page |
+| `docs/overrides/.icons/beffroi/` | The icons of the brand the pages use, written `:beffroi-<name>:` |
 | `requirements.txt` | The toolchain, pinned. Continuous integration installs exactly this |
 | `.github/workflows/check.yml` | The strict build, on every pull request |
 | `.github/workflows/pages.yml` | The publication: one version per branch, through mike |

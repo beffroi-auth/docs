@@ -59,7 +59,7 @@ A person who wants it to leave under a passphrase of their own choosing says so 
 the floor on the length of that passphrase is refused rather than warned about, since what stands between
 that file and whoever took it is the length of what was typed.
 
-[:octicons-arrow-right-24: Keys](../core/keys.md) and [personal data](../core/personal-data.md).
+[:beffroi-arrow-right: Keys](../core/keys.md) and [personal data](../core/personal-data.md).
 
 ## What a deployment answers with
 

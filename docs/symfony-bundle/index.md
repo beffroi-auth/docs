@@ -31,7 +31,7 @@ two packages underneath usable without a framework.
 composer require beffroi/symfony-bundle
 ```
 
-[:octicons-arrow-right-24: Installation, in full](installation.md)
+[:beffroi-arrow-right: Installation, in full](installation.md)
 
 ## Conventions it follows
 

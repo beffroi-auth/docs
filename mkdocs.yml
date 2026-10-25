@@ -14,33 +14,27 @@ theme:
   name: material
   custom_dir: docs/overrides
   language: en
-  font:
-    text: Inter
-    code: JetBrains Mono
+  # Archivo, Chakra Petch and Martian Mono are served by the site itself, from assets/fonts.
+  font: false
+  logo: assets/images/beffroi-lockup-S-bichrome.svg
   icon:
-    logo: material/bell-outline
     repo: fontawesome/brands/github
-    edit: material/pencil-outline
+    edit: beffroi/edit
     annotation: material/plus-circle
   favicon: assets/images/favicon.svg
+  # Light by default, as the brand guidelines ask; the ink scheme is one click away.
   palette:
-    - media: "(prefers-color-scheme)"
-      toggle:
-        icon: material/brightness-auto
-        name: Follow the system theme
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to the dark theme
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
+    - scheme: default
       primary: custom
       accent: custom
       toggle:
         icon: material/weather-night
+        name: Switch to the dark theme
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
         name: Switch to the light theme
   features:
     - navigation.instant
@@ -61,15 +55,12 @@ theme:
     - content.action.edit
 
 extra_css:
-  # The serif of the titles. The privacy plugin downloads it at build time and serves it from the site, so
-  # a reader's browser calls nobody.
-  - https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap
   - assets/stylesheets/beffroi.css
 
 plugins:
   - search
-  # Every external asset (the fonts above, the ones the theme asks for) is downloaded at build time and
-  # served from this site. Nothing a reader loads reaches a third party.
+  # Any external asset the theme asks for is downloaded at build time and served from this site. Nothing a
+  # reader loads reaches a third party.
   - privacy
   - git-revision-date-localized:
       enable_creation_date: false
@@ -97,6 +88,10 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      # The icons of the brand, as :beffroi-key:, from docs/overrides/.icons/beffroi.
+      options:
+        custom_icons:
+          - docs/overrides/.icons
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
