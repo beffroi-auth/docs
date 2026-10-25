@@ -21,7 +21,7 @@ beffroi:
 
 | Option | Default | What it decides |
 |---|---|---|
-| `enabled` | `false` | Whether the role exists at all. Off, nothing of it is wired: the metadata answer `404` and every message at its endpoints is refused as one of an issuer nobody declared |
+| `enabled` | `false` | Whether the role exists at all. Off, its metadata answer `404`, no service provider may be declared, and every message at its single sign-on and single logout services is refused |
 | `want_authn_requests_signed` | `true` | What the metadata say in `WantAuthnRequestsSigned` (SAML Metadata §2.4.3) |
 | `staging_delay` | `604800`, seven days | How long a new SAML signing key is published in the metadata before it signs, in seconds |
 | `age` | `31536000`, 365 days | How long a SAML signing key works before a successor is staged behind it, in seconds, counted from its activation |
@@ -79,9 +79,9 @@ Its bytes are a function of the key and of the tenant, so every process of the d
 same certificate for the same key. The ten years are not how long the key works: the key signs for its
 age, one year by default, and its status is what retires it. A certificate in metadata is how a key is
 written down, and a service provider that follows the SAML V2.0 Metadata Interoperability Profile does not
-evaluate its validity period (§2.6.1). Ten years is what hosted identity providers issue theirs for, and a
-certificate dated to the year 9999, the form RFC 5280 §4.1.2.5 gives one that never expires, is one
-Microsoft Entra ID refuses.
+evaluate its validity period (§2.6.1). Ten years is what hosted identity providers issue theirs for, and
+Microsoft Entra ID refused a certificate valid until the year 9999, written in the `GeneralizedTime` RFC 5280
+§4.1.2.5 gives a certificate that never expires, whether for the date or for its encoding.
 
 ## The metadata
 
@@ -124,24 +124,25 @@ certificate is published long before it is used.
 ``` mermaid
 graph LR
   s["staged<br/><small>in the metadata,<br/>signs nothing</small>"] -- "seven days" --> a["active<br/><small>signs</small>"]
-  a -- "365 days, then a successor<br/>is staged behind it" --> r["retiring<br/><small>still in the metadata</small>"]
+  a -- "its successor,<br/>staged at 365 days,<br/>takes over" --> r["retiring<br/><small>still in the metadata</small>"]
   r --> x["retired"]
 ```
 
 **Staged for seven days.** A rotation adds the certificate of the next key to the metadata a week before
 that key signs anything. A service provider that honours the `cacheDuration` of one day fetches the
-metadata again six times in that week, so a refresh that fails, or a job that did not run over a weekend,
-still leaves it days to take the next certificate.
+metadata seven times in that week, so six refreshes may fail, a job that did not run over a weekend among
+them, and it still takes the next certificate before that key signs.
 
 **A week is also what a person needs.** A service provider whose administrator uploaded the certificate by
 hand, rather than pointing it at the metadata, has the staging window to put the next one in place.
 `beffroi:keys:list` shows the date the staged key takes over, and `beffroi:keys:activate` moves it to the
 minute the administrator chooses.
 
-**A year of work.** Every rotation is a step for whoever pinned a certificate, so the SAML key works 365
-days, inside the one to three years NIST SP 800-57 Part 1 Rev. 5 §5.3.6 gives a private signature key, where
-the other keys of the tenant work ninety. Those keep the figures of `beffroi.keys`, and a rotation of one of
-them is not slowed by the SAML key.
+**A year of work.** Every rotation is a step for whoever pinned a certificate, so a successor is staged
+behind the SAML key once it has worked 365 days, and takes over a week later. A year is inside the one to
+three years NIST SP 800-57 Part 1 Rev. 5 §5.3.6 gives a private signature key, where the other keys of the
+tenant work ninety days. Those keep the figures of `beffroi.keys`, and a rotation of one of them is not slowed
+by the SAML key.
 
 The key management service is not asked at every login: a process opens the active key once to sign and
 keeps it open, as it does the keys that sign tokens.

@@ -80,7 +80,7 @@ Beffroi paints that last box the same colour as the other two.</p>
 | [`beffroi/saml`](saml/index.md) | SAML 2.0: the identity provider and the service provider of a tenant, their metadata, single logout on the session of the core. Pure PHP | `beffroi/core` and the three packages below |
 | [`beffroi/saml2-model`](saml/packages.md#saml2-model) | The SAML 2.0 messages, assertions and metadata, read strictly, validated and written. No HTTP | `beffroi/xml-security` |
 | [`beffroi/saml2-bindings`](saml/packages.md#saml2-bindings) | The HTTP-Redirect and HTTP-POST bindings, on strings and arrays | `beffroi/saml2-model` |
-| [`beffroi/xml-security`](saml/packages.md#xml-security) | A safe DOM, XML Signature and XML Encryption | PHP and its XML extensions |
+| [`beffroi/xml-security`](saml/packages.md#xml-security) | A safe DOM, XML Signature and XML Encryption | PHP, with `dom`, `libxml` and `openssl` |
 | [`beffroi/symfony-bundle`](symfony-bundle/index.md) | The Symfony integration: configuration, controllers, security, persistence, login and consent pages | the core and both protocols, plus Symfony |
 | [`beffroi/op`](application/index.md) | The standalone application, on FrankenPHP. The recommended deployment | the bundle |
 

@@ -74,7 +74,7 @@ session rather than sending it to a login.
 | `GET` | `/account/consents` | `beffroi_interaction_account_consents` | One line per client this person agreed to, with the scopes it holds |
 | `GET` | `/account/applications/{id}` | `beffroi_interaction_account_application` | What one of those applications holds, behind its line |
 | `GET` | `/account/sessions` | `beffroi_interaction_account_sessions` | Where this person is signed in, and what each session proved |
-| `GET` | `/account/acts` | `beffroi_interaction_account_acts` | What happened to the account: every act the journal holds in their name, the sign-ins and the refusals among them |
+| `GET` | `/account/acts` | `beffroi_interaction_account_acts` | What happened to the account: who signed in and how, the refused attempts, what signed out, what changed of the means of signing in, and what the person did of their own record |
 | `GET` | `/account/notifications` | `beffroi_interaction_account_notifications` | The browsers the provider can reach by web push |
 | `GET` | `/account/archive` | `beffroi_interaction_account_archive` | The file holding everything the provider knows of them |
 | `GET` | `/account/archive/file` | `beffroi_interaction_account_archive_file` | That file, downloaded as it was built |
@@ -124,8 +124,10 @@ Served by the bundle so a deployment has no build step to run for them.
 
 ## SAML 2.0
 
-Served when the deployment turns the role on, and answered `404` otherwise. The metadata are read server to
-server and belong to the protocol plane; everything a browser carries belongs to the interaction plane.
+The metadata are read server to server and belong to the protocol plane; everything a browser carries
+belongs to the interaction plane. A role the deployment did not turn on answers `404` at its metadata, and so
+do the sign-on and the assertion consumer service of the service provider; the single sign-on and single
+logout services of the identity provider refuse every message, nobody being declared to send one.
 
 | Method | Path | Route | What it is |
 |---|---|---|---|

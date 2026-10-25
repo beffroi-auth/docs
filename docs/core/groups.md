@@ -25,10 +25,11 @@ hold, is no group. The group itself is local:
 bin/console beffroi:group:create Staff
 ```
 
-**The memberships a provider asserts are what it said at the last sign-in.** At each sign-in through it, a
-membership whose group it no longer asserts goes, one it still asserts stays with its date, and a group newly
-asserted gets one, in the same unit as the rest of the sign-in and before the session it opens serves
-anything. A membership of another source is left as it is, and the table holds one per group and person.
+**The memberships a provider asserts are what it said at the last sign-in.** At each sign-in of a person that
+provider created, when its declaration maps groups, a membership whose group it no longer asserts goes, one it
+still asserts stays with its date, and a group newly asserted gets one, in the same unit as the rest of the
+sign-in and before the session it opens serves anything. A membership of another source is left as it is, a
+person an operator linked to the provider is given none, and the table holds one per group and person.
 
 `beffroi:user:show` lists the groups of a person with the source of each membership, and the archive a person
 asks for carries them. No claim hands the groups to a client of OpenID Connect.

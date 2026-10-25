@@ -28,8 +28,9 @@ and the `SessionIndex` of the SAML assertions, so a logout asked for by either n
 **Every end revokes what was issued under it.** However a session ends, at the end session endpoint, from the
 page of the account, by the console, by a SAML logout request or replaced by a new login, the refresh tokens
 issued in it are revoked and its opaque access tokens removed, on the lane of the events, beside the
-back-channel logout that tells its clients. The provider refuses a token of an ended session at its use in
-the meantime.
+back-channel logout that tells its clients. The provider refuses every token of an ended session at its use,
+in the meantime and afterwards; a resource server that verifies a self-contained access token offline accepts
+it until it expires, ten minutes by default.
 
 This page will describe opening a session, what a snapshot holds, re-authentication with `prompt=login` and
 `max_age`, and termination.

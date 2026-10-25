@@ -84,9 +84,10 @@ people has to satisfy:
 bin/console beffroi:tenant:login-floor phishing_resistant
 ```
 
-**A floor only goes up.** It is a predicate, and a predicate only ever holds on more proofs, so it can say
-"a passkey at least" and cannot say "a password and nothing else": the switch to do it wrong is not
-expressible. A tenant that names no floor keeps `single_factor`, which every login satisfies.
+**A floor asks for more, never for something else.** It is a predicate, and a predicate only ever holds on
+more proofs, so it can say "a passkey at least" and cannot say "a password and nothing else": the switch to do
+it wrong is not expressible. A tenant that names no floor keeps `single_factor`, which every login
+satisfies.
 
 **What the floor forbids leaves the model.** The command asks before it runs, then forgets every credential
 of the tenant that proves nothing the floor reads, its secret and its row: under `phishing_resistant`, every

@@ -61,8 +61,7 @@ In this order, so that nobody signs in to be refused afterwards:
 |---|---|
 | A `NameIDPolicy` whose `Format` is neither `persistent` nor `unspecified` | `Requester`, `InvalidNameIDPolicy` (SAML Core §3.4.1.1): the identity provider writes no other format |
 | A `RequestedAuthnContext` | `Responder`, `NoAuthnContext` (SAML Core §3.3.2.2.1): the identity provider states no class of its own |
-| A browser holding an active session of the tenant | The assertion, at once |
-| `ForceAuthn="true"` | The assertion, once the session holds a proof made in the second the request arrived or later |
+| A browser holding an active session of the tenant, and, when the request says `ForceAuthn="true"`, a proof made in the second the request arrived or later | The assertion, at once |
 | `IsPassive="true"` and no session that answers | `Responder`, `NoPassive` (SAML Core §3.4.1), without showing a page |
 | Anything else | The login page of the provider |
 

@@ -39,7 +39,8 @@ A password already in use is looked up again after a login, at most once every t
 a lane that no sign-in waits on. What the list was later found to hold is read on
 [the password page of the account](../../symfony-bundle/account.md#what-the-password-page-says) rather than in
 the one request that noticed it, and the next login that serves no authorization request sends the person
-there before the page they were going to: a login a client is waiting on is interrupted by nothing.
+there before the page they were going to. A login that answers an authorization request of OpenID Connect is
+not diverted.
 
 A person whose address is of a domain an [upstream identity provider](../../saml/federated-sign-in.md) answers
 for has no password here. One is neither set for them nor accepted from them, and a password they held before

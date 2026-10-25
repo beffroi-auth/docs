@@ -22,7 +22,7 @@ another obligation says its own, and a timed step forgets what is past it.
 - **The reads that hand a person over to a third party are acts too**: an introspection that tells a resource
   server who a token names, and a UserInfo answer.
 - **What a client was given is kept beside the act that gave it**: at each issue of tokens, the scopes, the
-  claims asked for by name, the authorization details and the shape of the token, sealed, so that what an
+  claims asked for by name and the authorization details, sealed, and the shape of the token, so that what an
   application obtained of somebody still has an answer after the consent it was given under was taken back.
 - **What a record used to say** is kept the same way, under a retention of its own, `history.retention`, six
   months as well unless the deployment says otherwise.

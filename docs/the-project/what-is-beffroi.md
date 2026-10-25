@@ -43,7 +43,7 @@ The list is short, and none of it is behind an option:
 - redirect URIs matched exactly, never by prefix or pattern;
 - `iss` in every authorization response, so a client can tell who answered;
 - no redirect followed to a third party, no boolean coming from a third party ever cast;
-- in SAML, no SHA-1, nothing encrypted in CBC, and no response taken that nobody asked for.
+- in SAML, no signature under SHA-1, nothing encrypted in CBC, and no response taken that nobody asked for.
 
 Those are rules of the code, not settings of a file. There is no `insecure_` option and no global
 compatibility switch to turn them off. [Secure by default](secure-by-default.md) says why, and names the

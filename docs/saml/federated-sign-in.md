@@ -37,7 +37,7 @@ The field is posted to `/login/address`, and what was typed decides where the br
 
 | What was typed | Where the browser goes |
 |---|---|
-| An address of a domain an identity provider answers for | To that identity provider, by a `303` |
+| An address of a domain an identity provider answers for | To the sign-on of that identity provider, `/saml/sp/sign-on`, by a `303`, which sends it on to the provider |
 | An address of any other domain | Back to the usual login page, its username field holding what was typed, with a way back to the address |
 | A value without an `@` | The same: a username, of no domain |
 | An address whose domain cannot be read | Back to the page of the address, which says so |
@@ -76,9 +76,11 @@ The request is an `AuthnRequest` written and signed by the SAML key of the tenan
 | `ForceAuthn` | When the client asked for a login the session of this browser cannot answer, and when a page asks a signed-in person for a fresh proof |
 | `RelayState` | 32 random bytes in base64url, and nothing else: no URL, no value of the request |
 
-`ForceAuthn` follows what the login page itself would ask: `prompt=login`, a `max_age` the session of the
-browser exceeds, a step-up, `prompt=select_account`, an `id_token_hint` naming another person. Without it, a
-session the person left open at their identity provider would answer a client that asked for a fresh login.
+`ForceAuthn` follows what the login page itself would ask of a browser that holds a session of the provider:
+`prompt=login`, a `max_age` that session exceeds, a step-up, `prompt=select_account`, an `id_token_hint` naming
+another person. A browser that holds no session forces a login for `prompt=login` alone, and the age of what
+the person proved is checked when the response comes back. Without it, a session the person left open at their
+identity provider would answer a client that asked for a fresh login.
 
 The request is remembered in the HTTP session of the browser, under its `RelayState`, for ten minutes, eight
 at most per browser: what a response answers is read there, and nowhere else.
@@ -114,7 +116,8 @@ failed at their identity provider, so the client is answered `access_denied` at 
 Core §3.1.2.6), and nothing the identity provider wrote reaches the client.
 
 Every refusal is a page that names the rule and never a value of the response, opens no session and writes
-nothing of the person, and is written to the journal as a refused login.
+nothing of the person. A response the service provider does not take, a person it may not sign in and a login
+under the floor of the tenant are each written to the journal as a refused login, with the method `fed`.
 
 ## The person
 
