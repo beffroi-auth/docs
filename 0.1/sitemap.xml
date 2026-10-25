@@ -277,6 +277,38 @@
          <lastmod>2026-10-25</lastmod>
     </url>
     <url>
+         <loc>https://beffroi-auth.github.io/docs/0.1/saml/federated-sign-in/</loc>
+         <lastmod>2026-10-25</lastmod>
+    </url>
+    <url>
+         <loc>https://beffroi-auth.github.io/docs/0.1/saml/identity-provider/</loc>
+         <lastmod>2026-10-25</lastmod>
+    </url>
+    <url>
+         <loc>https://beffroi-auth.github.io/docs/0.1/saml/microsoft-entra-id/</loc>
+         <lastmod>2026-10-25</lastmod>
+    </url>
+    <url>
+         <loc>https://beffroi-auth.github.io/docs/0.1/saml/packages/</loc>
+         <lastmod>2026-10-25</lastmod>
+    </url>
+    <url>
+         <loc>https://beffroi-auth.github.io/docs/0.1/saml/service-providers/</loc>
+         <lastmod>2026-10-25</lastmod>
+    </url>
+    <url>
+         <loc>https://beffroi-auth.github.io/docs/0.1/saml/single-logout/</loc>
+         <lastmod>2026-10-25</lastmod>
+    </url>
+    <url>
+         <loc>https://beffroi-auth.github.io/docs/0.1/saml/single-sign-on/</loc>
+         <lastmod>2026-10-25</lastmod>
+    </url>
+    <url>
+         <loc>https://beffroi-auth.github.io/docs/0.1/saml/upstream-identity-providers/</loc>
+         <lastmod>2026-10-25</lastmod>
+    </url>
+    <url>
          <loc>https://beffroi-auth.github.io/docs/0.1/scim/</loc>
          <lastmod>2026-10-25</lastmod>
     </url>
