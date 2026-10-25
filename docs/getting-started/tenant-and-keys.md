@@ -68,4 +68,4 @@ bin/console beffroi:user:set-password alice
 The subject the clients will know Alice by is generated and stable. You pass `--subject` only when you are
 importing an identity that already has one somewhere else.
 
-[:octicons-arrow-right-24: Keys, in full](../core/keys.md)
+[:beffroi-arrow-right: Keys, in full](../core/keys.md)

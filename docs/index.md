@@ -7,13 +7,13 @@ hide:
 
 <div class="bf-hero" markdown>
 
-<p class="bf-hero__eyebrow">OAuth 2.0 · OpenID Connect · PHP 8.4</p>
+<p class="bf-label">OAuth 2.0 · OpenID Connect · PHP 8.4</p>
 
-# Beffroi
+# The tower that decides who gets in.
 
-<p class="bf-hero__tagline">An OpenID Provider for the Symfony ecosystem. On the map of a Symfony
-application the interface is Symfony, the API is API Platform, and the identity provider is always
-somewhere else. Beffroi paints that last box the same colour as the other two.</p>
+<p class="bf-hero__lead">An OpenID Provider for the Symfony ecosystem. On the map of a Symfony application
+the interface is Symfony, the API is API Platform, and the identity provider is always somewhere else.
+Beffroi paints that last box the same colour as the other two.</p>
 
 [Get started](getting-started/installation.md){ .md-button .md-button--primary }
 [What is Beffroi?](the-project/what-is-beffroi.md){ .md-button }
@@ -22,43 +22,43 @@ somewhere else. Beffroi paints that last box the same colour as the other two.</
 
 !!! info "This documentation describes a version that is not released yet"
 
-    No `beffroi/*` package is published on Packagist at this point, and the provider is not OpenID
-    Certified yet. Every page here states what the code does today, in the branch this version of the
-    documentation follows. What is not written yet is marked as a stub rather than guessed at.
+    No `beffroi/*` package is published on Packagist at this point. Every page here states what the code
+    does today, in the branch this version of the documentation follows. What is not written yet is marked
+    as a stub rather than guessed at.
 
 <div class="grid cards" markdown>
 
--   :material-compass-outline:{ .lg .middle } **Start here**
+-   :beffroi-docs:{ .lg .middle } **Start here**
 
     ---
 
     What Beffroi is, what it refuses to do, and the shape of the three packages.
 
-    [:octicons-arrow-right-24: What is Beffroi?](the-project/what-is-beffroi.md)
+    [:beffroi-arrow-right: What is Beffroi?](the-project/what-is-beffroi.md)
 
--   :material-server-outline:{ .lg .middle } **Run a provider**
+-   :beffroi-server:{ .lg .middle } **Run a provider**
 
     ---
 
     The standalone application, a tenant, a signing key, a first client, a user who signs in.
 
-    [:octicons-arrow-right-24: Getting started](getting-started/installation.md)
+    [:beffroi-arrow-right: Getting started](getting-started/installation.md)
 
--   :material-language-php:{ .lg .middle } **Add it to an application**
+-   :beffroi-package:{ .lg .middle } **Add it to an application**
 
     ---
 
     The bundle in an existing Symfony application: configuration, routes, persistence, pages.
 
-    [:octicons-arrow-right-24: The Symfony bundle](symfony-bundle/index.md)
+    [:beffroi-arrow-right: The Symfony bundle](symfony-bundle/index.md)
 
--   :material-key-chain-variant:{ .lg .middle } **Read the protocol**
+-   :beffroi-token:{ .lg .middle } **Read the protocol**
 
     ---
 
     Clients, grants, tokens, discovery, logout, and what each endpoint answers.
 
-    [:octicons-arrow-right-24: OAuth 2.0 and OpenID Connect](oidc/index.md)
+    [:beffroi-arrow-right: OAuth 2.0 and OpenID Connect](oidc/index.md)
 
 </div>
 
@@ -77,7 +77,7 @@ Secure by default means there is no option to do it wrong: no implicit flow, no 
 `S256` only, redirect URIs compared exactly, `iss` in every authorization response. Those are properties of
 the code, not settings of a file.
 
-[:octicons-arrow-right-24: Secure by default](the-project/secure-by-default.md)
+[:beffroi-arrow-right: Secure by default](the-project/secure-by-default.md)
 
 ## Where the rest lives
 

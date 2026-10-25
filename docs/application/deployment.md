@@ -15,6 +15,6 @@ application writes what belongs to a deployment, and neither writes a header the
 header written twice collides rather than being replaced. What this application answers with is in two
 files of its configuration, and nothing it writes is written again in the web server or at the edge.
 
-[:octicons-arrow-right-24: The headers](../the-project/secure-by-default.md#what-a-deployment-answers-with)
+[:beffroi-arrow-right: The headers](../the-project/secure-by-default.md#what-a-deployment-answers-with)
 
 This page will describe the image, the processes, the health checks, and the reverse proxy.

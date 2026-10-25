@@ -65,14 +65,14 @@ The issuer is the exact string the provider announces as `iss` and the prefix ev
 under. It is not a cosmetic setting: a client compares it byte by byte, and changing it later invalidates
 every token in flight.
 
-[:octicons-arrow-right-24: The whole configuration tree](../symfony-bundle/configuration.md)
+[:beffroi-arrow-right: The whole configuration tree](../symfony-bundle/configuration.md)
 
 ## As an application of its own
 
 If you have no application to host it, do not write one. `beffroi/op` is the Symfony skeleton, the bundle
 and FrankenPHP already assembled, and it is the deployment the project supports.
 
-[:octicons-arrow-right-24: The standalone application](the-standalone-application.md)
+[:beffroi-arrow-right: The standalone application](the-standalone-application.md)
 
 ## Then
 

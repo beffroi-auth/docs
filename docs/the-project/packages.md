@@ -23,21 +23,21 @@ history of one part without the rest.
     Require `beffroi/symfony-bundle`. It pulls the core and the protocol with it, and brings the
     controllers, the Doctrine mapping, the console commands and the login and consent pages.
 
-    [:octicons-arrow-right-24: Installing the bundle](../symfony-bundle/installation.md)
+    [:beffroi-arrow-right: Installing the bundle](../symfony-bundle/installation.md)
 
 === "I want a provider of its own"
 
     Deploy `beffroi/op`, the standalone application. It is the bundle, a Symfony skeleton, FrankenPHP and
     nothing you have to assemble yourself.
 
-    [:octicons-arrow-right-24: The standalone application](../application/index.md)
+    [:beffroi-arrow-right: The standalone application](../application/index.md)
 
 === "I am not using Symfony"
 
     Require `beffroi/oidc`. It is pure PHP: it knows no HTTP, no container and no ORM, and it talks to
     the world through ports you implement.
 
-    [:octicons-arrow-right-24: The ports of the protocol](../oidc/ports.md)
+    [:beffroi-arrow-right: The ports of the protocol](../oidc/ports.md)
 
 ## What depends on what
 

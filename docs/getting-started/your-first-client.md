@@ -67,5 +67,5 @@ registered themselves, each saying which it is. A client that registered itself 
 `beffroi:client:delete`; one the configuration declares cannot, because the configuration would put it
 back.
 
-[:octicons-arrow-right-24: Clients, in full](../oidc/clients.md) and
+[:beffroi-arrow-right: Clients, in full](../oidc/clients.md) and
 [client authentication](../oidc/client-authentication.md)

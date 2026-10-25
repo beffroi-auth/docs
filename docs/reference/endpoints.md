@@ -104,7 +104,7 @@ the archive wrapped under a passphrase, which is the file.
 | `POST` | `/account/archive/file` | `beffroi_interaction_account_archive_wrapped_file` |
 | `POST` | `/account/archive/drop` | `beffroi_interaction_account_archive_drop` |
 
-[:octicons-arrow-right-24: The account pages](../symfony-bundle/account.md)
+[:beffroi-arrow-right: The account pages](../symfony-bundle/account.md)
 
 ### The scripts the pages load
 

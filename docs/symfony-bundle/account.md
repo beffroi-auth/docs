@@ -35,7 +35,7 @@ The subject identifier clients know this person by is on none of them. It is the
 something a person comes to read of themselves, and a client of a sector that asked for a pairwise
 identifier is given a different one, so a page naming one of them would be saying something false.
 
-[:octicons-arrow-right-24: Every route, with the one each form posts to](../reference/endpoints.md)
+[:beffroi-arrow-right: Every route, with the one each form posts to](../reference/endpoints.md)
 
 ### What a person may change of themselves
 
@@ -61,7 +61,7 @@ A password posed here is typed twice and the two are compared in constant time, 
 field is local to the browser: what the page says of a password as it is typed asks nobody anything, and a
 password is never sent anywhere to be scored.
 
-[:octicons-arrow-right-24: Passwords](../core/credentials/passwords.md)
+[:beffroi-arrow-right: Passwords](../core/credentials/passwords.md)
 
 ## What a page asks before it opens
 
@@ -168,7 +168,7 @@ What is in it is one chapter per family the provider holds: the profile, the cre
 identities, the groups, what was consented to, the sessions, the journal of the acts, and what the record
 used to say.
 
-[:octicons-arrow-right-24: Personal data](../core/personal-data.md)
+[:beffroi-arrow-right: Personal data](../core/personal-data.md)
 
 ## What a form answers
 
@@ -188,7 +188,7 @@ changed. A date is written on the clock that person holds, with the words and th
 the page is written in, and the clock is always named: an hour without its zone is an hour a reader cannot
 check.
 
-[:octicons-arrow-right-24: Translations](translations.md)
+[:beffroi-arrow-right: Translations](translations.md)
 
 ## Adding a page
 

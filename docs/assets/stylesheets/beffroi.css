@@ -1,193 +1,344 @@
 /*
- * Brass on stone: the look of Beffroi, on top of Material for MkDocs.
+ * The look of Beffroi, on top of Material for MkDocs: the brand guidelines v1.0, at reading size.
  *
- * Everything the eye reads first is a token of the two blocks below, light then dark. Change the brass,
- * the stone or the radius there and the whole site follows; no colour is written anywhere else.
+ * Everything the eye reads is a token of the blocks below: the brand colours, then the roles they play on
+ * paper and on ink. Change a value there and the whole site follows; no colour is written anywhere else.
  *
- * Two rules this file exists to keep:
- *   - the brass that carries text is darker than the brass that draws a border, because a 3:1 colour is
- *     fine under a line and unreadable in a sentence;
- *   - --md-primary-fg-color is never painted with the colour of the header, the theme deriving the colour
- *     of a link in the text from it. The header is painted by its own rules, further down.
+ * What the guidelines ask of this file:
+ *   - one accent, ultramarine: the active state, the primary button, the note, the 8 px square of a label.
+ *     Accent text on paper is accent ink; on ink it is cold light;
+ *   - flat colour and 2 px rules; corners cut at 45 degrees on the north-east and south-west, never rounded;
+ *     no shadow, no glow, no gradient;
+ *   - Chakra Petch for headings and buttons, Archivo for every sentence (16 px on 1.65), Martian Mono for
+ *     labels, figures and code (87.5 % wide);
+ *   - light by default. The ink scheme follows the rules of the dark grounds of the guidelines.
  */
 
-:root {
-  --bf-brass: #8a6316;
-  --bf-brass-strong: #6d4d0e;
-  --bf-brass-bright: #c08a2e;
-  --bf-brass-soft: rgba(192, 138, 46, 0.12);
-  --bf-on-brass: #ffffff;
-
-  --bf-fg: #1a1d21;
-  --bf-fg-muted: #5c6269;
-  --bf-fg-faint: #878d94;
-  --bf-bg: #ffffff;
-  --bf-bg-soft: #f5f4f1;
-  --bf-border: #e4e3dd;
-  --bf-border-strong: #d2d1c9;
-
-  /* The header is the same slate in both schemes: it is the one band that never changes. */
-  --bf-slate: #22262b;
-  --bf-slate-fg: #eceae5;
-  --bf-slate-muted: #9ba1a8;
-  --bf-slate-line: rgba(236, 234, 229, 0.14);
-  --bf-slate-fill: rgba(236, 234, 229, 0.07);
-
-  --bf-radius: 8px;
-  --bf-radius-sm: 6px;
-  --bf-sidebar-width: 15.5rem;
-  --bf-content-width: 46rem;
-
-  --bf-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+@font-face {
+  font-display: swap;
+  font-family: "Archivo";
+  font-stretch: 62% 125%;
+  font-style: normal;
+  font-weight: 100 900;
+  src: url("../fonts/archivo.woff2") format("woff2");
 }
 
-[data-md-color-scheme="slate"] {
-  --bf-brass: #e2b55a;
-  --bf-brass-strong: #f0cd84;
-  --bf-brass-bright: #e2b55a;
-  --bf-brass-soft: rgba(226, 181, 90, 0.14);
-  --bf-on-brass: #1a1d21;
+@font-face {
+  font-display: swap;
+  font-family: "Archivo";
+  font-stretch: 62% 125%;
+  font-style: italic;
+  font-weight: 100 900;
+  src: url("../fonts/archivo-italic.woff2") format("woff2");
+}
 
-  --bf-fg: #e8e6e1;
-  --bf-fg-muted: #a2a5a1;
-  --bf-fg-faint: #80837f;
-  --bf-bg: #16181b;
-  --bf-bg-soft: #1e2125;
-  --bf-border: #2c3035;
-  --bf-border-strong: #3b4047;
+@font-face {
+  font-display: swap;
+  font-family: "Martian Mono";
+  font-stretch: 75% 112.5%;
+  font-style: normal;
+  font-weight: 100 800;
+  src: url("../fonts/martian-mono.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Chakra Petch";
+  font-style: normal;
+  font-weight: 600;
+  src: url("../fonts/chakra-petch-semibold.woff2") format("woff2");
+}
+
+/* The brand colours, as the guidelines give them. */
+:root {
+  --beffroi-ink: #0c1016;
+  --beffroi-paper: #f2f4f6;
+  --beffroi-surface: #e6e9ee;
+  --beffroi-field: #ffffff;
+  --beffroi-ultramarine: #2f45ff;
+  --beffroi-accent-100: #e7eaff;
+  --beffroi-accent-600: #2336e0;
+  --beffroi-accent-ink: #1b2bb8;
+  --beffroi-cold-light: #a9b3ff;
+  --beffroi-error: #b3261e;
+
+  --bf-font-heading: "Chakra Petch", Arial, sans-serif;
+  --bf-font-body: "Archivo", Arial, sans-serif;
+  --bf-font-mono: "Martian Mono", Consolas, ui-monospace, monospace;
+
+  --bf-rule: 2px;
+  --bf-cut-tag: 9px;
+  --bf-cut-button: 12px;
+  --bf-cut-card: 16px;
+  --bf-cut-hero: 18px;
+  --bf-sidebar-width: 15.5rem;
+  --bf-content-width: 46rem;
+}
+
+/* The roles, on paper. */
+:root,
+[data-md-color-scheme="default"] {
+  --bf-bg: var(--beffroi-paper);
+  --bf-surface: var(--beffroi-surface);
+  --bf-field: var(--beffroi-field);
+  --bf-text: var(--beffroi-ink);
+  --bf-muted: rgba(12, 16, 22, 0.72);
+  --bf-divider: rgba(12, 16, 22, 0.36);
+  --bf-hairline: rgba(12, 16, 22, 0.12);
+  --bf-accent: var(--beffroi-ultramarine);
+  --bf-accent-hover: var(--beffroi-accent-600);
+  --bf-accent-text: var(--beffroi-accent-ink);
+  --bf-accent-soft: var(--beffroi-accent-100);
+  --bf-on-accent: var(--beffroi-paper);
+  --bf-on-error: var(--beffroi-paper);
+  --bf-grid: rgba(47, 69, 255, 0.09);
+}
+
+/* The roles, on ink: paper text, cold light for accent text, errors never as red text. */
+[data-md-color-scheme="slate"] {
+  --bf-bg: var(--beffroi-ink);
+  --bf-surface: rgba(242, 244, 246, 0.07);
+  --bf-field: var(--beffroi-ink);
+  --bf-text: var(--beffroi-paper);
+  --bf-muted: rgba(242, 244, 246, 0.72);
+  --bf-divider: rgba(242, 244, 246, 0.36);
+  --bf-hairline: rgba(242, 244, 246, 0.12);
+  --bf-accent: var(--beffroi-ultramarine);
+  --bf-accent-hover: var(--beffroi-accent-600);
+  --bf-accent-text: var(--beffroi-cold-light);
+  --bf-accent-soft: rgba(47, 69, 255, 0.18);
+  --bf-on-accent: var(--beffroi-paper);
+  --bf-on-error: var(--beffroi-paper);
+  --bf-grid: rgba(242, 244, 246, 0.07);
 }
 
 [data-md-color-scheme="default"],
 [data-md-color-scheme="slate"] {
-  --md-default-fg-color: var(--bf-fg);
-  --md-default-fg-color--light: var(--bf-fg-muted);
-  --md-default-fg-color--lighter: var(--bf-fg-faint);
+  --md-default-fg-color: var(--bf-text);
+  --md-default-fg-color--light: var(--bf-muted);
+  --md-default-fg-color--lighter: var(--bf-divider);
+  --md-default-fg-color--lightest: var(--bf-hairline);
   --md-default-bg-color: var(--bf-bg);
-  --md-primary-fg-color: var(--bf-brass);
-  --md-primary-bg-color: #ffffff;
-  --md-primary-bg-color--light: rgba(255, 255, 255, 0.7);
-  --md-accent-fg-color: var(--bf-brass-strong);
-  --md-typeset-a-color: var(--bf-brass);
-  --md-code-bg-color: var(--bf-bg-soft);
+  --md-default-bg-color--light: var(--bf-bg);
+  --md-primary-fg-color: var(--bf-accent-text);
+  --md-primary-fg-color--dark: var(--bf-accent-text);
+  --md-primary-bg-color: var(--bf-on-accent);
+  --md-accent-fg-color: var(--bf-accent-text);
+  --md-accent-fg-color--transparent: var(--bf-accent-soft);
+  --md-typeset-a-color: var(--bf-accent-text);
+  --md-typeset-mark-color: var(--bf-accent-soft);
+  --md-typeset-table-color: var(--bf-divider);
+  --md-code-bg-color: var(--bf-surface);
+  --md-code-fg-color: var(--bf-text);
   --md-footer-bg-color: var(--bf-bg);
-  --md-footer-fg-color: var(--bf-fg);
-  --md-footer-fg-color--light: var(--bf-fg-muted);
-  --md-footer-fg-color--lighter: var(--bf-fg-faint);
+  --md-footer-fg-color: var(--bf-text);
+  --md-footer-fg-color--light: var(--bf-muted);
+  --md-footer-fg-color--lighter: var(--bf-muted);
+  --md-text-font-family: var(--bf-font-body);
+  --md-code-font-family: var(--bf-font-mono);
+
+  /* Code in the colours of the text, with the one accent for what the language reserves. */
+  --md-code-hl-color: var(--bf-accent-soft);
+  --md-code-hl-keyword-color: var(--bf-accent-text);
+  --md-code-hl-constant-color: var(--bf-accent-text);
+  --md-code-hl-number-color: var(--bf-accent-text);
+  --md-code-hl-special-color: var(--bf-accent-text);
+  --md-code-hl-function-color: var(--bf-text);
+  --md-code-hl-string-color: var(--bf-text);
+  --md-code-hl-name-color: var(--bf-text);
+  --md-code-hl-operator-color: var(--bf-muted);
+  --md-code-hl-punctuation-color: var(--bf-muted);
+  --md-code-hl-comment-color: var(--bf-muted);
+  --md-code-hl-generic-color: var(--bf-muted);
+  --md-code-hl-variable-color: var(--bf-text);
 }
 
 body {
+  background-color: var(--bf-bg);
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--bf-accent-soft);
+}
+
+/* Focus is always visible: 2 px of ultramarine, 2 px away. */
+html :focus-visible {
+  outline: var(--bf-rule) solid var(--bf-accent);
+  outline-offset: 2px;
+}
+
+/* The icons of the brand are drawn with a 2 px stroke; the theme would fill them. */
+.md-icon svg[stroke],
+.twemoji svg[stroke] {
+  fill: none;
 }
 
 /* ---------------------------------------------------------------- Header */
 
 .md-header,
 .md-header--shadow {
-  background-color: var(--bf-slate);
-  color: var(--bf-slate-fg);
+  background-color: var(--bf-bg);
+  border-bottom: var(--bf-rule) solid var(--bf-text);
   box-shadow: none;
+  color: var(--bf-text);
 }
 
-.md-header__title {
-  font-family: var(--bf-serif);
-  font-size: 1.05rem;
+/* The lockup is the name: the site name next to it would spell it a second time. */
+.md-header__title .md-header__topic:first-child {
+  visibility: hidden;
+}
+
+.md-header__topic {
+  font-family: var(--bf-font-heading);
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
-  margin-left: 0.4rem;
 }
 
 .md-header__button,
-.md-header__topic,
 .md-header__option,
 .md-header__source {
-  color: var(--bf-slate-fg);
+  color: var(--bf-text);
+}
+
+.md-header__button.md-logo {
+  margin: 0.2rem 0.2rem 0.2rem 0.4rem;
+  padding: 0.3rem;
+}
+
+/* The theme hides the logo on a narrow screen and shows the site name instead, which is hidden here. The
+   button of the drawer stays first. */
+@media screen and (max-width: 76.234375em) {
+  .md-header__button.md-logo {
+    display: block;
+  }
+  .md-header__inner > label.md-header__button[for="__drawer"] {
+    order: -1;
+  }
+}
+
+.md-header__button.md-logo img,
+.md-nav__button.md-logo img {
+  height: 1.4rem;
+  width: auto;
+}
+
+/* One lockup per ground. The theme shows every image of the logo, hence the weight of these selectors. */
+:is(.md-header__button, .md-nav__button).md-logo img.bf-logo--ink,
+[data-md-color-scheme="slate"] :is(.md-header__button, .md-nav__button).md-logo img.bf-logo--paper {
+  display: none;
+}
+
+[data-md-color-scheme="slate"] :is(.md-header__button, .md-nav__button).md-logo img.bf-logo--ink {
+  display: block;
 }
 
 .md-header__source {
-  color: var(--bf-slate-muted);
-}
-
-/* The bell is the one brass thing in the band. */
-.md-header__button.md-logo :is(img, svg) {
-  color: var(--bf-brass-bright);
-  height: 1.4rem;
-  width: 1.4rem;
+  font-family: var(--bf-font-mono);
+  font-size: 0.6rem;
 }
 
 .md-search__form {
-  background-color: var(--bf-slate-fill);
-  border: 1px solid var(--bf-slate-line);
-  border-radius: var(--bf-radius);
+  background-color: var(--bf-field);
+  border: var(--bf-rule) solid var(--bf-text);
+  border-radius: 0;
   box-shadow: none;
   height: 2rem;
 }
 
 .md-search__form:hover {
-  background-color: var(--bf-slate-fill);
-  border-color: var(--bf-brass-bright);
+  background-color: var(--bf-field);
+}
+
+.md-search__input {
+  font-size: 0.75rem;
 }
 
 .md-search__input,
 .md-search__icon,
-.md-search__options .md-icon {
-  color: var(--bf-slate-fg);
+.md-search__options .md-icon,
+.md-search__input::placeholder {
+  color: var(--bf-text);
 }
 
 .md-search__input::placeholder {
-  color: var(--bf-slate-muted);
+  color: var(--bf-muted);
+}
+
+/* The theme paints the magnifier in the colour of a primary band, which is the field's own here. */
+.md-search__input + .md-search__icon {
+  color: var(--bf-text);
 }
 
 [data-md-toggle="search"]:checked ~ .md-header .md-search__form {
-  background-color: var(--bf-slate-fill);
-  border-radius: var(--bf-radius) var(--bf-radius) 0 0;
+  background-color: var(--bf-field);
+  border-radius: 0;
 }
 
 .md-search__output {
-  border-radius: 0 0 var(--bf-radius) var(--bf-radius);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.md-search__scrollwrap {
+  background-color: var(--bf-field);
+  border: var(--bf-rule) solid var(--bf-text);
+  border-top: 0;
 }
 
 .md-search-result__meta {
-  color: var(--bf-fg-muted);
-  font-size: 0.65rem;
+  background-color: var(--bf-surface);
+  color: var(--bf-muted);
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* The version, a pill in the band. */
+.md-search-result mark {
+  color: var(--bf-accent-text);
+}
+
+/* The version: a tag, cut at 9 px. */
 .md-version__current {
-  border: 1px solid var(--bf-slate-line);
-  border-radius: 999px;
-  color: var(--bf-slate-muted);
-  font-size: 0.68rem;
+  background-color: var(--bf-surface);
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-tag)) 0, 100% var(--bf-cut-tag), 100% 100%, var(--bf-cut-tag) 100%, 0 calc(100% - var(--bf-cut-tag)));
+  color: var(--bf-text);
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
   margin: 0 0 0 0.6rem;
-  padding: 0.05rem 0.55rem;
+  padding: 0.2rem 0.9rem 0.2rem 0.6rem;
 }
 
-.md-version__current:hover {
-  border-color: var(--bf-brass-bright);
-  color: var(--bf-slate-fg);
+.md-version__current::after {
+  margin-left: 0.3rem;
 }
 
 .md-version__list {
-  border-radius: var(--bf-radius);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  background-color: var(--bf-field);
+  border: var(--bf-rule) solid var(--bf-text);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.md-version__link {
+  font-family: var(--bf-font-mono);
+  font-size: 0.6rem;
 }
 
 /* The drawer of a narrow screen carries the same band. */
 .md-nav--primary > .md-nav__title,
 .md-nav--primary > .md-nav__title .md-nav__button {
-  background-color: var(--bf-slate);
-  color: var(--bf-slate-fg);
+  background-color: var(--bf-bg);
+  color: var(--bf-text);
 }
 
 /* ---------------------------------------------------------------- Sidebars */
 
 .md-nav {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   line-height: 1.5;
-}
-
-.md-sidebar--primary {
-  border-right: 1px solid var(--bf-border);
 }
 
 @media screen and (min-width: 76.25em) {
@@ -199,59 +350,59 @@ body {
   }
 }
 
-/* A section title: small, spaced, quiet, under a short brass rule. */
+/* A section title is a label: an 8 px ultramarine square, its number, its name, in Martian Mono capitals. */
+.md-nav--primary > .md-nav__list {
+  counter-reset: bf-section;
+}
+
+.md-nav--primary .md-nav__item--section {
+  counter-increment: bf-section;
+}
+
 .md-nav--primary .md-nav__item--section > .md-nav__link {
-  color: var(--bf-fg-faint);
+  color: var(--bf-muted);
   cursor: default;
-  font-size: 0.64rem;
-  font-weight: 600;
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
-  margin-bottom: 0.2rem;
-  margin-top: 1.3rem;
-  padding-bottom: 0.1rem;
-  position: relative;
+  margin-bottom: 0.3rem;
+  margin-top: 1.4rem;
   text-transform: uppercase;
 }
 
-.md-nav--primary .md-nav__item--section > .md-nav__link::before {
-  background-color: var(--bf-brass-bright);
-  content: "";
-  height: 2px;
-  left: 0.5rem;
-  position: absolute;
-  top: -0.45rem;
-  width: 1.1rem;
-}
-
-/* A section whose title is also a page nests a link inside the title, which would indent it twice. */
-.md-nav--primary .md-nav__item--section > .md-nav__container > a.md-nav__link {
-  padding-left: 0;
+.md-nav--primary .md-nav__item--section > .md-nav__link .md-ellipsis::before {
+  background: linear-gradient(var(--bf-accent), var(--bf-accent)) no-repeat left center / 8px 8px;
+  content: "[" counter(bf-section, decimal-leading-zero) "] ";
+  padding-left: 14px;
 }
 
 .md-nav--primary .md-nav__item--section > .md-nav__link--active,
 .md-nav--primary .md-nav__item--section > .md-nav__container > .md-nav__link--active {
   background-color: transparent;
-  color: var(--bf-brass);
+  box-shadow: none;
+  color: var(--bf-accent-text);
 }
 
 .md-nav__item .md-nav__link {
-  border-radius: var(--bf-radius-sm);
-  color: var(--bf-fg-muted);
-  margin: 0.05rem 0;
+  border-radius: 0;
+  color: var(--bf-muted);
+  margin: 0;
   padding: 0.28rem 0.5rem;
-  transition: background-color 120ms, color 120ms;
 }
 
 .md-nav__item .md-nav__link:hover {
-  background-color: var(--bf-bg-soft);
-  color: var(--bf-fg);
+  background-color: var(--bf-surface);
+  color: var(--bf-text);
 }
 
+/* The active page: accent text, and the light of the tower as a 2 px rule on its left. */
 .md-nav__link--active,
 .md-nav__item .md-nav__link--active:hover {
-  background-color: var(--bf-brass-soft);
-  color: var(--bf-brass);
-  font-weight: 500;
+  background-color: var(--bf-accent-soft);
+  box-shadow: inset var(--bf-rule) 0 0 var(--bf-accent);
+  color: var(--bf-accent-text);
+  font-weight: 600;
 }
 
 .md-nav--primary .md-nav__title {
@@ -273,30 +424,34 @@ body {
 .md-nav--secondary .md-nav__title {
   background: transparent;
   box-shadow: none;
-  color: var(--bf-fg-faint);
-  font-size: 0.62rem;
-  font-weight: 600;
+  color: var(--bf-muted);
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .md-nav--secondary .md-nav__list {
-  border-left: 1px solid var(--bf-border);
+  border-left: var(--bf-rule) solid var(--bf-hairline);
   margin-left: 0.6rem;
-  padding-left: 0.2rem;
 }
 
-.md-nav--secondary .md-nav__link {
-  padding-left: 0.5rem;
+.md-nav--secondary .md-nav__link--active,
+.md-nav--secondary .md-nav__item .md-nav__link--active:hover {
+  background-color: transparent;
+  box-shadow: none;
 }
 
 /* A section that is a page and a parent at once holds three elements that are all .md-nav__link: the
-   container, the link and the label carrying the chevron. Only the link is painted. */
-.md-nav__container,
-.md-nav__container > label.md-nav__link,
-.md-nav__container > label.md-nav__link:hover {
+   container, the link and the label carrying the chevron. Only the link is painted and padded, so the
+   section lines up with the pages beside it. */
+.md-nav__item .md-nav__link.md-nav__container,
+.md-nav__item .md-nav__link.md-nav__container:hover,
+.md-nav__item .md-nav__container > label.md-nav__link,
+.md-nav__item .md-nav__container > label.md-nav__link:hover {
   background-color: transparent;
-  margin: 0;
+  box-shadow: none;
   padding: 0;
 }
 
@@ -304,10 +459,10 @@ body {
   flex: 1;
 }
 
-/* The pencil a stub carries, from the "status" metadata; the theme has no icon for a status of our own
-   and falls back to an information circle, which says the opposite of what a stub is. */
+/* The pencil a stub carries, from the "status" metadata, drawn from the brand's edit icon: the theme has no
+   icon for a status of our own and falls back to an information circle, which says the opposite. */
 :root {
-  --md-status--draft: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>');
+  --md-status--draft: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter"><path d="M4 20V16L16 4L20 8L8 20Z"/><path d="M13 7L17 11"/></svg>');
 }
 
 .md-status--draft::after {
@@ -316,7 +471,7 @@ body {
 }
 
 .md-status::after {
-  opacity: 0.5;
+  opacity: 0.72;
 }
 
 /* ---------------------------------------------------------------- Content */
@@ -325,113 +480,130 @@ body {
   padding-bottom: 2rem;
 }
 
+/* The column is centred, and keeps a gutter of 0.8rem when the screen is narrower than the column. */
 @media screen and (min-width: 60em) {
   .md-content__inner {
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: max(0.8rem, calc((100% - var(--bf-content-width)) / 2));
+    margin-right: max(0.8rem, calc((100% - var(--bf-content-width)) / 2));
     max-width: var(--bf-content-width);
   }
 }
 
 .md-typeset {
-  color: var(--bf-fg);
+  color: var(--bf-text);
   font-size: 0.8rem;
-  line-height: 1.72;
+  line-height: 1.65;
 }
 
-/* The serif is the voice of the thing: titles only, never a paragraph, never a label. */
-.md-typeset h1,
-.md-typeset h2 {
-  color: var(--bf-fg);
-  font-family: var(--bf-serif);
+.md-typeset strong {
+  font-weight: 600;
+}
+
+/* Headings: Chakra Petch 600, sentence case, flush left, on the type scale of the guidelines. */
+.md-typeset :is(h1, h2, h3, h4) {
+  color: var(--bf-text);
+  font-family: var(--bf-font-heading);
   font-weight: 600;
 }
 
 .md-typeset h1 {
-  font-size: 2.1rem;
-  letter-spacing: -0.012em;
-  line-height: 1.2;
-  margin-bottom: 0.9rem;
+  font-size: 2.3rem;
+  letter-spacing: -0.01em;
+  line-height: 1.04;
+  margin-bottom: 1rem;
 }
 
 .md-typeset h2 {
-  border-top: 1px solid var(--bf-border);
-  font-size: 1.45rem;
-  letter-spacing: -0.008em;
-  line-height: 1.3;
+  border-top: var(--bf-rule) solid var(--bf-text);
+  font-size: 1.3rem;
+  line-height: 1.1;
   margin-top: 2.6rem;
-  padding-top: 1.7rem;
+  padding-top: 1.4rem;
 }
 
 .md-typeset h3 {
-  font-size: 1.02rem;
-  font-weight: 650;
-  letter-spacing: -0.004em;
-  margin-top: 1.7rem;
+  font-size: 1.1rem;
+  line-height: 1.15;
+  margin-top: 1.8rem;
 }
 
 .md-typeset h4 {
-  font-size: 0.88rem;
-  font-weight: 650;
-  margin-top: 1.2rem;
+  font-size: 0.95rem;
+  line-height: 1.15;
+  margin-top: 1.4rem;
+}
+
+.md-typeset .headerlink {
+  font-family: var(--bf-font-mono);
 }
 
 .md-typeset a {
-  text-decoration-color: var(--bf-brass-soft);
+  text-decoration: underline;
+  text-decoration-color: var(--bf-divider);
+  text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
 }
 
 .md-typeset a:hover {
+  color: var(--bf-accent-text);
   text-decoration-color: currentcolor;
 }
 
+.md-typeset :is(.headerlink, .md-button),
+.md-typeset .grid.cards a,
+.md-typeset .footnote-backref {
+  text-decoration: none;
+}
+
 .md-typeset hr {
-  border-bottom-color: var(--bf-border);
+  border-bottom: var(--bf-rule) solid var(--bf-hairline);
 }
 
 .md-typeset blockquote {
-  border-left: 3px solid var(--bf-brass-bright);
-  color: var(--bf-fg-muted);
+  border-left: var(--bf-rule) solid var(--bf-accent);
+  color: var(--bf-muted);
 }
 
 .md-source-file,
 .md-typeset .md-source-file__fact {
-  color: var(--bf-fg-faint);
-  font-size: 0.64rem;
+  color: var(--bf-muted);
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+}
+
+.md-typeset kbd {
+  border-radius: 0;
+  box-shadow: 0 var(--bf-rule) 0 var(--bf-divider);
+  font-family: var(--bf-font-mono);
 }
 
 /* ---------------------------------------------------------------- Code */
 
+/* Martian Mono for every command, option and path, 87.5 % wide. */
+.md-typeset :is(code, kbd, pre) {
+  font-stretch: 87.5%;
+}
+
 .md-typeset code {
-  background-color: var(--bf-bg-soft);
-  border: 1px solid var(--bf-border);
-  border-radius: 4px;
-  font-size: 0.84em;
-  padding: 0.05em 0.33em;
+  background-color: var(--bf-surface);
+  border-radius: 0;
+  font-size: 0.85em;
+  padding: 0.05em 0.35em;
 }
 
 .md-typeset pre > code {
-  border: 0;
-  padding: 0.77rem 1rem;
+  padding: 0.8rem 1rem;
 }
 
-/* A code span that is a link reads as a link; the theme would paint it with the colours of the header. */
 .md-typeset a code {
-  background-color: var(--bf-brass-soft);
-  border-color: transparent;
-  color: var(--bf-brass);
+  background-color: var(--bf-accent-soft);
+  color: var(--bf-accent-text);
 }
 
-.md-typeset a:hover code {
-  background-color: var(--bf-brass-soft);
-  color: var(--bf-brass-strong);
-}
-
+/* A block is a panel of surface, cut at 9 px. */
 .md-typeset .highlight,
 .md-typeset .highlighttable {
-  border: 1px solid var(--bf-border);
-  border-radius: var(--bf-radius);
-  overflow: hidden;
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-tag)) 0, 100% var(--bf-cut-tag), 100% 100%, var(--bf-cut-tag) 100%, 0 calc(100% - var(--bf-cut-tag)));
 }
 
 .md-typeset pre {
@@ -440,50 +612,123 @@ body {
 
 .md-typeset .highlight > pre > code,
 .md-typeset .highlighttable code {
-  font-size: 0.72rem;
-  line-height: 1.65;
+  font-size: 0.7rem;
+  line-height: 1.7;
 }
 
-/* The filename of a block, the tab above the code, marked with the brass. */
+/* The filename of a block, as a label above the code. */
 .md-typeset .highlight span.filename {
-  background-color: var(--bf-bg-soft);
-  border-bottom: 1px solid var(--bf-border);
-  box-shadow: inset 2px 0 0 var(--bf-brass-bright);
-  color: var(--bf-fg-muted);
-  font-family: var(--md-code-font-family);
-  font-size: 0.68rem;
+  background-color: var(--bf-surface);
+  border-bottom: var(--bf-rule) solid var(--bf-hairline);
+  border-radius: 0;
+  color: var(--bf-muted);
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+  font-stretch: 87.5%;
   font-weight: 500;
-  padding: 0.4rem 0.8rem;
+  letter-spacing: 0.04em;
+  padding: 0.45rem 1rem;
 }
 
-.md-clipboard {
-  color: var(--bf-fg-faint);
+/* Every command can be copied, so the button shows before the pointer reaches it, with the brand's icon. */
+:root {
+  --md-code-copy-icon: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23000" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter"><rect x="8" y="8" width="13" height="13"/><path d="M16 8V3H3V16H8"/></svg>');
 }
 
-.md-clipboard:hover {
-  color: var(--bf-brass);
+.md-code__nav,
+:hover > .md-code__nav {
+  background-color: transparent;
+  border-radius: 0;
 }
 
-.md-typeset .tabbed-set > input:checked + label {
-  border-color: var(--bf-brass-bright);
-  color: var(--bf-brass);
+.md-code__button,
+:hover > * > .md-code__button {
+  color: var(--bf-muted);
+}
+
+.md-code__button.focus-visible,
+.md-code__button:hover {
+  color: var(--bf-accent-text);
+}
+
+/* Tabs: the label of the one chosen in accent text, over a 2 px ultramarine rule. */
+.md-typeset .tabbed-labels {
+  box-shadow: 0 -2px var(--bf-hairline) inset;
 }
 
 .md-typeset .tabbed-labels > label {
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
-/* ---------------------------------------------------------------- Hints */
+.md-typeset .tabbed-set > input:checked + label,
+.md-typeset .tabbed-labels > label:hover {
+  color: var(--bf-accent-text);
+}
 
+.md-typeset .tabbed-labels::before {
+  background: var(--bf-accent);
+  height: var(--bf-rule);
+}
+
+/* ---------------------------------------------------------------- Notes */
+
+/*
+ * Three notes, each with its word: Note in ultramarine, Warning in ink, Danger in error red. The word is a
+ * tag cut at 9 px above the title, so a colour never carries the meaning alone.
+ */
 .md-typeset .admonition,
 .md-typeset details {
-  border: 1px solid var(--bf-border);
-  border-left-width: 3px;
-  border-radius: var(--bf-radius);
+  --bf-note: var(--bf-accent);
+  --bf-note-on: var(--bf-on-accent);
+  --bf-note-fill: var(--bf-accent-soft);
+  --bf-note-word: "Note";
+
+  background-color: var(--bf-note-fill);
+  border: 0;
+  border-left: var(--bf-rule) solid var(--bf-note);
+  border-radius: 0;
   box-shadow: none;
-  font-size: 0.76rem;
-  padding: 0.1rem 0.75rem;
+  font-size: 0.775rem;
+  padding: 0.75rem 1rem 0.1rem;
+}
+
+.md-typeset :is(.admonition, details):is(.warning, .caution, .attention) {
+  --bf-note: var(--bf-text);
+  --bf-note-on: var(--bf-bg);
+  --bf-note-fill: var(--bf-surface);
+  --bf-note-word: "Warning";
+}
+
+.md-typeset :is(.admonition, details):is(.danger, .error, .failure, .fail, .missing, .bug) {
+  --bf-note: var(--beffroi-error);
+  --bf-note-on: var(--bf-on-error);
+  --bf-note-fill: var(--bf-surface);
+  --bf-note-word: "Danger";
+}
+
+/* The theme paints each type in a colour of its own, and lights it on focus; every type takes the colour of
+   its word instead, and nothing glows. */
+.md-typeset :is(.admonition, details):is(.note, .abstract, .summary, .tldr, .info, .todo, .tip, .hint, .important, .success, .check, .done, .question, .help, .faq, .warning, .caution, .attention, .failure, .fail, .missing, .danger, .error, .bug, .example, .quote, .cite),
+.md-typeset :is(.admonition, details):is(.note, .abstract, .summary, .tldr, .info, .todo, .tip, .hint, .important, .success, .check, .done, .question, .help, .faq, .warning, .caution, .attention, .failure, .fail, .missing, .danger, .error, .bug, .example, .quote, .cite):focus-within {
+  border-color: var(--bf-note);
+  box-shadow: none;
+}
+
+.md-typeset .admonition::before,
+.md-typeset details::before {
+  background-color: var(--bf-note);
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-tag)) 0, 100% var(--bf-cut-tag), 100% 100%, var(--bf-cut-tag) 100%, 0 calc(100% - var(--bf-cut-tag)));
+  color: var(--bf-note-on);
+  content: var(--bf-note-word);
+  display: inline-block;
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 0.3rem 0.8rem 0.3rem 0.5rem;
+  text-transform: uppercase;
 }
 
 .md-typeset .admonition-title,
@@ -491,87 +736,50 @@ body {
   background-color: transparent !important;
   border: 0;
   border-radius: 0;
-  font-weight: 650;
-  margin: 0.55rem 0 0.1rem;
-  padding: 0 0 0 1.5rem;
+  font-weight: 600;
+  margin: 0.45rem 0 0.1rem;
 }
 
+[dir] .md-typeset :is(.admonition-title, summary) {
+  padding: 0;
+}
+
+/* The word says what the icon of the theme would have said. */
 .md-typeset .admonition-title::before,
-.md-typeset summary::before {
-  left: 0;
-  top: 0.18rem;
+.md-typeset :is(.admonition, details) > summary::before {
+  display: none;
+}
+
+[dir] .md-typeset details > summary {
+  padding-right: 1.6rem;
 }
 
 .md-typeset .admonition > :last-child,
 .md-typeset details > :last-child {
-  margin-bottom: 0.6rem;
-}
-
-/* What tells something is painted with the brass; what warns is kept well away from it. */
-.md-typeset .admonition:is(.note, .abstract, .info, .tip),
-.md-typeset details:is(.note, .abstract, .info, .tip) {
-  background-color: var(--bf-brass-soft);
-  border-color: var(--bf-border);
-  border-left-color: var(--bf-brass-bright);
-}
-
-.md-typeset .admonition:is(.note, .abstract, .info, .tip) > .admonition-title::before,
-.md-typeset details:is(.note, .abstract, .info, .tip) > summary::before {
-  background-color: var(--bf-brass);
-}
-
-.md-typeset .admonition:is(.warning, .caution),
-.md-typeset details:is(.warning, .caution) {
-  background-color: rgba(194, 65, 12, 0.08);
-  border-color: var(--bf-border);
-  border-left-color: #c2410c;
-}
-
-.md-typeset .admonition:is(.warning, .caution) > .admonition-title::before,
-.md-typeset details:is(.warning, .caution) > summary::before {
-  background-color: #c2410c;
-}
-
-.md-typeset .admonition:is(.danger, .failure, .bug),
-.md-typeset details:is(.danger, .failure, .bug) {
-  background-color: rgba(179, 38, 30, 0.08);
-  border-color: var(--bf-border);
-  border-left-color: #b3261e;
-}
-
-.md-typeset .admonition:is(.danger, .failure, .bug) > .admonition-title::before,
-.md-typeset details:is(.danger, .failure, .bug) > summary::before {
-  background-color: #b3261e;
-}
-
-.md-typeset .admonition:is(.success, .check),
-.md-typeset details:is(.success, .check) {
-  background-color: rgba(22, 101, 52, 0.08);
-  border-color: var(--bf-border);
-  border-left-color: #166534;
-}
-
-.md-typeset .admonition:is(.success, .check) > .admonition-title::before,
-.md-typeset details:is(.success, .check) > summary::before {
-  background-color: #166534;
+  margin-bottom: 0.75rem;
 }
 
 /* ---------------------------------------------------------------- Tables */
 
 .md-typeset table:not([class]) {
-  border: 1px solid var(--bf-border);
-  border-radius: var(--bf-radius);
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
   box-shadow: none;
   display: table;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   width: 100%;
 }
 
 .md-typeset table:not([class]) th {
-  background-color: var(--bf-bg-soft);
-  border-bottom: 2px solid var(--bf-brass-bright);
-  color: var(--bf-fg);
-  font-weight: 650;
+  background-color: transparent;
+  border-bottom: var(--bf-rule) solid var(--bf-text);
+  color: var(--bf-muted);
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 /* A column is as wide as the token it holds: the theme breaks a code span anywhere it fits, which cuts
@@ -581,8 +789,9 @@ body {
 }
 
 .md-typeset table:not([class]) :is(th, td) {
-  border-bottom: 1px solid var(--bf-border);
-  padding: 0.55rem 0.8rem;
+  border-top: 0;
+  border-bottom: 1px solid var(--bf-divider);
+  padding: 0.55rem 0.8rem 0.55rem 0;
 }
 
 .md-typeset table:not([class]) tr:last-child td {
@@ -590,44 +799,74 @@ body {
 }
 
 .md-typeset table:not([class]) tbody tr:hover {
-  background-color: var(--bf-bg-soft);
+  background-color: transparent;
+  box-shadow: none;
 }
 
-/* ---------------------------------------------------------------- Buttons and footer */
+/* ---------------------------------------------------------------- Buttons */
 
+/*
+ * Buttons in Chakra Petch, cut at 12 px. The primary one is ultramarine. A bordered one is two layers, so
+ * the border keeps its weight along the diagonal: the button cut in the colour of the border, and its
+ * ground 2 px in, cut 1 px less.
+ */
 .md-typeset .md-button {
-  border-radius: var(--bf-radius-sm);
-  border-width: 1px;
-  font-size: 0.75rem;
-  font-weight: 550;
-  padding: 0.45rem 1rem;
+  --bf-button-border: var(--bf-text);
+  --bf-button-ground: var(--bf-bg);
+
+  background-color: var(--bf-button-border);
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-button)) 0, 100% var(--bf-cut-button), 100% 100%, var(--bf-cut-button) 100%, 0 calc(100% - var(--bf-cut-button)));
+  color: var(--bf-text);
+  font-family: var(--bf-font-heading);
+  font-size: 0.8rem;
+  font-weight: 600;
+  isolation: isolate;
+  padding: 0.55rem 1.3rem;
+  position: relative;
+  transition: none;
+}
+
+.md-typeset .md-button::before {
+  background-color: var(--bf-button-ground);
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-button) + 1px) 0, 100% calc(var(--bf-cut-button) - 1px), 100% 100%, calc(var(--bf-cut-button) - 1px) 100%, 0 calc(100% - var(--bf-cut-button) + 1px));
+  content: "";
+  inset: var(--bf-rule);
+  position: absolute;
+  z-index: -1;
+}
+
+.md-typeset .md-button:is(:hover, :focus) {
+  --bf-button-ground: var(--bf-surface);
+
+  background-color: var(--bf-button-border);
+  border-color: transparent;
+  color: var(--bf-text);
 }
 
 .md-typeset .md-button--primary,
-.md-typeset .md-button--primary:hover {
-  background-color: var(--bf-brass);
-  border-color: var(--bf-brass);
-  color: var(--bf-on-brass);
+.md-typeset .md-button--primary:is(:hover, :focus) {
+  --bf-button-border: var(--bf-accent);
+  --bf-button-ground: var(--bf-accent);
+
+  color: var(--bf-on-accent);
 }
 
-.md-typeset .md-button--primary:hover {
-  background-color: var(--bf-brass-strong);
-  border-color: var(--bf-brass-strong);
+.md-typeset .md-button--primary:is(:hover, :focus) {
+  --bf-button-border: var(--bf-accent-hover);
+  --bf-button-ground: var(--bf-accent-hover);
 }
 
-.md-typeset .md-button:not(.md-button--primary) {
-  border-color: var(--bf-border-strong);
-  color: var(--bf-fg);
+.md-typeset .md-button--primary:active {
+  --bf-button-border: var(--beffroi-accent-ink);
+  --bf-button-ground: var(--beffroi-accent-ink);
 }
 
-.md-typeset .md-button:not(.md-button--primary):hover {
-  background-color: var(--bf-bg-soft);
-  border-color: var(--bf-brass-bright);
-  color: var(--bf-fg);
-}
+/* ---------------------------------------------------------------- Footer */
 
 .md-footer {
-  border-top: 1px solid var(--bf-border);
+  border-top: var(--bf-rule) solid var(--bf-text);
 }
 
 .md-footer__inner {
@@ -639,36 +878,38 @@ body {
 }
 
 .md-footer__link {
-  border: 1px solid var(--bf-border);
-  border-radius: var(--bf-radius);
   flex: 1;
   margin: 0;
   opacity: 1;
-  padding: 0.6rem 0.8rem;
-  transition: border-color 120ms;
+  padding: 0.6rem 0;
 }
 
-.md-footer__link:hover {
-  border-color: var(--bf-brass-bright);
+.md-footer__link:hover .md-footer__title {
+  color: var(--bf-accent-text);
 }
 
 .md-footer__direction {
-  color: var(--bf-fg-faint);
-  font-size: 0.62rem;
+  color: var(--bf-muted);
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .md-footer__title {
-  font-size: 0.78rem;
-  font-weight: 500;
+  font-family: var(--bf-font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
+/* The meta band is ink in both schemes: paper text, cold light for what is accented. */
 .md-footer-meta {
-  --md-footer-fg-color: var(--bf-slate-fg);
-  --md-footer-fg-color--light: var(--bf-slate-muted);
-  --md-footer-fg-color--lighter: var(--bf-slate-muted);
+  --md-footer-fg-color: var(--beffroi-paper);
+  --md-footer-fg-color--light: rgba(242, 244, 246, 0.72);
+  --md-footer-fg-color--lighter: rgba(242, 244, 246, 0.72);
 
-  background-color: var(--bf-slate);
-  border-top: 2px solid var(--bf-brass-bright);
+  background-color: var(--beffroi-ink);
+  border-top: var(--bf-rule) solid var(--bf-divider);
 }
 
 .md-footer-meta .md-footer-meta__inner {
@@ -679,44 +920,61 @@ body {
 .md-copyright__highlight,
 .md-footer-meta a,
 .md-social__link {
-  color: var(--bf-slate-muted);
-  font-size: 0.62rem;
+  color: rgba(242, 244, 246, 0.72);
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
 }
 
 .md-footer-meta a:hover,
 .md-social__link:hover {
-  color: var(--bf-brass-bright);
+  color: var(--beffroi-cold-light);
 }
 
 /* ---------------------------------------------------------------- The landing page */
 
+/* The hero: the one place the blueprint grid shows, in a panel cut at 18 px. */
 .bf-hero {
-  border-bottom: 1px solid var(--bf-border);
+  background-color: var(--bf-bg);
+  background-image:
+    linear-gradient(var(--bf-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bf-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border-bottom: var(--bf-rule) solid var(--bf-text);
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-hero)) 0, 100% var(--bf-cut-hero), 100% 100%, 0 100%);
   margin-bottom: 2rem;
-  padding: 0.5rem 0 2rem;
+  padding: 1.6rem 0 2rem;
 }
 
-.md-typeset .bf-hero__eyebrow {
-  color: var(--bf-brass);
-  font-size: 0.65rem;
-  font-weight: 650;
-  letter-spacing: 0.14em;
-  margin-bottom: 0.6rem;
+.md-typeset .bf-label {
+  color: var(--bf-muted);
+  font-family: var(--bf-font-mono);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.9rem;
   text-transform: uppercase;
 }
 
-.md-typeset .bf-hero h1 {
-  font-size: 3rem;
-  letter-spacing: -0.022em;
-  line-height: 1.05;
-  margin-bottom: 0.7rem;
+.md-typeset .bf-label::before {
+  background-color: var(--bf-accent);
+  content: "";
+  display: inline-block;
+  height: 8px;
+  margin-right: 6px;
+  width: 8px;
 }
 
-.md-typeset .bf-hero__tagline {
-  color: var(--bf-fg-muted);
-  font-size: 1rem;
+.md-typeset .bf-hero h1 {
+  font-size: 2.7rem;
+  margin-bottom: 0.9rem;
+  max-width: 32rem;
+}
+
+.md-typeset .bf-hero__lead {
+  color: var(--bf-muted);
+  font-size: 0.95rem;
   line-height: 1.6;
-  margin-bottom: 1.4rem;
+  margin-bottom: 1.5rem;
   max-width: 34rem;
 }
 
@@ -724,22 +982,42 @@ body {
   margin-left: 0.4rem;
 }
 
-/* Cards, with the brass showing on the one the pointer is over. */
+/* Cards: field on a 2 px border, cut at 16 px, two layers like a bordered button. */
 .md-typeset .grid.cards > :is(ul, ol) > li,
 .md-typeset .grid > .card {
-  border: 1px solid var(--bf-border);
-  border-radius: var(--bf-radius);
+  --bf-card-border: var(--bf-text);
+
+  background-color: var(--bf-card-border);
+  border: 0;
+  border-radius: 0;
   box-shadow: none;
-  padding: 0.9rem;
-  transition: border-color 120ms, box-shadow 120ms;
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-card)) 0, 100% var(--bf-cut-card), 100% 100%, var(--bf-cut-card) 100%, 0 calc(100% - var(--bf-cut-card)));
+  isolation: isolate;
+  padding: 1rem 1.1rem;
+  position: relative;
+  transition: none;
 }
 
-.md-typeset .grid.cards > :is(ul, ol) > li:hover {
-  border-color: var(--bf-brass-bright);
-  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+.md-typeset .grid.cards > :is(ul, ol) > li::before,
+.md-typeset .grid > .card::before {
+  background-color: var(--bf-field);
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-card) + 1px) 0, 100% calc(var(--bf-cut-card) - 1px), 100% 100%, calc(var(--bf-cut-card) - 1px) 100%, 0 calc(100% - var(--bf-cut-card) + 1px));
+  content: "";
+  inset: var(--bf-rule);
+  position: absolute;
+  z-index: -1;
+}
+
+.md-typeset .grid.cards > :is(ul, ol) > li:hover,
+.md-typeset .grid > .card:hover {
+  --bf-card-border: var(--bf-accent);
+
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .md-typeset .grid.cards > :is(ul, ol) > li > hr {
+  border-bottom: 1px solid var(--bf-divider);
   margin: 0.6rem 0;
 }
 
@@ -747,13 +1025,22 @@ body {
   margin-top: 0;
 }
 
-.md-typeset .grid.cards .twemoji,
-.md-typeset .grid.cards .lg {
-  color: var(--bf-brass-bright);
+.md-typeset .grid.cards .twemoji {
+  --beffroi-icon-accent: var(--bf-accent);
+
+  color: var(--bf-text);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .grid.cards .twemoji {
+  --beffroi-icon-accent: var(--beffroi-cold-light);
 }
 
 .md-typeset .grid.cards > :is(ul, ol) > li > p > strong {
-  font-family: var(--bf-serif);
-  font-size: 0.95rem;
+  font-family: var(--bf-font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.md-typeset .grid.cards > :is(ul, ol) > li a {
   font-weight: 600;
 }

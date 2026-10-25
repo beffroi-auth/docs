@@ -89,4 +89,4 @@ declares what it can do by the interfaces it implements: a credential that can b
 `RevocableCredentialInterface`, one identified at an upstream provider implements
 `ExternallyIdentifiedCredentialInterface`.
 
-[:octicons-arrow-right-24: The ports of the core](ports.md)
+[:beffroi-arrow-right: The ports of the core](ports.md)
