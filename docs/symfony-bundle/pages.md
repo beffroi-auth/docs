@@ -16,4 +16,16 @@ read from the tenant at every render rather than hard-coded in a template, so a 
 none of them is served the pages it has always been served. The logo is loaded by the browser of the
 visitor and never by the provider, and the pages name its origin in their content policy.
 
+**The login page offers what the tenant admits.** It shows the logins the firewall wires that the [floor of the
+tenant](../core/tenants.md#the-floor-of-its-logins) accepts: a tenant that signs its people in by passkey
+shows no password field and no username, the passkey naming its own user. A tenant that federates domains to
+[upstream identity providers](../saml/federated-sign-in.md#the-login-page-asks-for-the-address-first) asks for
+the address first, one field and nothing else, and sends an address of those domains to its provider.
+
+**Two pages post a form for the browser.** One carries a SAML message to a peer, a response to a service
+provider or a request to an upstream identity provider; the other posts again, from the provider's own
+origin, a form another site posted without the session cookie. Both submit themselves with the one script
+their content policy allows by its hash, and keep a button for a browser that runs no script. Their words are
+translated like every other page's.
+
 This page will describe each page, the blocks to override, and what must not be removed from them.

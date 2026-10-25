@@ -15,7 +15,7 @@ one handled like any other write, so a deployment that runs the worker runs them
 | Every | What it does |
 |---|---|
 | minute | Advances the lifecycle of the keys: stages a successor for a key that has worked its age, activates a staged key whose delay has elapsed, retires a key past its date |
-| hour | Drops the clients nobody uses any more, forgets the archives past their week, and drops the rows that can no longer do anything |
+| hour | Drops the clients nobody uses any more, forgets the archives past their week, drops the rows that can no longer do anything, and reads again the metadata of the SAML service providers and upstream identity providers |
 | day | Forgets the acts of the journal past their retention, and the changes of a record past theirs |
 | week | Refreshes the databases of addresses, which is the cadence they are published at |
 

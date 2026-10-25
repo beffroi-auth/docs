@@ -1,17 +1,17 @@
 ---
 title: Beffroi
-description: An identity provider for the Symfony ecosystem. OAuth 2.0 and OpenID Connect first, on a pure-PHP core.
+description: An identity provider for the Symfony ecosystem. OAuth 2.0, OpenID Connect and SAML 2.0, on a pure-PHP core.
 hide:
   - navigation
 ---
 
 <div class="bf-hero" markdown>
 
-<p class="bf-label">OAuth 2.0 · OpenID Connect · PHP 8.4</p>
+<p class="bf-label">OAuth 2.0 · OpenID Connect · SAML 2.0 · PHP 8.4</p>
 
 # The tower that decides who gets in.
 
-<p class="bf-hero__lead">An OpenID Provider for the Symfony ecosystem. On the map of a Symfony application
+<p class="bf-hero__lead">An identity provider for the Symfony ecosystem. On the map of a Symfony application
 the interface is Symfony, the API is API Platform, and the identity provider is always somewhere else.
 Beffroi paints that last box the same colour as the other two.</p>
 
@@ -32,7 +32,7 @@ Beffroi paints that last box the same colour as the other two.</p>
 
     ---
 
-    What Beffroi is, what it refuses to do, and the shape of the three packages.
+    What Beffroi is, what it refuses to do, and the packages it is made of.
 
     [:beffroi-arrow-right: What is Beffroi?](the-project/what-is-beffroi.md)
 
@@ -60,6 +60,15 @@ Beffroi paints that last box the same colour as the other two.</p>
 
     [:beffroi-arrow-right: OAuth 2.0 and OpenID Connect](oidc/index.md)
 
+-   :beffroi-federation:{ .lg .middle } **Speak SAML**
+
+    ---
+
+    The identity provider of the applications that speak SAML 2.0, and the service provider of the identity
+    provider of an organisation.
+
+    [:beffroi-arrow-right: SAML 2.0](saml/index.md)
+
 </div>
 
 ## What it is made of
@@ -68,7 +77,11 @@ Beffroi paints that last box the same colour as the other two.</p>
 |---|---|---|
 | [`beffroi/core`](core/index.md) | Tenants, users, credentials, linked identities, groups, authentication sessions, keys. Pure PHP, no protocol, no HTTP, no Doctrine | PHP, PSR interfaces, a handful of libraries |
 | [`beffroi/oidc`](oidc/index.md) | OAuth 2.0 and OpenID Connect: clients, authorization requests, grants, tokens, discovery, JWKS, UserInfo, logout. Pure PHP | `beffroi/core` |
-| [`beffroi/symfony-bundle`](symfony-bundle/index.md) | The Symfony integration: configuration, controllers, security, persistence, login and consent pages | both, plus Symfony |
+| [`beffroi/saml`](saml/index.md) | SAML 2.0: the identity provider and the service provider of a tenant, their metadata, single logout on the session of the core. Pure PHP | `beffroi/core` and the three packages below |
+| [`beffroi/saml2-model`](saml/packages.md#saml2-model) | The SAML 2.0 messages, assertions and metadata, read strictly, validated and written. No HTTP | `beffroi/xml-security` |
+| [`beffroi/saml2-bindings`](saml/packages.md#saml2-bindings) | The HTTP-Redirect and HTTP-POST bindings, on strings and arrays | `beffroi/saml2-model` |
+| [`beffroi/xml-security`](saml/packages.md#xml-security) | A safe DOM, XML Signature and XML Encryption | PHP and its XML extensions |
+| [`beffroi/symfony-bundle`](symfony-bundle/index.md) | The Symfony integration: configuration, controllers, security, persistence, login and consent pages | the core and both protocols, plus Symfony |
 | [`beffroi/op`](application/index.md) | The standalone application, on FrankenPHP. The recommended deployment | the bundle |
 
 ## What it will not do

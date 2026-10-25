@@ -1,5 +1,5 @@
 site_name: Beffroi
-site_description: An identity provider for the Symfony ecosystem. OAuth 2.0 and OpenID Connect first, on a pure-PHP core.
+site_description: An identity provider for the Symfony ecosystem. OAuth 2.0, OpenID Connect and SAML 2.0, on a pure-PHP core.
 site_url: https://beffroi-auth.github.io/docs/
 site_author: The Beffroi contributors
 copyright: Released under the MIT licence
@@ -210,6 +210,16 @@ nav:
       - oidc/pairwise-subjects.md
       - oidc/errors.md
       - oidc/ports.md
+  - SAML 2.0:
+      - saml/index.md
+      - saml/identity-provider.md
+      - saml/service-providers.md
+      - saml/single-sign-on.md
+      - saml/single-logout.md
+      - saml/upstream-identity-providers.md
+      - saml/federated-sign-in.md
+      - saml/microsoft-entra-id.md
+      - saml/packages.md
   - The Symfony bundle:
       - symfony-bundle/index.md
       - symfony-bundle/installation.md
@@ -233,8 +243,6 @@ nav:
       - application/observability.md
   - SCIM:
       - scim/index.md
-  - SAML 2.0:
-      - saml/index.md
   - Reference:
       - reference/endpoints.md
       - reference/configuration.md

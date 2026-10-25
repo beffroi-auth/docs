@@ -7,7 +7,7 @@ description: What beffroi/symfony-bundle adds to an application: configuration, 
 
 `beffroi/symfony-bundle` is the only place in Beffroi where Symfony appears. A `Request`, the container, the
 entity manager, a Twig template and a console command live here and nowhere else, which is what keeps the
-two packages underneath usable without a framework.
+packages underneath usable without a framework.
 
 ## What it brings
 
@@ -22,7 +22,7 @@ two packages underneath usable without a framework.
 | [Translations](translations.md) | Every user-facing string, in XLIFF, and how a page decides which language it speaks |
 | [Messenger](messenger.md) | Which writes are asynchronous, and which ones the protocol waits for |
 | [The account pages](account.md) | What a person sees of themselves, and what they can take back |
-| [Console commands](console-commands.md) | Tenant, users, clients, keys, data keys, FIDO metadata |
+| [Console commands](console-commands.md) | Tenant, users, groups, clients, keys, data keys, SAML metadata, FIDO metadata |
 | [The profiler panel](profiler.md) | What the provider did during a request, in the Symfony profiler |
 
 ## Installing it

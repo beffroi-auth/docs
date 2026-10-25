@@ -15,8 +15,10 @@ destroying them is the one operation that cannot be undone.
 
 The same rule holds past the database. The body of every message the provider writes to a transport is
 sealed as well, so a broker or the table of a transport holds nothing readable, and the journal of the
-acts, what a record used to say and the archive a person asks for are sealed where they sit like every
-other column of a person.
+acts, what a client was given at each of them, what a record used to say and the archive a person asks for
+are sealed where they sit like every other column of a person. So is the source of a person, which says
+which organisation they belong to, and so are the metadata accepted for a SAML peer, whose contacts name
+people.
 
 **The archive is the one file in which all of it stands in clear at once**, so it is held by rules rather
 than by settings: it is sealed at rest in a scope of its own, it expires a week after it was asked for,

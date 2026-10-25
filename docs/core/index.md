@@ -26,7 +26,8 @@ rather than borrowed from whatever application hosts it.
 
     ---
 
-    A person, their username, their standard claims, and the subject identifier clients know them by.
+    A person, their username, their standard claims, the source that created them, and the subject
+    identifier clients know them by.
 
 -   **[Credentials](credentials/index.md)**
 
@@ -44,7 +45,8 @@ rather than borrowed from whatever application hosts it.
 
     ---
 
-    Membership, and where each membership came from: declared here, or pushed by a directory.
+    Membership, and where each membership came from: declared here, asserted by an upstream provider, or
+    pushed by a directory.
 
 -   **[Linked identities](linked-identities.md)**
 
