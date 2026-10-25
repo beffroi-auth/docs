@@ -4642,18 +4642,18 @@ code. There is no <code>insecure_</code> setting, no compatibility mode, and no 
 </tr>
 <tr>
 <td>Every end of a session revokes what was issued under it</td>
-<td>However a session ends, at the end session endpoint, from the account, by the console or by a SAML logout, its refresh tokens are revoked and its opaque access tokens removed. A session closed because it was feared leaves nothing working behind it</td>
+<td>However a session ends, at the end session endpoint, from the account, by the console or by a SAML logout, its refresh tokens are revoked, its opaque access tokens removed, and the provider refuses every token of it from then on. What a resource server verifies offline, a self-contained access token, lasts until it expires, which is why it lives ten minutes by default</td>
 </tr>
 <tr>
-<td>A form posted from another site is posted again from the provider's own origin, and never answered with a session cookie</td>
-<td>Under <code>SameSite=Lax</code> a cross-site <code>POST</code> arrives without the session. Answered with a new cookie, it would sign the browser out of the provider; posted again, it reaches the session the browser holds</td>
+<td>A form another site posts a browser to the provider with is posted again from the provider's own origin, and a post from another site is never answered with a new session cookie</td>
+<td>Under <code>SameSite=Lax</code> a cross-site <code>POST</code> arrives without the session. Answered with a new cookie, it would sign the browser out of the provider; posted again, it reaches the session the browser holds. Both rules read where the post comes from in <code>Sec-Fetch-Site</code>, and a browser that does not send it is answered as it always was</td>
 </tr>
 <tr>
 <td>A person of a domain an upstream identity provider answers for signs in there and nowhere else</td>
 <td>A local password would outlive the person's departure from the directory of their organisation, so none is posed for them and none is accepted from them</td>
 </tr>
 <tr>
-<td>In SAML, every assertion is signed, SHA-1 is refused, nothing is encrypted in CBC, and no response is taken that nobody asked for</td>
+<td>In SAML, every assertion the provider writes is signed, no signature under SHA-1 is accepted, nothing is encrypted in CBC, and no response is taken that nobody asked for</td>
 <td><a href="../../saml/#what-is-always-true">SAML 2.0</a> gives the whole list, and why each rule is there</td>
 </tr>
 </tbody>
@@ -4733,7 +4733,7 @@ on pages of the interaction plane, none of which is on that list.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:41:32 UTC">October 25, 2026</span>
   </span>
 
     

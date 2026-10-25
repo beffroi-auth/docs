@@ -4832,7 +4832,7 @@ titles below are the ones the English catalogue carries.</p>
 <tr>
 <td>What happened to your account</td>
 <td><code>/account/acts</code></td>
-<td>Every act the provider wrote down in their name: who signed in as them and with what, the attempts that were refused, what signed out and what changed of the account. Its card counts the refused attempts among the last twenty acts, since a failure is what somebody comes to look for</td>
+<td>What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the means of signing in and what they did of their own record. Its card counts the refused attempts the journal holds, twenty at most, since a failure is what somebody comes to look for</td>
 </tr>
 <tr>
 <td>Notifications</td>
@@ -4868,7 +4868,9 @@ was later found to hold. The lookup happens after a login, on a lane, at most on
 no sign-in waits on somebody else's service, and the answer outlives the request that noticed it.</p>
 <p>So the person is not left to find it: the next login that serves no authorization request sends them to this
 page, which says why, before the page they were going to, and asks again at every such login until the
-password is replaced. A login a client is waiting on is interrupted by nothing.</p>
+password is replaced. A login that answers an authorization request of OpenID Connect is not diverted; the
+logins a page of the provider asks for are, the pages of the account, the approval of a device or of a
+backchannel request, and the single sign-on of a SAML service provider among them.</p>
 <p>A password posed here is typed twice and the two are compared in constant time, and the counter beside the
 field is local to the browser: what the page says of a password as it is typed asks nobody anything, and a
 password is never sent anywhere to be scored. The length it asks for is the one the floor of the tenant
@@ -5050,7 +5052,7 @@ are a fault of the wiring, and they are refused as such.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:41:32 UTC">October 25, 2026</span>
   </span>
 
     

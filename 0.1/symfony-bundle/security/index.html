@@ -4444,8 +4444,9 @@
 <p>The bundle brings its own authenticators for the interaction plane and expects nothing of the host
 application's security configuration beyond a firewall to put them on. The provider's session is its own: it
 records what was proven, and it is not the host application's login session.</p>
-<p>The standalone application declares two firewalls: the protocol endpoints, which authenticate their clients
-themselves and open no session, and the interaction pages, where the logins of the provider live.</p>
+<p>Besides the one of its development tools, the standalone application declares two firewalls: the protocol
+endpoints, which authenticate their clients themselves and open no session, and the interaction pages, where
+the logins of the provider live.</p>
 <div class="language-yaml highlight"><span class="filename">config/packages/security.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">security</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">providers</span><span class="p">:</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">beffroi</span><span class="p">:</span>
@@ -4467,14 +4468,17 @@ themselves and open no session, and the interaction pages, where the logins of t
 </span></code></pre></div>
 <p>Each authenticator is one way in: a password, a passkey, the code of a second factor, and the assertion an
 <a href="../../saml/federated-sign-in/">upstream SAML identity provider</a> posts to the assertion consumer service. Every
-one of them ends in the same place, the core opening or refreshing the session under the floor of the
-tenant, so the order of a login is written once whichever door it came through.</p>
-<p><strong>A post from another site never sets a session cookie.</strong> Under <code>SameSite=Lax</code> a browser keeps the session
-cookie back from a <code>POST</code> that comes from another site. A page of the interaction plane answering such a post
-with the cookie of a new session would replace the one the browser holds and sign it out of the provider, so
-that cookie is taken off the answer. The four endpoints another site posts a browser to on purpose, the
-authorization endpoint, the end session endpoint and the SAML single sign-on and single logout services, post
-the request again from the provider's own origin instead, and the second post carries the session.</p>
+one of them ends in the same place: the core opens the session under the floor of the tenant, or records the
+new proofs on the session the browser already holds for that person, so the order of a login is written once
+whichever door it came through.</p>
+<p><strong>A post from another site sets no session cookie.</strong> Under <code>SameSite=Lax</code> a browser keeps the session cookie
+back from a <code>POST</code> that comes from another site. A page of the interaction plane answering such a post with the
+cookie of a new session would replace the one the browser holds and sign it out of the provider, so that
+cookie is taken off the answer. The five endpoints another site posts a browser to on purpose, the
+authorization endpoint, the end session endpoint, the SAML single sign-on and single logout services and the
+assertion consumer service, post the request again from the provider's own origin instead, and the second
+post carries the session. Both read where the post comes from in <code>Sec-Fetch-Site</code> (Fetch Metadata Request
+Headers): a browser that does not send it is answered as it always was.</p>
 <p>This page will describe the authenticators in full, and the rate limits that apply.</p>
 
 
@@ -4496,7 +4500,7 @@ the request again from the provider's own origin instead, and the second post ca
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:41:32 UTC">October 25, 2026</span>
   </span>
 
     

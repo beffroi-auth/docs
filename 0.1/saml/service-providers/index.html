@@ -4682,8 +4682,9 @@ names the rule it broke and never a value of the document. A timed step does the
 service providers and the <a href="../upstream-identity-providers/">upstream identity providers</a> alike, and writes a
 refusal to the log as an error: the refused document comes back at every hour while the accepted one goes
 on serving, which is something an operator wants to be alerted on.</p>
-<p><strong>How they are fetched.</strong> A file is read whole. A URL is fetched with one <code>GET</code>, no redirect followed, ten
-seconds at most, any status but <code>2xx</code> refused, and the body refused as soon as it passes one mebibyte.</p>
+<p><strong>How they are fetched.</strong> A URL is fetched with one <code>GET</code>, no redirect followed, ten seconds at most, and any
+status but <code>2xx</code> refused. A file or a body is refused as soon as it passes one mebibyte, which no metadata
+the loader accepts reaches.</p>
 <p><strong>What is refused</strong>, at the first reading as at every refresh, the accepted document being kept each time:</p>
 <ul>
 <li>a document whose entity ID is not the declared one, or that holds no <code>md:SPSSODescriptor</code> of SAML 2.0;</li>
@@ -4695,8 +4696,9 @@ seconds at most, any status but <code>2xx</code> refused, and the body refused a
 <li>a document read under pinned signers that carries no <code>validUntil</code>, or whose <code>validUntil</code> is earlier than
   the one of the document already accepted.</li>
 </ul>
-<p>Endpoints on other bindings than HTTP-Redirect and HTTP-POST are dropped, and the other role descriptors
-skipped, so that the metadata of a real deployment load.</p>
+<p>Endpoints on other bindings than HTTP-Redirect and HTTP-POST are dropped, an assertion consumer service on
+anything but HTTP-POST too, since no other binding the provider sends over can carry a response, and the
+other role descriptors are skipped, so that the metadata of a real deployment load.</p>
 <p><strong>Signed metadata never go back.</strong> An older document signed by the same key verifies as well as the newer
 one, so under pinned signers a document older than the accepted one is refused, which is the rollback the
 signature cannot catch by itself. Metadata trusted by their channel follow the channel instead: the next
@@ -4834,7 +4836,7 @@ refused before anybody signs in, and nothing is sent in clear.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:41:32 UTC">October 25, 2026</span>
   </span>
 
     

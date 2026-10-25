@@ -4784,8 +4784,9 @@ metadata:</p>
 <li><strong>Every signature carries the certificate.</strong> A response whose signatures carry no <code>KeyInfo</code> is refused by
   Entra with <code>AADSTS5000810: Unable to verify token signature. Signing key identifier is missing.</code></li>
 <li><strong>The <code>Conditions</code> carry a <code>NotBefore</code>.</strong> An assertion without one is refused with <code>AADSTS500089</code>.</li>
-<li><strong>The certificate expires.</strong> A certificate dated to the year 9999 is refused by the portal; the one around
-  the SAML key is valid ten years.</li>
+<li><strong>The certificate expires.</strong> The portal refused a certificate valid until the year 9999, written in
+  <code>GeneralizedTime</code>, whether for the date or for its encoding; the one around the SAML key is valid ten years,
+  written in <code>UTCTime</code>.</li>
 <li><strong>The request is posted from Entra's site, unsigned</strong>, with a <code>RelayState</code> of several hundred bytes: it is
   posted again from the provider's own origin, so the session cookie comes with it, and its <code>RelayState</code> is
   given back as it came.</li>
@@ -4866,7 +4867,7 @@ through and <code>metadata_signers</code> stays empty. A certificate rolled over
 </tr>
 <tr>
 <td><code>subject_attribute</code></td>
-<td>The request asks for a persistent <code>NameID</code>, which Entra answers with an identifier of the person for this application. Should the application send an address as its <code>NameID</code> instead, the object ID of the user, which Entra always sends and never changes, names the person</td>
+<td>The request asks for a persistent <code>NameID</code>, which Entra answers with an identifier of the person for this application: that is the subject. Should the application be set to send its <code>NameID</code> in another format, the e-mail address its portal offers among them, the object ID of the user, a value that does not change, names the person instead. A persistent <code>NameID</code> whose value is the address of the person is refused</td>
 </tr>
 <tr>
 <td><code>groups</code></td>
@@ -4902,7 +4903,7 @@ through and <code>metadata_signers</code> stays empty. A certificate rolled over
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:41:32 UTC">October 25, 2026</span>
   </span>
 
     

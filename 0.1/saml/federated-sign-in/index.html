@@ -4653,7 +4653,7 @@ upstream identity provider shows the usual page.</p>
 <tbody>
 <tr>
 <td>An address of a domain an identity provider answers for</td>
-<td>To that identity provider, by a <code>303</code></td>
+<td>To the sign-on of that identity provider, <code>/saml/sp/sign-on</code>, by a <code>303</code>, which sends it on to the provider</td>
 </tr>
 <tr>
 <td>An address of any other domain</td>
@@ -4725,9 +4725,11 @@ login of a person who did not ask for one and have it answered by a session held
 </tr>
 </tbody>
 </table>
-<p><code>ForceAuthn</code> follows what the login page itself would ask: <code>prompt=login</code>, a <code>max_age</code> the session of the
-browser exceeds, a step-up, <code>prompt=select_account</code>, an <code>id_token_hint</code> naming another person. Without it, a
-session the person left open at their identity provider would answer a client that asked for a fresh login.</p>
+<p><code>ForceAuthn</code> follows what the login page itself would ask of a browser that holds a session of the provider:
+<code>prompt=login</code>, a <code>max_age</code> that session exceeds, a step-up, <code>prompt=select_account</code>, an <code>id_token_hint</code> naming
+another person. A browser that holds no session forces a login for <code>prompt=login</code> alone, and the age of what
+the person proved is checked when the response comes back. Without it, a session the person left open at their
+identity provider would answer a client that asked for a fresh login.</p>
 <p>The request is remembered in the HTTP session of the browser, under its <code>RelayState</code>, for ten minutes, eight
 at most per browser: what a response answers is read there, and nowhere else.</p>
 <p><strong>The address can go with it.</strong> An identity provider that reads a hint on its sign-in page is declared with
@@ -4755,7 +4757,8 @@ failed at their identity provider, so the client is answered <code>access_denied
 <code>state</code>, or <code>login_required</code> when the provider answered <code>NoPassive</code> to a request with <code>prompt=none</code> (OIDC
 Core §3.1.2.6), and nothing the identity provider wrote reaches the client.</p>
 <p>Every refusal is a page that names the rule and never a value of the response, opens no session and writes
-nothing of the person, and is written to the journal as a refused login.</p>
+nothing of the person. A response the service provider does not take, a person it may not sign in and a login
+under the floor of the tenant are each written to the journal as a refused login, with the method <code>fed</code>.</p>
 <h2 id="the-person">The person<a class="headerlink" href="#the-person" title="Link to this section">&para;</a></h2>
 <p><strong>Named by the provider, never by an address.</strong> The subject is the value of a persistent <code>NameID</code>, or, for a
 provider declared with <code>subject_attribute</code>, the one value of that attribute. A subject that is the same
@@ -4862,7 +4865,7 @@ two labels at least that no provider declares, and never one such as <code>admin
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:41:32 UTC">October 25, 2026</span>
   </span>
 
     
