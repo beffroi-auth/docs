@@ -27,6 +27,22 @@ A module that stays red is listed with its reason and the issue that closes it, 
 day it starts passing, so the line gets deleted rather than carried. The current state of every plan lives
 in the code repository, beside the workflow that runs them, because that is where it is maintained.
 
+## SAML 2.0
+
+There is no certification programme for SAML 2.0, so the judges are the implementations the provider has to
+work with, and tools that are not its own. Nothing the provider says of a signature it wrote counts as a proof
+of that signature.
+
+| Judge | What it plays | When |
+|---|---|---|
+| xmlsec1 and the OpenSSL command line | Every signature and every ciphertext the SAML packages write, under every algorithm the build supports, verified and decrypted; every signed HTTP-Redirect URL verified over the octets of the binding | In continuous integration, at every pull request |
+| SimpleSAMLphp | A service provider of the identity provider, over both bindings, with an encrypted assertion and single logout started from either side; the upstream identity provider of the service provider, with a first sign-in, its groups and an encrypted assertion | By hand, against a running provider |
+| Microsoft Entra ID | Federating its guests to the identity provider; the upstream identity provider of a tenant through an enterprise application | By hand, against a Microsoft tenant |
+| Keycloak | The messages of the model and the bindings, both ways | By hand |
+
+Besides those judges, the published corpora of attacks on XML signatures are part of the suites of the
+packages, and every invariant of their specifications has its tests.
+
 ## What the mark means, and what it does not
 
 !!! note "Beffroi is not OpenID Certified yet"
