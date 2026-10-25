@@ -17,11 +17,19 @@ table below is the map.
 | Command | What it does |
 |---|---|
 | `beffroi:doctor` | Say whether this deployment holds together: one line per point looked at, and what to do about the ones it does not answer for. Reads and writes nothing, so it is safe on a provider serving traffic, and it fails when a point is red so a deployment pipeline can ask the question too. |
+| `beffroi:tenant:login-floor` | Name the floor of every login of the tenant, and forget the credentials it forbids. |
 | `beffroi:tenant:synchronize` | Write the row of the tenant of the configuration: created, renamed, or left alone. |
 
 What `beffroi:doctor` looks at is what is wired, one class per point, so a deployment that adds a point
 adds a class. It looks at every one of them before it answers: a doctor that stops on the first thing that
 is broken never reaches the second.
+
+`beffroi:tenant:login-floor` takes the name of a predicate, `single_factor`, `two_factors`,
+`phishing_resistant` or `phishing_resistant_hardware`, and writes it on the row of the tenant rather than in
+a file, since hardening a tenant is an act with a date. It asks before it runs, because every credential the
+floor reads nothing of is forgotten, its secret and its row: under `phishing_resistant`, the passwords, the
+one-time codes and the backup codes of every person go. Lowering the floor afterwards gives nobody back what
+was forgotten. [The floor of its logins](../core/tenants.md#the-floor-of-its-logins) says what it changes.
 
 ## Users, their credentials and what they agreed to
 
@@ -29,14 +37,38 @@ is broken never reaches the second.
 |---|---|
 | `beffroi:user:applications` | List the applications a user agreed to, with what each one holds of them and what it has asked that is still waiting. |
 | `beffroi:user:create` | Create a user of the tenant; give them a password with beffroi:user:set-password. |
+| `beffroi:user:enrolment-ticket` | Issue the link that lets a person pose their first passkey, and print it. |
+| `beffroi:user:journal` | List the acts of a user over a period, with the application each one was done on behalf of; for answering a request about what happened in their name. |
 | `beffroi:user:link` | Say that a user of the tenant is a given subject at an upstream provider; run again to refresh it. |
-| `beffroi:user:profile` | Describe a user with the standard claims of OIDC Core section 5.1; what is not said is cleared, a run that says nothing writes nothing. To read a user, see beffroi:user:show. |
+| `beffroi:user:profile` | Describe a user with the standard claims of OIDC Core section 5.1; what is not said is cleared, except what the upstream provider that created the user holds, which is kept, and saying that otherwise is refused; a run that says nothing writes nothing. To read a user, see beffroi:user:show. |
+| `beffroi:user:reindex` | Derive again the blind indexes of every person of the tenant, after the projection of one changed. |
 | `beffroi:user:revoke-consent` | Take back the consent a user gave a client, and the access it holds; the next authorization request asks again. |
 | `beffroi:user:revoke-credential` | Revoke a credential of a user by its identifier; the credential stays listed as revoked. |
 | `beffroi:user:revoke-session` | End a session of a user by its identifier; the relying parties of that session are told by the back-channel. |
 | `beffroi:user:sessions` | List the sessions open in the name of a user, with what each one proved and where it was last seen. |
 | `beffroi:user:set-password` | Set or replace the password of a user, asked on the terminal or read from the standard input. |
-| `beffroi:user:show` | Show a user: the identity, the standard claims that are set, and the credentials with their kind, identifier, name and dates. |
+| `beffroi:user:show` | Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name and dates, and the groups with the source of each membership. |
+
+**An enrolment ticket** is for a person who has nothing to sign in with yet, on a tenant that signs its people
+in by passkey and holds no password of theirs to give them. The link opens one enrolment of a passkey, once,
+for seventy-two hours, and it is printed once: the row holds a hash of what it carries. Issuing another one
+for the same person takes the first one away, and a disabled account gets none. It proves no login either:
+the session that follows comes from the passkey that was just posed.
+
+**The journal of a person** is read over `--from` and `--to`, two days in UTC, both included, narrowed with
+`--act`, repeatable, and `--client`, and written as a table or, with `--format=json`, as the document a
+request under article 15 of the GDPR is answered with. A period that reaches past what the deployment keeps is
+answered with how long it keeps an act and the day that reaches, never with an empty table that looks
+complete.
+
+## Groups
+
+| Command | What it does |
+|---|---|
+| `beffroi:group:create` | Create a group of the tenant, which the declaration of an upstream provider may map the groups it asserts to. |
+
+No upstream provider creates a group: the declaration of one maps the values it asserts to groups that exist
+already, by their name, and a value naming a group the tenant does not hold is no group.
 
 ## Clients and initial access tokens
 
@@ -59,6 +91,12 @@ is broken never reaches the second.
 | `beffroi:keys:retire` | Take a retiring key out of the JWK Set: one key by its identifier, before its retirement date with --force; or every key past its date with --due. |
 | `beffroi:keys:rotate` | Stage a new key, sealed by the configured KMS and published at once; it takes over once the staging delay elapsed, or at once with --now; --compromised retires the previous key with no window. |
 
+`--algorithm` names the key a command acts on: a JWS algorithm for a key that signs tokens, a JWE key
+management algorithm for a key clients encrypt to, or one of the keys the tenant keeps rather than publishing,
+among them `SAML-SIGNING`, the key both SAML roles sign with, and `SAML-ENCRYPTION:` followed by the entity ID
+of an upstream identity provider, the key that provider encrypts for. Left out, it is the default signature
+algorithm.
+
 ## Data keys
 
 | Command | What it does |
@@ -71,12 +109,27 @@ is broken never reaches the second.
 
 | Command | What it does |
 |---|---|
-| `beffroi:geoip:refresh` | Download the GeoLite2 databases of addresses now, refuse what is not one of the editions the enrichment reads, and store them for the enrichment of a provenance; `--url` for a mirror or a database already unpacked. |
+| `beffroi:geoip:refresh` | Download the GeoLite2 databases of addresses now, refuse what is not one, and store them for the enrichment of a provenance; `--url` for a mirror or a file already unpacked. |
 
 A timed step runs the same object once a week, which is the cadence the databases are published at, so the
 command is for installing them the day a deployment subscribes and for reading why a refresh was refused.
 A deployment that names no licence key downloads nothing and serves every flow with a provenance that says
 an address and no place.
+
+## SAML metadata
+
+| Command | What it does |
+|---|---|
+| `beffroi:saml:service-provider:refresh` | Read the metadata of the service providers the configuration declares, or of one of them, and keep each document accepted; an expired or an older document is refused and the one accepted kept. |
+| `beffroi:saml:service-provider:forget` | Forget the metadata accepted for a service provider, so that the next refresh registers it again as a first one; the refresh refuses older documents only against what is accepted. |
+| `beffroi:saml:identity-provider:refresh` | Read the metadata of the upstream identity providers the configuration declares, or of one of them, and keep each document accepted; an expired or an older document is refused and the one accepted kept. |
+| `beffroi:saml:identity-provider:forget` | Forget the metadata accepted for an upstream identity provider, so that the next refresh registers it again as a first one; the refresh refuses older documents only against what is accepted. |
+
+A timed step runs the same refresh every hour for the peers of both roles, so the command is for the first
+reading of a peer just declared and for reading why a document was refused. Forgetting is never a step of the
+schedule: it is the one way back from a signed document an operator decides to stop holding the provider to.
+
+[:beffroi-arrow-right: SAML 2.0](../saml/index.md)
 
 ## Passkeys and FIDO metadata
 

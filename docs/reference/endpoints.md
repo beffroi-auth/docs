@@ -42,6 +42,7 @@ from what is wired, never from a list kept beside it, so a grant you did not ena
 |---|---|---|---|
 | `GET` `POST` | `/authorize` | `beffroi_interaction_authorize` | The authorization endpoint, OIDC Core §3.1.2 |
 | `GET` `POST` | `/login` | `beffroi_interaction_login` | Where a person proves who they are |
+| `POST` | `/login/address` | `beffroi_interaction_login_address` | The address typed first, on a tenant that federates domains to upstream identity providers |
 | `GET` `POST` | `/login/code` | `beffroi_interaction_login_code` | The second factor, when one is asked for |
 | `POST` | `/login/passkey/options` | `beffroi_interaction_passkey_login_options` | The assertion options of a passkey ceremony |
 | `POST` | `/login/passkey` | `beffroi_interaction_passkey_login` | The assertion itself |
@@ -49,6 +50,9 @@ from what is wired, never from a list kept beside it, so a grant you did not ena
 | `GET` `POST` | `/logout` | `beffroi_interaction_logout` | RP-initiated logout, OIDC RP-Initiated Logout 1.0 |
 | `GET` `POST` | `/device` | `beffroi_interaction_device` | Where the code shown by a device is confirmed, RFC 8628 §3.3 |
 | `GET` | `/initiate-login` | `beffroi_interaction_initiate_login` | Third party initiated login, OIDC Core §4 |
+| `GET` | `/enrol/{ticket}/{value}` | `beffroi_interaction_enrolment_ticket` | The page an enrolment ticket opens, where a person poses their first passkey without a session |
+| `POST` | `/enrol/{ticket}/{value}/options` | `beffroi_interaction_enrolment_ticket_options` | The creation options of that passkey |
+| `POST` | `/enrol/{ticket}/{value}` | `beffroi_interaction_enrolment_ticket_enrol` | The passkey itself, which spends the ticket |
 | `POST` | `/locale` | `beffroi_interaction_locale` | The language a visitor chose for the pages |
 
 ### The account pages
@@ -70,7 +74,7 @@ session rather than sending it to a login.
 | `GET` | `/account/consents` | `beffroi_interaction_account_consents` | One line per client this person agreed to, with the scopes it holds |
 | `GET` | `/account/applications/{id}` | `beffroi_interaction_account_application` | What one of those applications holds, behind its line |
 | `GET` | `/account/sessions` | `beffroi_interaction_account_sessions` | Where this person is signed in, and what each session proved |
-| `GET` | `/account/sign-ins` | `beffroi_interaction_account_sign_ins` | What the journal holds of their sign-ins, successes and refusals |
+| `GET` | `/account/acts` | `beffroi_interaction_account_acts` | What happened to the account: every act the journal holds in their name, the sign-ins and the refusals among them |
 | `GET` | `/account/notifications` | `beffroi_interaction_account_notifications` | The browsers the provider can reach by web push |
 | `GET` | `/account/archive` | `beffroi_interaction_account_archive` | The file holding everything the provider knows of them |
 | `GET` | `/account/archive/file` | `beffroi_interaction_account_archive_file` | That file, downloaded as it was built |
@@ -117,3 +121,22 @@ Served by the bundle so a deployment has no build step to run for them.
 | `GET` | `/push-worker.js` | `beffroi_interaction_push_worker` |
 | `GET` | `/copy.js` | `beffroi_interaction_copy_script` |
 | `GET` | `/password-strength.js` | `beffroi_interaction_password_strength_script` |
+
+## SAML 2.0
+
+Served when the deployment turns the role on, and answered `404` otherwise. The metadata are read server to
+server and belong to the protocol plane; everything a browser carries belongs to the interaction plane.
+
+| Method | Path | Route | What it is |
+|---|---|---|---|
+| `GET` | `/saml/metadata` | `beffroi_protocol_saml_metadata` | The metadata of the identity provider, whose URL is its entity ID, SAML Metadata §2 |
+| `GET` `POST` | `/saml/sso` | `beffroi_interaction_saml_single_sign_on` | Single sign-on, over HTTP-Redirect and HTTP-POST, SAML Profiles §4.1 |
+| `GET` | `/saml/sso/resume` | `beffroi_interaction_saml_single_sign_on_resume` | Where the login sends the browser back to answer the request that waited for it |
+| `GET` `POST` | `/saml/slo` | `beffroi_interaction_saml_single_logout` | Single logout, a request or an answer, over both bindings, SAML Profiles §4.4 |
+| `GET` | `/saml/slo/continue` | `beffroi_interaction_saml_single_logout_continue` | The next step of a logout the provider tells the service providers of a session about |
+| `GET` | `/saml/sp/metadata` | `beffroi_protocol_saml_service_provider_metadata` | The metadata of the service provider of the tenant, whose URL is its entity ID unless the deployment names another |
+| `GET` | `/saml/sp/metadata/{identityProvider}` | `beffroi_protocol_saml_service_provider_metadata_for_identity_provider` | The same, with the encryption certificates meant for one upstream identity provider, named by its entity ID in base64url |
+| `GET` | `/saml/sp/sign-on` | `beffroi_interaction_saml_upstream_sign_on` | Where the login page sends a browser to an upstream identity provider, under a reference drawn for that login |
+| `POST` | `/saml/sp/acs` | `beffroi_interaction_saml_assertion_consumer_service` | The assertion consumer service, over HTTP-POST, SAML Profiles §4.1.4 |
+
+[:beffroi-arrow-right: SAML 2.0](../saml/index.md)
