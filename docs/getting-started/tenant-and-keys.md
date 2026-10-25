@@ -53,10 +53,11 @@ deployment pipeline: a key the provider cannot open is an outage at the first to
 next rotation.
 
 A key works for an age, ninety days unless the configuration says otherwise, counted from the moment it
-became active. Reaching it is not an outage either: a timed step stages a successor without anybody asking
-for one. That is what `--check` reports of an active key, in one of three answers: it has not worked past
-its age, it has and a successor is staged behind it, or it has and nothing is staged. The last one fails
-the run, because a planning that has stopped looks exactly like that from outside.
+became active, and a year for the SAML signing key, whose family has figures of its own. Reaching it is not
+an outage either: a timed step stages a successor without anybody asking for one. That is what `--check`
+reports of an active key, in one of three answers: it has not worked past its age, it has and a successor is
+staged behind it, or it has and nothing is staged. The last one fails the run, because a planning that has
+stopped looks exactly like that from outside.
 
 ## A user
 

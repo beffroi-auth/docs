@@ -22,9 +22,14 @@ code. There is no `insecure_` setting, no compatibility mode, and no global swit
 | No redirect is followed outbound | Fetching a client's metadata or keys must not become a request to an address the client chose |
 | No boolean from a third party is ever cast | A missing claim and a false claim are not the same thing, and `(bool)` makes them one |
 | Every secret string comes from a cryptographic source, every secret comparison is constant time | |
-| A password is compared against a list of compromised values before it is written | A password can be long, varied and still known to everybody. NIST SP 800-63B §5.1.1.2 asks for the list, and what the list holds is refused rather than warned about |
+| A password is compared against a list of compromised values before it is written | A password can be long, varied and still known to everybody. NIST SP 800-63B §3.1.1.2 asks for the list, and what the list holds is refused rather than warned about |
+| A password is fifteen characters at least where it signs somebody in alone, eight where a second factor goes with it | NIST SP 800-63B §3.1.1.2 makes the length two numbers, and the floor of the logins of the tenant says which one a password serves |
 | A page that adds or takes away a way in asks for the proof again | A session outlives the moment it was opened, which is right for a page that shows what the account holds and wrong for the gesture somebody else would lock its owner out with |
 | What leaves the process on a transport leaves sealed | What a column seals, a queue may not carry in clear: the body of every message is sealed to the tenant, so a broker, a failure table and a backup of either are worth nothing without the key management service |
+| Every end of a session revokes what was issued under it | However a session ends, at the end session endpoint, from the account, by the console or by a SAML logout, its refresh tokens are revoked and its opaque access tokens removed. A session closed because it was feared leaves nothing working behind it |
+| A form posted from another site is posted again from the provider's own origin, and never answered with a session cookie | Under `SameSite=Lax` a cross-site `POST` arrives without the session. Answered with a new cookie, it would sign the browser out of the provider; posted again, it reaches the session the browser holds |
+| A person of a domain an upstream identity provider answers for signs in there and nowhere else | A local password would outlive the person's departure from the directory of their organisation, so none is posed for them and none is accepted from them |
+| In SAML, every assertion is signed, SHA-1 is refused, nothing is encrypted in CBC, and no response is taken that nobody asked for | [SAML 2.0](../saml/index.md#what-is-always-true) gives the whole list, and why each rule is there |
 
 ## Where an exception exists
 
@@ -37,6 +42,16 @@ the shape they take:
 - **Dynamic client registration is controlled.** The endpoint exists, and the tenant decides the mode it
   runs in: who may register, what an initial access token buys, and which authority may vouch for a piece
   of software it did not issue.
+- **An unsigned SAML request is accepted from one service provider at a time.** A service provider that
+  cannot sign its `AuthnRequest`, as Microsoft Entra ID federating its guests cannot, is declared so, and
+  its unsigned requests are then accepted when its own metadata do not say it signs. Nothing turns the
+  signature off for a tenant or a deployment, and a logout request is signed whatever the declaration says.
+
+The floor of the logins of a tenant is a predicate, and a predicate only ever asks for more proofs: a tenant
+can require two factors or a passkey of every login, and no floor can forbid the stronger credential or let a
+login prove less than one factor. A floor that leaves out a kind of credential forgets every credential of
+that kind rather than leaving it dormant. [The floor of its logins](../core/tenants.md#the-floor-of-its-logins)
+says what it changes.
 
 ## Keys and personal data
 

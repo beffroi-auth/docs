@@ -27,7 +27,7 @@ titles below are the ones the English catalogue carries.
 | Applications you have allowed | `/account/consents` | One line per client in force, with the scopes it holds, and a page per application behind it |
 | Where you are signed in | `/account/sessions` | Where this person is signed in at this moment, what each session proved, and where it was last seen |
 | Your password | `/account/password` | When the password was last written, and the form that replaces it |
-| Recent sign-ins | `/account/sign-ins` | What the journal holds of their sign-ins, the ones that worked and the ones that were refused |
+| What happened to your account | `/account/acts` | Every act the provider wrote down in their name: who signed in as them and with what, the attempts that were refused, what signed out and what changed of the account. Its card counts the refused attempts among the last twenty acts, since a failure is what somebody comes to look for |
 | Notifications | `/account/notifications` | The browsers this provider can reach by web push |
 | Your data | `/account/archive` | The one file holding everything the provider knows of them, and where their last request for it has got to |
 
@@ -57,11 +57,25 @@ person is told something rather than asked: a password already in use that a lis
 was later found to hold. The lookup happens after a login, on a lane, at most once a month per person, so
 no sign-in waits on somebody else's service, and the answer outlives the request that noticed it.
 
+So the person is not left to find it: the next login that serves no authorization request sends them to this
+page, which says why, before the page they were going to, and asks again at every such login until the
+password is replaced. A login a client is waiting on is interrupted by nothing.
+
 A password posed here is typed twice and the two are compared in constant time, and the counter beside the
 field is local to the browser: what the page says of a password as it is typed asks nobody anything, and a
-password is never sent anywhere to be scored.
+password is never sent anywhere to be scored. The length it asks for is the one the floor of the tenant
+sets, fifteen characters or eight, and the field and the core read the same number.
 
 [:beffroi-arrow-right: Passwords](../core/credentials/passwords.md)
+
+### A person of an organisation
+
+A person whose address is of a domain an [upstream identity provider](../saml/federated-sign-in.md) answers
+for signs in at their organisation and nowhere else. The pages of their account offer no form that would pose
+a password, a passkey or an authenticator application, and say so: their organisation signs them in, no
+password, passkey or authenticator application of this account signs them in, and none is added to it. A form
+posted by hand is refused all the same, and what the source of their account holds of their profile is read
+there and not changed.
 
 ## What a page asks before it opens
 
@@ -135,8 +149,8 @@ What a reader learns of one table serves them on the others.
 | On this page | The gesture | What it does |
 |---|---|---|
 | Applications you have allowed | Revoke | Takes back the consent and the access that client holds. The next authorization request asks again |
-| Where you are signed in | Close | Ends that session, and the relying parties of it are told through the back channel |
-| Where you are signed in | Close every other one | Ends every session of this person but the one reading the page |
+| Where you are signed in | Close | Ends that session and revokes the tokens issued under it; its OpenID Connect clients are told through the back channel, and when it is the session of this very browser, its SAML service providers are told through it before the page comes back |
+| Where you are signed in | Close every other one | Ends every session of this person but the one reading the page, with the same revocation and the same back channel. Those sessions have no browser here, so their SAML service providers are not told |
 | Your passkeys | Revoke | Revokes that credential. The line stays, listed as revoked |
 | Two-factor authentication | Remove | Revokes the authenticator. The sessions it completed stay as they are |
 | Notifications | Revoke | Drops that subscription, and this provider stops reaching that browser |
