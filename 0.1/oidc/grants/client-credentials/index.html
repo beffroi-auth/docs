@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A service asking for itself, RFC 6749 §4.4.">
+        <meta name="description" content="A service asking for a token for itself, RFC 6749 §4.4, what it has to name, what the token says, and what a resource server reads of it.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Client credentials">
-  <meta property="og:description" content="A service asking for itself, RFC 6749 §4.4.">
+  <meta property="og:description" content="A service asking for a token for itself, RFC 6749 §4.4, what it has to name, what the token says, and what a resource server reads of it.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1463,14 +1455,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1500,14 +1484,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1536,14 +1512,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1571,14 +1539,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1644,14 +1604,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1696,14 +1648,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1732,14 +1676,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1763,6 +1699,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client credentials
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1777,16 +1731,73 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registering-a-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering a service
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The request
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-token-says" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the token says
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-resource-server-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a resource server reads
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1813,14 +1824,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1878,14 +1881,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1913,14 +1908,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1986,14 +1973,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2038,14 +2017,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2073,14 +2044,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2110,14 +2073,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2145,14 +2100,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2190,14 +2137,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2225,14 +2164,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2262,14 +2193,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2298,14 +2221,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2333,14 +2248,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2422,14 +2329,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2474,14 +2373,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2509,14 +2400,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2554,14 +2437,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2589,14 +2464,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2626,14 +2493,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2661,14 +2520,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2698,14 +2549,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2733,14 +2576,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2770,14 +2605,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2805,14 +2632,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4283,6 +4102,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registering-a-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering a service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-token-says" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the token says
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-resource-server-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a resource server reads
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4307,10 +4178,159 @@
 
 
 <h1 id="client-credentials">Client credentials<a class="headerlink" href="#client-credentials" title="Link to this section">&para;</a></h1>
-<p>There is no person in this grant: a confidential client asks for a token for itself, for the resource it
-named. No ID token is issued, no consent is involved, and no refresh token is given, because the client can
-simply ask again.</p>
-<p>This page will describe what the token carries, and what a resource server reads of it.</p>
+<p>In the client credentials grant (RFC 6749 §4.4) there is nobody behind the request: a confidential client
+asks for an access token for itself, to call a resource it names. Nobody is asked, so there is no consent;
+nobody signed in, so there is no ID token; and the answer carries no refresh token (§4.4.3), the client
+asking again when it needs a new one.</p>
+<h2 id="registering-a-service">Registering a service<a class="headerlink" href="#registering-a-service" title="Link to this section">&para;</a></h2>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">billing-service</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'Billing</span><span class="nv"> </span><span class="s">service'</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BILLING_SERVICE_SECRET)%'</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">client_secret_basic</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">client_credentials</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'invoices.read</span><span class="nv"> </span><span class="s">invoices.write'</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://invoices.example.com'</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token_endpoint_auth_method</code></td>
+<td>Any method that proves something. <code>none</code> is refused for a client registered for this grant</td>
+</tr>
+<tr>
+<td>The <code>client_id</code></td>
+<td>The <code>sub</code> of every token this grant issues the client, so it is one to 255 visible ASCII characters, and no space</td>
+</tr>
+<tr>
+<td><code>grant_types</code></td>
+<td><code>client_credentials</code>. A client registered for no grant that sends a browser back to it registers no redirect URI</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>The scopes it may ask for. <code>openid</code> is refused whatever the registration says, this grant having nobody to authenticate</td>
+</tr>
+<tr>
+<td><code>resources</code></td>
+<td>The resources it may ask a token for. A client that registered none can obtain nothing with this grant, a request having to name one</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grant_type</code></td>
+<td><code>client_credentials</code></td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>Required here, although RFC 6749 §4.4.2 makes it optional: a request that named nothing would otherwise be answered with everything the client is registered for</td>
+</tr>
+<tr>
+<td><code>resource</code></td>
+<td>Required and repeatable, among the resources the client registered (RFC 8707 §2): a token addressed to the client that asked for it is a token no resource server is meant to accept, and it is the one thing this grant does not hand out</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Refusal</th>
+<th>Error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No <code>scope</code></td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>openid</code> among the scopes (OIDC Core §2)</td>
+<td><code>invalid_scope</code></td>
+</tr>
+<tr>
+<td>A scope the client did not register, or a <code>scope</code> that is not a list of scope tokens</td>
+<td><code>invalid_scope</code></td>
+</tr>
+<tr>
+<td>No <code>resource</code></td>
+<td><code>invalid_target</code></td>
+</tr>
+<tr>
+<td>A resource the client did not register, or one that is not an absolute URI without a fragment</td>
+<td><code>invalid_target</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-the-token-says">What the token says<a class="headerlink" href="#what-the-token-says" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sub</code></td>
+<td>The <code>client_id</code> (RFC 9068 §2.2)</td>
+</tr>
+<tr>
+<td><code>client_id</code></td>
+<td>The <code>client_id</code></td>
+</tr>
+<tr>
+<td><code>aud</code></td>
+<td>The resources the request named</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>The scopes the request named</td>
+</tr>
+<tr>
+<td><code>grant_id</code></td>
+<td>An identifier drawn for this answer</td>
+</tr>
+<tr>
+<td><code>cnf</code></td>
+<td>What the token is bound to, when the request binds one (<a href="../#what-the-token-endpoint-does">grants</a>)</td>
+</tr>
+<tr>
+<td><code>may_act</code></td>
+<td>Who may act for the subject of a token of this client, in the self-contained shape, when it registered <code>may_act</code></td>
+</tr>
+</tbody>
+</table>
+<p>There is no <code>sid</code>, <code>auth_time</code>, <code>acr</code> or <code>amr</code>, nobody having signed in, and no <code>person</code>, the token being
+about nobody. The answer is the access token, its <code>token_type</code>, <code>expires_in</code> and <code>scope</code>, and nothing else.
+<a href="../../tokens/access-tokens/">Access tokens</a> has every claim of either shape.</p>
+<h2 id="what-a-resource-server-reads">What a resource server reads<a class="headerlink" href="#what-a-resource-server-reads" title="Link to this section">&para;</a></h2>
+<ul>
+<li><strong>A self-contained token</strong> is verified offline, as every <code>at+jwt</code> is: its <code>sub</code> is the client, and nothing in
+  it describes a person.</li>
+<li><strong>An opaque token</strong> is introspected by the client it was issued to, the introspection endpoint describing a
+  token to that client and to nobody else (RFC 7662 §2.2). The answer renders the same members, and the same
+  absence of the members of a sign-in.</li>
+<li><strong>No end of a session and no consent taken back reach it</strong>: it descends from neither. The client takes an
+  opaque one back at the revocation endpoint, and a self-contained one lives <code>tokens.access_token_ttl</code>, ten
+  minutes by default.</li>
+<li><strong>The UserInfo endpoint does not answer it</strong>: the token names nobody, and it is addressed to a resource
+  rather than to the provider.</li>
+</ul>
 
 
 
@@ -4331,7 +4351,7 @@ simply ask again.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

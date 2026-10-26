@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="An assertion from an issuer the tenant trusts, RFC 7523.">
+        <meta name="description" content="An access token for a person, against an assertion signed by an issuer the tenant trusts, RFC 7523 §2.1, what the tenant declares, what is checked, and what is issued.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="JWT bearer">
-  <meta property="og:description" content="An assertion from an issuer the tenant trusts, RFC 7523.">
+  <meta property="og:description" content="An access token for a person, against an assertion signed by an issuer the tenant trusts, RFC 7523 §2.1, what the tenant declares, what is checked, and what is issued.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1463,14 +1455,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1500,14 +1484,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1536,14 +1512,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1571,14 +1539,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1644,14 +1604,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1696,14 +1648,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1731,14 +1675,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1768,14 +1704,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1803,14 +1731,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1868,14 +1788,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1899,6 +1811,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JWT bearer
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1913,16 +1843,95 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#declaring-the-issuer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Declaring the issuer
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linking-the-people" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linking the people
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registering-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering the client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-checked-of-the-assertion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is checked of the assertion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-token-says" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the token says
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1986,14 +1995,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2038,14 +2039,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2073,14 +2066,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2110,14 +2095,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2145,14 +2122,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2190,14 +2159,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2225,14 +2186,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2262,14 +2215,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2298,14 +2243,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2333,14 +2270,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2422,14 +2351,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2474,14 +2395,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2509,14 +2422,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2554,14 +2459,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2589,14 +2486,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2626,14 +2515,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2661,14 +2542,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2698,14 +2571,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2733,14 +2598,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2770,14 +2627,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2805,14 +2654,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4283,6 +4124,80 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#declaring-the-issuer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Declaring the issuer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linking-the-people" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linking the people
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registering-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering the client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-checked-of-the-assertion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is checked of the assertion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-token-says" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the token says
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4307,8 +4222,13 @@
 
 
 <h1 id="jwt-bearer">JWT bearer<a class="headerlink" href="#jwt-bearer" title="Link to this section">&para;</a></h1>
-<p>A client presents a JWT signed by an issuer the tenant has pinned, and gets a token in exchange. What the
-tenant trusts is declared explicitly: an issuer, its keys, and what it is allowed to assert.</p>
+<p>A client presents an assertion, a JWT signed by an issuer the tenant trusts, and receives an access token
+for the person that assertion is about (RFC 7523 §2.1). The person signed in somewhere else, so this provider
+authenticates nobody here: it issues no ID token, takes no <code>openid</code>, and creates nobody. The assertion names
+somebody the tenant already knows, through an identity an operator linked, or it is refused.</p>
+<p>Whoever holds the signing key of a trusted issuer can name a person of the tenant and be answered with an
+access token, so everything about that issuer is declared in advance and nothing about it is inferred.</p>
+<h2 id="declaring-the-issuer">Declaring the issuer<a class="headerlink" href="#declaring-the-issuer" title="Link to this section">&para;</a></h2>
 <div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">trusted_issuers</span><span class="p">:</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="s">'https://issuer.example.com'</span><span class="p p-Indicator">:</span>
@@ -4328,33 +4248,189 @@ tenant trusts is declared explicitly: an issuer, its keys, and what it is allowe
 <tbody>
 <tr>
 <td>The key</td>
-<td>The <code>iss</code> the issuer signs with. An issuer nobody declared is unknown</td>
+<td>The <code>iss</code> the issuer signs with, an absolute URI without a fragment, compared byte for byte. An issuer nobody declared is unknown</td>
 </tr>
 <tr>
 <td><code>jwks</code> or <code>jwks_uri</code></td>
-<td>Its keys, inline or read back from a URL, one or the other and never both. A URL is read with one <code>GET</code> over HTTPS, no redirect followed, kept in a pool the workers share, and read again at most once per cooldown when an assertion names a <code>kid</code> the kept set does not hold, which is how an issuer that rotates its keys is followed. The keys are the only ones an assertion is verified against, whatever its header names (RFC 8725 §3.10)</td>
+<td>Its keys, written down or read back from a URL, one or the other and never both, nor neither. A URL is HTTPS, or plain HTTP on a loopback host, and is read with one <code>GET</code>, no redirect followed. The keys read are kept in a pool the workers share, and read again at most once per cooldown when an assertion names a <code>kid</code> the kept set does not hold, which is how an issuer that rotates its keys is followed. These keys are the only ones an assertion is verified against, whatever its header names (RFC 8725 §3.10)</td>
 </tr>
 <tr>
 <td><code>signing_algorithms</code></td>
-<td>The algorithms an assertion may be signed with, among those the provider is wired with</td>
+<td>The algorithms an assertion of the issuer may be signed with, at least one, among those the provider is wired with: <code>RS256</code>, <code>PS256</code>, <code>ES256</code>, <code>EdDSA</code></td>
 </tr>
 <tr>
 <td><code>clients</code></td>
-<td>The clients that may present its assertions. An issuer trusted for a gateway is not trusted for every client</td>
+<td>The clients that may present its assertions, at least one. An issuer trusted for a gateway is not thereby trusted for every client of the tenant</td>
 </tr>
 <tr>
 <td><code>identity_provider</code></td>
-<td>The source of the linked identities its subjects name: a <code>sub</code> is a person of the tenant only when a linked identity of that source says so, and nobody is ever created from an assertion</td>
+<td>The source of the linked identities its subjects name: a <code>sub</code> is a person of the tenant only when a linked identity of that source says so</td>
 </tr>
 <tr>
 <td><code>trusted_scopes</code></td>
-<td>What it is trusted for. <code>openid</code> buys nothing here, the grant authenticating nobody</td>
+<td>What the issuer is trusted for, at least one scope. <code>openid</code> among them buys nothing, the grant refusing it</td>
 </tr>
 </tbody>
 </table>
-<p>A link between a person and a subject of the issuer is written by an operator, with <code>beffroi:user:link</code> and
-the name given in <code>identity_provider</code>.</p>
-<p>This page will describe what is checked of an assertion, and what it may obtain.</p>
+<p>A declaration that breaks one of these rules, or carries an option this table does not name, is an error of
+the configuration. A tenant that declares no issuer accepts no assertion.</p>
+<p>What one read of a <code>jwks_uri</code> costs is set in <code>client_authentication</code>, for the issuers as for the clients:
+<code>jwks_ttl</code>, how long the keys read are kept, a day by default; <code>jwks_refetch_cooldown</code>, 300 seconds;
+<code>jwks_timeout</code>, 3 seconds for one read, connection included; and <code>jwks_max_size</code>, 65536 bytes. The pool of the
+issuers is not the pool of the clients, so a client is never verified against a set read for an issuer.</p>
+<h2 id="linking-the-people">Linking the people<a class="headerlink" href="#linking-the-people" title="Link to this section">&para;</a></h2>
+<p>The <code>sub</code> of an assertion names a person of the tenant through a <a href="../../../core/linked-identities/">linked identity</a>
+of the source the issuer declares, and through nothing else. An operator writes that link before the issuer
+can name the person:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:user:link<span class="w"> </span>alice<span class="w"> </span>example-issuer<span class="w"> </span><span class="m">248289761001</span>
+</span></code></pre></div>
+<p>The arguments are the username of the person, the source as <code>identity_provider</code> names it, and the subject that
+source gives them, compared byte for byte. Running the command again refreshes the link. A subject no link
+resolves, or that resolves to a disabled account, is refused like an assertion of an unknown issuer.</p>
+<h2 id="registering-the-client">Registering the client<a class="headerlink" href="#registering-the-client" title="Link to this section">&para;</a></h2>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">gateway</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'API</span><span class="nv"> </span><span class="s">gateway'</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">            </span><span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(GATEWAY_SECRET)%'</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">client_secret_basic</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'urn:ietf:params:oauth:grant-type:jwt-bearer'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'invoices.read'</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">            </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://invoices.example.com'</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<p>The client is named in the <code>clients</code> of the issuer, registered for the grant, and registered with the
+resources its tokens may be addressed to: a request names at least one, and a client that registered none
+obtains nothing. The request of a public client fails, and no token is issued: a token of this grant is
+issued only to a client that authenticates itself.</p>
+<p>The assertion is the authorization, not the authentication of the client (RFC 7523 §2.1): the client
+authenticates beside it with the method it registered, as for every other grant. The two readings of an
+assertion share no registration, no validator and no record of the assertions already seen, so an assertion
+accepted as one is never thereby accepted as the other.</p>
+<h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grant_type</code></td>
+<td><code>urn:ietf:params:oauth:grant-type:jwt-bearer</code></td>
+</tr>
+<tr>
+<td><code>assertion</code></td>
+<td>Required: the assertion, a compact JWS</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>Required: a request that named nothing would otherwise be answered with everything the registration of the client and the declaration of the issuer have in common</td>
+</tr>
+<tr>
+<td><code>resource</code></td>
+<td>Required and repeatable, among the resources the client registered (RFC 8707 §2)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-is-checked-of-the-assertion">What is checked of the assertion<a class="headerlink" href="#what-is-checked-of-the-assertion" title="Link to this section">&para;</a></h2>
+<p><strong>Every refusal is the same refusal</strong>: <code>invalid_grant</code>, with the one description <code>The assertion is not one
+this provider accepts as an authorization (RFC 7523 section 3).</code> Whoever presents an assertion learns that it
+was not accepted and nothing else: not whether the issuer is known, not whether the client may present its
+assertions, not whether the subject resolves.</p>
+<ol>
+<li>It is a compact JWS.</li>
+<li>Its <code>iss</code> is an issuer the tenant declares, and the client is among the <code>clients</code> of that issuer. Nothing of
+   the assertion is verified before that: which keys would verify it is the declaration's answer, never the
+   assertion's.</li>
+<li>Its signature verifies against the keys of that issuer, under one of its <code>signing_algorithms</code>, the <code>kid</code> of
+   the header choosing among those keys only. Keys behind a <code>jwks_uri</code> that cannot be read are this same
+   refusal.</li>
+<li>Its <code>aud</code> is one value, the issuer identifier of the tenant.</li>
+<li>It has an <code>exp</code>, which is still in the future and no further ahead than <code>client_authentication.assertion_max_lifetime</code>,
+   300 seconds by default, both allowing <code>client_authentication.assertion_leeway</code>, 30 seconds, of the clock of
+   the issuer.</li>
+<li>It has an <code>iat</code>, no further in the future than the leeway.</li>
+<li>It has a <code>jti</code> this provider has not seen from that issuer before: the <code>jti</code> is remembered until the <code>exp</code>,
+   so that an assertion is spent once.</li>
+<li>It has a <code>sub</code>, which a linked identity of the source of the issuer resolves to a person whose account is
+   enabled.</li>
+</ol>
+<p>Then what it may obtain:</p>
+<table>
+<thead>
+<tr>
+<th>Refusal</th>
+<th>Error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No <code>resource</code>, or one the client did not register</td>
+<td><code>invalid_target</code></td>
+</tr>
+<tr>
+<td>No <code>scope</code></td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>openid</code> among the scopes (OIDC Core §2)</td>
+<td><code>invalid_scope</code></td>
+</tr>
+<tr>
+<td>A scope the client did not register, or the issuer is not trusted for, or a <code>scope</code> that is not a list of scope tokens</td>
+<td><code>invalid_scope</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-the-token-says">What the token says<a class="headerlink" href="#what-the-token-says" title="Link to this section">&para;</a></h2>
+<p>The answer is an access token, with its <code>token_type</code>, <code>expires_in</code> and <code>scope</code>, and nothing else: no ID
+token and no refresh token.</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sub</code></td>
+<td>The subject this provider gives the person for this client, public or <a href="../../pairwise-subjects/">pairwise</a>, never the subject of the issuer</td>
+</tr>
+<tr>
+<td><code>client_id</code></td>
+<td>The client</td>
+</tr>
+<tr>
+<td><code>aud</code></td>
+<td>The resources the request named</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>The scopes the request named, within what the client registered and what the issuer is trusted for</td>
+</tr>
+<tr>
+<td><code>grant_id</code></td>
+<td>An identifier drawn for this answer</td>
+</tr>
+<tr>
+<td><code>person</code></td>
+<td>In the self-contained shape, the person, sealed by the key management service of the tenant, which only the provider can open; the record of an opaque token keeps the person beside it</td>
+</tr>
+<tr>
+<td><code>may_act</code></td>
+<td>In the self-contained shape, when the client registered one</td>
+</tr>
+<tr>
+<td><code>cnf</code></td>
+<td>What the token is bound to, when the request binds one (<a href="../#what-the-token-endpoint-does">grants</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>There is no <code>sid</code>, <code>auth_time</code>, <code>acr</code> or <code>amr</code>: the person was authenticated somewhere else, and how is not
+this provider's to claim. The act <code>tokens.issued</code> is written in the journal of that person, and not under
+the subject the client reads.</p>
 
 
 
@@ -4375,7 +4451,7 @@ the name given in <code>identity_provider</code>.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

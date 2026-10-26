@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="What is read, what is refused, and what goes back.">
+        <meta name="description" content="What the authorization endpoint reads, the order it judges a request in, and which refusals go back to the client rather than to the person.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Authorization request">
-  <meta property="og:description" content="What is read, what is refused, and what goes back.">
+  <meta property="og:description" content="What the authorization endpoint reads, the order it judges a request in, and which refusals go back to the client rather than to the person.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1464,14 +1456,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1495,6 +1479,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization request
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1509,16 +1511,117 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-a-request-is-read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How a request is read
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The parameters
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-order-of-the-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The order of the checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pkce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PKCE
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-redirect-uri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The redirect URI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#refusals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refusals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-request-posted-from-another-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A request posted from another site
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1545,14 +1648,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1581,14 +1676,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1652,14 +1739,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1704,14 +1783,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1739,14 +1810,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1776,14 +1839,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1811,14 +1866,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1876,14 +1923,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1911,14 +1950,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1984,14 +2015,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2036,14 +2059,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2071,14 +2086,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2108,14 +2115,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2143,14 +2142,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2188,14 +2179,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2223,14 +2206,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2260,14 +2235,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2296,14 +2263,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2331,14 +2290,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2420,14 +2371,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2472,14 +2415,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2507,14 +2442,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2552,14 +2479,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2587,14 +2506,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2624,14 +2535,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2659,14 +2562,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2696,14 +2591,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2731,14 +2618,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2768,14 +2647,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2803,14 +2674,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4281,6 +4144,102 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-a-request-is-read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How a request is read
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The parameters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-order-of-the-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The order of the checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pkce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PKCE
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-redirect-uri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The redirect URI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#refusals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refusals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-request-posted-from-another-site" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A request posted from another site
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4305,11 +4264,302 @@
 
 
 <h1 id="authorization-request">Authorization request<a class="headerlink" href="#authorization-request" title="Link to this section">&para;</a></h1>
-<p>The authorization endpoint reads the request, finds the client, compares the redirect URI exactly, requires
-PKCE with <code>S256</code>, and decides whether a person has to be shown a page at all. Every response carries <code>iss</code>
-(RFC 9207), so a client can tell which provider answered it.</p>
-<p>This page will describe each parameter, the order the checks run in, and which errors go back to the client
-rather than to the person.</p>
+<p>The authorization endpoint, <code>/authorize</code>, reads a request in the query of a <code>GET</code> or in the form of a <code>POST</code>
+(OIDC Core §3.1.2.1). It finds the client, compares the redirect URI exactly, requires PKCE with <code>S256</code>, and
+hands what is left to an <a href="../interactions/">interaction</a>, which decides whether a person has to be shown a
+page at all. Every answer that reaches the client, a code or a refusal, carries <code>iss</code> (RFC 9207 §2), and
+<code>state</code> when the request carried one.</p>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="err">GET /authorize?response_type=code</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="err">    &amp;client_id=billing</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="err">    &amp;redirect_uri=https%3A%2F%2Fbilling.example.com%2Foidc%2Fcallback</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="err">    &amp;scope=openid%20profile%20email</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="err">    &amp;state=af0ifjsldkj</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="err">    &amp;nonce=n-0S6_WzA2Mj</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="err">    &amp;code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="err">    &amp;code_challenge_method=S256 HTTP/1.1</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="err">Host: op.example.com</span>
+</span></code></pre></div>
+<h2 id="how-a-request-is-read">How a request is read<a class="headerlink" href="#how-a-request-is-read" title="Link to this section">&para;</a></h2>
+<p>Every parameter is read the same way at every endpoint of the provider (RFC 6749 §3.1): it is one string, a
+parameter sent empty is a parameter not sent, a parameter the provider does not read is ignored, and nothing
+is converted into anything else. A parameter the provider reads, sent twice in a query or in a body of
+<code>Content-Type: application/x-www-form-urlencoded</code>, is refused with <code>invalid_request</code>, with one exception,
+<code>resource</code>, which RFC 8707 §2 lets a client send once per resource.</p>
+<p>Two kinds of request take their parameters from elsewhere than the query or the form:</p>
+<ul>
+<li><strong>A pushed request</strong> names, in <code>request_uri</code>, a reference the client received from the <a href="../pushed-authorization-requests/">pushed
+  authorization request endpoint</a>. The parameters are the ones it pushed,
+  and every other parameter the browser carried but <code>client_id</code> is dropped.</li>
+<li><strong>A request object</strong> carries the request in a JWT, by value in <code>request</code> or by reference in <code>request_uri</code>
+  (<a href="../request-objects/">request objects</a>). The parameters are the claims of the object, and every other
+  parameter the browser carried but <code>client_id</code> is dropped as well.</li>
+</ul>
+<p>Both are resolved before anything else is read, and what either refuses is refused on a page, since what
+names the destination is what could not be read.</p>
+<h2 id="the-parameters">The parameters<a class="headerlink" href="#the-parameters" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>What it has to be</th>
+<th>The error of a refusal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_id</code></td>
+<td>Yes</td>
+<td>A client of the tenant</td>
+<td>A page</td>
+</tr>
+<tr>
+<td><code>redirect_uri</code></td>
+<td>Yes</td>
+<td>One of the redirect URIs of the client, <a href="#the-redirect-uri">byte for byte</a></td>
+<td>A page</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td>No</td>
+<td>Printable ASCII (RFC 6749 appendix A.5), sent back as it came</td>
+<td>A page</td>
+</tr>
+<tr>
+<td><code>response_type</code></td>
+<td>Yes</td>
+<td><code>code</code></td>
+<td><code>unsupported_response_type</code></td>
+</tr>
+<tr>
+<td><code>response_mode</code></td>
+<td>No</td>
+<td>A mode the provider answers in (<a href="../response-modes/">response modes</a>)</td>
+<td><code>unsupported_response_mode</code></td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>Yes</td>
+<td>Scope tokens separated by spaces, every one registered by the client, <code>openid</code> among them</td>
+<td><code>invalid_scope</code></td>
+</tr>
+<tr>
+<td><code>code_challenge</code></td>
+<td>Yes, unless the client is <a href="#pkce">exempted</a></td>
+<td>43 to 128 unreserved characters (RFC 7636 §4.2)</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>code_challenge_method</code></td>
+<td>With a challenge</td>
+<td><code>S256</code></td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>nonce</code></td>
+<td>No</td>
+<td>Text with no control character, carried into the ID token</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>prompt</code></td>
+<td>No</td>
+<td><code>none</code>, <code>login</code>, <code>consent</code> and <code>select_account</code>, separated by spaces, <code>none</code> alone</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>max_age</code></td>
+<td>No</td>
+<td>A number of seconds, <code>0</code> or more</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>login_hint</code></td>
+<td>No</td>
+<td>Text with no control character</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>ui_locales</code></td>
+<td>No</td>
+<td>Language tags separated by spaces (RFC 5646)</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>acr_values</code></td>
+<td>No</td>
+<td>Values of visible ASCII separated by spaces</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>display</code></td>
+<td>No</td>
+<td><code>page</code>, <code>popup</code>, <code>touch</code> or <code>wap</code></td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>id_token_hint</code></td>
+<td>No</td>
+<td>An ID token this provider signed, for this client</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>claims</code></td>
+<td>No</td>
+<td>A claims request (OIDC Core §5.5)</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>dpop_jkt</code></td>
+<td>No</td>
+<td>The JWK thumbprint of the key the code is reserved for, a SHA-256 in base64url (RFC 9449 §10)</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>resource</code></td>
+<td>No, repeatable</td>
+<td>An absolute URI without a fragment, registered by the client</td>
+<td><code>invalid_target</code></td>
+</tr>
+<tr>
+<td><code>authorization_details</code></td>
+<td>No</td>
+<td>A JSON array of details of types the client registered</td>
+<td><code>invalid_authorization_details</code></td>
+</tr>
+</tbody>
+</table>
+<p>A required parameter that is missing is <code>invalid_request</code>, wherever its line says the refusal goes. What
+<code>prompt</code>, <code>max_age</code>, <code>login_hint</code>, <code>acr_values</code> and <code>id_token_hint</code> ask of the login is on <a href="../interactions/">the page about
+interactions</a>, and <code>claims</code> on <a href="../scopes-and-claims/">scopes and claims</a>. <code>ui_locales</code>
+chooses the language of the pages (<a href="../../symfony-bundle/translations/">translations</a>). <code>display</code> is checked and
+kept, and no page of the bundle reads it.</p>
+<h2 id="the-order-of-the-checks">The order of the checks<a class="headerlink" href="#the-order-of-the-checks" title="Link to this section">&para;</a></h2>
+<p>A request is judged in two stages, because the specification decides when a refusal may go back to the
+client (RFC 6749 §4.1.2.1, RFC 9700 §4.1): nothing goes back to a redirect URI that has not been checked yet.
+Each stage stops at its first refusal.</p>
+<ol>
+<li><strong>Before anything is read.</strong> A form posted from another site without the session cookie is <a href="#a-request-posted-from-another-site">posted
+   again</a>, then the pushed request or the request object is resolved.</li>
+<li><strong>The first stage, refused on a page.</strong> <code>client_id</code>, and the client it names. A client registered with
+   <code>require_pushed_authorization_requests</code> is refused a request that was not pushed, and one registered with
+   <code>require_signed_request_object</code> a request that no request object carried, both before the redirect URI
+   is read, so that nothing of the request goes back to the browser it came from. Then <code>redirect_uri</code>,
+   <code>state</code>, and the response mode the answer will travel in.</li>
+<li><strong>The second stage, refused at the redirect URI.</strong> <code>response_type</code>, <code>response_mode</code>, then <code>prompt</code>,
+   <code>max_age</code>, <code>login_hint</code>, <code>ui_locales</code>, <code>acr_values</code>, <code>display</code>, the form of <code>id_token_hint</code>, <code>claims</code>, then
+   <code>scope</code>, the PKCE pair, <code>nonce</code>, <code>dpop_jkt</code>, <code>resource</code> and <code>authorization_details</code>.</li>
+<li><strong>The interaction, refused at the redirect URI too.</strong> The <code>id_token_hint</code> is verified, an essential <code>acr</code>
+   the provider cannot prove is refused with <code>unmet_authentication_requirements</code>, and the login and the
+   consent the request needs are asked for (<a href="../interactions/">interactions</a>).</li>
+</ol>
+<h2 id="pkce">PKCE<a class="headerlink" href="#pkce" title="Link to this section">&para;</a></h2>
+<p>A request carries a <code>code_challenge</code> and <code>code_challenge_method=S256</code>, the one method the provider is wired
+with and announces in <code>code_challenge_methods_supported</code> (RFC 7636 §4.3). <code>plain</code> is wired nowhere and
+announced nowhere, and a challenge sent without a method is refused rather than read as <code>plain</code>, which is
+what RFC 7636 §4.3 would make of it.</p>
+<p>A confidential client registered with <code>requires_pkce: false</code> may send neither parameter; a challenge it does
+send is held to the same rules, and the code exchange then verifies it. A public client cannot be registered
+so. The token endpoint compares <code>BASE64URL(SHA256(code_verifier))</code> with the challenge in constant time
+(<a href="../grants/authorization-code/">authorization code</a>).</p>
+<h2 id="the-redirect-uri">The redirect URI<a class="headerlink" href="#the-redirect-uri" title="Link to this section">&para;</a></h2>
+<p><code>redirect_uri</code> is required, and compared byte for byte with the redirect URIs the client registered (RFC 6749
+§3.1.2.3): a trailing slash, the case of a letter or a parameter of the query make another URI. The one
+exception is the loopback redirection of a public native client, whose port may differ (RFC 8252 §7.3),
+which <a href="../clients/">clients</a> describes. The answer goes to the URI the request named, the parameters added to
+the query it already has, and the token request repeats that URI exactly.</p>
+<h2 id="the-answer">The answer<a class="headerlink" href="#the-answer" title="Link to this section">&para;</a></h2>
+<p>When nothing more is needed, the browser goes back with a <code>code</code>, the <code>state</code> of the request when it carried
+one, and the <code>iss</code> of the tenant:</p>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">302</span> <span class="ne">Found</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="na">Location</span><span class="o">:</span> <span class="l">https://billing.example.com/oidc/callback?code=SplxlOBeZQQYbYS6WxSbIA0g2Wn7KcHtdUYvSYn4Ls8&amp;state=af0ifjsldkj&amp;iss=https%3A%2F%2Fop.example.com</span>
+</span></code></pre></div>
+<p>That is the <code>query</code> mode, the default for <code>code</code>; the <a href="../response-modes/">response mode</a> of the request
+decides how the answer travels, and a refusal travels the same way. The code is worth one exchange and lives
+60 seconds by default (<code>tokens.authorization_code_ttl</code>, 600 at most). A token request spends it as soon as
+it finds it, whatever the checks that follow decide, the client the code was issued to, the redirect URI and
+the verifier among them (<a href="../grants/authorization-code/">authorization code</a>).</p>
+<h2 id="refusals">Refusals<a class="headerlink" href="#refusals" title="Link to this section">&para;</a></h2>
+<p><strong>On a page.</strong> A refusal of the first stage, of a pushed request or of a request object is never sent to the
+redirect URI: the person reads a page, with status <code>400</code>, that asks them to start again from the application,
+and beneath it the <code>error</code> and the <code>error_description</code> for whoever develops the application. The page is the
+bundle's <code>error.html.twig</code>, which an application overrides like the others
+(<a href="../../symfony-bundle/pages/">pages</a>).</p>
+<p><strong>At the redirect URI.</strong> Every other refusal goes back to the client, in the mode of the request, with
+<code>error</code>, <code>error_description</code>, <code>state</code> and <code>iss</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>invalid_request</code></td>
+<td>A parameter missing, repeated or malformed, a challenge missing or not <code>S256</code>, an <code>id_token_hint</code> that is not an ID token of this provider for this client</td>
+</tr>
+<tr>
+<td><code>invalid_scope</code></td>
+<td>A scope the client did not register, a malformed list, a list without <code>openid</code></td>
+</tr>
+<tr>
+<td><code>unsupported_response_type</code></td>
+<td>Anything but <code>code</code></td>
+</tr>
+<tr>
+<td><code>unsupported_response_mode</code></td>
+<td>A mode the provider does not answer in</td>
+</tr>
+<tr>
+<td><code>invalid_target</code></td>
+<td>A resource that is not an absolute URI, or that the client did not register</td>
+</tr>
+<tr>
+<td><code>invalid_authorization_details</code></td>
+<td>A detail of a type the provider does not serve or the client did not register, or that its type refuses</td>
+</tr>
+<tr>
+<td><code>login_required</code>, <code>consent_required</code></td>
+<td>A page was needed and the request said <code>prompt=none</code></td>
+</tr>
+<tr>
+<td><code>unmet_authentication_requirements</code></td>
+<td>An essential <code>acr</code> that cannot be met (OIDC Core §5.5.1.1)</td>
+</tr>
+<tr>
+<td><code>access_denied</code></td>
+<td>The person refused on the consent page</td>
+</tr>
+</tbody>
+</table>
+<p>A request whose person signs in through an upstream identity provider has more answers, all sent back the
+same way (<a href="../../saml/federated-sign-in/">signing in through an organisation</a>): <code>access_denied</code> when that
+provider authenticated nobody, with no consent page shown, or <code>login_required</code> when it declined to ask the
+person under <code>prompt=none</code>; and <code>login_required</code>, or <code>account_selection_required</code> for
+<code>prompt=select_account</code>, when it did not authenticate the person again as the request asked, whatever its
+<code>prompt</code>.</p>
+<h2 id="a-request-posted-from-another-site">A request posted from another site<a class="headerlink" href="#a-request-posted-from-another-site" title="Link to this section">&para;</a></h2>
+<p>A browser does not send a session cookie set <code>SameSite=Lax</code> with a <code>POST</code> that another site makes it send
+(RFC 6265bis), so a request a client posts to <code>/authorize</code> arrives without the session the browser holds.
+Answered as it came, it would ask a signed-in person to sign in again, and the cookie of the new session
+would replace the one they held.</p>
+<p>So a <code>POST</code> of a form to <code>/authorize</code> that the browser says came from another site (<code>Sec-Fetch-Site:
+cross-site</code>), that carries no session cookie, and whose every field a browser posts back unchanged, is
+answered with a page of the provider's own origin that posts the same form again, pair by pair and in its
+order. The second post is made from the provider's origin, carries the cookie and is not posted again; it is
+read, judged and refused exactly as the first would have been. Nothing is decided on that page, and nothing of
+the request is spent by the first post, a pushed reference included. The page submits itself where scripts
+run, and where they do not it says "Your browser came from another site without your session. Use the button
+below to continue.", in the language the <code>ui_locales</code> of the posted form asks for, or else the browser. A
+browser that sends no <code>Sec-Fetch-Site</code> is answered as it always was, and a request in the query is never
+touched.</p>
+<p>Beside it, no answer of a page of the interaction plane to such a request, a <code>POST</code> or any method but <code>GET</code>
+and <code>HEAD</code> from another site without the session cookie, carries a new session cookie: the one the session
+listener would have written is taken off the response.</p>
+<p><a href="../interactions/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Interactions</a>, <a href="../response-modes/">response modes</a> and <a href="../pushed-authorization-requests/">pushed
+authorization requests</a></p>
 
 
 
@@ -4330,7 +4580,7 @@ rather than to the person.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

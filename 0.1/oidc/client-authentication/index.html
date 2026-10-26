@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The methods a client may register, and the one it then uses.">
+        <meta name="description" content="The seven methods a client may register, what each one reads of a request and checks, and how a refusal is answered.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Client authentication">
-  <meta property="og:description" content="The methods a client may register, and the one it then uses.">
+  <meta property="og:description" content="The seven methods a client may register, what each one reads of a request and checks, and how a refusal is answered.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1459,6 +1451,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client authentication
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1473,16 +1483,95 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The methods
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-shared-secret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A shared secret
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#an-assertion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        An assertion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-certificate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A certificate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-public-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A public client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-a-request-is-read-and-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How a request is read, and refused
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1509,14 +1598,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1546,14 +1627,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1581,14 +1654,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1652,14 +1717,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1704,14 +1761,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1739,14 +1788,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1776,14 +1817,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1811,14 +1844,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1876,14 +1901,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1911,14 +1928,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1984,14 +1993,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2036,14 +2037,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2071,14 +2064,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2108,14 +2093,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2143,14 +2120,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2188,14 +2157,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2223,14 +2184,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2260,14 +2213,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2296,14 +2241,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2331,14 +2268,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2420,14 +2349,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2472,14 +2393,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2507,14 +2420,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2552,14 +2457,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2587,14 +2484,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2624,14 +2513,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2659,14 +2540,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2696,14 +2569,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2731,14 +2596,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2768,14 +2625,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2803,14 +2652,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4281,6 +4122,80 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-shared-secret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A shared secret
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#an-assertion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        An assertion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-certificate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A certificate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-public-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A public client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-a-request-is-read-and-refused" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How a request is read, and refused
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4305,11 +4220,295 @@
 
 
 <h1 id="client-authentication">Client authentication<a class="headerlink" href="#client-authentication" title="Link to this section">&para;</a></h1>
-<p>A client authenticates with the one method it registered and no other (RFC 6749 §2.3.1): a secret sent as
-HTTP Basic or in the body, a JWT it signed with its own key (<code>private_key_jwt</code>, RFC 7523), a mutual TLS
-certificate (RFC 8705), or nothing at all for a public client. A method is a class implementing the
-interface of that capability, and what the provider announces is what is wired.</p>
-<p>This page will describe each method, what it requires of a client, and what the provider checks.</p>
+<p>A client authenticates with the one method it registered and with no other (RFC 6749 §2.3.1). The method is
+read wherever the provider has to know which client is calling: the token endpoint, the
+<a href="../introspection-and-revocation/">introspection and revocation</a> endpoints, the <a href="../pushed-authorization-requests/">pushed authorization
+request</a> endpoint, the device authorization endpoint and the backchannel
+authentication endpoint. A request that presents another method than the registered one is refused exactly
+as a request that presents a wrong secret is.</p>
+<h2 id="the-methods">The methods<a class="headerlink" href="#the-methods" title="Link to this section">&para;</a></h2>
+<p>The bundle wires seven, in this order:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>What the request carries</th>
+<th>What is checked</th>
+<th>What the client registers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_secret_basic</code></td>
+<td><code>Authorization: Basic</code>, the identifier and the secret form-urlencoded and joined by a colon (RFC 6749 §2.3.1, RFC 7617 §2)</td>
+<td>The secret, against the hash the provider keeps</td>
+<td>A secret</td>
+</tr>
+<tr>
+<td><code>client_secret_post</code></td>
+<td><code>client_id</code> and <code>client_secret</code> in the body (RFC 6749 §2.3.1)</td>
+<td>The same</td>
+<td>A secret</td>
+</tr>
+<tr>
+<td><code>private_key_jwt</code></td>
+<td><code>client_assertion</code>, a JWT it signed with a key of its own (RFC 7523 §2.2, OIDC Core §9)</td>
+<td>The signature against the keys the client publishes, then the claims</td>
+<td><code>jwks</code> or <code>jwks_uri</code></td>
+</tr>
+<tr>
+<td><code>client_secret_jwt</code></td>
+<td><code>client_assertion</code>, a JWT signed with its secret under <code>HS256</code> (OIDC Core §9)</td>
+<td>The MAC with the secret the provider keeps, then the claims</td>
+<td>A secret</td>
+</tr>
+<tr>
+<td><code>tls_client_auth</code></td>
+<td><code>client_id</code>, and a certificate at the TLS handshake (RFC 8705 §2.1)</td>
+<td>The one value of RFC 8705 §2.1.2 it registered, read out of the certificate</td>
+<td>One of the five <code>tls_client_auth_*</code> values</td>
+</tr>
+<tr>
+<td><code>self_signed_tls_client_auth</code></td>
+<td><code>client_id</code>, and a certificate at the TLS handshake (RFC 8705 §2.2)</td>
+<td>That the certificate is one the client publishes</td>
+<td><code>jwks</code> or <code>jwks_uri</code></td>
+</tr>
+<tr>
+<td><code>none</code></td>
+<td><code>client_id</code> alone (RFC 6749 §2.1)</td>
+<td>Nothing: the client names itself</td>
+<td>Nothing</td>
+</tr>
+</tbody>
+</table>
+<p>A client that registers no method takes <code>client_secret_basic</code>, the first one wired for a declared client and
+the default of RFC 7591 §2 for one that registers itself. What the wiring holds is what a client may
+register and what the discovery document announces, so a method taken out of the wiring is neither accepted
+nor announced.</p>
+<table>
+<thead>
+<tr>
+<th>Member of the discovery document</th>
+<th>What it lists</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token_endpoint_auth_methods_supported</code>, <code>revocation_endpoint_auth_methods_supported</code></td>
+<td>The seven methods, in the order above</td>
+</tr>
+<tr>
+<td><code>introspection_endpoint_auth_methods_supported</code></td>
+<td>The six that authenticate a client: <code>none</code> is refused there (RFC 7662 §2.1)</td>
+</tr>
+<tr>
+<td><code>token_endpoint_auth_signing_alg_values_supported</code> and its two siblings</td>
+<td>What an assertion may be signed with: <code>RS256</code>, <code>PS256</code>, <code>ES256</code> and <code>EdDSA</code> for <code>private_key_jwt</code>, <code>HS256</code> for <code>client_secret_jwt</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="a-shared-secret">A shared secret<a class="headerlink" href="#a-shared-secret" title="Link to this section">&para;</a></h2>
+<p><code>client_secret_basic</code> and <code>client_secret_post</code> present the secret itself, and the provider keeps only a hash
+of it, made by the password hasher of the core and compared by it. A request whose client is unknown, or
+registered for another method, pays the same verification against a decoy hash, so the time an answer takes
+says nothing about which clients exist.</p>
+<p><code>client_secret_basic</code> reads a header made of <code>Basic</code>, whatever its case, then spaces or tabs, then one token
+(RFC 7235 §2.1). A token that does not decode to an identifier and a secret joined by a colon, an empty one
+included, is <code>invalid_request</code>; a header of another form is not one the method reads. <code>client_secret_post</code>
+takes the secret from a body that also names the client in <code>client_id</code>, and a <code>client_secret</code> without one is
+<code>invalid_request</code>.</p>
+<p><code>client_secret_jwt</code> signs an assertion with the secret, so the provider has to hold the secret to compute the
+same MAC: it keeps the secret itself, sealed in the row of a client that registered itself. That is the cost
+of the method: a compromised process of the provider holds what computes the MAC as well.</p>
+<h2 id="an-assertion">An assertion<a class="headerlink" href="#an-assertion" title="Link to this section">&para;</a></h2>
+<p><code>private_key_jwt</code> and <code>client_secret_jwt</code> carry the same assertion, in the same two parameters:</p>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">POST</span> <span class="nn">/token</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/x-www-form-urlencoded</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nt">grant_type</span><span class="o">=</span><span class="s">authorization_code</span><span class="p">&amp;</span><span class="nt">code</span><span class="o">=</span><span class="s">...</span><span class="p">&amp;</span><span class="nt">redirect_uri</span><span class="o">=</span><span class="s">...</span><span class="p">&amp;</span><span class="nt">code_verifier</span><span class="o">=</span><span class="s">...</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">&amp;</span><span class="nt">client_assertion_type</span><span class="o">=</span><span class="s">urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwt-bearer</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">&amp;</span><span class="nt">client_assertion</span><span class="o">=</span><span class="s">eyJhbGciOiJFUzI1NiIsImtpZCI6IjEifQ...</span>
+</span></code></pre></div>
+<p><code>client_assertion_type</code> is <code>urn:ietf:params:oauth:client-assertion-type:jwt-bearer</code> and nothing else, and the
+two parameters come together or not at all. Which of the two methods reads the assertion is decided by its
+<code>alg</code>: <code>HS256</code> is <code>client_secret_jwt</code>, an algorithm the provider signs with is <code>private_key_jwt</code>. The
+signature is verified first, and nothing the assertion says is believed before it is. Then:</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>What it has to say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iss</code>, <code>sub</code></td>
+<td>The <code>client_id</code>, both of them. A <code>client_id</code> in the body, when there is one, names the same client</td>
+</tr>
+<tr>
+<td><code>aud</code></td>
+<td>One value, and only one: the issuer of the tenant. A client registered for the backchannel grant may name the token endpoint or the backchannel authentication endpoint instead, on either host the provider serves them on (CIBA Core §7.1)</td>
+</tr>
+<tr>
+<td><code>exp</code></td>
+<td>Present, not past, and no further ahead than the lifetime the provider accepts</td>
+</tr>
+<tr>
+<td><code>iat</code></td>
+<td>Present, and not in the future</td>
+</tr>
+<tr>
+<td><code>jti</code></td>
+<td>Present, and never seen before for that client: it is remembered until the <code>exp</code> in the <code>beffroi.client_assertions</code> cache pool, which a deployment of several machines points at a store they share</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The key is the client's and nobody else's.</strong> A <code>kid</code> in the header names one of the keys the client
+publishes, a header without one is tried against all of them, and a key that names another <code>alg</code>, or a <code>use</code>
+other than <code>sig</code>, is not tried. <code>jwk</code>, <code>jku</code> and <code>x5c</code> in the header are ignored (RFC 8725 §3.10).</p>
+<p><strong>Keys behind a <code>jwks_uri</code> are read and kept.</strong> The URL is read with one <code>GET</code>, no redirect followed, any
+status but <code>2xx</code> refused, within a time and a size of its own. The set is kept in the <code>beffroi.client_keys</code>
+cache pool, filed under its URL, and read again when an assertion names a <code>kid</code> the kept set does not hold, at
+most once per cooldown: a client that rotates its key is followed at once, and one that signs with a key it
+never published cannot make the provider call it on every request. A set that cannot be read refuses the
+authentication, and the reason goes to the audit trail.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">client_authentication</span><span class="p">:</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">assertion_max_lifetime</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">assertion_leeway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nt">jwks_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.0</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="nt">jwks_max_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65536</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="nt">jwks_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">86400</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="nt">jwks_refetch_cooldown</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assertion_max_lifetime</code></td>
+<td><code>300</code></td>
+<td>Seconds ahead of the request the <code>exp</code> of an assertion may be (RFC 7523 §3)</td>
+</tr>
+<tr>
+<td><code>assertion_leeway</code></td>
+<td><code>30</code></td>
+<td>Seconds allowed of the clock of a client, both ways</td>
+</tr>
+<tr>
+<td><code>jwks_timeout</code></td>
+<td><code>3.0</code></td>
+<td>Seconds one read of a <code>jwks_uri</code> is given, connection included</td>
+</tr>
+<tr>
+<td><code>jwks_max_size</code></td>
+<td><code>65536</code></td>
+<td>Bytes a <code>jwks_uri</code> may answer before the read stops</td>
+</tr>
+<tr>
+<td><code>jwks_ttl</code></td>
+<td><code>86400</code></td>
+<td>Seconds a set read from a <code>jwks_uri</code> is kept</td>
+</tr>
+<tr>
+<td><code>jwks_refetch_cooldown</code></td>
+<td><code>300</code></td>
+<td>Seconds between two reads of one <code>jwks_uri</code> when an assertion names an unknown <code>kid</code></td>
+</tr>
+</tbody>
+</table>
+<p>The same six options bound the assertions of the issuers a tenant trusts for the <a href="../grants/jwt-bearer/">JWT bearer
+grant</a>, and the reads of the sets they publish.</p>
+<h2 id="a-certificate">A certificate<a class="headerlink" href="#a-certificate" title="Link to this section">&para;</a></h2>
+<p><code>tls_client_auth</code> and <code>self_signed_tls_client_auth</code> read the same thing, the certificate of the connection,
+and the client names itself in <code>client_id</code>. The certificate is the one the TLS listener in front of the
+provider writes in the <code>SSL_CLIENT_CERT</code> server variable, never a header: a request that carries
+<code>SSL-Client-Cert</code>, <code>X-SSL-Client-Cert</code>, <code>X-Client-Cert</code> or <code>X-Forwarded-Client-Cert</code> is refused with
+<code>invalid_request</code>. Only the leaf reaches the provider, so the chain, the validity period and the revocation of
+the certificate are judged by the listener, which is where a deployment that turns <code>tls_client_auth</code> on says
+which authorities it accepts.</p>
+<ul>
+<li><strong><code>tls_client_auth</code></strong> compares one value read out of the certificate with the one the client registered:
+  its subject distinguished name, written as RFC 4514 writes one and normalised when the client is read, so
+  that <code>openssl x509 -noout -subject -nameopt RFC2253</code> prints a name it can register as it is; or one entry
+  of its subject alternative name, a DNS name compared without regard to case, a URI compared as text, an IP
+  address compared as the octets it stands for, an email address compared as written.</li>
+<li><strong><code>self_signed_tls_client_auth</code></strong> authenticates a certificate the client publishes in its JWK Set, as the
+  first entry of the <code>x5c</code> of a key (RFC 7517 §4.7) or by its <code>x5t#S256</code> (§4.9). The certificate is compared,
+  not the key inside it, so a certificate reissued on the same key is published before it is presented.</li>
+</ul>
+<p>Both bind the tokens of the request to the certificate that authenticated it (RFC 8705 §3.1). A certificate
+presented beside a secret or an assertion authenticates nothing: the listener asked for it, the request did
+not choose it. Whether it binds the tokens of such a client is what the client registered in
+<code>tls_client_certificate_bound_access_tokens</code>. <a href="../sender-constrained/mutual-tls/">Mutual TLS</a> says how a
+deployment serves the host that asks for a certificate, and what a bound token is then.</p>
+<h2 id="a-public-client">A public client<a class="headerlink" href="#a-public-client" title="Link to this section">&para;</a></h2>
+<p><code>none</code> is not an authentication, and it is announced as what it is: the client names itself in <code>client_id</code>
+and proves nothing, which is what a native or a browser application can do. The introspection endpoint
+refuses it with <code>invalid_client</code>, describing a token only to a client that proves who it is (RFC 7662 §2.1),
+and a client that registers it is refused <code>client_credentials</code> and <code>requires_pkce: false</code>. What protects a
+public client is PKCE and its exact redirect URI, never this method.</p>
+<h2 id="how-a-request-is-read-and-refused">How a request is read, and refused<a class="headerlink" href="#how-a-request-is-read-and-refused" title="Link to this section">&para;</a></h2>
+<p>The request presents one mechanism or it is refused before anything is verified: credentials in the
+<code>Authorization</code> header and others in the body are two mechanisms (RFC 6749 §2.3), and so are a secret and an
+assertion. The two certificate methods read one thing and are one mechanism, the registration of the client
+saying which of them verifies it. An <code>Authorization</code> header no method reads, of another scheme than <code>Basic</code>
+or not of its form, is refused when nothing else in the request proves the client, a public client naming
+itself included; beside a credential of the body or a certificate of the connection that proves the client,
+it is not read.</p>
+<table>
+<thead>
+<tr>
+<th>What the request does</th>
+<th>Error</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A credential parameter that is not a single string, <code>Basic</code> credentials that do not decode, half of an assertion, another <code>client_assertion_type</code>, an assertion that is no JWT</td>
+<td><code>invalid_request</code></td>
+<td><code>400</code></td>
+</tr>
+<tr>
+<td>Two mechanisms at once</td>
+<td><code>invalid_request</code></td>
+<td><code>400</code></td>
+</tr>
+<tr>
+<td>A <code>client_id</code> in the body that names another client than the credentials</td>
+<td><code>invalid_request</code></td>
+<td><code>400</code></td>
+</tr>
+<tr>
+<td>An <code>Authorization</code> header no method reads, and nothing else that proves the client, or no credential at all</td>
+<td><code>invalid_client</code></td>
+<td><code>401</code></td>
+</tr>
+<tr>
+<td>An unknown client, a method other than the registered one, a wrong secret, an assertion refused or replayed, keys that cannot be read, a certificate that is not the client's</td>
+<td><code>invalid_client</code>, described <code>Client authentication failed.</code></td>
+<td><code>401</code></td>
+</tr>
+</tbody>
+</table>
+<p>Every refusal of the last line reads the same, so an answer does not say whether a client exists or which
+method it registered; why it was refused goes to the audit trail, with the client and the method, as a
+<code>ClientAuthenticationFailed</code> event. A <code>401</code> carries <code>WWW-Authenticate: Basic realm="&lt;issuer&gt;"</code> when the client
+used the <code>Authorization</code> header, and no challenge otherwise (RFC 6749 §5.2).</p>
+<p>A client that authenticates counts one request against its own load budget, <code>load.client</code>, 1200 requests in
+60 seconds by default, here and nowhere else, this being the one place its identifier is proven rather than
+claimed. A public client counts nothing there, the budget of the address it calls from bounding it. A spent
+budget is answered <code>429</code> with a <code>Retry-After</code>.</p>
+<p><a href="../clients/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Clients</a>, <a href="../sender-constrained/dpop/">DPoP</a> and <a href="../sender-constrained/mutual-tls/">mutual
+TLS</a></p>
 
 
 
@@ -4330,7 +4529,7 @@ interface of that capability, and what the provider announces is what is wired.<
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

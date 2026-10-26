@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="What the provider says about the person, OIDC Core §2.">
+        <meta name="description" content="What the provider says about an authentication, to one client, OIDC Core §2, the claims, the algorithms a client may register, and where an ID token is taken back.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="ID tokens">
-  <meta property="og:description" content="What the provider says about the person, OIDC Core §2.">
+  <meta property="og:description" content="What the provider says about an authentication, to one client, OIDC Core §2, the claims, the algorithms a client may register, and where an ID token is taken back.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1463,14 +1455,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1500,14 +1484,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1536,14 +1512,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1571,14 +1539,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1642,14 +1602,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1694,14 +1646,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1729,14 +1673,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1766,14 +1702,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1801,14 +1729,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1866,14 +1786,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1901,14 +1813,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1976,14 +1880,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2028,14 +1924,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2059,6 +1947,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ID tokens
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -2073,16 +1979,84 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#when-one-is-issued" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When one is issued
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The claims
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Signing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encryption
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-an-id-token-comes-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where an ID token comes back
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2109,14 +2083,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2145,14 +2111,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2190,14 +2148,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2225,14 +2175,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2262,14 +2204,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2298,14 +2232,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2333,14 +2259,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2422,14 +2340,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2474,14 +2384,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2509,14 +2411,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2554,14 +2448,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2589,14 +2475,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2626,14 +2504,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2661,14 +2531,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2698,14 +2560,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2733,14 +2587,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2770,14 +2616,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2805,14 +2643,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4283,6 +4113,69 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#when-one-is-issued" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When one is issued
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The claims
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Signing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encryption
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-an-id-token-comes-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where an ID token comes back
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4307,11 +4200,165 @@
 
 
 <h1 id="id-tokens">ID tokens<a class="headerlink" href="#id-tokens" title="Link to this section">&para;</a></h1>
-<p>An ID token is a statement about an authentication, addressed to one client: who the person is, when they
-proved it, how, and with which provider. It is signed, it may be encrypted, and it is never a credential for
-an API.</p>
-<p>This page will describe the claims, what <code>nonce</code>, <code>auth_time</code>, <code>acr</code> and <code>amr</code> carry, and the algorithms a
-client may register.</p>
+<p>An ID token is a statement about an authentication, addressed to one client (OIDC Core §2): who the person is
+to that client, when they proved it, how, and in which session. It is signed by the tenant, encrypted when
+the client asked for it, and it leaves the provider at the token endpoint and nowhere else, the authorization
+endpoint answering with a code alone. It is never a credential for an API.</p>
+<h2 id="when-one-is-issued">When one is issued<a class="headerlink" href="#when-one-is-issued" title="Link to this section">&para;</a></h2>
+<p>When <code>openid</code> is among the scopes of the answer and a person who signed in at this provider is behind it:</p>
+<table>
+<thead>
+<tr>
+<th>Grant</th>
+<th>ID token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../../grants/authorization-code/">Authorization code</a></td>
+<td>With <code>openid</code>, carrying the <code>nonce</code> of the authorization request when it had one</td>
+</tr>
+<tr>
+<td><a href="../../grants/refresh-token/">Refresh token</a></td>
+<td>With <code>openid</code> among the scopes of the refresh, describing the same authentication and carrying no <code>nonce</code> (OIDC Core §12.2)</td>
+</tr>
+<tr>
+<td><a href="../../grants/device-code/">Device code</a></td>
+<td>With <code>openid</code> among the scopes the device asked for</td>
+</tr>
+<tr>
+<td><a href="../../grants/backchannel-authentication/">Backchannel authentication</a></td>
+<td>Always, <code>openid</code> being required of the request</td>
+</tr>
+<tr>
+<td>Client credentials, token exchange, JWT bearer</td>
+<td>Never: nobody signed in at this provider</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-claims">The claims<a class="headerlink" href="#the-claims" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>What it holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iss</code></td>
+<td>The issuer of the tenant</td>
+</tr>
+<tr>
+<td><code>sub</code></td>
+<td>The subject this provider gives the person for this client, public or <a href="../../pairwise-subjects/">pairwise</a> (OIDC Core §8)</td>
+</tr>
+<tr>
+<td><code>aud</code></td>
+<td>The <code>client_id</code>, as a string</td>
+</tr>
+<tr>
+<td><code>exp</code></td>
+<td><code>tokens.id_token_ttl</code> seconds after <code>iat</code>, ten minutes by default</td>
+</tr>
+<tr>
+<td><code>iat</code></td>
+<td>When it was issued</td>
+</tr>
+<tr>
+<td><code>auth_time</code></td>
+<td>When the session last proved something, as it stood when the authorization was granted</td>
+</tr>
+<tr>
+<td><code>nonce</code></td>
+<td>The <code>nonce</code> of the authorization request, when it carried one</td>
+</tr>
+<tr>
+<td><code>acr</code></td>
+<td>Always. The first class the request asked for that the session satisfies, or, when it asked for none the session satisfies, the first class of the <a href="../../../core/tenants/#the-classes-it-answers-with">policy of the tenant</a> the session satisfies</td>
+</tr>
+<tr>
+<td><code>amr</code></td>
+<td>The methods the session proved (RFC 8176 §2), and <code>mfa</code> beside them when two factors of different kinds were proven</td>
+</tr>
+<tr>
+<td><code>azp</code></td>
+<td>The <code>client_id</code></td>
+</tr>
+<tr>
+<td><code>at_hash</code></td>
+<td>The left half of the digest of the access token of the same answer, under the hash of the signing algorithm, in base64url (OIDC Core §3.1.3.6)</td>
+</tr>
+<tr>
+<td><code>sid</code></td>
+<td>The session, in every ID token and for every client (Front-Channel Logout 1.0 §3, Back-Channel Logout 1.0 §2.1)</td>
+</tr>
+</tbody>
+</table>
+<p>What the session had proven is the one frozen when the authorization was granted: a step-up or a new login
+afterwards moves the session, and never the <code>auth_time</code>, <code>acr</code> or <code>amr</code> of a token that descends from that
+authorization, those of the ID tokens a refresh issues included.</p>
+<p>Beside these, an ID token carries the claims the authorization request asked for by name in
+<code>claims.id_token</code> (OIDC Core §5.5), when the person has a value for them and a wired claims provider serves
+them; one of them never replaces a claim of the table. The claims the scopes stand for, those
+of <code>profile</code> or <code>email</code>, are not in the ID token: the client reads them at the <a href="../../userinfo/">UserInfo
+endpoint</a>.</p>
+<p>The header carries <code>alg</code> and <code>kid</code>, and no <code>typ</code>: a resource server that requires <code>at+jwt</code> refuses an ID
+token presented to it as an access token, which is the point.</p>
+<h2 id="signing">Signing<a class="headerlink" href="#signing" title="Link to this section">&para;</a></h2>
+<p>The client chooses the algorithm in <code>id_token_signed_response_alg</code> (OIDC Registration §2), among those the
+provider is wired with: <code>RS256</code>, <code>PS256</code>, <code>ES256</code> and <code>EdDSA</code>. A client that registers none gets the first of
+them, <code>RS256</code>, which OIDC Core §15.1 makes mandatory. A name nothing signs under, <code>none</code> among them, is
+refused: a declared client is an error of the configuration, and a registration request is answered
+<code>invalid_client_metadata</code>.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tokens</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">id_token_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">600</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">my-application</span><span class="p">:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="c1"># ...</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">id_token_signed_response_alg</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ES256</span>
+</span></code></pre></div>
+<p>The key is the active signing key of the tenant for that algorithm, published in the JWK Set under the <code>kid</code>
+the header names (<a href="../../../core/keys/">keys</a>). The logout tokens of a client are signed with the algorithm it
+registered for its ID tokens, since that is the one it knows how to verify.</p>
+<h2 id="encryption">Encryption<a class="headerlink" href="#encryption" title="Link to this section">&para;</a></h2>
+<p>A client that registers <code>id_token_encrypted_response_alg</code> and <code>id_token_encrypted_response_enc</code> receives its ID
+token signed, then encrypted to one of its keys (OIDC Core §3.1.3.7): a nested JWT, whose JWE header says
+<code>cty</code> <code>JWT</code>. <a href="../encryption/">Encryption</a> says which algorithms, which key, and what happens when the key cannot
+be read.</p>
+<h2 id="where-an-id-token-comes-back">Where an ID token comes back<a class="headerlink" href="#where-an-id-token-comes-back" title="Link to this section">&para;</a></h2>
+<p>The provider takes an ID token it issued back as a hint. It reads one against the keys of the tenant, holds
+its <code>iss</code> to the issuer, and leaves its <code>exp</code> aside, a hint describing a past sign-in being the ordinary
+case:</p>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What the hint says</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id_token_hint</code> of an authorization request</td>
+<td>Who the client expects to be signed in; it must have been issued to that client (OIDC Core §3.1.2.1)</td>
+</tr>
+<tr>
+<td><code>id_token_hint</code> of a logout request</td>
+<td>Which session the logout is about (RP-Initiated Logout 1.0 §2)</td>
+</tr>
+<tr>
+<td><code>id_token_hint</code> of a backchannel authentication request</td>
+<td>Who the request is for; it must have been issued to that client (CIBA Core §7.1)</td>
+</tr>
+</tbody>
+</table>
+<p>At the authorization endpoint and at the backchannel authentication endpoint, a hint the tenant did not sign,
+or of another issuer, is refused with <code>invalid_request</code>. At the end session endpoint, a signed hint the
+provider cannot verify is read as no hint at all: the logout is not refused, and a browser that holds a
+session is asked to confirm it (<a href="../../logout/">logout</a>).</p>
+<p>The hint is read as a signed ID token: a client whose ID tokens are encrypted sends back the signed token it
+decrypted, and not one it encrypted again for the provider.</p>
 
 
 
@@ -4332,7 +4379,7 @@ client may register.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

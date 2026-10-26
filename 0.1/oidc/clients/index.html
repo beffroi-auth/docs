@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="What a client is, where it came from, and what it registered.">
+        <meta name="description" content="What a client is, the two places it comes from, every member it registers, and what the provider refuses when it reads one.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Clients">
-  <meta property="og:description" content="What a client is, where it came from, and what it registered.">
+  <meta property="og:description" content="What a client is, the two places it comes from, every member it registers, and what the provider refuses when it reads one.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1423,6 +1423,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clients
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1437,16 +1455,200 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#declaring-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Declaring one
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-client-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a client registers
+      
+    </span>
+  </a>
   
-
-      </a>
+    <nav class="md-nav" aria-label="What a client registers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#who-is-asking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who is asking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-a-browser-goes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where a browser goes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-it-may-ask-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it may ask for
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-proves-who-it-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it proves who it is
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-its-requests-are-made" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How its requests are made
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-it-receives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it receives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#who-it-sees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who it sees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logout-backchannel-authentication-and-token-exchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logout, backchannel authentication and token exchange
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-it-says-of-its-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it says of its software
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-addresses-a-client-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The addresses a client registers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-registration-has-to-hold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a registration has to hold
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-and-confidential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public and confidential
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-what-exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading what exists
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1473,14 +1675,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1510,14 +1704,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1546,14 +1732,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1581,14 +1759,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1652,14 +1822,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1704,14 +1866,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1739,14 +1893,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1776,14 +1922,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1811,14 +1949,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1876,14 +2006,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1911,14 +2033,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1984,14 +2098,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2036,14 +2142,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2071,14 +2169,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2108,14 +2198,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2143,14 +2225,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2188,14 +2262,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2223,14 +2289,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2260,14 +2318,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2296,14 +2346,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2331,14 +2373,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2420,14 +2454,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2472,14 +2498,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2507,14 +2525,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2552,14 +2562,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2587,14 +2589,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2624,14 +2618,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2659,14 +2645,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2696,14 +2674,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2731,14 +2701,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2768,14 +2730,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2803,14 +2757,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4281,6 +4227,185 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#declaring-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Declaring one
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-client-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a client registers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What a client registers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#who-is-asking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who is asking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#where-a-browser-goes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where a browser goes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-it-may-ask-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it may ask for
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-proves-who-it-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it proves who it is
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-its-requests-are-made" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How its requests are made
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-it-receives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it receives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#who-it-sees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who it sees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logout-backchannel-authentication-and-token-exchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logout, backchannel authentication and token exchange
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-it-says-of-its-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it says of its software
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-addresses-a-client-registers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The addresses a client registers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-registration-has-to-hold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a registration has to hold
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-and-confidential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public and confidential
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-what-exists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading what exists
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4305,12 +4430,433 @@
 
 
 <h1 id="clients">Clients<a class="headerlink" href="#clients" title="Link to this section">&para;</a></h1>
-<p>A client is an application the provider answers, identified by a <code>client_id</code>, holding the redirect URIs it
-may be sent back to, the methods it authenticates with and the metadata it registered. A client declared by
-the configuration and a client that registered itself are the same object with a different source, and the
-source is visible wherever clients are read.</p>
-<p>This page will describe the model, every piece of metadata a client may hold, and what the provider refuses
-at registration time rather than at request time.</p>
+<p>A client is an application the provider answers, known by its <code>client_id</code>. It holds the addresses a browser
+may be sent back to, the one method it authenticates with, the scopes and resources it may ask for, and how
+it wants the documents written for it. A client comes from one of two places: the configuration of the
+deployment declares it, or it registered itself at the <a href="../dynamic-registration/">registration endpoint</a>. Both
+are read by the same reader under the same rules, so the same members mean the same thing wherever they were
+written; the source decides what a member left out stands for, who may change the client and how it goes
+away. A registration is held to two rules more, when it is written: the scopes it names are ones its tenant
+hands out, and a <code>sector_identifier_uri</code> it names is backed by the document behind it (<a href="../pairwise-subjects/">pairwise
+subjects</a>).</p>
+<h2 id="declaring-one">Declaring one<a class="headerlink" href="#declaring-one" title="Link to this section">&para;</a></h2>
+<p>Clients a deployment knows in advance are declared under <code>beffroi.clients</code>, keyed by their <code>client_id</code>.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">billing</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'Billing'</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">logo_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://billing.example.com/logo.svg'</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">policy_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://billing.example.com/privacy'</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">redirect_uris</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://billing.example.com/oidc/callback'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">post_logout_redirect_uris</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://billing.example.com/'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">private_key_jwt</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">            </span><span class="nt">jwks_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://billing.example.com/.well-known/jwks.json'</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'openid</span><span class="nv"> </span><span class="s">profile</span><span class="nv"> </span><span class="s">email</span><span class="nv"> </span><span class="s">offline_access</span><span class="nv"> </span><span class="s">invoices.read'</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">            </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://api.example.com/'</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<p>The declarations are read as a whole, the first time the provider reads a client, and one that does not hold
+together is refused there with the client and the rule it broke, before anything is served under it:
+<code>bin/console beffroi:client:list</code> reads them, and is the quickest way to see a mistake. The same refusal
+reaches a client that registers itself, as the <code>400</code> of RFC 7591 §3.2.2.</p>
+<p><strong>What a member left out means depends on the source.</strong> A declaration takes what an application that signs
+a person in comes for; a client that registers itself takes what RFC 7591 §2 says it gets.</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Declared and left out</th>
+<th>Registered and left out</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grant_types</code></td>
+<td><code>authorization_code</code> and <code>refresh_token</code></td>
+<td><code>authorization_code</code></td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td><code>openid profile email</code></td>
+<td><code>openid</code>, or the default set the policy of the tenant names</td>
+</tr>
+<tr>
+<td><code>token_endpoint_auth_method</code></td>
+<td>The first method wired, <code>client_secret_basic</code></td>
+<td><code>client_secret_basic</code></td>
+</tr>
+<tr>
+<td><code>access_token_format</code></td>
+<td>The first shape wired, <code>jwt</code></td>
+<td><code>jwt</code>, a client that registers itself never naming this member</td>
+</tr>
+<tr>
+<td><code>subject_type</code></td>
+<td>The first kind wired, <code>public</code></td>
+<td>The same</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A secret is chosen by the deployment for a declared client, and drawn by the provider for a registered
+one.</strong> A declared <code>secret</code> is at least 32 visible ASCII characters (RFC 6749 appendix A.2), a value to
+generate and put in an environment variable, never in the file. It is hashed with the password hasher of the
+core the first time the client is looked up in a process, and kept as a hash, except for a client that
+authenticates with <code>client_secret_jwt</code>: that method computes a MAC with the secret, so the provider keeps the
+secret itself. A client registers a secret exactly when the method it registered proves one, and a
+declaration that carries a secret for any other method is refused.</p>
+<h2 id="what-a-client-registers">What a client registers<a class="headerlink" href="#what-a-client-registers" title="Link to this section">&para;</a></h2>
+<p>Every member below is spelled the same in the configuration and in a registration request, under the name
+RFC 7591 §2, OIDC Registration §2 or the specification of its feature gives it, the members marked
+<em>deployment</em> being this provider's own. <code>secret</code> is written in the configuration alone, and <code>software_id</code>,
+<code>software_version</code> and <code>software_statement</code> in a registration request alone: the configuration has no such
+option and refuses it. A member this provider does not read is refused rather than ignored, and a value of the
+wrong kind is refused rather than converted: a string where a list is expected, or <code>"true"</code> where a boolean
+is.</p>
+<p>The members marked <em>deployment</em> are written by whoever declares a client, or by the <a href="../dynamic-registration/">registration
+policy</a> of the tenant. They are exceptions to a rule, or privileges, and a client
+that registers itself never obtains one: one in the body of its registration request is refused with
+<code>invalid_client_metadata</code>, and a software statement does not grant one either.</p>
+<h3 id="who-is-asking">Who is asking<a class="headerlink" href="#who-is-asking" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_name</code></td>
+<td>The name the consent page shows. A client that registers none is shown under its <code>client_id</code></td>
+</tr>
+<tr>
+<td><code>logo_uri</code></td>
+<td>The image the consent page shows. The browser of the person loads it from the client, with no referrer, and the provider never fetches it</td>
+</tr>
+<tr>
+<td><code>policy_uri</code>, <code>tos_uri</code>, <code>client_uri</code></td>
+<td>The pages the consent page links to, in that order</td>
+</tr>
+<tr>
+<td><code>contacts</code></td>
+<td>Ways to reach the people responsible for the client. No page shows them</td>
+</tr>
+</tbody>
+</table>
+<h3 id="where-a-browser-goes">Where a browser goes<a class="headerlink" href="#where-a-browser-goes" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>redirect_uris</code></td>
+<td>Where the answer of the authorization endpoint may go, compared byte for byte with the <code>redirect_uri</code> of a request (RFC 6749 §3.1.2.3)</td>
+</tr>
+<tr>
+<td><code>post_logout_redirect_uris</code></td>
+<td>Where a browser may be sent after a logout, compared the same way</td>
+</tr>
+<tr>
+<td><code>initiate_login_uri</code></td>
+<td>Where the provider sends a browser to have this client begin a login (OIDC Core §4), from <code>/initiate-login?client_id=...</code>. HTTPS, on a loopback host as anywhere else</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-it-may-ask-for">What it may ask for<a class="headerlink" href="#what-it-may-ask-for" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grant_types</code></td>
+<td>The grants it may use at the token endpoint, among those the provider is wired with</td>
+</tr>
+<tr>
+<td><code>response_types</code></td>
+<td><code>code</code>, and nothing else. It is not kept, the grants saying the same thing: a registration that names <code>code</code> without the grant that answers with one is refused</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>The closed list of scopes it may ask for, space delimited (RFC 6749 §3.3). A scope outside it is <code>invalid_scope</code></td>
+</tr>
+<tr>
+<td><code>resources</code></td>
+<td><em>Deployment.</em> The resources it may ask an access token for (RFC 8707 §2). See <a href="../resources/">resources</a></td>
+</tr>
+<tr>
+<td><code>authorization_details_types</code></td>
+<td>The types of authorization detail it may ask for (RFC 9396 §2), among those the provider is wired with. See <a href="../authorization-details/">authorization details</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-it-proves-who-it-is">How it proves who it is<a class="headerlink" href="#how-it-proves-who-it-is" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token_endpoint_auth_method</code></td>
+<td>The one method it authenticates with, among those the provider is wired with. See <a href="../client-authentication/">client authentication</a></td>
+</tr>
+<tr>
+<td><code>secret</code></td>
+<td>Configuration only: the shared secret of a declared client whose method proves one</td>
+</tr>
+<tr>
+<td><code>jwks</code>, <code>jwks_uri</code></td>
+<td>Its public keys, inline or behind a URL, one or the other and never both. A symmetric key (<code>kty: oct</code>) is refused</td>
+</tr>
+<tr>
+<td><code>tls_client_auth_subject_dn</code>, <code>tls_client_auth_san_dns</code>, <code>tls_client_auth_san_uri</code>, <code>tls_client_auth_san_ip</code>, <code>tls_client_auth_san_email</code></td>
+<td>What names it in its certificate (RFC 8705 §2.1.2), exactly one of the five, for <code>tls_client_auth</code> and for no other method</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-its-requests-are-made">How its requests are made<a class="headerlink" href="#how-its-requests-are-made" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>requires_pkce</code></td>
+<td><em>Deployment.</em> <code>true</code> by default. <code>false</code> is accepted for a confidential client only, which may then send no <code>code_challenge</code>; a challenge it sends is verified all the same</td>
+</tr>
+<tr>
+<td><code>require_pushed_authorization_requests</code></td>
+<td>Its authorization requests are only read from a <a href="../pushed-authorization-requests/">pushed request</a> (RFC 9126 §6)</td>
+</tr>
+<tr>
+<td><code>require_signed_request_object</code></td>
+<td>Its authorization requests are only read from a <a href="../request-objects/">request object</a>, whose signature is what <code>request_object_signing_alg</code> says, and its backchannel authentication requests only from an object it signed</td>
+</tr>
+<tr>
+<td><code>request_object_signing_alg</code></td>
+<td>The one algorithm its request objects are signed with, or <code>none</code> for unsigned objects. Left out, any algorithm the provider verifies, and never an unsigned object</td>
+</tr>
+<tr>
+<td><code>request_uris</code></td>
+<td>The URLs a request object of this client may be read back from, compared byte for byte, fragment included</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-it-receives">What it receives<a class="headerlink" href="#what-it-receives" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>access_token_format</code></td>
+<td><em>Deployment.</em> The shape of its access tokens: <code>jwt</code> or <code>opaque</code>. See <a href="../tokens/access-tokens/">access tokens</a></td>
+</tr>
+<tr>
+<td><code>require_sender_constrained_tokens</code></td>
+<td><em>Deployment.</em> A token request that proves neither a certificate nor a key is refused with <code>invalid_request</code> rather than answered with bearer tokens</td>
+</tr>
+<tr>
+<td><code>tls_client_certificate_bound_access_tokens</code></td>
+<td>Its tokens are bound to the certificate of its connection whichever way it authenticated (RFC 8705 §3.4), and a token request that presents none is refused with <code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>id_token_signed_response_alg</code></td>
+<td>The algorithm its ID tokens and logout tokens are signed with. Left out, <code>RS256</code>, the first algorithm wired</td>
+</tr>
+<tr>
+<td><code>id_token_encrypted_response_alg</code>, <code>id_token_encrypted_response_enc</code></td>
+<td>Its ID tokens encrypted to one of its keys once signed. The two go together, neither has a default</td>
+</tr>
+<tr>
+<td><code>userinfo_signed_response_alg</code></td>
+<td>Its UserInfo answer as a signed JWT (<code>application/jwt</code>). Left out, plain JSON</td>
+</tr>
+<tr>
+<td><code>userinfo_encrypted_response_alg</code>, <code>userinfo_encrypted_response_enc</code></td>
+<td>Its UserInfo answer encrypted to one of its keys</td>
+</tr>
+<tr>
+<td><code>authorization_signed_response_alg</code></td>
+<td>The algorithm of its <a href="../response-modes/">signed authorization responses</a>. Left out, <code>RS256</code></td>
+</tr>
+<tr>
+<td><code>authorization_encrypted_response_alg</code>, <code>authorization_encrypted_response_enc</code></td>
+<td>Its signed authorization responses encrypted to one of its keys</td>
+</tr>
+<tr>
+<td><code>requires_consent</code></td>
+<td><em>Deployment.</em> <code>true</code> by default. <code>false</code> names a first-party application, which no <a href="../consent/">consent page</a> is shown for</td>
+</tr>
+</tbody>
+</table>
+<p>What encryption a client may register, and which of its keys a document is addressed to, is on <a href="../tokens/encryption/">the page
+about encryption</a>.</p>
+<h3 id="who-it-sees">Who it sees<a class="headerlink" href="#who-it-sees" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>subject_type</code></td>
+<td><code>public</code> or <code>pairwise</code>, the kind of <code>sub</code> it sees for a person (OIDC Core §8)</td>
+</tr>
+<tr>
+<td><code>sector_identifier_uri</code></td>
+<td>The sector its pairwise identifiers belong to. See <a href="../pairwise-subjects/">pairwise subjects</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="logout-backchannel-authentication-and-token-exchange">Logout, backchannel authentication and token exchange<a class="headerlink" href="#logout-backchannel-authentication-and-token-exchange" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backchannel_logout_uri</code>, <code>backchannel_logout_session_required</code></td>
+<td>Where a logout token is posted, and whether the client reads its <code>sid</code> (Back-Channel Logout 1.0 §2.2). See <a href="../logout/">logout</a></td>
+</tr>
+<tr>
+<td><code>frontchannel_logout_uri</code>, <code>frontchannel_logout_session_required</code></td>
+<td>The page loaded in a frame at a logout, and whether it receives <code>iss</code> and <code>sid</code> (Front-Channel Logout 1.0 §2)</td>
+</tr>
+<tr>
+<td><code>backchannel_token_delivery_mode</code></td>
+<td><code>poll</code> or <code>ping</code>, for a client of the backchannel flow (CIBA Core §4). No default. See <a href="../grants/backchannel-authentication/">backchannel authentication</a></td>
+</tr>
+<tr>
+<td><code>backchannel_client_notification_endpoint</code></td>
+<td>Where the provider calls a <code>ping</code> client back. Required with <code>ping</code>, refused with another mode or with none</td>
+</tr>
+<tr>
+<td><code>token_exchange</code></td>
+<td><em>Deployment.</em> For a client of the token exchange grant: <code>subject_token_types</code>, and <code>may_act_for_a_user</code>. See <a href="../grants/token-exchange/">token exchange</a></td>
+</tr>
+<tr>
+<td><code>may_act</code></td>
+<td><em>Deployment.</em> Who may act for the subject of a token issued to this client (RFC 8693 §4.4)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-it-says-of-its-software">What it says of its software<a class="headerlink" href="#what-it-says-of-its-software" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>software_id</code>, <code>software_version</code></td>
+<td>Registration only: what the software the client is an instance of calls itself, and its version (RFC 7591 §2)</td>
+</tr>
+<tr>
+<td><code>software_statement</code></td>
+<td>Registration only: read by the registration mode that takes one, never as metadata. See <a href="../dynamic-registration/">dynamic registration</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-addresses-a-client-registers">The addresses a client registers<a class="headerlink" href="#the-addresses-a-client-registers" title="Link to this section">&para;</a></h2>
+<p>Every URL a client registers, whatever the provider does with it, is held to one rule: an absolute URI, with
+no fragment and no credentials, whose host is a name of letters, digits, hyphens and dots or an IP address,
+in HTTPS. Plain HTTP is accepted on a loopback host only, <code>localhost</code>, a name under <code>.localhost</code>, an address
+of <code>127.0.0.0/8</code> or <code>[::1]</code>. A custom scheme is not an address the provider sends anybody to, and is refused.</p>
+<p>Three members depart from it, each for its own reason. <code>initiate_login_uri</code> is HTTPS on a loopback host too,
+OIDC Registration §2 giving it no exception. <code>request_uris</code> may carry a fragment, which OIDC Core §6.2 gives
+a meaning, and the URL is read back without it. <code>resources</code> are identifiers and never fetched, so a URN is a
+resource as an HTTPS URL is (RFC 8707 §2). <code>tls_client_auth_san_uri</code> is no address either: it is the text a
+certificate is compared with, and only has to be non-empty.</p>
+<p><strong>A redirect URI matches byte for byte</strong>, a trailing slash or a letter in another case included, and a
+registered query is part of what matches. The one exception is the loopback redirection of a native
+application (RFC 8252 §7.3), and it belongs to a <strong>public</strong> client only: a redirect URI registered in plain
+HTTP on <code>127.0.0.1</code> or <code>[::1]</code> matches the same URI on any port, the path and the query compared byte for
+byte. A public client therefore registers the loopback interface by its address and never by a name: plain
+HTTP anywhere but on <code>127.0.0.1</code> and <code>[::1]</code> is refused for it (RFC 8252 §8.3). A confidential client keeps
+the port it registered. The same holds for <code>post_logout_redirect_uris</code>.</p>
+<h2 id="what-a-registration-has-to-hold">What a registration has to hold<a class="headerlink" href="#what-a-registration-has-to-hold" title="Link to this section">&para;</a></h2>
+<p>Each rule below is checked where the client is read, so a declaration that breaks one is refused when the
+declarations are read, and a registration that breaks one is refused with <code>invalid_client_metadata</code>. A
+registration is refused with <code>invalid_redirect_uri</code> instead for a value of <code>redirect_uris</code> or
+<code>post_logout_redirect_uris</code> that the rule of every address refuses, and for redirect URIs its grants do not
+call for, or call for and lack; the rule a public client's loopback addresses follow answers
+<code>invalid_client_metadata</code>, as every other one does.</p>
+<ul>
+<li>The <code>client_id</code> is printable ASCII with no space at either end (RFC 6749 appendix A.1). A client of
+  <code>client_credentials</code> or of the token exchange is named where a subject is expected, the <code>sub</code> of its own
+  tokens or the <code>act</code> of an exchanged one, so its identifier is 1 to 255 visible ASCII characters with no
+  space at all (OIDC Core §2).</li>
+<li>The <code>client_name</code> is not empty, and neither is any of the <code>contacts</code>.</li>
+<li>A method that proves a shared secret has one, and any other method has none.</li>
+<li><code>jwks</code> and <code>jwks_uri</code> are never both there. One of them is, for <code>private_key_jwt</code>,
+  <code>self_signed_tls_client_auth</code>, a <code>request_object_signing_alg</code> naming an algorithm, and any encrypted
+  response. An inline <code>jwks</code> holds a key every encryption the client registered can be addressed to.</li>
+<li><code>tls_client_auth</code> comes with exactly one of the five certificate values, and every other method with none.</li>
+<li>The client is registered for at least one grant. <code>refresh_token</code> comes with a grant that issues one:
+  <code>authorization_code</code>, the device code or the backchannel grant.</li>
+<li>A client of <code>authorization_code</code> registers at least one redirect URI, and a client of no grant that sends a
+  browser back registers none, and no <code>response_types</code> either.</li>
+<li><code>client_credentials</code> is refused to a public client, which proves nothing.</li>
+<li>The token exchange grant and the <code>token_exchange</code> member come together or not at all, and the token types
+  it names are ones the provider reads.</li>
+<li><code>requires_pkce: false</code> is refused to a public client.</li>
+<li><code>backchannel_logout_session_required</code> needs a <code>backchannel_logout_uri</code>, and
+  <code>frontchannel_logout_session_required</code> a <code>frontchannel_logout_uri</code>.</li>
+<li>An encryption names its <code>alg</code> and its <code>enc</code> together. OIDC Registration §2 would default the <code>enc</code> to
+  <code>A128CBC-HS256</code>, which the provider is not wired with, so it takes no default.</li>
+<li>A <code>pairwise</code> client has a sector: its <code>sector_identifier_uri</code>, its redirect URIs all on one host, or, when
+  it registers no redirect URI, its <code>jwks_uri</code>.</li>
+<li>Every name is one the provider is wired with: a grant, a method, an algorithm, an access token shape, a
+  delivery mode, a kind of subject, a type of authorization detail. The refusal lists the wired names.</li>
+</ul>
+<h2 id="public-and-confidential">Public and confidential<a class="headerlink" href="#public-and-confidential" title="Link to this section">&para;</a></h2>
+<p>A client is <strong>public</strong> when it registered <code>token_endpoint_auth_method: none</code>: it names itself and proves
+nothing, as a native or a browser application cannot keep a secret. Everything else is <strong>confidential</strong>.
+What protects the code of a public client is PKCE, which is mandatory for it, and the exact redirect URI.
+Besides the loopback exception above, the difference shows where a rule asks for a client that proves
+itself: <code>requires_pkce: false</code> and <code>client_credentials</code> are refused to a public client at its registration,
+the <a href="../introspection-and-revocation/">introspection endpoint</a> refuses it, and a refresh token reaches it only
+when it asks for <code>offline_access</code> (<a href="../tokens/refresh-tokens/">refresh tokens</a>).</p>
+<h2 id="reading-what-exists">Reading what exists<a class="headerlink" href="#reading-what-exists" title="Link to this section">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:client:list
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>bin/console<span class="w"> </span>beffroi:client:show<span class="w"> </span>billing
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>bin/console<span class="w"> </span>beffroi:client:delete<span class="w"> </span>3x4mpl3Cl13nt1d3nt1f13rDr4wnByTh3Pr0v1d3rXX
+</span></code></pre></div>
+<p><code>beffroi:client:list</code> prints every client of the tenant with its name and its source, <code>configuration</code> or
+<code>registration</code>, and for a registered client when it registered and when it was last used.
+<code>beffroi:client:show</code> prints the same for one client, and for a registered one the members it registered and
+the ones the registration policy of the tenant wrote on it; for a declared one it points at the
+configuration, which is the whole of what it is. <code>beffroi:client:delete</code> deletes a client that registered
+itself, and refuses a declared one, which goes away with its block in the configuration.</p>
+<p>A registered client whose stored registration the reader refuses, a row naming a member this version does not
+read or breaking a rule it holds, is answered as no client at all, and the reason is written to the log as an
+error.</p>
+<p><a href="../client-authentication/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Client authentication</a> and <a href="../dynamic-registration/">dynamic
+registration</a></p>
 
 
 
@@ -4331,7 +4877,7 @@ at registration time rather than at request time.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

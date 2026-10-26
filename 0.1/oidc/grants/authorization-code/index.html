@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The grant every browser flow ends with, RFC 6749 §4.1 and OIDC Core §3.1.">
+        <meta name="description" content="Spending the code a browser brought back, RFC 6749 §4.1.3 and OIDC Core §3.1.3, every check the exchange runs, and what a code presented twice takes with it.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Authorization code">
-  <meta property="og:description" content="The grant every browser flow ends with, RFC 6749 §4.1 and OIDC Core §3.1.">
+  <meta property="og:description" content="Spending the code a browser brought back, RFC 6749 §4.1.3 and OIDC Core §3.1.3, every check the exchange runs, and what a code presented twice takes with it.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1463,14 +1455,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1500,14 +1484,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1536,14 +1512,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1571,14 +1539,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1644,14 +1604,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1691,6 +1643,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization code
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1705,16 +1675,84 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The code
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The request
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-checked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is checked
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-answer-carries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the answer carries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-code-presented-twice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A code presented twice
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1741,14 +1779,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1778,14 +1808,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1813,14 +1835,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1878,14 +1892,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1913,14 +1919,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1986,14 +1984,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2038,14 +2028,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2073,14 +2055,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2110,14 +2084,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2145,14 +2111,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2190,14 +2148,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2225,14 +2175,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2262,14 +2204,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2298,14 +2232,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2333,14 +2259,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2422,14 +2340,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2474,14 +2384,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2509,14 +2411,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2554,14 +2448,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2589,14 +2475,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2626,14 +2504,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2661,14 +2531,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2698,14 +2560,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2733,14 +2587,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2770,14 +2616,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2805,14 +2643,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4283,6 +4113,69 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-checked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is checked
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-answer-carries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the answer carries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-code-presented-twice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A code presented twice
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4307,10 +4200,156 @@
 
 
 <h1 id="authorization-code">Authorization code<a class="headerlink" href="#authorization-code" title="Link to this section">&para;</a></h1>
-<p>A code is single use, short lived, bound to the client it was issued to, to the redirect URI it was asked
-for and to the PKCE verifier that will be presented. Spending it yields the tokens the request asked for and
-nothing more.</p>
-<p>This page will describe the exchange, every check it runs, and what a replayed code does.</p>
+<p>The authorization code grant ends every flow that goes through a browser. The <a href="../../authorization-request/">authorization
+request</a> brings the person to the provider, the provider signs them in and asks
+for their <a href="../../consent/">consent</a> where one is needed, and the browser carries a code back to a redirect URI
+of the client. The client then spends that code at the token endpoint (RFC 6749 §4.1.3), with the PKCE
+verifier that only it holds.</p>
+<h2 id="the-code">The code<a class="headerlink" href="#the-code" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lifetime</td>
+<td>60 seconds, <code>tokens.authorization_code_ttl</code>, at most 600 (RFC 6749 §4.1.2)</td>
+</tr>
+<tr>
+<td>Value</td>
+<td>256 random bits in base64url, 43 characters</td>
+</tr>
+<tr>
+<td>What the provider keeps</td>
+<td>Its SHA-256, never the value</td>
+</tr>
+<tr>
+<td>Bound to</td>
+<td>The client, the redirect URI of the request, the PKCE challenge, the DPoP key the request reserved it for when it reserved it for one (RFC 9449 §10), and the session it was issued in</td>
+</tr>
+<tr>
+<td>What it carries</td>
+<td>The scopes, the resources, the authorization details, the <code>nonce</code> and the <code>claims</code> of the request, and what the session had proven at that instant: <code>auth_time</code>, <code>acr</code> and <code>amr</code></td>
+</tr>
+</tbody>
+</table>
+<p>What the session had proven is frozen on the code: a step-up or a new login afterwards changes the session,
+and never a code already issued nor a token that descends from one.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tokens</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">authorization_code_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+</span></code></pre></div>
+<h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grant_type</code></td>
+<td><code>authorization_code</code></td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>redirect_uri</code></td>
+<td>Required: the one the authorization request carried, as it carried it</td>
+</tr>
+<tr>
+<td><code>code_verifier</code></td>
+<td>Required when the authorization request carried a <code>code_challenge</code> (RFC 7636 §4.5), refused when it carried none</td>
+</tr>
+<tr>
+<td><code>resource</code></td>
+<td>Optional and repeatable: narrows what the access token is addressed to, among the resources of the authorization (RFC 8707 §2.2)</td>
+</tr>
+<tr>
+<td><code>authorization_details</code></td>
+<td>Optional: narrows the details the access token carries, among those of the authorization (RFC 9396 §7)</td>
+</tr>
+</tbody>
+</table>
+<p>The client authenticates beside them with the method it registered, which for a public client is its
+<code>client_id</code> and nothing else (<a href="../../client-authentication/">client authentication</a>).</p>
+<h2 id="what-is-checked">What is checked<a class="headerlink" href="#what-is-checked" title="Link to this section">&para;</a></h2>
+<p><strong>A code is spent by its first presentation, whatever comes of it.</strong> It is looked up by its digest and
+consumed atomically before anything else is compared: of any number of requests presenting the same code at
+once, exactly one is the first, and a presentation that fails a check below has spent the code all the same.
+Every refusal of this list is <code>invalid_grant</code> with the one description <code>The authorization code is invalid.</code>,
+so that a client guessing learns nothing of which check it failed.</p>
+<ol>
+<li>The code is one this provider issued, and it was not presented before.</li>
+<li>It was issued to the client that authenticated.</li>
+<li>It has not expired.</li>
+<li><code>redirect_uri</code> is the redirect URI of the authorization request, compared as a string (RFC 6749 §4.1.3).</li>
+<li>PKCE holds (RFC 7636 §4.6): the <code>code_verifier</code>, transformed with <code>S256</code>, is the <code>code_challenge</code> of the
+   request. A code issued without a challenge, which only a confidential client registered with
+   <code>requires_pkce: false</code> obtains, is refused when a <code>code_verifier</code> comes with it (RFC 9700 §4.8.2).</li>
+<li>A code the request reserved for a key, with <code>dpop_jkt</code> or by the DPoP proof of its pushed request, is spent
+   by a request whose DPoP proof is signed by that key (RFC 9449 §10), and by no other.</li>
+<li>The session the code was issued in is still active: it has not ended, and it has not expired.</li>
+</ol>
+<p>A missing <code>code</code> or <code>redirect_uri</code> is <code>invalid_request</code>, answered before the code is read, which leaves it
+unspent. A <code>code_verifier</code> that is not 43 to 128 unreserved characters (RFC 7636 §4.1) is refused. Other
+refusals come after every check has passed, and the code is spent: a <code>resource</code> the authorization does not
+carry is <code>invalid_target</code>, and an <code>authorization_details</code> it does not carry is
+<code>invalid_authorization_details</code>.</p>
+<h2 id="what-the-answer-carries">What the answer carries<a class="headerlink" href="#what-the-answer-carries" title="Link to this section">&para;</a></h2>
+<ul>
+<li><strong>An access token</strong>, in the shape the client registered (<a href="../../tokens/access-tokens/">access tokens</a>). It is
+  addressed to the resources the token request named, or to all those of the authorization when it named
+  none, or to the client itself when the authorization carries none. It is bound to what this request binds
+  it to, the key of its DPoP proof or the certificate of its connection, as
+  <a href="../#what-the-token-endpoint-does">grants</a> says, and is a bearer token otherwise.</li>
+<li><strong>An ID token</strong> when <code>openid</code> is among the scopes, carrying the <code>nonce</code> of the authorization request
+  (<a href="../../tokens/id-tokens/">ID tokens</a>).</li>
+<li><strong>A refresh token</strong> when one is due: the client is registered for <code>refresh_token</code>, and either
+  <code>offline_access</code> was granted or the client is confidential. It starts a family whose absolute lifetime is
+  <code>tokens.refresh_token_absolute_ttl</code>, ninety days by default, and it carries the whole authorization,
+  whatever subset of its resources and details the access token beside it was narrowed to (<a href="../../tokens/refresh-tokens/">refresh
+  tokens</a>).</li>
+</ul>
+<p>The act <code>tokens.issued</code> is written in the journal of the person, with what the client was given.</p>
+<h2 id="a-code-presented-twice">A code presented twice<a class="headerlink" href="#a-code-presented-twice" title="Link to this section">&para;</a></h2>
+<p>A code presented a second time is refused with <code>invalid_grant</code>, and the authorization it stood for is taken
+back (RFC 6749 §4.1.2): one of the two presentations may have been an attacker's, and the provider cannot
+tell which.</p>
+<table>
+<thead>
+<tr>
+<th>What descends from the code</th>
+<th>What happens to it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The grant itself</td>
+<td>Revoked: the provider's own endpoints and its introspection refuse every access token of that grant from then on</td>
+</tr>
+<tr>
+<td>Every refresh token descending from the code</td>
+<td>Revoked, the rotated ones included</td>
+</tr>
+<tr>
+<td>The opaque access tokens of the grant</td>
+<td>Removed, so that wherever they are presented they are unknown</td>
+</tr>
+<tr>
+<td>A self-contained access token of the grant</td>
+<td>Accepted until it expires by a resource server that verifies it offline against the JWK Set, which nothing the provider does can reach. It lives <code>tokens.access_token_ttl</code>, ten minutes by default</td>
+</tr>
+</tbody>
+</table>
+<p>The act <code>authorization_code.replayed</code> is written in the journal of the person, naming the client the code
+was issued to, the client that presented it again, and the refresh tokens it revoked.</p>
 
 
 
@@ -4331,7 +4370,7 @@ nothing more.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

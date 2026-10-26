@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="An identity provider for the Symfony ecosystem. OAuth 2.0, OpenID Connect and SAML 2.0, on a pure-PHP core.">
+        <meta name="description" content="CIBA Core 1.0, the client names a person, the person approves on a page of the provider, and the client polls or is pinged for the tokens.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -69,8 +69,8 @@
   <meta name="theme-color" content="#0c1016" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
-  <meta property="og:title" content="Beffroi">
-  <meta property="og:description" content="An identity provider for the Symfony ecosystem. OAuth 2.0, OpenID Connect and SAML 2.0, on a pure-PHP core.">
+  <meta property="og:title" content="Backchannel authentication">
+  <meta property="og:description" content="CIBA Core 1.0, the client names a person, the person approves on a page of the provider, and the client polls or is pinged for the tokens.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1463,14 +1455,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1500,14 +1484,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1536,14 +1512,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1571,14 +1539,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1644,14 +1604,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1696,14 +1648,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1731,14 +1675,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1768,14 +1704,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1804,14 +1732,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1835,6 +1755,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backchannel authentication
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1851,6 +1789,132 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registering-a-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering a client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The request
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The request">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The answer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naming-the-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naming the person
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reaching-the-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reaching the person
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#answering-accountapprovals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Answering: /account/approvals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The ping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collecting-the-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collecting the tokens
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-announced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is announced
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1877,14 +1941,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1913,14 +1969,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1986,14 +2034,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2038,14 +2078,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2073,14 +2105,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2110,14 +2134,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2145,14 +2161,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2190,14 +2198,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2225,14 +2225,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2262,14 +2254,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2298,14 +2282,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2333,14 +2309,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2422,14 +2390,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2474,14 +2434,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2509,14 +2461,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2554,14 +2498,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2589,14 +2525,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2626,14 +2554,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2661,14 +2581,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2698,14 +2610,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2733,14 +2637,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2770,14 +2666,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2805,14 +2693,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4283,6 +4163,119 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registering-a-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering a client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The request
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The request">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The answer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naming-the-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naming the person
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reaching-the-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reaching the person
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#answering-accountapprovals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Answering: /account/approvals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The ping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collecting-the-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collecting the tokens
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-announced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is announced
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4306,17 +4299,406 @@
   
 
 
-<hr />
-<p>title: Backchannel authentication
-status: draft
-description: CIBA: the device that asks is not the one that answers.</p>
-<hr />
 <h1 id="backchannel-authentication">Backchannel authentication<a class="headerlink" href="#backchannel-authentication" title="Link to this section">&para;</a></h1>
-<p>In CIBA (CIBA Core 1.0) the client asks the provider to reach a person it names, and the person answers on
-their own device. The client then polls, or is pinged, and the two FAPI-CIBA profiles are what judge this
-implementation.</p>
-<p>This page will describe the request, the hints that name a person, the poll and ping modes, and how the
-person is actually reached.</p>
+<p>In Client-Initiated Backchannel Authentication (CIBA Core 1.0) the client has no browser anywhere in the
+flow, and the device that asks is not the one that answers. The client names the person it wants
+authenticated, the provider lets that person know, the person approves on a page of the provider they
+already know, and the client collects the tokens at the token endpoint, by polling or once the provider has
+pinged it.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    participant C as Client
+    participant P as Beffroi
+    participant U as The person
+    C-&gt;&gt;P: POST /backchannel_authentication, naming the person
+    P-&gt;&gt;C: auth_req_id, expires_in, interval
+    P--&gt;&gt;U: A notification, on the channels the deployment wired
+    U-&gt;&gt;P: /account/approvals, signed in: Allow
+    P--&gt;&gt;C: A ping, in ping mode
+    C-&gt;&gt;P: POST /token with the auth_req_id
+    P-&gt;&gt;C: Access token, ID token, refresh token</code></pre>
+<h2 id="registering-a-client">Registering a client<a class="headerlink" href="#registering-a-client" title="Link to this section">&para;</a></h2>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">branch-terminal</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'Branch</span><span class="nv"> </span><span class="s">terminal'</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">private_key_jwt</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">jwks_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://terminal.example.com/jwks.json'</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'urn:openid:params:grant-type:ciba'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">refresh_token</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'openid</span><span class="nv"> </span><span class="s">profile'</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="nt">backchannel_token_delivery_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ping</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">            </span><span class="nt">backchannel_client_notification_endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">'https://terminal.example.com/ciba/notify'</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grant_types</code></td>
+<td><code>urn:openid:params:grant-type:ciba</code>, with <code>refresh_token</code> beside it for a client that renews</td>
+</tr>
+<tr>
+<td><code>backchannel_token_delivery_mode</code></td>
+<td><code>poll</code> or <code>ping</code> (CIBA Core §4), the two modes the provider is wired with. It has no default: a client that registered none is refused at the backchannel authentication endpoint with <code>unauthorized_client</code>, so that a client of another flow never becomes a client of this one by accident</td>
+</tr>
+<tr>
+<td><code>backchannel_client_notification_endpoint</code></td>
+<td>Where the provider pings the client (CIBA Core §10.2): required with <code>ping</code> and refused without it. HTTPS, or plain HTTP on a loopback host</td>
+</tr>
+<tr>
+<td><code>require_signed_request_object</code></td>
+<td>Every request of this client is a request object it signed, as FAPI-CIBA §5.2.2 asks: an unsigned one is <code>invalid_request</code></td>
+</tr>
+</tbody>
+</table>
+<p>A client of this flow registers no redirect URI, nothing of it sending a browser to the client, and one is
+refused unless the client is also registered for <code>authorization_code</code>. Push mode, where the tokens
+themselves are sent to the client (CIBA Core §10.3), is not served: the token endpoint is the one place this
+provider hands out a token.</p>
+<p>Two rules follow from registering the grant. A client that authenticates with an assertion, <code>private_key_jwt</code>
+or <code>client_secret_jwt</code>, may name in its <code>aud</code> the issuer, the URL of the token endpoint or the URL of the
+backchannel authentication endpoint, the three CIBA Core §7.1 lets it choose from, and those URLs on the host
+that asks for a certificate when the deployment serves one; a client of no backchannel grant names the issuer
+alone. And a client that takes <a href="../../pairwise-subjects/">pairwise subjects</a>, registers no redirect URI and no
+<code>sector_identifier_uri</code> is of the sector of the host of its <code>jwks_uri</code> (CIBA Core §4).</p>
+<h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
+<p><code>POST /backchannel_authentication</code> (CIBA Core §7.1). The client authenticates exactly as at the token
+endpoint, then:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scope</code></td>
+<td>Required, <code>openid</code> among the scopes, every one of them registered. There is no default: what the person is shown is what the request named</td>
+</tr>
+<tr>
+<td><code>login_hint</code>, <code>id_token_hint</code>, <code>login_hint_token</code></td>
+<td>Exactly one of the three, naming the person: <a href="#naming-the-person">below</a></td>
+</tr>
+<tr>
+<td><code>binding_message</code></td>
+<td>Optional: shown to the person beside the name of the client, at most 64 characters of letters and their marks, digits, spaces, currency signs and the punctuation <code>. , : ; ! ? ( ) [ ] @ # % + * / = _ -</code></td>
+</tr>
+<tr>
+<td><code>acr_values</code></td>
+<td>Optional: the classes the client would like the authentication to reach, in its order of preference</td>
+</tr>
+<tr>
+<td><code>requested_expiry</code></td>
+<td>Optional: a positive number of seconds the request should live. More than the ceiling is served the ceiling, not refused</td>
+</tr>
+<tr>
+<td><code>client_notification_token</code></td>
+<td>Required of a <code>ping</code> client and refused from a <code>poll</code> one: what the provider presents when it pings, a bearer token (RFC 6750 §2.1) of 22 to 1024 characters</td>
+</tr>
+<tr>
+<td><code>resource</code></td>
+<td>Optional and repeatable, among the resources the client registered (RFC 8707 §2)</td>
+</tr>
+<tr>
+<td><code>user_code</code></td>
+<td>Refused: the provider takes none, and says so in <code>backchannel_user_code_parameter_supported</code></td>
+</tr>
+<tr>
+<td><code>request</code> or <code>request_uri</code></td>
+<td>The request as a signed request object (CIBA Core §7.1.1), whose parameters are then the request</td>
+</tr>
+</tbody>
+</table>
+<p>A signed request object is read and verified as at the authorization endpoint (<a href="../../request-objects/">request
+objects</a>), and it carries an <code>iat</code> and a <code>jti</code> besides: the <code>jti</code> is remembered until
+the <code>exp</code> of the object, so that one signed request is made once.</p>
+<table>
+<thead>
+<tr>
+<th>Refusal</th>
+<th>Error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The client is not registered for the grant, or registered no delivery mode</td>
+<td><code>unauthorized_client</code></td>
+</tr>
+<tr>
+<td>No <code>scope</code></td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td>No <code>openid</code> in it, a scope the client did not register, or a <code>scope</code> that is not a list of scope tokens</td>
+<td><code>invalid_scope</code></td>
+</tr>
+<tr>
+<td>A resource the client did not register, or one that is not an absolute URI without a fragment</td>
+<td><code>invalid_target</code></td>
+</tr>
+<tr>
+<td>A <code>binding_message</code> the person could not be shown as it was sent</td>
+<td><code>invalid_binding_message</code></td>
+</tr>
+<tr>
+<td>No hint or several, a hint the provider does not read, an <code>acr_values</code> that is not a space-separated list of classes, a <code>user_code</code>, a <code>requested_expiry</code> that is not a positive number of seconds</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td>A <code>client_notification_token</code> missing from a <code>ping</code> client, sent by a <code>poll</code> one, or not a bearer token of 22 to 1024 characters</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td>A <code>request</code> and a <code>request_uri</code> together, a request object that cannot be read or verified, an unsigned one from a client that requires a signed one, a signed one without <code>iat</code> or <code>jti</code>, or one whose <code>jti</code> was used already</td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td>A <code>request_uri</code> the client did not register, or whose object cannot be read back</td>
+<td><code>invalid_request_uri</code></td>
+</tr>
+</tbody>
+</table>
+<p>A request object this endpoint will not read is <code>invalid_request</code>, and not the <code>invalid_request_object</code> of the
+authorization endpoint: CIBA Core §13 does not name that error.</p>
+<h3 id="the-answer">The answer<a class="headerlink" href="#the-answer" title="Link to this section">&para;</a></h3>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"auth_req_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1bMVbP0yKpXLzwWWE8VgXGDxeQOCX3Bz6DkWnAAgiKM"</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><code>200</code>, never cached (<code>Cache-Control: no-store</code>, CIBA Core §7.3). The <code>auth_req_id</code> is 256 random bits in
+base64url, 43 characters, of which the provider keeps the SHA-256 and, for a <code>ping</code> client only, the value
+itself sealed by the key management service of the tenant, together with the <code>client_notification_token</code>,
+since it has to present both when it pings.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>At most</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tokens.backchannel_authentication_ttl</code></td>
+<td><code>300</code> seconds</td>
+<td><code>3600</code></td>
+<td>How long a request lives when it asks for no <code>requested_expiry</code>, never longer than the option below</td>
+</tr>
+<tr>
+<td><code>tokens.backchannel_authentication_max_requested_expiry</code></td>
+<td><code>1800</code> seconds</td>
+<td><code>3600</code></td>
+<td>The longest a request lives, whatever it asks for</td>
+</tr>
+<tr>
+<td><code>tokens.backchannel_authentication_interval</code></td>
+<td><code>5</code> seconds</td>
+<td><code>30</code></td>
+<td>How long the client waits between two polls</td>
+</tr>
+</tbody>
+</table>
+<h2 id="naming-the-person">Naming the person<a class="headerlink" href="#naming-the-person" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Hint</th>
+<th>How it is read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>login_hint</code></td>
+<td>As <code>backchannel_authentication.login_hint</code> says, below</td>
+</tr>
+<tr>
+<td><code>id_token_hint</code></td>
+<td>An ID token this provider issued to this very client, whose <code>sub</code> names the person; its <code>exp</code> is not looked at, a hint describing a past sign-in being the ordinary case. A token of another issuer, or issued to another client, is <code>invalid_request</code></td>
+</tr>
+<tr>
+<td><code>login_hint_token</code></td>
+<td>Read by nothing the bundle wires, so <code>invalid_request</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><code>login_hint</code></th>
+<th>What the hint is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sub</code>, the default</td>
+<td>The subject this provider gives the person for this client, public or pairwise</td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td>The name the person signs in with</td>
+</tr>
+<tr>
+<td><code>none</code></td>
+<td>Nothing the bundle reads: the deployment tags a reader of its own, and without one a <code>login_hint</code> is <code>invalid_request</code></td>
+</tr>
+</tbody>
+</table>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">backchannel_authentication</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">login_hint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sub</span>
+</span></code></pre></div>
+<p>CIBA Core §15 asks for an identifier that says nothing outside this provider, which the subject is and a
+username is not, hence the default. A reader of its own is a class implementing
+<code>Beffroi\Oidc\Application\Hint\UserHintInterface</code>, tagged <code>beffroi.oidc.ciba_user_hint</code>; two readers of the
+same parameter are refused, a parameter being read one way. The <code>login_hint</code> of an authorization request,
+read on the login page, is set apart with <code>interaction.login_hint</code>, which takes the same three values.</p>
+<p><strong>Nobody is told whether the person exists.</strong> A hint that names nobody is answered with an <code>auth_req_id</code> like
+any other, and the request then goes the way of every request nobody answers, to <code>expired_token</code>. CIBA Core
+§13 defines <code>unknown_user_id</code> for that case, and the provider never answers it: a client that names a
+stranger learns exactly what a client that names somebody who never answers learns. The hints are read last,
+after every other parameter, so that a request refused for anything else has looked nobody up.</p>
+<h2 id="reaching-the-person">Reaching the person<a class="headerlink" href="#reaching-the-person" title="Link to this section">&para;</a></h2>
+<p>When the hint named somebody, the provider puts the word on the <a href="../../../symfony-bundle/messenger/">notifications
+lane</a> and answers the client without waiting for it. What travels is the
+name of the provider, the name of the client, the binding message when there is one, the expiry, and the
+address of the page where requests are answered. It carries no identifier of the request and no link that
+answers one, so that nothing reaching the person from outside can carry them to an approval.</p>
+<p>What carries it to the person is a channel the deployment wires: a class implementing
+<code>Beffroi\Bundle\Ciba\PendingApprovalChannelInterface</code>, tagged <code>beffroi.pending_approval_channel</code>. The bundle
+ships one, <a href="../../../symfony-bundle/web-push/">web push</a> to the browsers the person subscribed on the
+notifications page of their account, wired when <code>web_push.subject</code> is set. A deployment that wires no channel
+still serves this flow: the person finds the request on the page where requests are answered, which is where
+any channel sends them anyway.</p>
+<h2 id="answering-accountapprovals">Answering: <code>/account/approvals</code><a class="headerlink" href="#answering-accountapprovals" title="Link to this section">&para;</a></h2>
+<p>The page is "Requests waiting for you", the first card of the <a href="../../../symfony-bundle/account/">account pages</a>.
+The person signs in first, then sees the requests made for them that are still waiting, oldest first, and
+nothing else: there is no code to type and no link that carries a request, the requests being found by who
+is signed in. Each one shows the provider that is asking, the client, its binding message, where the request
+came from, by its address and what its user agent says, every scope of the request, and a warning that
+whoever did not start it refuses it.</p>
+<ul>
+<li><strong>Allow and Refuse</strong> are a <code>POST</code> with the form token of the page, naming the request by a handle of that
+  very list. A request that was answered, has expired or was never this person's is not answerable, and the
+  page says that nothing is waiting there any more, answered <code>400</code>.</li>
+<li><strong>A class the client asked for</strong> with <code>acr_values</code> that the session proves none of, when a credential of
+  the person would, sends them to the login of the provider for one more proof, and back to the page to
+  answer. A class nothing of theirs could ever reach is asked of nobody: the request is approved with the
+  class the session has, and the <code>acr</code> of the tokens says it.</li>
+<li><strong>Allowing</strong> records a consent to those scopes for that client, as the consent page of a browser flow does,
+  and freezes on the request the session and what it had proven. The <code>acr</code> of every token of the request is
+  the first class the client asked for that the session satisfies, or the class the session has.</li>
+<li><strong>Refusing</strong> ends the request, and the client learns <code>access_denied</code>.</li>
+</ul>
+<h2 id="the-ping">The ping<a class="headerlink" href="#the-ping" title="Link to this section">&para;</a></h2>
+<p>In <code>ping</code> mode, once the person has answered either way, the provider tells the client so at its
+<code>backchannel_client_notification_endpoint</code> (CIBA Core §10.2):</p>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nf">POST</span> <span class="nn">/ciba/notify</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">terminal.example.com</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer &lt;the client_notification_token of the request&gt;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">{</span><span class="nt">"auth_req_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1bMVbP0yKpXLzwWWE8VgXGDxeQOCX3Bz6DkWnAAgiKM"</span><span class="p">}</span>
+</span></code></pre></div>
+<ul>
+<li><strong>No token travels there.</strong> The ping says there is something to collect, and the client collects it at the
+  token endpoint.</li>
+<li><strong>It leaves on the notifications lane</strong>, never in the request of the person, with no cookie and no
+  redirect followed. Each call is given <code>backchannel_authentication.client_notification_timeout</code> seconds,
+  <code>3.0</code> by default, connection included.</li>
+<li><strong>A <code>2xx</code> is done.</strong> A redirection and a <code>400</code>, <code>401</code>, <code>403</code>, <code>404</code>, <code>405</code> or <code>501</code> are given up at once, the
+  same answer coming back at every try. Any other answer, or none, is tried again under the retry policy of
+  the lane.</li>
+<li><strong>A client that cannot be reached holds nothing up</strong>: it finds the same answer by polling.</li>
+</ul>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">backchannel_authentication</span><span class="p">:</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="nt">client_notification_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.0</span>
+</span></code></pre></div>
+<h2 id="collecting-the-tokens">Collecting the tokens<a class="headerlink" href="#collecting-the-tokens" title="Link to this section">&para;</a></h2>
+<p>The client sends <code>POST /token</code> with <code>grant_type=urn:openid:params:grant-type:ciba</code> and the <code>auth_req_id</code>
+(CIBA Core §10.1), in either mode. The answers come in the order the client can act on them (CIBA Core §11):</p>
+<table>
+<thead>
+<tr>
+<th>Answer</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>invalid_grant</code></td>
+<td>The <code>auth_req_id</code> is unknown, or was issued to another client</td>
+</tr>
+<tr>
+<td><code>expired_token</code></td>
+<td>The request is past its lifetime: the client starts a new one</td>
+</tr>
+<tr>
+<td><code>access_denied</code></td>
+<td>The person refused</td>
+</tr>
+<tr>
+<td><code>slow_down</code></td>
+<td>Nobody has answered yet, and the client polled sooner than its interval allows: the interval grows by five seconds, for this request and for every poll after it</td>
+</tr>
+<tr>
+<td><code>authorization_pending</code></td>
+<td>Nobody has answered yet</td>
+</tr>
+<tr>
+<td><code>invalid_grant</code></td>
+<td>The person allowed, and the <code>auth_req_id</code> was spent already, or the session they allowed with has ended or is past its expiry</td>
+</tr>
+<tr>
+<td>The tokens</td>
+<td>The person allowed</td>
+</tr>
+</tbody>
+</table>
+<p>Every poll is recorded, the refused ones included, and a request that has an answer is answered however soon
+it is asked, which is what a <code>ping</code> client needs, the ping coming sooner than its interval. The <code>auth_req_id</code>
+is spent once, atomically.</p>
+<p>The tokens are those of an ordinary authorization, descending from the session the person approved with: an
+access token addressed to the resources of the request, or to the client itself when it named none; an ID
+token, always, <code>openid</code> being required of the request, without a <code>nonce</code>; and a refresh token when one is
+due. They are bound to what the token request binds them to (<a href="../#what-the-token-endpoint-does">grants</a>),
+never to anything the browser that approved proved.</p>
+<h2 id="what-is-announced">What is announced<a class="headerlink" href="#what-is-announced" title="Link to this section">&para;</a></h2>
+<p>While a grant of this flow is wired, the <a href="../../discovery-and-jwks/">discovery document</a> carries:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backchannel_authentication_endpoint</code></td>
+<td><code>/backchannel_authentication</code> under the issuer</td>
+</tr>
+<tr>
+<td><code>backchannel_token_delivery_modes_supported</code></td>
+<td><code>poll</code> and <code>ping</code></td>
+</tr>
+<tr>
+<td><code>backchannel_authentication_request_signing_alg_values_supported</code></td>
+<td>The algorithms the provider verifies a signature with</td>
+</tr>
+<tr>
+<td><code>backchannel_user_code_parameter_supported</code></td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -4337,7 +4719,7 @@ person is actually reached.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

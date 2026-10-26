@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="What is stored, what is rotated, and what a revocation reaches.">
+        <meta name="description" content="What the provider keeps of a refresh token, how long one lives, what binds it, when it is replaced, and everything that ends it.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Refresh tokens">
-  <meta property="og:description" content="What is stored, what is rotated, and what a revocation reaches.">
+  <meta property="og:description" content="What the provider keeps of a refresh token, how long one lives, what binds it, when it is replaced, and everything that ends it.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1463,14 +1455,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1500,14 +1484,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1536,14 +1512,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1571,14 +1539,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1642,14 +1602,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1694,14 +1646,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1729,14 +1673,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1766,14 +1702,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1801,14 +1729,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1866,14 +1786,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1901,14 +1813,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1976,14 +1880,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2028,14 +1924,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2064,14 +1952,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2095,6 +1975,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refresh tokens
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -2109,16 +2007,95 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#when-one-is-issued" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When one is issued
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-kept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is kept
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-long-it-lives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How long it lives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rotation-and-reuse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotation and reuse
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#binding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Binding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-ends-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What ends one
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2145,14 +2122,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2190,14 +2159,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2225,14 +2186,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2262,14 +2215,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2298,14 +2243,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2333,14 +2270,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2422,14 +2351,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2474,14 +2395,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2509,14 +2422,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2554,14 +2459,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2589,14 +2486,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2626,14 +2515,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2661,14 +2542,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2698,14 +2571,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2733,14 +2598,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2770,14 +2627,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2805,14 +2654,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4283,6 +4124,80 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#when-one-is-issued" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When one is issued
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-kept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is kept
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-long-it-lives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How long it lives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rotation-and-reuse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotation and reuse
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#binding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Binding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-ends-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What ends one
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4307,10 +4222,147 @@
 
 
 <h1 id="refresh-tokens">Refresh tokens<a class="headerlink" href="#refresh-tokens" title="Link to this section">&para;</a></h1>
-<p>A refresh token is the longest lived thing the provider issues, so it is the one with the most rules: a
-lifetime and an absolute lifetime, the authentication snapshot of the session it came from, and a chain that
-a reuse breaks.</p>
-<p>This page will describe storage, rotation, reuse, and what revoking one takes with it.</p>
+<p>A refresh token is the longest-lived thing the provider issues and the one that works while the person is
+away, so it is the one held by the most rules. It is a reference, 256 random bits in base64url, 43
+characters, that means something to this provider alone, and the client spends it at the token endpoint with
+the <a href="../../grants/refresh-token/">refresh token grant</a>.</p>
+<h2 id="when-one-is-issued">When one is issued<a class="headerlink" href="#when-one-is-issued" title="Link to this section">&para;</a></h2>
+<p>The <a href="../../grants/authorization-code/">authorization code</a>, <a href="../../grants/device-code/">device code</a> and
+<a href="../../grants/backchannel-authentication/">backchannel authentication</a> grants issue one when the client is
+registered for <code>refresh_token</code>, and either <code>offline_access</code> is among the scopes of the authorization (OIDC
+Core §11) or the client is confidential. A confidential client therefore gets one without asking for
+<code>offline_access</code>, a public client gets one only by asking for it, and a client registered for no
+<code>refresh_token</code> gets none. The client credentials, token exchange and JWT bearer grants never issue one.</p>
+<h2 id="what-is-kept">What is kept<a class="headerlink" href="#what-is-kept" title="Link to this section">&para;</a></h2>
+<p>The SHA-256 of the value, never the value, and beside it:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Its family</td>
+<td>The lineage of tokens descending from one authorization code, device code or backchannel request, which a reuse revokes at once and which carries the absolute lifetime</td>
+</tr>
+<tr>
+<td>The client and the session</td>
+<td>Of the same tenant, which is checked when the token is written</td>
+</tr>
+<tr>
+<td>The authorization</td>
+<td>Its scopes, resources, authorization details and <code>claims</code> request, whole, whatever an access token beside the refresh token was narrowed to</td>
+</tr>
+<tr>
+<td>What the session had proven</td>
+<td>The <code>auth_time</code>, <code>acr</code> and <code>amr</code> of the authorization, carried unchanged from one token of the family to the next (OIDC Core §12.2)</td>
+</tr>
+<tr>
+<td>Its binding</td>
+<td>For a public client only: the key or the certificate the request that obtained it was bound to</td>
+</tr>
+<tr>
+<td>Its dates</td>
+<td>When it was issued, when it expires, and when it was replaced or revoked, if it was</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-long-it-lives">How long it lives<a class="headerlink" href="#how-long-it-lives" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>What it bounds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tokens.refresh_token_ttl</code></td>
+<td><code>2592000</code> seconds, 30 days</td>
+<td>One token, from the moment it was issued</td>
+</tr>
+<tr>
+<td><code>tokens.refresh_token_absolute_ttl</code></td>
+<td><code>7776000</code> seconds, 90 days</td>
+<td>Its family, from the authorization that started it. No rotation extends it, and no token of the family outlives it</td>
+</tr>
+</tbody>
+</table>
+<p>The first cannot exceed the second, and a configuration where it does fails to load.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tokens</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">refresh_token_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2592000</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">refresh_token_absolute_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7776000</span>
+</span></code></pre></div>
+<p><strong>A token that is not replaced keeps the expiry it was issued with.</strong> The refresh token of a confidential
+client, and of a public client whose token is bound, is never replaced, so it stops working
+<code>refresh_token_ttl</code> after it was issued, and the client then obtains a new authorization the way it obtained
+the first. Only a token that rotates starts a new <code>refresh_token_ttl</code> at each rotation, until the family
+ends.</p>
+<h2 id="rotation-and-reuse">Rotation and reuse<a class="headerlink" href="#rotation-and-reuse" title="Link to this section">&para;</a></h2>
+<p>A refresh token is told from a copy of itself by the authentication of a confidential client, by the key or
+the certificate it is bound to, or by rotation (RFC 9700 §4.13.2), and one of the three is enough. So the
+provider replaces a token at each use exactly where the first two are missing, the token of a public client
+bound to nothing, and lets every other token stand: replacing it would add nothing, and would lock out a
+client that lost the answer to a refresh.</p>
+<p>A replaced token presented again is a reuse. The provider cannot tell the client from whoever copied the
+token, so it revokes the whole family, the successor the client holds included, refuses the request with
+<code>invalid_grant</code>, and writes the act <code>refresh_token.reuse_detected</code> in the journal of the person. The client
+goes back to the person for a new authorization.</p>
+<h2 id="binding">Binding<a class="headerlink" href="#binding" title="Link to this section">&para;</a></h2>
+<p>A refresh token issued to a public client keeps what the request that obtained it was bound to, the key of
+its DPoP proof or, for a client registered with <code>tls_client_certificate_bound_access_tokens</code>, the certificate
+of its connection, and is refreshed only by a request that proves the same again (RFC 9449 §5, RFC 8705 §4):
+such a client has no credentials, and the binding is what tells it from whoever took a copy. A refresh token
+issued to a confidential client keeps no binding, the client authenticating at every refresh; the access
+tokens of each refresh are bound to whatever that request binds them to
+(<a href="../../grants/#what-the-token-endpoint-does">grants</a>).</p>
+<h2 id="what-ends-one">What ends one<a class="headerlink" href="#what-ends-one" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>What happens</th>
+<th>What it takes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The token expires, or its family does</td>
+<td>That token</td>
+</tr>
+<tr>
+<td>A token of its family is reused</td>
+<td>The whole family</td>
+</tr>
+<tr>
+<td>The authorization code it descends from is presented a second time (RFC 6749 §4.1.2)</td>
+<td>Every refresh token descending from that code</td>
+</tr>
+<tr>
+<td>Its session ends, at the end session endpoint, by a SAML logout, on the <a href="../../../symfony-bundle/account/">account pages</a>, with the console, or by a sign-in that replaced it</td>
+<td>Every refresh token of that session</td>
+</tr>
+<tr>
+<td>The person takes back their consent to that client, on the account pages or with <code>beffroi:user:revoke-consent</code></td>
+<td>Every refresh token that client holds for that person</td>
+</tr>
+<tr>
+<td>The client revokes it at the revocation endpoint (RFC 7009 §2.1)</td>
+<td>That token, and the opaque access tokens of its grant</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The grant reads the session, and not only the token.</strong> It refuses a token whose session has ended from the
+instant the session ended, whatever the token's own state, while the revocation of the tokens of that session
+is written on the lane of the events and dated by the end. A token that a refresh in flight saved after that
+revocation ran is refused all the same, and revoked at its first use. A session that merely expired, without
+anybody ending it, stops no refresh.</p>
+<p>A token revoked keeps the date of its first revocation. <a href="../../introspection-and-revocation/">Introspection and
+revocation</a> describes the revocation endpoint, which answers the same
+way whether the token existed or not.</p>
 
 
 
@@ -4331,7 +4383,7 @@ a reuse breaks.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Either a signed JWT the resource server verifies, or a reference it introspects.">
+        <meta name="description" content="The two shapes an access token is written in, a signed at+jwt or an opaque reference, what each one carries, and what the provider and a resource server ask of one.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Access tokens">
-  <meta property="og:description" content="Either a signed JWT the resource server verifies, or a reference it introspects.">
+  <meta property="og:description" content="The two shapes an access token is written in, a signed at+jwt or an opaque reference, what each one carries, and what the provider and a resource server ask of one.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1463,14 +1455,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1500,14 +1484,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1536,14 +1512,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1571,14 +1539,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1642,14 +1602,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1694,14 +1646,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1729,14 +1673,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1766,14 +1702,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1801,14 +1729,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1866,14 +1786,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1901,14 +1813,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1976,14 +1880,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2023,6 +1919,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access tokens
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -2037,16 +1951,101 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-says" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it says
+      
     </span>
+  </a>
   
-
+    <nav class="md-nav" aria-label="What it says">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The header
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-person-a-token-is-about" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The person a token is about
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-provider-asks-of-a-token-it-is-presented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the provider asks of a token it is presented
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-a-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing a shape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a shape
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2073,14 +2072,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2110,14 +2101,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2145,14 +2128,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2190,14 +2165,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2225,14 +2192,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2262,14 +2221,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2298,14 +2249,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2333,14 +2276,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2422,14 +2357,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2474,14 +2401,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2509,14 +2428,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2554,14 +2465,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2589,14 +2492,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2626,14 +2521,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2661,14 +2548,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2698,14 +2577,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2733,14 +2604,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2770,14 +2633,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2805,14 +2660,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4283,6 +4130,86 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-says" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it says
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What it says">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The header
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-person-a-token-is-about" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The person a token is about
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-provider-asks-of-a-token-it-is-presented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the provider asks of a token it is presented
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-a-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing a shape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a shape
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4307,11 +4234,173 @@
 
 
 <h1 id="access-tokens">Access tokens<a class="headerlink" href="#access-tokens" title="Link to this section">&para;</a></h1>
-<p>An access token here is <code>at+jwt</code> (RFC 9068) or an opaque reference, per client, and never an ambiguous shape:
-a resource server must know what it is validating. Both carry the same facts, and both can be bound to a key
-or a certificate.</p>
-<p>This page will describe the claims of an <code>at+jwt</code>, what introspection returns for a reference, and how the
-format of a client is chosen.</p>
+<p>An access token is what a client presents to a resource server. Each client receives its access tokens in
+one shape, the one it registered, so a resource server knows from that registration what it is validating:</p>
+<table>
+<thead>
+<tr>
+<th>Shape</th>
+<th><code>access_token_format</code></th>
+<th>What it is</th>
+<th>How a resource server reads it</th>
+<th>At the revocation endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Self-contained</td>
+<td><code>jwt</code></td>
+<td>A JWT signed by the tenant, of type <code>at+jwt</code> (RFC 9068)</td>
+<td>Offline, against the <a href="../../discovery-and-jwks/">JWK Set</a> of the issuer</td>
+<td>Refused: it expires on its own (RFC 7009 §2.2.1)</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td><code>opaque</code></td>
+<td>256 random bits in base64url, 43 characters, which mean something to this provider alone</td>
+<td>At the <a href="../../introspection-and-revocation/">introspection endpoint</a> (RFC 7662)</td>
+<td>Taken back at once</td>
+</tr>
+</tbody>
+</table>
+<p>A client that registers no shape takes <code>jwt</code>, the first one the provider is wired with. A name no wired shape
+answers to is refused: a declared client is an error of the configuration, and a registration request is
+answered <code>invalid_client_metadata</code>. Both shapes live <code>tokens.access_token_ttl</code> seconds, ten minutes by
+default: the self-contained one cannot be taken back, so its lifetime is what bounds it, and the opaque one
+gets the same, a revocation being a facility and not a reason to live longer.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tokens</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">access_token_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">600</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">reporting</span><span class="p">:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="c1"># ...</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">access_token_format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opaque</span>
+</span></code></pre></div>
+<p>No access token is ever encrypted.</p>
+<h2 id="what-it-says">What it says<a class="headerlink" href="#what-it-says" title="Link to this section">&para;</a></h2>
+<p>Both shapes carry the same facts: the self-contained one in its claims, the reference in the record the
+provider keeps under its SHA-256, which introspection renders under the same names.</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>What it holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iss</code></td>
+<td>The issuer of the tenant</td>
+</tr>
+<tr>
+<td><code>sub</code></td>
+<td>Who the token is about: for a person who signed in, the subject this provider gives them for this client, public or <a href="../../pairwise-subjects/">pairwise</a>; for a client acting for itself, its <code>client_id</code>; for a token of a token exchange or of a JWT bearer assertion, the subject the grant named</td>
+</tr>
+<tr>
+<td><code>client_id</code></td>
+<td>The client the token was issued to (RFC 9068 §2.2)</td>
+</tr>
+<tr>
+<td><code>aud</code></td>
+<td>The resources it is addressed to (RFC 8707 §2), named by the request or carried by what the grant spends, as the page of each grant says: a token exchange that names none is addressed to every resource of the presented token, and a token of an authorization that carries no resource is addressed to the <code>client_id</code>. One value is written as a string, several as a list</td>
+</tr>
+<tr>
+<td><code>exp</code>, <code>iat</code></td>
+<td>When it expires, and when it was issued</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>The scopes it carries, space-delimited</td>
+</tr>
+<tr>
+<td><code>auth_time</code>, <code>acr</code>, <code>amr</code>, <code>sid</code></td>
+<td>What the session had proven when the authorization was granted, and that session (RFC 9068 §2.2.1). Absent from a token nobody signed in for</td>
+</tr>
+<tr>
+<td><code>grant_id</code></td>
+<td>The grant the token descends from, which the provider asks, of a token somebody signed in for, whether it is still alive</td>
+</tr>
+<tr>
+<td><code>authorization_details</code></td>
+<td>What the person agreed to beyond the scopes (RFC 9396 §7), when there is any</td>
+</tr>
+<tr>
+<td><code>act</code></td>
+<td>Who acts for the subject (RFC 8693 §4.1), on a token of a <a href="../../grants/token-exchange/">token exchange</a></td>
+</tr>
+<tr>
+<td><code>cnf</code></td>
+<td>What the token is bound to: <code>jkt</code>, the thumbprint of a DPoP key (RFC 9449 §6.1), or <code>x5t#S256</code>, the thumbprint of a certificate (RFC 8705 §3.1)</td>
+</tr>
+</tbody>
+</table>
+<p>The self-contained shape carries four claims more, which introspection does not render: <code>jti</code>, a random UUID;
+<code>userinfo_claims</code>, the claims the client asked for by name for the UserInfo endpoint (OIDC Core §5.5);
+<code>may_act</code>, who may act for the subject of a token of this client (RFC 8693 §4.4), when it registered one; and
+<code>person</code>, below.</p>
+<h3 id="the-header">The header<a class="headerlink" href="#the-header" title="Link to this section">&para;</a></h3>
+<p><code>typ</code> is <code>at+jwt</code> (RFC 9068 §2.1), <code>kid</code> names the key of the JWK Set that signed it, and <code>alg</code> is the
+algorithm the provider signs with by default, the first one it is wired with, <code>RS256</code>. It is never the
+algorithm the client registered for its ID tokens: an access token is read by resource servers, not by the
+client.</p>
+<h3 id="the-person-a-token-is-about">The person a token is about<a class="headerlink" href="#the-person-a-token-is-about" title="Link to this section">&para;</a></h3>
+<p><strong>A token whose <code>sub</code> was written for another client says who it is about, sealed.</strong> A token issued by a
+<a href="../../grants/token-exchange/">token exchange</a> of a token issued on a sign-in keeps the <code>sub</code> of that token,
+written for the client it was issued to, which may be a pairwise subject the client now holding it cannot
+read; a token of a <a href="../../grants/jwt-bearer/">JWT bearer</a> assertion names a person nobody signed in for here.
+For both, the provider keeps the person beside the token: on the record of a reference, and in a
+self-contained token as the private claim <code>person</code> (RFC 7519 §4.3), sealed by the key management service of
+the tenant. Only the provider opens it, and a resource server reads it as it reads any claim it was given no
+meaning for. A token a client holds for itself is about nobody and carries none, and so does a token of a
+token exchange whose presented token carried no sign-in.</p>
+<h2 id="what-the-provider-asks-of-a-token-it-is-presented">What the provider asks of a token it is presented<a class="headerlink" href="#what-the-provider-asks-of-a-token-it-is-presented" title="Link to this section">&para;</a></h2>
+<p>The provider's own endpoints that take an access token, UserInfo, introspection and the token exchange, read
+both shapes the same way and ask more of a token than its signature:</p>
+<ol>
+<li>it was issued by this tenant, and it has not expired, with no leeway, the clock being the provider's own;</li>
+<li>the session it descends from has not ended;</li>
+<li>the grant it descends from has not been revoked;</li>
+<li>the person it is about is still served.</li>
+</ol>
+<p>A token nobody signed in for at this provider descends from no session, and only the first question is asked
+of it. A resource server that holds the token and the JWK Set and nothing else cannot ask the other three,
+which is what verifying offline means: <strong>a self-contained token outlives the end of its session, the consent
+taken back and the revocation of its grant wherever it is verified offline</strong>, until it expires. Introspection
+answers <code>"active": false</code> for it from the instant any of those happened.</p>
+<p>The UserInfo endpoint takes only a token addressed to the client itself, the one a request that names no
+resource gets: a token addressed to a resource is refused there with <code>invalid_token</code>, whatever it is good for
+elsewhere.</p>
+<h2 id="choosing-a-shape">Choosing a shape<a class="headerlink" href="#choosing-a-shape" title="Link to this section">&para;</a></h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="jwt" name="__tabbed_1" type="radio" /><input id="opaque" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="jwt">jwt</label><label for="opaque">opaque</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>For a resource server that verifies tokens itself, with no call to the provider per request. The token
+cannot be taken back: the revocation endpoint answers <code>unsupported_token_type</code> for one, and the end of a
+session, a consent taken back or a replayed code reach it only at the provider's own endpoints and at
+introspection. Its lifetime is therefore the window in which a stolen one is worth something.</p>
+</div>
+<div class="tabbed-block">
+<p>For a resource server that asks the provider about every token. The revocation endpoint takes one back at
+once, and the end of a session or a consent taken back removes the ones a person signed in for. The
+resource server introspects as the client the token was issued to: introspection describes a token to that
+client and to nobody else (RFC 7662 §2.2), and only to a client that authenticates.</p>
+</div>
+</div>
+</div>
+<p>A token is a bearer token unless the request that obtained it binds it: to the key of its DPoP proof, or to
+the certificate of its connection for a client that authenticates with that certificate (<code>tls_client_auth</code>,
+<code>self_signed_tls_client_auth</code>) or registered <code>tls_client_certificate_bound_access_tokens</code>
+(<a href="../../grants/#what-the-token-endpoint-does">grants</a>). The
+<code>token_type</code> of the answer then says <code>DPoP</code> for a key and <code>Bearer</code> for a certificate.
+<a href="../../sender-constrained/">Sender-constrained tokens</a> says what a resource server then asks of the
+caller.</p>
+<h2 id="adding-a-shape">Adding a shape<a class="headerlink" href="#adding-a-shape" title="Link to this section">&para;</a></h2>
+<p>A shape is two classes answering to one name, which is what a client registers in <code>access_token_format</code>: an
+issuer implementing <code>Beffroi\Oidc\Port\AccessTokenShapeIssuerInterface</code>, tagged
+<code>beffroi.oidc.access_token_issuer</code>, and a verifier implementing <code>Beffroi\Oidc\Port\AccessTokenVerifierInterface</code>,
+tagged <code>beffroi.oidc.access_token_verifier</code>. The first tagged issuer is the shape a client that registers none
+takes. A shape written with no verifier, read with no issuer, or written by two issuers is refused, a token
+the provider writes and cannot read back being a token nobody can spend.</p>
 
 
 
@@ -4332,7 +4421,7 @@ format of a client is chosen.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     

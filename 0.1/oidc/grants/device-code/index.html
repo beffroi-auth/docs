@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A device with no browser and no keyboard, RFC 8628.">
+        <meta name="description" content="Signing a person in on a device with no browser or no keyboard, RFC 8628, the two endpoints, the page where the code is confirmed, and the polling rules.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Device code">
-  <meta property="og:description" content="A device with no browser and no keyboard, RFC 8628.">
+  <meta property="og:description" content="Signing a person in on a device with no browser or no keyboard, RFC 8628, the two endpoints, the page where the code is confirmed, and the polling rules.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -1428,14 +1428,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1463,14 +1455,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1500,14 +1484,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1536,14 +1512,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1571,14 +1539,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1644,14 +1604,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1696,14 +1648,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1731,14 +1675,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1768,14 +1704,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1799,6 +1727,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Device code
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1813,16 +1759,73 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registering-a-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering a device
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#starting-the-device-authorization-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Starting: the device authorization endpoint
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#confirming-the-page-at-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confirming: the page at /device
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polling-the-token-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Polling: the token endpoint
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1878,14 +1881,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1913,14 +1908,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1986,14 +1973,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2038,14 +2017,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2073,14 +2044,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2110,14 +2073,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2145,14 +2100,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2190,14 +2137,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2225,14 +2164,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2262,14 +2193,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2298,14 +2221,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2333,14 +2248,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2422,14 +2329,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -2474,14 +2373,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2509,14 +2400,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2554,14 +2437,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2589,14 +2464,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2626,14 +2493,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2661,14 +2520,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2698,14 +2549,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2733,14 +2576,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -2770,14 +2605,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -2805,14 +2632,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4283,6 +4102,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registering-a-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registering a device
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#starting-the-device-authorization-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Starting: the device authorization endpoint
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#confirming-the-page-at-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confirming: the page at /device
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polling-the-token-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Polling: the token endpoint
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4307,10 +4178,199 @@
 
 
 <h1 id="device-code">Device code<a class="headerlink" href="#device-code" title="Link to this section">&para;</a></h1>
-<p>The device asks for a code, shows it to the person, and polls while they confirm it in a browser somewhere
-else. The provider answers <code>authorization_pending</code> and <code>slow_down</code> as the specification requires, and the
-confirmation page is part of the interaction plane.</p>
-<p>This page will describe both endpoints, the polling rules, and the lifetime of a device code.</p>
+<p>The device authorization grant (RFC 8628) signs a person in on something that has no browser or no
+keyboard to sign them in with. The device asks the provider for two codes, shows one of them to the person,
+and polls the token endpoint with the other while the person confirms the code in a browser somewhere else.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    participant D as Device
+    participant P as Beffroi
+    participant B as Browser of the person
+    D-&gt;&gt;P: POST /device_authorization
+    P-&gt;&gt;D: device_code, user_code, verification_uri
+    D--&gt;&gt;B: The user code and where to type it
+    B-&gt;&gt;P: GET /device, sign in, type the code
+    B-&gt;&gt;P: Allow
+    loop Every interval
+        D-&gt;&gt;P: POST /token with the device_code
+        P-&gt;&gt;D: authorization_pending, then the tokens
+    end</code></pre>
+<h2 id="registering-a-device">Registering a device<a class="headerlink" href="#registering-a-device" title="Link to this section">&para;</a></h2>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">living-room-tv</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'Living</span><span class="nv"> </span><span class="s">room</span><span class="nv"> </span><span class="s">TV'</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">none</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'urn:ietf:params:oauth:grant-type:device_code'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">refresh_token</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'openid</span><span class="nv"> </span><span class="s">profile</span><span class="nv"> </span><span class="s">offline_access'</span>
+</span></code></pre></div>
+<p>A device that cannot keep a secret is a public client, <code>token_endpoint_auth_method: none</code>; a confidential
+client is served the same way. It registers no redirect URI: nothing of this flow sends a browser back to the
+client, so a redirect URI is refused unless the client is also registered for <code>authorization_code</code>. A public
+client gets a refresh token only by asking for <code>offline_access</code> (<a href="../refresh-token/">refresh token</a>).</p>
+<h2 id="starting-the-device-authorization-endpoint">Starting: the device authorization endpoint<a class="headerlink" href="#starting-the-device-authorization-endpoint" title="Link to this section">&para;</a></h2>
+<p><code>POST /device_authorization</code> (RFC 8628 §3.1) authenticates the client exactly as the token endpoint does,
+then reads what it asks for. Its errors are the JSON of RFC 6749 §5.2, never a redirection and never a page.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scope</code></td>
+<td>Required, among the scopes the client registered. RFC 8628 §3.1 makes it optional; here it is what the person is shown, and a request naming nothing would ask them to agree to everything the client ever registered</td>
+</tr>
+<tr>
+<td><code>resource</code></td>
+<td>Optional and repeatable, among the resources the client registered (RFC 8707 §2)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Refusal</th>
+<th>Error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The client is not registered for the device code grant</td>
+<td><code>unauthorized_client</code></td>
+</tr>
+<tr>
+<td>No <code>scope</code></td>
+<td><code>invalid_request</code></td>
+</tr>
+<tr>
+<td>A scope the client did not register, or a <code>scope</code> that is not a list of scope tokens</td>
+<td><code>invalid_scope</code></td>
+</tr>
+<tr>
+<td>A resource the client did not register, or one that is not an absolute URI without a fragment</td>
+<td><code>invalid_target</code></td>
+</tr>
+</tbody>
+</table>
+<p>The answer is <code>200</code>, never cached (<code>Cache-Control: no-cache, no-store</code>, RFC 8628 §3.2):</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"device_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GmRhmhcxhwAzkoEqiMEg_DnyEysNkuNhszIySk9eS0k"</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"user_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WDJB-MJHT"</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"verification_uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://op.example.com/device"</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">"verification_uri_complete"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://op.example.com/device?user_code=WDJB-MJHT"</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>The device code</strong> is 256 random bits in base64url, 43 characters, which only the device holds.</p>
+<p><strong>The user code</strong> is eight characters out of twenty consonants, <code>BCDFGHJKLMNPQRSTVWXZ</code>, shown in two groups
+of four. With no vowel it spells no word, and no character of it is read for another (RFC 8628 §6.1). Eight
+characters out of twenty are a little over 34 bits, which is worth something only because guessing it is
+slow (§5.1): the page below counts the codes that are refused. No two requests alive at once hold the same
+user code.</p>
+<p>The provider keeps the SHA-256 of both codes, never the codes, beside the client, the scopes, the resources
+and where the device asked from.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>At most</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tokens.device_code_ttl</code></td>
+<td><code>600</code> seconds</td>
+<td><code>1800</code></td>
+<td>How long both codes live</td>
+</tr>
+<tr>
+<td><code>tokens.device_code_interval</code></td>
+<td><code>5</code> seconds</td>
+<td><code>30</code></td>
+<td>How long the device waits between two polls</td>
+</tr>
+</tbody>
+</table>
+<h2 id="confirming-the-page-at-device">Confirming: the page at <code>/device</code><a class="headerlink" href="#confirming-the-page-at-device" title="Link to this section">&para;</a></h2>
+<p><code>verification_uri</code> is <code>/device</code> under the issuer, a page of the interaction plane
+(<code>beffroi_interaction_device</code>), and <code>verification_uri_complete</code> is the same page with the code already in
+it, for a device that can show a link or a QR code.</p>
+<ol>
+<li><strong>The person signs in first</strong>, at the login of the provider, and comes back to the page with the code it
+   carried. No code is read before somebody is signed in.</li>
+<li><strong>They type the code</strong>, in upper or lower case, with or without the dash, with or without spaces.</li>
+<li><strong>The page shows what they are about to allow</strong>: the name of the provider, the account they are signed in
+   as, the name of the client and the code, where the request came from, by its address and what its user
+   agent says, every scope of the request, and a warning that whoever did not start this on a device of their
+   own refuses it.</li>
+<li><strong>They allow or refuse</strong>, with a <code>POST</code> that carries the form token of the page. Nothing is approved on a
+   <code>GET</code>, so a link followed from a screen, or fetched ahead of time by a browser, approves nothing.</li>
+</ol>
+<p>Allowing records a consent to those scopes for that client, as the consent page of a browser flow does, and
+freezes on the request the session and what that session had proven. Refusing ends the request: the device
+learns <code>access_denied</code> at its next poll, and nobody is asked twice about the same code.</p>
+<p>A code that names no request waiting for an answer, because it was never issued, expired, was answered
+already or belongs to another tenant, gets one refusal whatever the reason, answered <code>400</code>. Only those
+refusals are counted, against the person signed in: after five of them in a sliding minute, the page answers
+<code>429</code> to every code until the window has room again. The count is the one the codes of a second factor are
+counted on.</p>
+<h2 id="polling-the-token-endpoint">Polling: the token endpoint<a class="headerlink" href="#polling-the-token-endpoint" title="Link to this section">&para;</a></h2>
+<p>The device polls <code>POST /token</code> with <code>grant_type=urn:ietf:params:oauth:grant-type:device_code</code> and its
+<code>device_code</code> (RFC 8628 §3.4), authenticated as it was at the device authorization endpoint. The answers
+come in the order the device can act on them (RFC 8628 §3.5):</p>
+<table>
+<thead>
+<tr>
+<th>Answer</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>invalid_grant</code></td>
+<td>The device code is unknown, or was issued to another client</td>
+</tr>
+<tr>
+<td><code>expired_token</code></td>
+<td>The request is past its lifetime: the device starts a new one</td>
+</tr>
+<tr>
+<td><code>access_denied</code></td>
+<td>The person refused</td>
+</tr>
+<tr>
+<td><code>slow_down</code></td>
+<td>Nobody has answered yet, and the device polled sooner than its interval allows: the interval grows by five seconds, for this request and for every poll after it</td>
+</tr>
+<tr>
+<td><code>authorization_pending</code></td>
+<td>Nobody has answered yet</td>
+</tr>
+<tr>
+<td><code>invalid_grant</code></td>
+<td>The person allowed, and the code was spent already, or the session they allowed with has ended or is past its expiry</td>
+</tr>
+<tr>
+<td>The tokens</td>
+<td>The person allowed</td>
+</tr>
+</tbody>
+</table>
+<p>Every poll is recorded, the refused ones included, so asking again buys no faster answer; a request that has
+an answer is answered however soon it is asked. The device code is spent once, atomically, by the first
+poll after the approval: of several polls at once, exactly one is served.</p>
+<p>The tokens are those of an ordinary authorization, descending from the session the person approved with: an
+access token addressed to the resources the device named at the device authorization endpoint, or to the
+client itself when it named none; an ID token when <code>openid</code> was among the scopes, without a <code>nonce</code>; and a
+refresh token when one is due, starting a family with the absolute lifetime of every other. They are bound
+to what the polling request binds them to (<a href="../#what-the-token-endpoint-does">grants</a>), never to anything
+the browser that approved proved.</p>
 
 
 
@@ -4331,7 +4391,7 @@ confirmation page is part of the interaction plane.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
   </span>
 
     
