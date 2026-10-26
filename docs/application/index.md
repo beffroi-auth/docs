@@ -28,5 +28,7 @@ guide. A team that wants to make them differently still can: the bundle is the s
 | [Operating it](operating.md) | Rotating keys, rewrapping data keys, migrations, backups |
 | [Observability](observability.md) | What the provider records of a request, a session and a token |
 
-The repository is [beffroi-auth/op](https://github.com/beffroi-auth/op). It lives inside a working copy of the
-monorepo during development, and is published on its own.
+It is the `apps/op` directory of the monorepo, mirrored read only as
+[beffroi-auth/op](https://github.com/beffroi-auth/op). It resolves the packages from the directories beside
+it, so it installs nothing on its own: it is worked on inside the monorepo, and deployed from an image built
+there rather than from a clone of its mirror.

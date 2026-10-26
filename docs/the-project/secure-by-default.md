@@ -16,7 +16,7 @@ code. There is no `insecure_` setting, no compatibility mode, and no global swit
 | PKCE is mandatory, `S256` only | `plain` protects nothing against an attacker who reads the request. A code intercepted without the verifier is useless |
 | No implicit flow | Tokens in a URL fragment end up in history, logs and referrers |
 | No resource owner password credentials grant | It teaches applications to collect passwords, which is the habit the protocol exists to break |
-| Redirect URIs are compared exactly | Prefix and wildcard matching is how an open redirector becomes a token leak |
+| Redirect URIs are compared exactly, the port of a public client's loopback URI aside | Prefix and wildcard matching is how an open redirector becomes a token leak |
 | `iss` is in every authorization response | A client must be able to tell which provider answered. RFC 9207 |
 | Access tokens are `at+jwt` or opaque references, never an ambiguous shape | A resource server must know what it is validating. RFC 9068 |
 | No redirect is followed outbound | Fetching a client's metadata or keys must not become a request to an address the client chose |
@@ -33,15 +33,22 @@ code. There is no `insecure_` setting, no compatibility mode, and no global swit
 
 ## Where an exception exists
 
-An exception is named, bounded and written down, never a switch in a configuration file. Two examples of
-the shape they take:
+An exception is named, bounded and written down where it applies, for one client or for one tenant, and
+never a global switch. The shape they take:
 
-- **PKCE can be waived by the registration policy**, not by the client. A tenant that must serve a client
-  which cannot do PKCE says so in its own policy, for that client, and the waiver is visible where clients
-  are read.
-- **Dynamic client registration is controlled.** The endpoint exists, and the tenant decides the mode it
-  runs in: who may register, what an initial access token buys, and which authority may vouch for a piece
-  of software it did not issue.
+- **PKCE can be waived for a confidential client, never for a public one.** A client declared in the
+  configuration that cannot send a `code_challenge` is declared with `requires_pkce: false`, and the clients
+  a tenant lets register themselves are exempted together only when its registration policy says
+  `exempt_confidential_clients_from_pkce: true`. A public client is refused either way, `plain` does not
+  exist, and a challenge a client does send is verified like any other.
+- **A public client's loopback URI matches on any port.** A native application listens on whatever port the
+  system gives it (RFC 8252 §7.3), so for a public client, and for a URI on `127.0.0.1` or `[::1]` only, the
+  comparison ignores the port and nothing else: another path or a host name instead of the IP literal is
+  another URI.
+- **Dynamic client registration is a decision of the tenant.** A tenant that names no
+  `client_registration.mode` has no registration endpoint at all, in its discovery document as on the
+  wire. One that names a mode says who may register: whoever holds an initial access token it issued,
+  whoever presents a statement of an authority it pinned, or anybody.
 - **An unsigned SAML request is accepted from one service provider at a time.** A service provider that
   cannot sign its `AuthnRequest`, as Microsoft Entra ID federating its guests cannot, is declared so, and
   its unsigned requests are then accepted when its own metadata do not say it signs. Nothing turns the
@@ -78,10 +85,12 @@ that file and whoever took it is the length of what was typed.
 
 ## What a deployment answers with
 
-Headers are shared by a rule: the bundle writes what belongs to a page it builds, the application writes
-what belongs to a deployment, and neither writes a header the other does. A header written twice is not
-replaced, it collides: two content policies intersect, two `Access-Control-Allow-Origin` are invalid and
-the response is rejected.
+Two layers write the headers, and where they meet, one gives way. The bundle gives every page of the
+interaction plane `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `Cache-Control: no-store` and the
+floor of a content policy; the application writes the headers of a deployment on every answer. Where both
+name a header, the value is the same or the bundle's floor is dropped before the deployment's policy is
+written, so one policy is sent: a header written twice is not replaced, it collides, two content policies
+intersect, two `Access-Control-Allow-Origin` are invalid and the response is rejected.
 
 What [the standalone application](../application/index.md) answers with is therefore named where that
 application is configured and nowhere else:

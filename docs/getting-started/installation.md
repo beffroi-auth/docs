@@ -14,8 +14,10 @@ description: What Beffroi needs to run, and how to require it in an application 
 | A key management service | To seal the signing keys and the data keys. For development, a local file-backed client is enough; a deployment uses Vault, AWS KMS or another provider `symfony/key-management` supports |
 | TLS | The provider serves nothing useful over plain HTTP, and the specifications require HTTPS on every endpoint |
 
-A message broker is recommended but not required to start: writes that the protocol does not need the
-result of are dispatched asynchronously, and the synchronous transport works until you wire a real one.
+A message broker is not required to start. The writes the protocol does not need the result of are
+dispatched asynchronously, to transports that default to the database, `doctrine://default`, where they wait
+for a worker that consumes them (`messenger:consume`). A broker takes their place by its DSN in
+`BEFFROI_MESSENGER_DSN`.
 
 !!! info "Nothing is published yet"
 
@@ -47,23 +49,40 @@ beffroi:
     prefix: /
 ```
 
-The smallest configuration that boots names the issuer and the key management client the private keys are
-sealed with:
+What the configuration cannot do without is the issuer, and the client of `symfony/key-management` the
+private keys are sealed with, which the application declares and the bundle names:
+
+``` yaml title="config/packages/key_management.yaml"
+key_management:
+    clients:
+        op: 'service://beffroi.kms.op'
+
+services:
+    beffroi.kms.op:
+        class: Symfony\Component\KeyManagement\EncrypterInterface
+        factory: ['@key_management.factory', 'fromString']
+        arguments: ['%env(BEFFROI_KMS_DSN)%']
+```
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
     tenant:
         issuer: '%env(BEFFROI_ISSUER)%'
     keys:
-        kms: default
+        kms: op
         key_id: '%env(BEFFROI_KMS_KEY_ID)%'
         storage: '%kernel.project_dir%/var/keys'
     clients: []
 ```
 
+A name `key_management.clients` does not hold fails the build of the container. The firewall of the pages,
+the session cookie and the rest an application writes are on [installing the
+bundle](../symfony-bundle/installation.md).
+
 The issuer is the exact string the provider announces as `iss` and the prefix every endpoint is served
-under. It is not a cosmetic setting: a client compares it byte by byte, and changing it later invalidates
-every token in flight.
+under. It is not a cosmetic setting: a client compares it byte by byte, and it never changes for a tenant.
+Every token the tenant issued names it, so a configuration that names another issuer for the same tenant is
+refused rather than served: another issuer is another tenant, under another slug.
 
 [:beffroi-arrow-right: The whole configuration tree](../symfony-bundle/configuration.md)
 

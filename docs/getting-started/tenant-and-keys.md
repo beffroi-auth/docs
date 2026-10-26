@@ -10,7 +10,8 @@ configuration gets its row, and it gets a key.
 
 ## The schema
 
-The bundle ships its Doctrine migrations. Run them as you run any other:
+The bundle ships its Doctrine migrations, and registers their path with `doctrine/doctrine-migrations-bundle`
+when the application has it, which provides the command:
 
 ``` bash
 bin/console doctrine:migrations:migrate
@@ -25,15 +26,26 @@ deployment. The command writes the row that matches what the configuration says.
 bin/console beffroi:tenant:synchronize
 ```
 
-It says what it did: created, renamed, or left alone. Run it again after changing the issuer, on every
-deployment, and it stays a no-op when nothing moved.
+It writes what the configuration says of the tenant, its name, its look, the claims its people may change of
+themselves and the classes it answers with, and prints the tenant it synchronised. Run it on every
+deployment. The issuer is the one thing it never changes: every token a tenant issued names it, so a
+configuration that gives a tenant another issuer is refused, by this command and by the provider, which
+serves nothing while its row and its configuration disagree. Another issuer is another tenant, under another
+slug.
 
-## A signing key
+## Its first keys
 
 ``` bash
+bin/console beffroi:keys:generate --algorithm=MESSAGE-SEAL
 bin/console beffroi:keys:generate
 bin/console beffroi:keys:list
 ```
+
+**The key the messages are sealed to comes first.** Nothing the provider writes to a transport leaves the
+process in clear, and drawing any other key announces its own staging on a transport: on a tenant that does
+not hold a `MESSAGE-SEAL` key yet, that announcement has nothing to be sealed to, and the command fails. Then
+comes the signing key of the default algorithm, and then a key for each further algorithm the deployment
+serves, `SAML-SIGNING` among them for a tenant that speaks SAML.
 
 `beffroi:keys:generate` draws a key, seals it with the configured key management service and makes it the
 active key of its algorithm at once. That is the right command for an empty deployment and the wrong one

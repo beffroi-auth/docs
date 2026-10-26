@@ -24,6 +24,16 @@ first page will appear with the first release that changes a public interface.
 
 ## Coming from another provider
 
-Importing the users of an existing provider, with their credentials where that is possible at all, is
-planned and not implemented. It is written in [the SCIM](../scim/index.md) and federation work rather than
-here, because an import that forces every person to reset their password is not a migration anybody accepts.
+Three things exist, and one does not.
+
+- **The subjects can be kept.** `beffroi:user:create --subject` creates a person under the `sub` the clients
+  already know them by, so an application that stored it finds the same person.
+- **The old provider can stay where it is, upstream.** An identity provider that speaks SAML 2.0 is declared
+  [upstream of the tenant](../saml/upstream-identity-providers.md): the people of its domains sign in there,
+  and each is created here at their first sign-in, with the claims and the groups its declaration maps.
+- **A person who exists here can be tied to it by hand**, with `beffroi:user:link`, and then signs in under
+  that link.
+- **A password hash cannot be imported.** No command takes one: a password is set from its value, and a person
+  without one poses a passkey from an [enrolment ticket](../core/credentials/passkeys.md) or signs in through
+  their organisation. Importing the people of a directory as they are is what [SCIM](../scim/index.md) will
+  serve.
