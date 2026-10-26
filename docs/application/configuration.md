@@ -40,7 +40,7 @@ for a restart of the processes and not for a new image.
 | Variable | In `.env` | What it decides |
 |---|---|---|
 | `APP_ENV` | `dev` | The environment of the kernel. The production image sets `prod` |
-| `APP_SECRET` | empty | The secret of the kernel, `framework.secret`. `.env.dev` and `.env.test` give one each, for their own environment, so a production environment names its own. It is also the secret every data key of personal data is bound to its row under, `beffroi.keys.data_key_secrets` naming no other: the store of the data keys refuses an empty one the first time it is used, and a new one replaces it only as [operating it](operating.md#data-keys) says |
+| `APP_SECRET` | empty | The secret of the kernel, `framework.secret`. `.env.dev` and `.env.test` give one each, for their own environment, so a production environment names its own. It is also the secret every data key of personal data is bound to its row under, `beffroi.keys.data_key_secrets` naming no other: the store of the data keys refuses an empty one the first time it is used, and changing it alone leaves the personal data unreadable: [operating it](operating.md#data-keys) says how it is replaced |
 | `APP_SHARE_DIR` | `var/share` | The share directory of Symfony, one per environment beneath it, `var/share/prod` for a production kernel. It holds the filesystem pool of `cache.app`, and with it the [caches of the bundle](deployment.md#what-the-processes-share) |
 | `DEFAULT_URI` | `https://op.localhost` | The URL Symfony generates absolute URLs under outside a request, `framework.router.default_uri` |
 | `DEFAULT_LOCALE` | `en` | The language a page falls back to, among the two the application serves, `en` and `fr` |

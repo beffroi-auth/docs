@@ -53,9 +53,10 @@ the password, or the password followed by a code. A login of the person already 
 proved to the session the browser holds; a login of somebody else ends that session first.
 
 The `sub` of an `id_token_hint` is the one the provider gave the client of the request, and it is read for
-that client, as every `sub` a client presents is ([the way back](pairwise-subjects.md#the-way-back)): the
-subject the account carries for a client of the `public` kind, the identifier of its sector for a
-[pairwise](pairwise-subjects.md) one. A `sub` that names nobody for that client is a hint of another person.
+that client, as every `sub` this provider gave a client is
+([the way back](pairwise-subjects.md#the-way-back)): the subject the account carries for a client of the
+`public` kind, the identifier of its sector for a [pairwise](pairwise-subjects.md) one. A `sub` that names
+nobody for that client is a hint of another person.
 
 ### The class asked for
 

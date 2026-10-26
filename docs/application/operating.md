@@ -92,7 +92,8 @@ The data keys are bound under `APP_SECRET`, which `beffroi.keys.data_key_secrets
 [personal data](../core/personal-data.md#rotating-the-secret-that-binds-them): `%kernel.secret%` first and the
 previous value second in `beffroi.keys.data_key_secrets`, given to every process; `beffroi:data-keys:rewrap`
 towards the client that wraps the keys, `op` unless they were moved; then the previous value dropped. Changed
-alone, it leaves every sealed value unreadable.
+alone, it leaves the personal data sealed in the database unreadable, and the lookups by a blind index with
+them.
 
 ## The data downloaded
 
@@ -141,7 +142,7 @@ One directory to back up, one key management service and one secret to keep.
 | The database | PostgreSQL | Everything the model writes, the personal data sealed in their columns, and the data keys wrapped by the master key |
 | The sealed keys | `var/keys` | One file per key of the tenant, and the pairwise salt of the tenant beside them, each sealed by the key management service |
 | The master key | The key management service | What opens all of the above |
-| The secret of the kernel | `APP_SECRET`, in the environment of every process | What every data key is bound to its row under: under another secret, the database opens no sealed value |
+| The secret of the kernel | `APP_SECRET`, in the environment of every process | What every data key is bound to its row under: under another secret, none of the personal data sealed in the database opens, and no lookup by a blind index works |
 
 No command restores a deployment: a restore is the database and `var/keys` put back together, under the same
 master key and the same `APP_SECRET`. The pairwise subjects of OpenID Connect and the persistent identifiers of SAML are computed from

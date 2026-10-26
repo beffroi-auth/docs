@@ -101,9 +101,10 @@ once per value. Nothing in the ordinary life of a tenant removes a data key: a n
 there, and a rewrap changes what protects a key and not the key.
 
 Each row is also bound to its reference and its scope: an HMAC-SHA256 of the two, under a key derived from the
-data key and from a secret the database does not hold. A row edited, copied under another reference or scope,
-or written into the table by whoever can write the database opens nothing, even when the key it carries is
-wrapped under a master key the provider may use. The secrets are those of `beffroi.keys.data_key_secrets`, the
+data key and from a secret the database does not hold. A key that is not the one minted for its reference and
+its scope therefore opens nothing: a row whose key was replaced, a row copied under another reference or
+scope, a row written into the table by whoever can write the database, even when the key it carries is wrapped
+under a master key the provider may use. The secrets are those of `beffroi.keys.data_key_secrets`, the
 secret of the kernel unless the configuration names others, one list for the whole deployment: the first one
 binds a new row, and a row bound under any of them opens. A row bound under a secret that is no longer listed
 opens nothing, and neither does any value sealed under its key.
@@ -161,8 +162,8 @@ beffroi:
 3. Drop the old secret once the command has moved every key.
 
 The secret of the kernel is replaced the same way when the configuration names no secret of its own,
-`%kernel.secret%` written first and its previous value second: changed alone, it leaves every sealed value of
-the deployment unreadable.
+`%kernel.secret%` written first and its previous value second: changed alone, it leaves every value sealed
+under a data key unreadable, and no lookup by a blind index works.
 
 ## Destroying them
 
