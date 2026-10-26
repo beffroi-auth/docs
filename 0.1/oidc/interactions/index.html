@@ -4244,7 +4244,7 @@ first that answers sends the browser to the login page:</p>
 <tr>
 <td>2</td>
 <td><code>id_token_hint</code></td>
-<td>When the <code>sub</code> of the hint is not the subject identifier of the account signed in</td>
+<td>When the <code>sub</code> of the hint, read for the client of the request, names another person than the one signed in, or nobody</td>
 </tr>
 <tr>
 <td>3</td>
@@ -4274,9 +4274,11 @@ continue." for a reason other than the absence of a session, and, for a step-up,
 stronger sign-in than the one the person has, with the credentials they hold that would satisfy it, a passkey,
 the password, or the password followed by a code. A login of the person already signed in adds what it
 proved to the session the browser holds; a login of somebody else ends that session first.</p>
-<p>The <code>id_token_hint</code> is compared with the subject identifier the account carries, which is the <code>sub</code> a client
-of the <code>public</code> kind holds. An <code>id_token_hint</code> carrying the <code>sub</code> of a <a href="../pairwise-subjects/">pairwise</a>
-client never names the account signed in, so a request carrying one is sent to the login page every time.</p>
+<p>The <code>sub</code> of an <code>id_token_hint</code> is the one the provider gave the client of the request, and it is read for
+that client, as every <code>sub</code> this provider gave a client is
+(<a href="../pairwise-subjects/#the-way-back">the way back</a>): the subject the account carries for a client of the
+<code>public</code> kind, the identifier of its sector for a <a href="../pairwise-subjects/">pairwise</a> one. A <code>sub</code> that names
+nobody for that client is a hint of another person.</p>
 <h3 id="the-class-asked-for">The class asked for<a class="headerlink" href="#the-class-asked-for" title="Link to this section">&para;</a></h3>
 <p><code>acr_values</code> asks for a class of authentication voluntarily. A <code>claims</code> request of <code>acr</code> in <code>id_token</code>, with
 <code>values</code> or <code>value</code>, asks for one too, and binds the provider when it says <code>"essential": true</code> (OIDC Core
@@ -4426,7 +4428,7 @@ is sent to a redirect URI on behalf of somebody who is no longer there.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 14:16:21 UTC">October 26, 2026</span>
   </span>
 
     

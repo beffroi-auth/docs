@@ -4695,6 +4695,12 @@ key of the tenant but its SAML keys, which take theirs from
 <td>The key of that client the keys of the tenant are sealed under, in the terms of its backend: the identifier of a sodium key, a Vault transit key name, an ARN. <code>{tenant}</code> in it stands for the slug of the tenant, one master key per tenant. The data keys that seal personal data are wrapped under the same key</td>
 </tr>
 <tr>
+<td><code>data_key_secrets</code></td>
+<td>list of strings, not empty, one at least</td>
+<td><code>['%kernel.secret%']</code>, the secret of the kernel</td>
+<td>The secrets every data key of personal data is bound to its reference and its scope under, which the database does not hold. The first binds a new key, a key bound under any of them opens, and one bound under a secret no longer listed opens nothing, nor does what it sealed. A single string is read as a list of one. A secret is replaced by writing the new one first, then running <code>beffroi:data-keys:rewrap</code> towards the client that already wraps the keys, then dropping the old one: <a href="../../core/personal-data/#rotating-the-secret-that-binds-them">personal data</a></td>
+</tr>
+<tr>
 <td><code>storage</code></td>
 <td>string, not empty</td>
 <td><code>%kernel.project_dir%/var/keys</code></td>
@@ -5401,7 +5407,7 @@ refused when the provider first reads its clients, naming the client, the option
 <td><code>require_signed_request_object</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>A request of the client is read only from a request object it signed, wherever the object arrives: in the query, behind a <code>request_uri</code>, in a pushed request or in a backchannel authentication request. An unsigned authorization request is refused on a page before its redirect URI is read, an unsigned backchannel one with <code>invalid_request</code></td>
+<td>A request of the client is read only from a request object it signed, wherever the object arrives: an authorization request in the query, behind a <code>request_uri</code> or in a pushed request (RFC 9101 §10.5), and a backchannel authentication request in its body. An unsigned authorization request is refused on a page before its redirect URI is read, an unsigned backchannel one with <code>invalid_request</code>. A declaration that names it beside <code>request_object_signing_alg: none</code> is refused</td>
 </tr>
 <tr>
 <td><code>id_token_signed_response_alg</code></td>
@@ -5521,7 +5527,7 @@ refused when the provider first reads its clients, naming the client, the option
 <td><code>request_object_signing_alg</code></td>
 <td>string</td>
 <td>any wired algorithm</td>
-<td>The JWS algorithm the request objects of the client are signed with (OIDC Registration §2), among the wired ones. Left out, any of them verifies an object, and an unsigned object is refused. <code>none</code> is the one exception: the objects of the client carry no signature and are read all the same</td>
+<td>The JWS algorithm the request objects of the client are signed with (OIDC Registration §2), among the wired ones. Left out, any of them verifies an object, and an unsigned object is refused. <code>none</code> is the one exception: the objects of the client carry no signature and are read all the same, and a client with <code>require_signed_request_object</code> cannot name it</td>
 </tr>
 <tr>
 <td><code>backchannel_token_delivery_mode</code></td>
@@ -5940,7 +5946,7 @@ is how one is declared.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 14:16:21 UTC">October 26, 2026</span>
   </span>
 
     

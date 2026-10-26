@@ -4193,18 +4193,15 @@ client that presents it, in that client's sector and in no other:</p>
 <ul>
 <li>a <code>login_hint</code> read as a <code>sub</code> (<a href="../interactions/">interactions</a>) names somebody only when the client sending
   it was given that identifier, or a client of its sector was;</li>
+<li>an <code>id_token_hint</code>, at the authorization endpoint (<a href="../interactions/">interactions</a>) and at the end session
+  endpoint (<a href="../logout/">logout</a>), names the person signed in when its <code>sub</code> is the identifier the client it was
+  issued to holds of that person;</li>
 <li>the hints of a <a href="../grants/backchannel-authentication/">backchannel authentication</a> request are read the same
   way;</li>
 <li>a self-contained access token somebody signed in for is found to be that person's by its <code>sub</code>, read for
   the client it was issued to. An opaque access token names its person in its record, and a self-contained
   one whose <code>sub</code> another client named carries its person sealed, so neither is looked up.</li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title"><code>id_token_hint</code> at the authorization endpoint</p>
-<p>The authorization endpoint compares the <code>sub</code> of an <code>id_token_hint</code> with the subject identifier the account
-carries, which is what a <code>public</code> client holds. A pairwise client that sends an <code>id_token_hint</code> there is sent
-to the login page every time, and answered <code>login_required</code> when the request says <code>prompt=none</code>.</p>
-</div>
 <p><a href="../clients/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Clients</a> and <a href="../scopes-and-claims/">scopes and claims</a></p>
 
@@ -4227,7 +4224,7 @@ to the login page every time, and answered <code>login_required</code> when the 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 13:58:25 UTC">October 26, 2026</span>
   </span>
 
     

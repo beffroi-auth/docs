@@ -4684,6 +4684,10 @@ the key of that client the keys are sealed under, <code>{tenant}</code> standing
 <p><code>storage</code> is the directory of the sealed key files and of the pairwise salt of the tenant, sealed the same
 way. The salt is drawn on first use and never again, and every pairwise subject of the tenant is computed from
 it, so the directory is part of what a deployment backs up.</p>
+<p><code>data_key_secrets</code> lists the secrets every data key of personal data is bound to its row under, which the
+database does not hold, and is the secret of the kernel when it is left out. The first binds a new key and a
+key bound under any of them opens, so a secret is replaced by writing the new one first, as <a href="../../core/personal-data/#rotating-the-secret-that-binds-them">personal
+data</a> says.</p>
 <p>The three other options time the rotation of every key but the SAML keys. A relying party keeps the JWK Set
 for <code>jwks_max_age</code>, five minutes. A new key is published for <code>staging_delay</code> before it signs, by default
 <code>jwks_max_age</code> plus the sixty seconds after which Symfony's <code>oidc_login</code> reads the set again for a <code>kid</code> it
@@ -4962,7 +4966,7 @@ off.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 14:00:31 UTC">October 26, 2026</span>
   </span>
 
     

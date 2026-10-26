@@ -1318,6 +1318,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rotating-the-secret-that-binds-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating the secret that binds them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#destroying-them" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4088,6 +4099,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rotating-the-secret-that-binds-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating the secret that binds them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#destroying-them" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4319,6 +4341,14 @@ configuration names for the tenant, <code>beffroi.keys.key_id</code> resolved fo
 under. A process opens each data key once and keeps it, so the key management service is asked once per key and not
 once per value. Nothing in the ordinary life of a tenant removes a data key: a new key is minted beside the ones
 there, and a rewrap changes what protects a key and not the key.</p>
+<p>Each row is also bound to its reference and its scope: an HMAC-SHA256 of the two, under a key derived from the
+data key and from a secret the database does not hold. A key that is not the one minted for its reference and
+its scope therefore opens nothing: a row whose key was replaced, a row copied under another reference or
+scope, a row written into the table by whoever can write the database, even when the key it carries is wrapped
+under a master key the provider may use. The secrets are those of <code>beffroi.keys.data_key_secrets</code>, the
+secret of the kernel unless the configuration names others, one list for the whole deployment: the first one
+binds a new row, and a row bound under any of them opens. A row bound under a secret that is no longer listed
+opens nothing, and neither does any value sealed under its key.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:list
 </span></code></pre></div>
 <p>It lists the keys of the tenant by scope, each with its reference, when it was minted, the master key that wraps
@@ -4361,8 +4391,27 @@ next one after thirty days, is wrapped by the client <code>beffroi.keys.kms</cod
 scopes the tenant holds. One tenant at a time, by hand: nothing schedules it.</p>
 <p>The keys of the tenant itself, its signing and encryption keys, are sealed apart, one file each, and no command
 rewraps them: a key sealed by another service is replaced by a <a href="../keys/#rotating-without-an-outage">rotation</a>.</p>
+<h2 id="rotating-the-secret-that-binds-them">Rotating the secret that binds them<a class="headerlink" href="#rotating-the-secret-that-binds-them" title="Link to this section">&para;</a></h2>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">data_key_secrets</span><span class="p">:</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'%env(DATA_KEY_SECRET)%'</span><span class="w">           </span><span class="c1"># the new secret, which binds</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'%env(PREVIOUS_DATA_KEY_SECRET)%'</span><span class="w">  </span><span class="c1"># the one it replaces, still read</span>
+</span></code></pre></div>
+<ol>
+<li>Write the new secret first and keep the one it replaces second, and give that configuration to every
+   process of the deployment before going on: a process that does not list a secret opens no row bound under
+   it. The two variables are the deployment's own, and the bundle reads none of them by name.</li>
+<li>Run <code>beffroi:data-keys:rewrap</code> with <code>--to</code> naming the client that already wraps the keys of the tenant, the
+   one <code>beffroi.keys.kms</code> names unless a rewrap moved them. Every key is bound again under the first secret as
+   it moves, and its value and every ciphertext sealed under it stay as they are.</li>
+<li>Drop the old secret once the command has moved every key.</li>
+</ol>
+<p>The secret of the kernel is replaced the same way when the configuration names no secret of its own,
+<code>%kernel.secret%</code> written first and its previous value second: changed alone, it leaves every value sealed
+under a data key unreadable, and no lookup by a blind index works.</p>
 <h2 id="destroying-them">Destroying them<a class="headerlink" href="#destroying-them" title="Link to this section">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:destroy<span class="w"> </span>example
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:destroy<span class="w"> </span>example
 </span></code></pre></div>
 <p>The command erases every data key of the tenant, the index key included, and the slug has to be typed back:
 without it, or with another one, it says how many keys over which scopes it would erase, and erases nothing. There
@@ -4433,7 +4482,7 @@ at the least.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:20 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 14:16:21 UTC">October 26, 2026</span>
   </span>
 
     
