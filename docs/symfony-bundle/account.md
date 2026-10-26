@@ -47,8 +47,9 @@ only reads.
 
 A claim says what field it is, which is what the page renders: the kind its input carries, the whole set
 when the set is closed, and the pattern or the length when it is not. A closed set is closed on the server
-too, for every caller and not only for that page, and a birthdate that is not a date is refused rather
-than stored. What those lines said before, and when they changed, is at `/account/profile/changes`.
+too, for whatever that page posts and not only in its field, and a birthdate that has not the shape of one,
+a year or a year, a month and a day, is refused rather than stored. What those lines said before, and when
+they changed, is at `/account/profile/changes`.
 
 ### What the password page says
 
@@ -90,7 +91,8 @@ A session outlives the moment it was opened, by construction: a person signs in 
 account for the rest of the day, and so does whoever sits down in front of a screen left unlocked. That is
 the right trade for a page that shows what the account holds, and the wrong one for the gesture somebody
 else would lock its owner out with, so **a page that adds or takes away a way in asks for the proof
-again** when the session was opened more than five minutes ago.
+again** when the newest proof of the session is more than five minutes old. A step-up or a login made again
+in that session counts as a proof like the first one.
 
 === "Asks for a recent proof"
 

@@ -142,5 +142,8 @@ schedule: it is the one way back from a signed document an operator decides to s
 
 A command never bypasses a rule the protocol applies. It cannot mint a token for a user, cannot read a
 signing key it is not allowed to open, and cannot read a personal datum the key management service refuses
-to unseal. `beffroi:data-keys:destroy` is the one that cannot be undone, and it asks for the slug of the
-tenant to be typed back before it runs.
+to unseal.
+
+Three commands cannot be undone. `beffroi:data-keys:destroy` asks for the slug of the tenant to be typed back
+before it runs, `beffroi:tenant:login-floor` asks before it forgets the credentials the floor leaves out, and
+`beffroi:client:delete` deletes a client that registered itself.
