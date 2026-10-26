@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pointing a Symfony application at Beffroi with the oidc_login authenticator, and checking tokens on a resource server.">
+        <meta name="description" content="Signing people in to a Symfony application with the oidc_login authenticator, signing them out again, and checking the access token on a resource server.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="A Symfony relying party">
-  <meta property="og:description" content="Pointing a Symfony application at Beffroi with the oidc_login authenticator, and checking tokens on a resource server.">
+  <meta property="og:description" content="Signing people in to a Symfony application with the oidc_login authenticator, signing them out again, and checking the access token on a resource server.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -739,6 +739,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    A Symfony relying party
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -753,16 +771,101 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#on-the-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        On the provider
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In the application
+      
+    </span>
+  </a>
   
-
-      </a>
+    <nav class="md-nav" aria-label="In the application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-two-sides-agree-on-without-being-told" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the two sides agree on without being told
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signing-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Signing out
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-resource-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A resource server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-reference-relying-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The reference relying party
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3884,14 +3987,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3919,14 +4014,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3956,14 +4043,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3991,14 +4070,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4417,6 +4488,86 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#on-the-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        On the provider
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#in-the-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In the application
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="In the application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-two-sides-agree-on-without-being-told" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the two sides agree on without being told
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signing-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Signing out
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-resource-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A resource server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-reference-relying-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The reference relying party
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4441,22 +4592,219 @@
 
 
 <h1 id="a-symfony-relying-party">A Symfony relying party<a class="headerlink" href="#a-symfony-relying-party" title="Link to this section">&para;</a></h1>
-<p>The client of reference for this provider is Symfony's own <code>oidc_login</code> authenticator. Anything Beffroi
-emits must be consumable by it with no patch, and anything it can verify, Beffroi must produce. When a
-limit shows up in the authenticator, it is fixed upstream in Symfony rather than worked around here.</p>
-<p>That makes a Symfony application the shortest path to a sign-in you can watch end to end: a firewall with
-<code>oidc_login</code> pointed at the issuer, a client declared on the provider side, and the callback the
-authenticator expects.</p>
-<p>This page will carry that configuration, both halves of it: the firewall that signs a person in, and the
-<code>access_token</code> firewall of a resource server checking what the provider issued, by introspection or by
-verifying an <code>at+jwt</code> itself.</p>
-<p>Until it is written, the reference relying party is
-<a href="https://github.com/beffroi-auth/oidc-demo">beffroi-auth/oidc-demo</a>: a Symfony application on <code>oidc_login</code>, a
-resource server that checks the same access token several ways, an API Platform API behind the
-introspection endpoint where every operation names the scope it needs, and a forge where a client is
-composed option by option out of what the provider announces and registered on the spot, from one that
-puts the whole authorization request in the URL of a browser to one that pushes it signed, reads a signed
-response, holds a bound token and opens an encrypted ID token.</p>
+<p>The client of reference for this provider is Symfony's own <code>oidc_login</code> authenticator, which Symfony 8.2 adds
+with an <code>oidc</code> user provider: what Beffroi emits is played against it, with no patch of the authenticator.
+That makes a Symfony application the shortest path to a sign-in you can watch end to end, and it takes two
+halves: a client declared on the provider, and a firewall in the application.</p>
+<h2 id="on-the-provider">On the provider<a class="headerlink" href="#on-the-provider" title="Link to this section">&para;</a></h2>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">my-application</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'My</span><span class="nv"> </span><span class="s">application'</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MY_APPLICATION_SECRET)%'</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">redirect_uris</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://app.example.com/oidc/callback'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">post_logout_redirect_uris</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://app.example.com/'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">client_secret_basic</span>
+</span></code></pre></div>
+<p><code>/oidc/callback</code> is the path <code>oidc_login</code> is called back on unless told otherwise, and <code>/</code> the one it sends a
+browser to after a logout; both are compared exactly. What the declaration leaves out takes the defaults this
+application needs: the scopes <code>openid profile email</code>, the authorization code grant and its renewal by a refresh
+token, access tokens in the <code>at+jwt</code> shape (RFC 9068), and a consent asked of each person the first time. The
+secret is at least 32 visible ASCII characters, generated.</p>
+<p><a href="../your-first-client/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Your first client</a></p>
+<h2 id="in-the-application">In the application<a class="headerlink" href="#in-the-application" title="Link to this section">&para;</a></h2>
+<p>The authenticator needs the HTTP client of Symfony to reach the provider, and <code>web-token/jwt-library</code> to
+verify what it signed:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>composer<span class="w"> </span>require<span class="w"> </span>symfony/security-bundle<span class="w"> </span>symfony/http-client<span class="w"> </span>web-token/jwt-library
+</span></code></pre></div>
+<div class="language-yaml highlight"><span class="filename">config/packages/security.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">security</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">providers</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">oidc</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">            </span><span class="nt">oidc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">firewalls</span><span class="p">:</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="nt">main</span><span class="p">:</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">            </span><span class="nt">lazy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">            </span><span class="nt">oidc_login</span><span class="p">:</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">                </span><span class="nt">provider_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(OIDC_PROVIDER_URI)%'</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">                </span><span class="nt">client_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(OIDC_CLIENT_ID)%'</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">                </span><span class="nt">client_authentication</span><span class="p">:</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">                    </span><span class="nt">client_secret_basic</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(OIDC_CLIENT_SECRET)%'</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">                </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'openid'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'profile'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'email'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">                </span><span class="nt">refresh_access_token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">                </span><span class="nt">enable_end_session</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">            </span><span class="nt">logout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span><span class="nt">access_control</span><span class="p">:</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> path</span><span class="p">:</span><span class="w"> </span><span class="nv">^/profile</span><span class="p p-Indicator">,</span><span class="nt"> roles</span><span class="p">:</span><span class="w"> </span><span class="nv">ROLE_USER</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span></code></pre></div>
+<p>The routes of the firewall, the callback and the logout among them, are declared by one route loader, which
+the application imports:</p>
+<div class="language-yaml highlight"><span class="filename">config/routes/security.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">_security</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">security.route_loader</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">OIDC_PROVIDER_URI</span><span class="o">=</span>https://op.example.com
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nv">OIDC_CLIENT_ID</span><span class="o">=</span>my-application
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nv">OIDC_CLIENT_SECRET</span><span class="o">=</span>
+</span></code></pre></div>
+<p><code>OIDC_PROVIDER_URI</code> is the issuer, exactly as the provider announces it: the authenticator reads everything
+else from its discovery document. A visit to <code>/profile</code> without a session sends the browser to the
+authorization endpoint of the provider, which signs the person in, asks for their consent the first time, and
+sends the browser back to <code>/oidc/callback</code> with a code. The user of the firewall is an <code>OidcUser</code> built from the
+claims UserInfo answers with, holding <code>ROLE_USER</code>.</p>
+<h3 id="what-the-two-sides-agree-on-without-being-told">What the two sides agree on without being told<a class="headerlink" href="#what-the-two-sides-agree-on-without-being-told" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th><code>oidc_login</code></th>
+<th>Beffroi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sends PKCE with <code>S256</code> unless told otherwise</td>
+<td>Refuses an authorization request without it, and never takes <code>plain</code></td>
+</tr>
+<tr>
+<td>Accepts an ID token signed with <code>RS256</code> unless <code>id_token_signature.algorithms</code> names others</td>
+<td>Signs with <code>RS256</code>, the first algorithm it is wired with, unless the client registers another <code>id_token_signed_response_alg</code></td>
+</tr>
+<tr>
+<td>Reads the claims from UserInfo unless <code>user_data_source</code> says otherwise</td>
+<td>Answers UserInfo with the claims of the scopes the person agreed to (OIDC Core §5.3)</td>
+</tr>
+<tr>
+<td>Renews the access token with the refresh token, with <code>refresh_access_token</code></td>
+<td>Issues a refresh token to a confidential client registered for the refresh token grant, <code>offline_access</code> asked for or not, and to a public one that asks for <code>offline_access</code></td>
+</tr>
+<tr>
+<td>Sends the scopes of <code>scope</code></td>
+<td>Takes the scopes the client registered and refuses any other with <code>invalid_scope</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>The refresh token of this client stands.</strong> A confidential client is told from a copy of its token by its
+own authentication, so Beffroi answers a renewal with a new access token and no new refresh token, and the
+one the application holds works until it expires, thirty days after it was issued by default. Only the
+refresh token of a public client bound to no key or certificate is rotated at every use (RFC 9700 §4.13.2):
+its successor comes with the response, and the rotated token presented again revokes its whole family. For
+such a client, two requests of one browser renewing the same token at once would be that replay; a session
+handler that locks the session keeps them apart, and the default one of Symfony does.</p>
+<h2 id="signing-out">Signing out<a class="headerlink" href="#signing-out" title="Link to this section">&para;</a></h2>
+<p><strong><code>enable_end_session</code></strong> is RP-Initiated Logout 1.0: the <code>/logout</code> of the firewall sends the browser to the
+end session endpoint of the provider, with the ID token as <code>id_token_hint</code> and the absolute URL of
+<code>post_logout_redirect_path</code>, <code>/</code> unless told otherwise, as <code>post_logout_redirect_uri</code>. The provider ends its
+session, which revokes what was issued under it, and sends the browser back to that URL. It has to be one of
+the <code>post_logout_redirect_uris</code> of the client: any other is refused with <code>invalid_request</code>, and no error of
+that endpoint is a redirection.</p>
+<p><strong>The back channel</strong> tells the application when the session of the provider ends anywhere else: at the end
+session endpoint through another client, from the account of the person, by the console. The provider posts a
+logout token to the client (Back-Channel Logout 1.0 §2.5), and the firewall ends the local session it opened
+under it.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">        </span><span class="nt">my-application</span><span class="p">:</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">            </span><span class="c1"># ...</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">            </span><span class="nt">backchannel_logout_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://app.example.com/oidc/backchannel-logout'</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">            </span><span class="nt">backchannel_logout_session_required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span></code></pre></div>
+<div class="language-yaml highlight"><span class="filename">config/packages/security.yaml</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">security</span><span class="p">:</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="nt">firewalls</span><span class="p">:</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">        </span><span class="nt">main</span><span class="p">:</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">            </span><span class="nt">oidc_login</span><span class="p">:</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">                </span><span class="c1"># ...</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">                </span><span class="nt">backchannel_logout</span><span class="p">:</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">                    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">                    </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cache.app</span>
+</span></code></pre></div>
+<p><code>/oidc/backchannel-logout</code> is the path the route loader declares for it, <code>POST</code> only. The pool <code>cache</code> names
+remembers the ended sessions, for a day unless <code>lifetime</code> says otherwise, and has to be shared by every server
+of the application. The logout token is posted by the worker of the provider, so the application answers that
+URI where the worker can reach it, over HTTPS, or over plain HTTP on a loopback host.</p>
+<h2 id="a-resource-server">A resource server<a class="headerlink" href="#a-resource-server" title="Link to this section">&para;</a></h2>
+<p>An <code>access_token</code> firewall checks the access token a request carries, in one of two ways.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="an-atjwt-verified-where-it-arrives" name="__tabbed_1" type="radio" /><input id="any-token-described-by-the-provider" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="an-atjwt-verified-where-it-arrives">An at+jwt, verified where it arrives</label><label for="any-token-described-by-the-provider">Any token, described by the provider</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-yaml highlight"><span class="filename">config/packages/security.yaml</span><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">security</span><span class="p">:</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="nt">firewalls</span><span class="p">:</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">        </span><span class="nt">api</span><span class="p">:</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">            </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">^/api/</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">            </span><span class="nt">stateless</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">            </span><span class="nt">access_token</span><span class="p">:</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">                </span><span class="nt">token_handler</span><span class="p">:</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">                    </span><span class="nt">oidc</span><span class="p">:</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">                        </span><span class="nt">discovery</span><span class="p">:</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">                            </span><span class="nt">base_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(OIDC_PROVIDER_URI)%'</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">                            </span><span class="nt">cache</span><span class="p">:</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">                                </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cache.app</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">                        </span><span class="nt">issuers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(OIDC_PROVIDER_URI)%'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">                        </span><span class="nt">audience</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(OIDC_CLIENT_ID)%'</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">                        </span><span class="nt">enforce_at_jwt_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span></code></pre></div>
+<p>The discovery document and the keys of the JWK Set it names are kept in the pool <code>discovery.cache.id</code>
+names, and the token is accepted from the issuers <code>issuers</code> lists. Beffroi signs every access token with
+<code>RS256</code>, which is what the handler accepts unless told otherwise, and types it <code>at+jwt</code> (RFC 9068 §2.1),
+which <code>enforce_at_jwt_type</code> holds it to.</p>
+<p>The <code>aud</code> of the token is the client it was issued to, unless the client asked for a resource (RFC 8707
+§2), in which case it names that resource and the <code>audience</code> of the handler is that identifier. Nothing
+reaches the provider: a token revoked there is accepted here until it expires, ten minutes after it was
+issued by default.</p>
+</div>
+<div class="tabbed-block">
+<div class="language-yaml highlight"><span class="filename">config/packages/framework.yaml</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">framework</span><span class="p">:</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="nt">http_client</span><span class="p">:</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">        </span><span class="nt">scoped_clients</span><span class="p">:</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">            </span><span class="nt">introspection.client</span><span class="p">:</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">                </span><span class="nt">base_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(OIDC_INTROSPECTION_URI)%'</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">                </span><span class="nt">auth_basic</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(OIDC_CLIENT_ID)%:%env(OIDC_CLIENT_SECRET)%'</span>
+</span></code></pre></div>
+<div class="language-yaml highlight"><span class="filename">config/packages/security.yaml</span><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">security</span><span class="p">:</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="nt">firewalls</span><span class="p">:</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">        </span><span class="nt">api</span><span class="p">:</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">            </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">^/api/</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">            </span><span class="nt">stateless</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">            </span><span class="nt">access_token</span><span class="p">:</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">                </span><span class="nt">token_handler</span><span class="p">:</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">                    </span><span class="nt">oauth2</span><span class="p">:</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">                        </span><span class="nt">http_client</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">introspection.client</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">                        </span><span class="nt">issuer</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(OIDC_PROVIDER_URI)%'</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">                        </span><span class="nt">audience</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(OIDC_CLIENT_ID)%'</span>
+</span></code></pre></div>
+<p><code>OIDC_INTROSPECTION_URI</code> is the issuer followed by <code>/introspect</code>. The provider describes a token to the
+client it was issued to and to nobody else (RFC 7662 §2.2), so the resource server asks with the
+credentials of that client, and an opaque access token, <code>access_token_format: opaque</code> on the client, is
+read this way only. A token whose session has ended, or whose grant was taken back, is described as
+inactive from then on; a <code>cache</code> on the handler keeps an active answer for up to sixty seconds, never past
+the <code>exp</code> of the token.</p>
+<p>Beffroi reads both halves of HTTP Basic credentials form-urlencoded, as RFC 6749 §2.3.1 writes them and
+as <code>oidc_login</code> sends them, while the scoped client sends <code>auth_basic</code> as it is given. A secret drawn in
+base64url reads the same both ways; one holding a <code>+</code>, a <code>%</code> or a colon is encoded in the variable the
+scoped client reads.</p>
+</div>
+</div>
+</div>
+<p>Either way, what a route needs is a scope, which Symfony reads from the <code>scope</code> of the token or of the answer:</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/security.yaml</span><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">security</span><span class="p">:</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="nt">access_control</span><span class="p">:</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> path</span><span class="p">:</span><span class="w"> </span><span class="nv">^/api/invoices</span><span class="p p-Indicator">,</span><span class="nt"> roles</span><span class="p">:</span><span class="w"> </span><span class="s">'OAUTH2_SCOPE(invoices.read)'</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span></code></pre></div>
+<p>A token without it is refused with <code>403</code> and the <code>insufficient_scope</code> challenge of RFC 6750 §3.1. A scope that
+stands for no claim, <code>invoices.read</code> here, exists on the provider once a client registers it in its <code>scope</code>,
+and the application asks for it in its own.</p>
+<h2 id="the-reference-relying-party">The reference relying party<a class="headerlink" href="#the-reference-relying-party" title="Link to this section">&para;</a></h2>
+<p><a href="https://github.com/beffroi-auth/oidc-demo">beffroi-auth/oidc-demo</a> is this page grown into everything the
+provider serves: a Symfony application on <code>oidc_login</code>, a resource server that checks the same access token
+several ways, an API Platform API behind the introspection endpoint where every operation names the scope it
+needs, and a forge where a client is composed option by option out of what the provider announces and
+registered on the spot, from one that puts the whole authorization request in the URL of a browser to one that
+pushes it signed, reads a signed response, holds a bound token and opens an encrypted ID token.</p>
+<p>From a working copy of the monorepo with oidc-demo checked out beside it, <code>castor demo</code> points it at
+<a href="../the-standalone-application/#on-your-machine">the development stack</a> and starts it on
+<code>https://localhost:8002</code>, and <code>castor demo --check</code> signs in as the development user, opens <code>/profile</code> and
+signs out, from the command line.</p>
 
 
 
@@ -4477,7 +4825,7 @@ response, holds a bound token and opens an encrypted ID token.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 23, 2026 09:45:40 UTC">October 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:18 UTC">October 26, 2026</span>
   </span>
 
     

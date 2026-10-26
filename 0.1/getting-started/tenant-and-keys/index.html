@@ -758,10 +758,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#a-signing-key" class="md-nav__link">
+  <a href="#its-first-keys" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A signing key
+        Its first keys
       
     </span>
   </a>
@@ -836,14 +836,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3967,14 +3959,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4002,14 +3986,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4039,14 +4015,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4074,14 +4042,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4529,10 +4489,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#a-signing-key" class="md-nav__link">
+  <a href="#its-first-keys" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A signing key
+        Its first keys
       
     </span>
   </a>
@@ -4579,7 +4539,8 @@
 <p>A provider that cannot sign cannot answer. Two things happen before the first request: the tenant of the
 configuration gets its row, and it gets a key.</p>
 <h2 id="the-schema">The schema<a class="headerlink" href="#the-schema" title="Link to this section">&para;</a></h2>
-<p>The bundle ships its Doctrine migrations. Run them as you run any other:</p>
+<p>The bundle ships its Doctrine migrations, and registers their path with <code>doctrine/doctrine-migrations-bundle</code>
+when the application has it, which provides the command:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>doctrine:migrations:migrate
 </span></code></pre></div>
 <h2 id="the-tenant">The tenant<a class="headerlink" href="#the-tenant" title="Link to this section">&para;</a></h2>
@@ -4587,12 +4548,22 @@ configuration gets its row, and it gets a key.</p>
 deployment. The command writes the row that matches what the configuration says.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:tenant:synchronize
 </span></code></pre></div>
-<p>It says what it did: created, renamed, or left alone. Run it again after changing the issuer, on every
-deployment, and it stays a no-op when nothing moved.</p>
-<h2 id="a-signing-key">A signing key<a class="headerlink" href="#a-signing-key" title="Link to this section">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>bin/console<span class="w"> </span>beffroi:keys:list
+<p>It writes what the configuration says of the tenant, its name, its look, the claims its people may change of
+themselves and the classes it answers with, and prints the tenant it synchronised. Run it on every
+deployment. The issuer is the one thing it never changes: every token a tenant issued names it, so a
+configuration that gives a tenant another issuer is refused, by this command and by the provider, which
+serves nothing while its row and its configuration disagree. Another issuer is another tenant, under another
+slug.</p>
+<h2 id="its-first-keys">Its first keys<a class="headerlink" href="#its-first-keys" title="Link to this section">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>MESSAGE-SEAL
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>bin/console<span class="w"> </span>beffroi:keys:generate
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>bin/console<span class="w"> </span>beffroi:keys:list
 </span></code></pre></div>
+<p><strong>The key the messages are sealed to comes first.</strong> Nothing the provider writes to a transport leaves the
+process in clear, and drawing any other key announces its own staging on a transport: on a tenant that does
+not hold a <code>MESSAGE-SEAL</code> key yet, that announcement has nothing to be sealed to, and the command fails. Then
+comes the signing key of the default algorithm, and then a key for each further algorithm the deployment
+serves, <code>SAML-SIGNING</code> among them for a tenant that speaks SAML.</p>
 <p><code>beffroi:keys:generate</code> draws a key, seals it with the configured key management service and makes it the
 active key of its algorithm at once. That is the right command for an empty deployment and the wrong one
 for a live deployment, where <a href="../../reference/console-commands/"><code>beffroi:keys:rotate</code></a> replaces a key
@@ -4639,7 +4610,7 @@ importing an identity that already has one somewhere else.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:18 UTC">October 26, 2026</span>
   </span>
 
     

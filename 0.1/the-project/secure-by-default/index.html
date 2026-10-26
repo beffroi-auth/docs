@@ -837,14 +837,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3967,14 +3959,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4002,14 +3986,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4039,14 +4015,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4074,14 +4042,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4601,7 +4561,7 @@ code. There is no <code>insecure_</code> setting, no compatibility mode, and no 
 <td>It teaches applications to collect passwords, which is the habit the protocol exists to break</td>
 </tr>
 <tr>
-<td>Redirect URIs are compared exactly</td>
+<td>Redirect URIs are compared exactly, the port of a public client's loopback URI aside</td>
 <td>Prefix and wildcard matching is how an open redirector becomes a token leak</td>
 </tr>
 <tr>
@@ -4659,15 +4619,22 @@ code. There is no <code>insecure_</code> setting, no compatibility mode, and no 
 </tbody>
 </table>
 <h2 id="where-an-exception-exists">Where an exception exists<a class="headerlink" href="#where-an-exception-exists" title="Link to this section">&para;</a></h2>
-<p>An exception is named, bounded and written down, never a switch in a configuration file. Two examples of
-the shape they take:</p>
+<p>An exception is named, bounded and written down where it applies, for one client or for one tenant, and
+never a global switch. The shape they take:</p>
 <ul>
-<li><strong>PKCE can be waived by the registration policy</strong>, not by the client. A tenant that must serve a client
-  which cannot do PKCE says so in its own policy, for that client, and the waiver is visible where clients
-  are read.</li>
-<li><strong>Dynamic client registration is controlled.</strong> The endpoint exists, and the tenant decides the mode it
-  runs in: who may register, what an initial access token buys, and which authority may vouch for a piece
-  of software it did not issue.</li>
+<li><strong>PKCE can be waived for a confidential client, never for a public one.</strong> A client declared in the
+  configuration that cannot send a <code>code_challenge</code> is declared with <code>requires_pkce: false</code>, and the clients
+  a tenant lets register themselves are exempted together only when its registration policy says
+  <code>exempt_confidential_clients_from_pkce: true</code>. A public client is refused either way, <code>plain</code> does not
+  exist, and a challenge a client does send is verified like any other.</li>
+<li><strong>A public client's loopback URI matches on any port.</strong> A native application listens on whatever port the
+  system gives it (RFC 8252 §7.3), so for a public client, and for a URI on <code>127.0.0.1</code> or <code>[::1]</code> only, the
+  comparison ignores the port and nothing else: another path or a host name instead of the IP literal is
+  another URI.</li>
+<li><strong>Dynamic client registration is a decision of the tenant.</strong> A tenant that names no
+  <code>client_registration.mode</code> has no registration endpoint at all, in its discovery document as on the
+  wire. One that names a mode says who may register: whoever holds an initial access token it issued,
+  whoever presents a statement of an authority it pinned, or anybody.</li>
 <li><strong>An unsigned SAML request is accepted from one service provider at a time.</strong> A service provider that
   cannot sign its <code>AuthnRequest</code>, as Microsoft Entra ID federating its guests cannot, is declared so, and
   its unsigned requests are then accepted when its own metadata do not say it signs. Nothing turns the
@@ -4697,10 +4664,12 @@ that file and whoever took it is the length of what was typed.</p>
 <p><a href="../../core/keys/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Keys</a> and <a href="../../core/personal-data/">personal data</a>.</p>
 <h2 id="what-a-deployment-answers-with">What a deployment answers with<a class="headerlink" href="#what-a-deployment-answers-with" title="Link to this section">&para;</a></h2>
-<p>Headers are shared by a rule: the bundle writes what belongs to a page it builds, the application writes
-what belongs to a deployment, and neither writes a header the other does. A header written twice is not
-replaced, it collides: two content policies intersect, two <code>Access-Control-Allow-Origin</code> are invalid and
-the response is rejected.</p>
+<p>Two layers write the headers, and where they meet, one gives way. The bundle gives every page of the
+interaction plane <code>X-Frame-Options: DENY</code>, <code>Referrer-Policy: no-referrer</code>, <code>Cache-Control: no-store</code> and the
+floor of a content policy; the application writes the headers of a deployment on every answer. Where both
+name a header, the value is the same or the bundle's floor is dropped before the deployment's policy is
+written, so one policy is sent: a header written twice is not replaced, it collides, two content policies
+intersect, two <code>Access-Control-Allow-Origin</code> are invalid and the response is rejected.</p>
 <p>What <a href="../../application/">the standalone application</a> answers with is therefore named where that
 application is configured and nowhere else:
 <code>nosniff</code> and <code>DENY</code> everywhere, <code>Referrer-Policy: no-referrer</code>, HSTS for a year with the subdomains and
@@ -4733,7 +4702,7 @@ on pages of the interaction plane, none of which is on that list.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:41:32 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:18 UTC">October 26, 2026</span>
   </span>
 
     

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Rotations, migrations, backups, and what to do when a key is compromised.">
+        <meta name="description" content="What a deployment runs, what time runs on its own, rotations, data keys, failures, a compromised key, and what to back up.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Operating it">
-  <meta property="og:description" content="Rotations, migrations, backups, and what to do when a key is compromised.">
+  <meta property="og:description" content="What a deployment runs, what time runs on its own, rotations, data keys, failures, a compromised key, and what to back up.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -741,14 +741,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3874,14 +3866,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3910,14 +3894,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3941,6 +3917,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating it
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3955,16 +3949,123 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#at-every-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        At every deployment
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-time-does-on-its-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What time does on its own
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Keys">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-compromised-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A compromised key
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-data-downloaded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The data downloaded
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-something-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When something fails
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-to-back-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to back up
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3991,14 +4092,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4417,6 +4510,108 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#at-every-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        At every deployment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-time-does-on-its-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What time does on its own
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Keys">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-compromised-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A compromised key
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-data-downloaded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The data downloaded
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-something-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When something fails
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-to-back-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to back up
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4442,9 +4637,31 @@
 
 <h1 id="operating-it">Operating it<a class="headerlink" href="#operating-it" title="Link to this section">&para;</a></h1>
 <p>A provider is operated, not installed once: keys rotate, data keys are rewrapped, migrations run, backups are
-taken and restored. Each of those has a command, and each command says what it did.</p>
-<p>Some of it is not operated at all, because time does it: one timed step per thing that comes round, each
-one handled like any other write, so a deployment that runs the worker runs them.</p>
+taken and restored. Each of those has a command, and each command says what it did. The commands are
+<a href="../../reference/console-commands/">the console commands of the bundle</a>, run with <code>bin/console</code> in a container
+of the image, or with <code>castor console</code> on the development stack.</p>
+<h2 id="at-every-deployment">At every deployment<a class="headerlink" href="#at-every-deployment" title="Link to this section">&para;</a></h2>
+<ol>
+<li><strong>The migrations</strong> are played by the HTTP server each time it starts, before it serves anything. A process
+   that booted before a migration changing the type of a column reads that column with the type it booted
+   with, and a worker runs for an hour, so a migration played by hand is followed by a restart of the server
+   and of the workers. <code>castor console</code> does that on the development stack whenever the command it runs is
+   the migration.</li>
+<li><strong>The row of the tenant</strong> follows the configuration: <code>beffroi:tenant:synchronize</code> creates it, or writes on
+   it the name, the <code>acr</code> policy, the look and the claims its people may change of themselves that the
+   configuration says, then prints the row. The provider serves nothing while the row and the configuration
+   disagree. A changed issuer is refused: the issuer of a tenant does not change, every token issued so far
+   names it.</li>
+<li><strong>Two questions for the pipeline</strong>, both of which write nothing and fail when the answer is no:
+   <code>beffroi:keys:list --check</code> opens the keys in use and the ones about to be with the key management
+   service, and fails on one it cannot open or that has worked past its age with nothing staged behind it;
+   <code>beffroi:doctor</code> says whether the deployment holds together, one line per point it looks at.</li>
+</ol>
+<h2 id="what-time-does-on-its-own">What time does on its own<a class="headerlink" href="#what-time-does-on-its-own" title="Link to this section">&para;</a></h2>
+<p>Some of it is not operated at all, because time does it: one timed step per thing that comes round, handed to
+the lane of the writes like any other, so a deployment that runs <a href="../deployment/#the-worker">the worker</a> runs
+them. A step that forgets reads a bounded number of rows and leaves the rest to the next run, and logs a line
+only when it did something.</p>
 <table>
 <thead>
 <tr>
@@ -4459,22 +4676,173 @@ one handled like any other write, so a deployment that runs the worker runs them
 </tr>
 <tr>
 <td>hour</td>
-<td>Drops the clients nobody uses any more, forgets the archives past their week, drops the rows that can no longer do anything, and reads again the metadata of the SAML service providers and upstream identity providers</td>
+<td>Drops the clients that registered themselves and that nobody uses any more, forgets the archives past their week, drops the rows that can no longer do anything, and reads again the metadata of the SAML service providers and upstream identity providers</td>
 </tr>
 <tr>
 <td>day</td>
-<td>Forgets the acts of the journal past their retention, and the changes of a record past theirs</td>
+<td>Forgets the acts of the journal past their retention, with what a client was given at each, and the changes of a record past theirs</td>
 </tr>
 <tr>
 <td>week</td>
-<td>Refreshes the databases of addresses, which is the cadence they are published at</td>
+<td>Refreshes the GeoLite2 databases of addresses, which is the cadence MaxMind publishes them at</td>
 </tr>
 </tbody>
 </table>
-<p><code>beffroi:doctor</code> is what to ask first when something does not work: it reads, writes nothing, and says
-which points this deployment answers for.</p>
-<p>This page will describe the routine operations, and the two that are not routine: a compromised key, and a
-restore.</p>
+<h2 id="keys">Keys<a class="headerlink" href="#keys" title="Link to this section">&para;</a></h2>
+<p><strong>A rotation asks nothing of anybody.</strong> A key works for an age, ninety days, or a year for the SAML signing
+key, and the step of the minute stages its successor; the successor is published for the staging delay, 360
+seconds with the values of the application or seven days for the SAML key, then takes over, and the key it
+replaces stays published while what is bound to it may still arrive.</p>
+<p>By hand, the same thing is three commands:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>bin/console<span class="w"> </span>beffroi:keys:activate<span class="w"> </span>&lt;kid&gt;
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>bin/console<span class="w"> </span>beffroi:keys:retire<span class="w"> </span>--due
+</span></code></pre></div>
+<p><code>beffroi:keys:rotate</code> stages a key of the default signature algorithm, or of the one <code>--algorithm</code> names, and
+says when it takes over. <code>beffroi:keys:activate</code> makes a staged key the active one before its delay has
+elapsed. <code>--now</code> on the rotation does both at once: a relying party whose copy of the JWK Set is younger than
+sixty seconds then refuses the new tokens, or encrypts to the old key, until its copy is that old.</p>
+<h3 id="a-compromised-key">A compromised key<a class="headerlink" href="#a-compromised-key" title="Link to this section">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate<span class="w"> </span>--compromised
+</span></code></pre></div>
+<p>The new key takes over at once, and the compromised one leaves the JWK Set with no window: nothing bound to it
+is honoured from then on. <code>--algorithm</code> names the key when it is not one of the default signature algorithm.
+A key that is already retiring is taken out of the JWK Set before its date by
+<code>beffroi:keys:retire &lt;kid&gt; --force</code>.</p>
+<h2 id="data-keys">Data keys<a class="headerlink" href="#data-keys" title="Link to this section">&para;</a></h2>
+<p>Personal data is sealed under a data key per tenant and per family of columns, and the data keys are wrapped
+by the master key of the tenant.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi:data-keys:list</code></td>
+<td>Lists the data keys of the tenant by scope, with when each was minted, the master key that wraps it and the key management client that opens it. Reads only, and never opens a key</td>
+</tr>
+<tr>
+<td><code>beffroi:data-keys:rewrap --to=&lt;client&gt;</code></td>
+<td>Wraps the data keys of the tenant with another client from then on, or with another master key of the same one, <code>--from</code> narrowing it to the keys one client holds and <code>--dry-run</code> listing what would move. No sealed value is read or rewritten, and the master key is derived from <code>BEFFROI_KMS_KEY_ID</code> rather than asked for</td>
+</tr>
+<tr>
+<td><code>beffroi:data-keys:destroy</code></td>
+<td>Erases the data keys of the tenant, which makes every personal datum it had sealed unreadable for good. It asks for the slug of the tenant to be typed back, and cannot be undone</td>
+</tr>
+</tbody>
+</table>
+<p>The clients of this application are <code>op</code>, which every key of the tenant is sealed with, and <code>second</code>, which is
+built from <code>BEFFROI_KMS_DSN_SECOND</code> when that variable names one. Nothing schedules a rewrap: a person asks
+for it.</p>
+<h2 id="the-data-downloaded">The data downloaded<a class="headerlink" href="#the-data-downloaded" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>When it is run by hand</th>
+<th>Its timed step</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi:geoip:refresh</code></td>
+<td>The day a licence key is named, and to read why a refresh was refused</td>
+<td>Every week</td>
+</tr>
+<tr>
+<td><code>beffroi:saml:service-provider:refresh</code>, <code>beffroi:saml:identity-provider:refresh</code></td>
+<td>For the first reading of a peer just declared, and to read why a document was refused</td>
+<td>Every hour</td>
+</tr>
+<tr>
+<td><code>beffroi:webauthn:mds-refresh</code>, <code>beffroi:webauthn:mds-import</code></td>
+<td>To fill the FIDO metadata an attestation is checked against</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h2 id="when-something-fails">When something fails<a class="headerlink" href="#when-something-fails" title="Link to this section">&para;</a></h2>
+<p><strong><code>beffroi:doctor</code> is what to ask first.</strong> It reads, writes nothing, and is safe on a provider serving
+traffic. What it looks at is what is wired, and in this application that is one point: whether a logout
+token is retried for as long as it stays verifiable. A deployment that sends the notifications to a transport
+of its own, retried on another schedule, keeps a provider that works and logout tokens a client may refuse
+when they arrive late, after a rotation or after the client restarts, which nothing else shows.</p>
+<p><strong>A message that fails is tried again, then kept.</strong> The three lanes of the provider's own writes retry it on
+the numbers the bundle prepends; the lane of the notifications retries it on the schedule of the back-channel
+logout, which is also how long a logout token stays verifiable.</p>
+<table>
+<thead>
+<tr>
+<th>Lanes</th>
+<th>Retries</th>
+<th>First wait</th>
+<th>Multiplier</th>
+<th>Longest wait</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>async_priority_high</code>, <code>async_priority_medium</code>, <code>async_priority_low</code></td>
+<td>4</td>
+<td>1 second</td>
+<td>4</td>
+<td>30 seconds</td>
+</tr>
+<tr>
+<td><code>async_notifications</code></td>
+<td>6</td>
+<td>2 seconds</td>
+<td>3</td>
+<td>60 seconds</td>
+</tr>
+</tbody>
+</table>
+<p>What is still failing after that lands in the failure transport, <code>failed</code>, a table of the database. Its body
+stays sealed there; the class of the message, its stamps and its tenant are in the clear, so that
+<code>messenger:failed:show</code> names a failed message, dates it and says why without opening it.</p>
+<p><strong>A key management service that does not answer is a <code>503</code>.</strong> Wherever a request needed it, the answer is
+<code>503 Service Unavailable</code> with <code>Retry-After: 10</code>: nothing was refused to the person, counted against them or
+forgotten, and the same request is served once the service is back. The outage is an act of the journal,
+<code>kms.unavailable</code>, with the provenance of the request that met it. The worker does not start without a key
+management service at all.</p>
+<p><strong>A spent load budget is a <code>429</code></strong>, with a <code>Retry-After</code> and <code>Cache-Control: no-store</code>, and an act of the
+journal, <code>load.budget_spent</code>.</p>
+<h2 id="what-to-back-up">What to back up<a class="headerlink" href="#what-to-back-up" title="Link to this section">&para;</a></h2>
+<p>One directory to back up, one key management service to lose.</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where</th>
+<th>What it holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The database</td>
+<td>PostgreSQL</td>
+<td>Everything the model writes, the personal data sealed in their columns, and the data keys wrapped by the master key</td>
+</tr>
+<tr>
+<td>The sealed keys</td>
+<td><code>var/keys</code></td>
+<td>One file per key of the tenant, and the pairwise salt of the tenant beside them, each sealed by the key management service</td>
+</tr>
+<tr>
+<td>The master key</td>
+<td>The key management service</td>
+<td>What opens all of the above</td>
+</tr>
+</tbody>
+</table>
+<p>No command restores a deployment: a restore is the database and <code>var/keys</code> put back together, under the same
+master key. The pairwise subjects of OpenID Connect and the persistent identifiers of SAML are computed from
+the salt and never drawn, so they are the same after a restore that brings the salt back with the database. The GeoLite2
+databases in <code>var/geoip</code> and the FIDO metadata in <code>var/webauthn</code> are written again by the commands that wrote
+them.</p>
 
 
 
@@ -4495,7 +4863,7 @@ restore.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:18 UTC">October 26, 2026</span>
   </span>
 
     

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The image, FrankenPHP in worker mode, and the two planes.">
+        <meta name="description" content="The image, the HTTP server in worker mode, the worker, the two planes, what the processes share, TLS and the host that asks for a client certificate.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Deployment">
-  <meta property="og:description" content="The image, FrankenPHP in worker mode, and the two planes.">
+  <meta property="og:description" content="The image, the HTTP server in worker mode, the worker, the two planes, what the processes share, TLS and the host that asks for a client certificate.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -741,14 +741,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3869,6 +3861,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3883,16 +3893,134 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The image
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-http-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The HTTP server
+      
+    </span>
+  </a>
   
-
-      </a>
+    <nav class="md-nav" aria-label="The HTTP server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-two-planes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The two planes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The worker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-processes-share" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the processes share
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tls-and-the-two-hosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLS and the two hosts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#behind-a-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behind a proxy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The headers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-leaves-the-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What leaves the provider
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3919,14 +4047,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3956,14 +4076,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3991,14 +4103,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4417,6 +4521,119 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The image
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-http-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The HTTP server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The HTTP server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-two-planes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The two planes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The worker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-processes-share" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the processes share
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tls-and-the-two-hosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLS and the two hosts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#behind-a-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behind a proxy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The headers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-leaves-the-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What leaves the provider
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4441,16 +4658,348 @@
 
 
 <h1 id="deployment">Deployment<a class="headerlink" href="#deployment" title="Link to this section">&para;</a></h1>
-<p>The application runs on FrankenPHP in worker mode, with a process per plane when a deployment separates them,
-PostgreSQL for the model and a broker for the asynchronous writes. TLS terminates in front of it, and the
-listener that asks for a client certificate is a host of its own.</p>
-<p><strong>The security headers are shared by a rule</strong>: the bundle writes what belongs to a page it builds, the
-application writes what belongs to a deployment, and neither writes a header the other does, because a
-header written twice collides rather than being replaced. What this application answers with is in two
-files of its configuration, and nothing it writes is written again in the web server or at the edge.</p>
+<p>One image runs two kinds of process: the HTTP server, FrankenPHP in worker mode inside the Caddy server it is
+built on, and the worker, which consumes the lanes of Messenger and the schedule of the timed steps. Beside them the provider
+needs PostgreSQL, RabbitMQ and a key management service.</p>
+<h2 id="the-image">The image<a class="headerlink" href="#the-image" title="Link to this section">&para;</a></h2>
+<p><code>apps/op/Dockerfile</code> builds on <code>dunglas/frankenphp:1-php8.5</code> and adds the extensions the provider needs:
+<code>apcu</code>, <code>intl</code>, <code>opcache</code>, <code>zip</code>, <code>pdo_pgsql</code>, <code>amqp</code>, <code>gmp</code>, <code>sodium</code> and <code>uuid</code>. Its build context is the
+root of the monorepo, because the application installs the packages beside it through path repositories.</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>frankenphp_base</code></td>
+<td>The extensions, the PHP settings of the application, the entrypoint and the Caddy configuration</td>
+</tr>
+<tr>
+<td><code>frankenphp_dev</code></td>
+<td>The development image, into which the stack mounts the monorepo, running FrankenPHP with <code>--watch</code></td>
+</tr>
+<tr>
+<td><code>frankenphp_prod</code></td>
+<td>The production image: the packages are copied to <code>/src</code> and the application to <code>/app</code>, installed without the development dependencies, with an authoritative class map, <code>.env</code> and any <code>.env.local</code> beside it compiled for production, the stylesheet built and the assets compiled</td>
+</tr>
+</tbody>
+</table>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>build<span class="w"> </span>--file<span class="w"> </span>apps/op/Dockerfile<span class="w"> </span>--target<span class="w"> </span>frankenphp_prod<span class="w"> </span>.
+</span></code></pre></div>
+<p><code>apps/op/</code> is copied as the working copy holds it, and <code>composer dump-env prod</code> compiles a <code>.env.local</code> it
+finds there. The one the development stack writes holds its key management service, the secrets of its clients
+and the password of its user, so the image is built from a checkout that holds no <code>.env.local</code>.</p>
+<p>The production image sets <code>APP_ENV=prod</code>, reads <code>php.ini-production</code>, preloads <code>config/preload.php</code> into
+OPcache, and turns worker mode on: the kernel is booted once per worker and serves every request that worker
+takes, so a signing key opened with the key management service stays open in it, and the service is asked once
+per key and per worker rather than once per signature.</p>
+<h2 id="the-http-server">The HTTP server<a class="headerlink" href="#the-http-server" title="Link to this section">&para;</a></h2>
+<p>The command of the image is <code>frankenphp run --config /etc/frankenphp/Caddyfile</code>. Before it starts, the
+entrypoint does two things when <code>.env</code> names a <code>DATABASE_URL</code>, which the one of the application does:</p>
+<ol>
+<li>it waits for the database, sixty attempts one second apart, and stops at once on an error it cannot
+   recover from;</li>
+<li>it plays the migrations, <code>doctrine:migrations:migrate --no-interaction --all-or-nothing</code>, every time the
+   server starts. The migrations of the bundle are written for PostgreSQL and refuse any other platform.</li>
+</ol>
+<p>The health check of the image asks the metrics endpoint of the Caddy admin API inside the container,
+<code>curl -f http://localhost:2019/metrics</code>, after a start period of sixty seconds.</p>
+<h3 id="the-two-planes">The two planes<a class="headerlink" href="#the-two-planes" title="Link to this section">&para;</a></h3>
+<p>Every route of the bundle carries its plane in its name, <code>beffroi_protocol_*</code> for what a client or a resource
+server calls and <code>beffroi_interaction_*</code> for what a browser reads. <code>BEFFROI_PLANE</code> restricts a process to one
+of them:</p>
+<table>
+<thead>
+<tr>
+<th><code>BEFFROI_PLANE</code></th>
+<th>What the process serves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>all</code></td>
+<td>Both planes, which is what <code>.env</code> says</td>
+</tr>
+<tr>
+<td><code>protocol</code></td>
+<td>The protocol plane; every route of the interaction plane answers <code>404</code></td>
+</tr>
+<tr>
+<td><code>interaction</code></td>
+<td>The interaction plane; every route of the protocol plane answers <code>404</code></td>
+</tr>
+</tbody>
+</table>
+<p>The refusal comes after the router and before the firewall, so a request to the other plane opens no session
+and counts against no budget. The root <code>/</code> of the application belongs to the interaction plane, and a route
+whose name carries no plane, such as <code>/theme</code>, is served by every process. A process serves its plane on each
+of its hosts, the one that asks for a client certificate included. Whatever sends a request to one process or
+the other reads its path, and <a href="../../reference/endpoints/">the endpoints</a> give the plane of every path.</p>
+<h2 id="the-worker">The worker<a class="headerlink" href="#the-worker" title="Link to this section">&para;</a></h2>
+<p>The worker is the same image, running the consumer of Messenger on the schedule and the four lanes of the
+provider, in this order, which is the order it takes them in:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>messenger:consume<span class="w"> </span>scheduler_beffroi<span class="w"> </span>async_notifications<span class="w"> </span>async_priority_high<span class="w"> </span>async_priority_medium<span class="w"> </span>async_priority_low<span class="w"> </span>--time-limit<span class="o">=</span><span class="m">3600</span><span class="w"> </span>--memory-limit<span class="o">=</span>256M
+</span></code></pre></div>
+<p>Started with <code>bin/console</code>, the entrypoint waits for the database as it does for the server, and plays no
+migration: the server is the process that migrates, and the development stack starts the worker once the server
+reports healthy. The consumer stops after an hour, or once it holds 256 MB, and the restart policy of the stack
+starts it again.</p>
+<table>
+<thead>
+<tr>
+<th>Transport</th>
+<th>What it carries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scheduler_beffroi</code></td>
+<td>The clock of the timed steps. One process consumes it: the steps are idempotent, and are not written to run twice at once</td>
+</tr>
+<tr>
+<td><code>async_notifications</code></td>
+<td>What the provider carries to somebody it does not own: logout tokens (Back-Channel Logout 1.0 §2.5), the notification that a backchannel request was answered (CIBA Core §10.2), and web push to the browsers of a person (RFC 8030)</td>
+</tr>
+<tr>
+<td><code>async_priority_high</code></td>
+<td>Nothing the bundle routes</td>
+</tr>
+<tr>
+<td><code>async_priority_medium</code></td>
+<td>The writes a request does not wait for, and the timed steps the schedule hands over</td>
+</tr>
+<tr>
+<td><code>async_priority_low</code></td>
+<td>The events of the core and of the protocol, which the journal writes down and the enrichment of a provenance reads</td>
+</tr>
+</tbody>
+</table>
+<p>The worker is therefore the one process that calls a client back, and the one that writes the
+<a href="../observability/">journal</a>. A provider whose worker stops goes on answering requests, and the broker keeps
+the messages until a worker consumes them.</p>
+<p>The lanes are transports of RabbitMQ: each of them names the exchange <code>beffroi_messages</code> and a queue bound to
+its routing key, options an AMQP transport takes and the Doctrine transport refuses. What fails for good lands
+in the failure transport, <code>failed</code>, which is a table of the database whatever the broker.</p>
+<h2 id="what-the-processes-share">What the processes share<a class="headerlink" href="#what-the-processes-share" title="Link to this section">&para;</a></h2>
+<p>The server signs with keys the worker rotates, and the worker enriches with databases the console downloads,
+so some state has to be the same for all of them.</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where</th>
+<th>Written by</th>
+<th>Read by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The sealed keys of the tenant, and its pairwise salt</td>
+<td><code>var/keys</code></td>
+<td><code>beffroi:keys:*</code>, the timed step of the key lifecycle, and the first process that needs the salt</td>
+<td>Every process that signs, decrypts or seals</td>
+</tr>
+<tr>
+<td>The key of the file backend, when that is the key management service</td>
+<td><code>var/kms</code></td>
+<td>Whoever provisions it</td>
+<td>Every process</td>
+</tr>
+<tr>
+<td>The GeoLite2 databases of addresses</td>
+<td><code>var/geoip</code></td>
+<td><code>beffroi:geoip:refresh</code>, the weekly step</td>
+<td>The worker, which enriches a provenance</td>
+</tr>
+<tr>
+<td>The FIDO metadata</td>
+<td><code>var/webauthn</code></td>
+<td><code>beffroi:webauthn:mds-refresh</code>, <code>beffroi:webauthn:mds-import</code></td>
+<td>The passkey ceremonies, which check an attestation against it</td>
+</tr>
+</tbody>
+</table>
+<p>The development stack gives <code>var/keys</code>, <code>var/kms</code> and <code>var/geoip</code> a volume each, mounted on the server and on
+the worker alike: a rotation done by one process changes nothing for another that does not see the same
+directory.</p>
+<p>The bundle keeps eight caches in pools of their own, so that a deployment can point them at a shared store
+without touching the rest of its cache:</p>
+<table>
+<thead>
+<tr>
+<th>Pool</th>
+<th>What it holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi.client_keys</code></td>
+<td>The keys read from the <code>jwks_uri</code> of a client</td>
+</tr>
+<tr>
+<td><code>beffroi.issuer_keys</code></td>
+<td>The keys read from the <code>jwks_uri</code> of a trusted issuer</td>
+</tr>
+<tr>
+<td><code>beffroi.client_assertions</code></td>
+<td>The client assertions already seen</td>
+</tr>
+<tr>
+<td><code>beffroi.issuer_assertions</code></td>
+<td>The assertions of trusted issuers already seen</td>
+</tr>
+<tr>
+<td><code>beffroi.software_statements</code></td>
+<td>The software statements already seen</td>
+</tr>
+<tr>
+<td><code>beffroi.request_objects</code></td>
+<td>The request objects already seen</td>
+</tr>
+<tr>
+<td><code>beffroi.dpop</code></td>
+<td>What DPoP remembers of a proof</td>
+</tr>
+<tr>
+<td><code>beffroi.load</code></td>
+<td>What each load budget has been asked</td>
+</tr>
+</tbody>
+</table>
+<p>Each of them is on <code>cache.app</code>, which the application leaves on the filesystem adapter Symfony gives it, in
+<code>%kernel.share_dir%/pools/app</code>. The share directory carries the environment, so with the <code>APP_SHARE_DIR</code> of
+<code>.env</code> the pools of a production kernel are in <code>var/share/prod/pools/app</code>. Two containers share these pools
+when they share that directory, or once a deployment points the pools at a store they both reach, and each
+holds its own otherwise. The application names no session handler either, so the session of a browser lives
+where the native handler of PHP keeps it, in the container that served it.</p>
+<h2 id="tls-and-the-two-hosts">TLS and the two hosts<a class="headerlink" href="#tls-and-the-two-hosts" title="Link to this section">&para;</a></h2>
+<p>Caddy terminates TLS for the host of <code>SERVER_NAME</code>. Both hosts of the image use one snippet of its
+<code>Caddyfile</code>, which is the TLS a FAPI 1.0 plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two
+suites of FAPI 1.0 Advanced Final §8.5 a listener built on Go can offer,
+<code>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</code> and <code>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</code>. TLS 1.2 is the floor
+Caddy already holds.</p>
+<p><strong>The host that asks for a client certificate is a host of its own</strong> (RFC 8705 §5). It is served when
+<code>CADDY_EXTRA_CONFIG</code> imports <code>mtls.Caddyfile</code>, under the name <code>MTLS_SERVER_NAME</code> gives it, and announced to
+clients through <code>BEFFROI_MTLS_ORIGIN</code>. Its listener asks for a certificate and serves the connection when none
+is presented, so a client that authenticates another way never fails at the handshake. The ordinary host asks
+for nothing.</p>
+<ul>
+<li><strong>The certificate reaches PHP in a server variable, <code>SSL_CLIENT_CERT</code>, and never in a header.</strong> A client
+  sets every header of its request and no variable of the process that serves it. A request carrying a
+  certificate in <code>Ssl-Client-Cert</code>, <code>X-Ssl-Client-Cert</code>, <code>X-Client-Cert</code> or <code>X-Forwarded-Client-Cert</code> is
+  refused with <code>invalid_request</code> (RFC 6749 §5.2) at an endpoint that reads a certificate. The TLS connection
+  of that host therefore ends at this listener.</li>
+<li><strong>Only the leaf reaches PHP</strong>, so no chain is validated there. The handshake proves that the client holds
+  the private key of what it presented (RFC 8446 §4.4.3), which is what <code>self_signed_tls_client_auth</code>
+  (RFC 8705 §2.2) needs. A deployment that authenticates clients with <code>tls_client_auth</code> (RFC 8705 §2.1) adds a
+  <code>trust_pool</code> to the <code>client_auth</code> block of <code>mtls.Caddyfile</code>, so the chain is validated at the edge.</li>
+</ul>
+<p><a href="../configuration/#the-web-server"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The variables of the web server</a></p>
+<h2 id="behind-a-proxy">Behind a proxy<a class="headerlink" href="#behind-a-proxy" title="Link to this section">&para;</a></h2>
+<p>The address of a request is read by Symfony behind the proxies it trusts, and the application names none:
+<code>framework.trusted_proxies</code> reads <code>SYMFONY_TRUSTED_PROXIES</code>. That address is what the load budget of an origin
+is counted under, 2400 requests a minute by default before a <code>429</code>, and what every session and every act of
+the journal records as where it came from. Behind a proxy that is not named there, every request has the
+address of the proxy.</p>
+<h2 id="the-headers">The headers<a class="headerlink" href="#the-headers" title="Link to this section">&para;</a></h2>
+<p><strong>Two layers write the security headers, and where they meet, one gives way.</strong> The bundle gives every page of
+the interaction plane <code>X-Frame-Options: DENY</code>, <code>Referrer-Policy: no-referrer</code>, <code>Cache-Control: no-store</code> and
+the floor of a content policy, <code>frame-ancestors 'none'</code>. The application writes the headers of a deployment on
+every answer, from two files of its configuration, <code>config/packages/nelmio_security.yaml</code> and
+<code>config/packages/nelmio_cors.yaml</code>:</p>
+<ul>
+<li><code>X-Frame-Options</code> is left as a page already carries it, and <code>Referrer-Policy</code> is written again with the
+  value the pages carry, <code>no-referrer</code>;</li>
+<li>on a page whose content policy is the floor alone, <code>App\Http\DeploymentPolicyPrevails</code> drops the floor
+  before the policy of the deployment is written, so one policy is sent. A page that computed a whole policy
+  of its own keeps it, the form post response and the front-channel logout page, and so does a redirection.</li>
+</ul>
+<p>A header written twice is not replaced, it collides: two content policies are both enforced, and what applies
+is their intersection. Nothing the application writes is therefore written again in the web server or at the
+edge. The assets compiled into <code>public/assets/</code> are answered by FrankenPHP without asking PHP, and carry none
+of these headers.</p>
+<p>The session cookie is the one header of the provider no bundle sets, so the application names it:
+<code>__Host-beffroi_session</code>, <code>Secure</code>, <code>HttpOnly</code>, <code>SameSite=Lax</code>, on the path <code>/</code> and with no <code>Domain</code>. HSTS is
+not sent in the development environment, where it would pin every <code>.localhost</code> name of the machine to HTTPS.</p>
 <p><a href="../../the-project/secure-by-default/#what-a-deployment-answers-with"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The headers</a></p>
-<p>This page will describe the image, the processes, the health checks, and the reverse proxy.</p>
+<h2 id="what-leaves-the-provider">What leaves the provider<a class="headerlink" href="#what-leaves-the-provider" title="Link to this section">&para;</a></h2>
+<p>A deployment that filters what goes out reads it here. No outbound redirect is followed, whoever asks.</p>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Every process</td>
+<td>The key management service</td>
+<td>To open a key, a salt or a data key, and to seal one</td>
+</tr>
+<tr>
+<td>The server</td>
+<td>The <code>jwks_uri</code> of a client or of a trusted issuer</td>
+<td>To read its keys, which are then kept a day, and again when an assertion names a key the kept set does not hold</td>
+</tr>
+<tr>
+<td>The server</td>
+<td>The <code>request_uri</code> of a client</td>
+<td>When an authorization request names one</td>
+</tr>
+<tr>
+<td>The server</td>
+<td>The <code>sector_identifier_uri</code> of a client</td>
+<td>When a client registers or replaces itself</td>
+</tr>
+<tr>
+<td>The server, the console</td>
+<td>The list of compromised passwords, when one is named</td>
+<td>When a password is written, and the answer is waited for</td>
+</tr>
+<tr>
+<td>The worker</td>
+<td>The list of compromised passwords, when one is named</td>
+<td>After a login, for a password already posed</td>
+</tr>
+<tr>
+<td>The worker</td>
+<td>The <code>backchannel_logout_uri</code> of a client</td>
+<td>When a session that client signed in ends</td>
+</tr>
+<tr>
+<td>The worker</td>
+<td>The <code>backchannel_client_notification_endpoint</code> of a client</td>
+<td>When a backchannel request in <code>ping</code> mode is answered</td>
+</tr>
+<tr>
+<td>The worker</td>
+<td>The push service of a browser</td>
+<td>When a backchannel request waits on the person who subscribed that browser</td>
+</tr>
+<tr>
+<td>The worker, the console</td>
+<td>The metadata of the SAML peers given by URL</td>
+<td>Every hour, and on <code>beffroi:saml:*:refresh</code></td>
+</tr>
+<tr>
+<td>The worker, the console</td>
+<td>MaxMind, when a licence key is named</td>
+<td>Every week, and on <code>beffroi:geoip:refresh</code></td>
+</tr>
+<tr>
+<td>The console</td>
+<td>The FIDO Metadata Service</td>
+<td>On <code>beffroi:webauthn:mds-refresh</code></td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -4471,7 +5020,7 @@ files of its configuration, and nothing it writes is written again in the web se
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 21:10:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:18 UTC">October 26, 2026</span>
   </span>
 
     

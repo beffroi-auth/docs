@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The environment the application reads.">
+        <meta name="description" content="Every variable the application reads and what each one decides, the four key management backends, and what its configuration files say for a deployment.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Configuration">
-  <meta property="og:description" content="The environment the application reads.">
+  <meta property="og:description" content="Every variable the application reads and what each one decides, the four key management backends, and what its configuration files say for a deployment.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -741,14 +741,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3874,14 +3866,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3905,6 +3889,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3919,16 +3921,95 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The provider
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symfony-the-database-and-the-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Symfony, the database and the broker
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-web-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The web server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-key-management-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The key management service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-files-say" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the files say
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-only-development-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What only development reads
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3955,14 +4036,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3991,14 +4064,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4417,6 +4482,80 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The provider
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symfony-the-database-and-the-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Symfony, the database and the broker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-web-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The web server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-key-management-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The key management service
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-files-say" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the files say
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-only-development-reads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What only development reads
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4441,10 +4580,302 @@
 
 
 <h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Link to this section">&para;</a></h1>
-<p>Everything that varies by deployment is an environment variable: the issuer, the key management DSN, the
-database, the broker, the lifetimes, the host that asks for a client certificate. Nothing secret is in a
-file that is committed.</p>
-<p>This page will list the variables and what each one decides.</p>
+<p>What changes from one machine to the next is an environment variable: the issuer, the key management service,
+the database, the broker, the lifetimes, the host that asks for a client certificate. What the deployment is,
+its clients, its look, the protocols it turns on, is written in its configuration files.</p>
+<p><code>apps/op/.env</code> holds the values of the development stack, and the production image compiles it with
+<code>composer dump-env prod</code>, together with a <code>.env.local</code> when the checkout it is built from holds one. A real
+environment variable wins over both, which is how a deployment says its own. <code>.env</code> carries no secret of a
+deployment: the key management service, the key it seals under and the secrets of the clients are empty there,
+and the database and the broker are those of the development stack. That stack writes its own secrets into
+<code>.env.local</code>, which is never committed and which an image is built without.</p>
+<h2 id="the-provider">The provider<a class="headerlink" href="#the-provider" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_ISSUER</code></td>
+<td><code>https://op.localhost</code></td>
+<td>The issuer of the tenant (OIDC Discovery 1.0 §3), which every token names and every client compares byte for byte: an absolute <code>https</code> URL with no query, no fragment and no trailing slash, plain HTTP on a loopback host only. The application imports the routes of the bundle at the root, so its issuer is an origin with no path. A tenant keeps the issuer its row was written with: <code>beffroi:tenant:synchronize</code> refuses another</td>
+</tr>
+<tr>
+<td><code>BEFFROI_KMS_DSN</code></td>
+<td>empty</td>
+<td>The key management service that seals the keys of the tenant, its pairwise salt and its data keys, as the DSN of the client <code>op</code> of <code>config/packages/key_management.yaml</code>. <a href="#the-key-management-service">The backends</a> are below</td>
+</tr>
+<tr>
+<td><code>BEFFROI_KMS_KEY_ID</code></td>
+<td>empty</td>
+<td>The master key of that service the tenant is sealed under. <code>{tenant}</code> in it stands for the slug of the tenant, one master key per tenant</td>
+</tr>
+<tr>
+<td><code>BEFFROI_KMS_DSN_SECOND</code></td>
+<td>empty</td>
+<td>A second client, <code>second</code>, holding a key under the same identifier, for a run that moves the data keys from one to the other. Empty, the client is declared and never built</td>
+</tr>
+<tr>
+<td><code>BEFFROI_PLANE</code></td>
+<td><code>all</code></td>
+<td>The plane this process serves: <code>all</code>, <code>interaction</code> or <code>protocol</code>. A route of a plane the process does not serve answers <code>404</code></td>
+</tr>
+<tr>
+<td><code>BEFFROI_MTLS_ORIGIN</code></td>
+<td><code>https://mtls.op.localhost</code></td>
+<td>The origin of the host that asks for a client certificate, announced in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, the discovery document announces no alias, which is what a deployment serving one host sets</td>
+</tr>
+<tr>
+<td><code>BEFFROI_JWKS_MAX_AGE</code></td>
+<td><code>300</code></td>
+<td>How long, in seconds, a relying party may cache the JWK Set (RFC 7517 §5). A key staged by a rotation, the SAML signing key aside, is published for this long plus sixty seconds before it takes over, 360 seconds with this value</td>
+</tr>
+<tr>
+<td><code>BEFFROI_ACCESS_TOKEN_TTL</code></td>
+<td><code>600</code></td>
+<td>The lifetime of an access token in seconds, whether it is an <code>at+jwt</code> or an opaque reference</td>
+</tr>
+<tr>
+<td><code>BEFFROI_ID_TOKEN_TTL</code></td>
+<td><code>600</code></td>
+<td>The lifetime of an ID token in seconds</td>
+</tr>
+<tr>
+<td><code>GEOIP_LICENSE_KEY</code></td>
+<td>empty</td>
+<td>The licence key of the MaxMind account the GeoLite2 databases are downloaded under. Empty, nothing is downloaded, and every session and every act says an address and no place</td>
+</tr>
+<tr>
+<td><code>BEFFROI_BREACHED_PASSWORDS_ENDPOINT</code></td>
+<td>empty</td>
+<td>The range endpoint a password is compared against before it is written (NIST SP 800-63B §3.1.1.2): <code>https://api.pwnedpasswords.com/range/</code>, where the first five hexadecimal characters of the SHA-1 of a password leave and the rest is compared locally. Empty, nobody is asked, and passwords are posed on the rules of the core alone</td>
+</tr>
+</tbody>
+</table>
+<p>Each of these is read when the kernel needs it and not when its container is compiled, so changing one asks
+for a restart of the processes and not for a new image.</p>
+<h2 id="symfony-the-database-and-the-broker">Symfony, the database and the broker<a class="headerlink" href="#symfony-the-database-and-the-broker" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>APP_ENV</code></td>
+<td><code>dev</code></td>
+<td>The environment of the kernel. The production image sets <code>prod</code></td>
+</tr>
+<tr>
+<td><code>APP_SECRET</code></td>
+<td>empty</td>
+<td>The secret of the kernel, <code>framework.secret</code>. <code>.env.dev</code> and <code>.env.test</code> give one each, for their own environment, so a production environment names its own</td>
+</tr>
+<tr>
+<td><code>APP_SHARE_DIR</code></td>
+<td><code>var/share</code></td>
+<td>The share directory of Symfony, one per environment beneath it, <code>var/share/prod</code> for a production kernel. It holds the filesystem pool of <code>cache.app</code>, and with it the <a href="../deployment/#what-the-processes-share">caches of the bundle</a></td>
+</tr>
+<tr>
+<td><code>DEFAULT_URI</code></td>
+<td><code>https://op.localhost</code></td>
+<td>The URL Symfony generates absolute URLs under outside a request, <code>framework.router.default_uri</code></td>
+</tr>
+<tr>
+<td><code>DEFAULT_LOCALE</code></td>
+<td><code>en</code></td>
+<td>The language a page falls back to, among the two the application serves, <code>en</code> and <code>fr</code></td>
+</tr>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td><code>postgresql://beffroi:beffroi@127.0.0.1:5432/beffroi?serverVersion=16&amp;charset=utf8</code></td>
+<td>The PostgreSQL database. The entrypoint of the image waits for it, and the migrations refuse any other platform</td>
+</tr>
+<tr>
+<td><code>MESSENGER_TRANSPORT_DSN</code></td>
+<td><code>amqp://beffroi:beffroi@localhost:5672/%2f/messages</code></td>
+<td>The broker of the four lanes. Each lane names an exchange and a queue, which only an AMQP transport takes, so this is an <code>amqp://</code> DSN. The failure transport stays in the database</td>
+</tr>
+<tr>
+<td><code>SYMFONY_TRUSTED_PROXIES</code></td>
+<td>not set</td>
+<td>The proxies whose forwarded address Symfony reads, <code>framework.trusted_proxies</code>. The application names none</td>
+</tr>
+</tbody>
+</table>
+<p>The bundle reads its own default for the lanes, <code>BEFFROI_MESSENGER_DSN</code>, only where an application declares no
+transport of the same name. This one declares all four, so that variable is not read here.</p>
+<h2 id="the-web-server">The web server<a class="headerlink" href="#the-web-server" title="Link to this section">&para;</a></h2>
+<p>These are read by Caddy and FrankenPHP, not by the kernel.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SERVER_NAME</code></td>
+<td>The host Caddy serves the provider on, <code>localhost</code> when it is not set</td>
+</tr>
+<tr>
+<td><code>MTLS_SERVER_NAME</code></td>
+<td>The host of the listener that asks for a client certificate, in <code>mtls.Caddyfile</code></td>
+</tr>
+<tr>
+<td><code>CADDY_EXTRA_CONFIG</code></td>
+<td>Configuration added to the <code>Caddyfile</code> beside the site of <code>SERVER_NAME</code>. <code>import mtls.Caddyfile</code> is what serves the host that asks for a client certificate</td>
+</tr>
+<tr>
+<td><code>CADDY_GLOBAL_OPTIONS</code></td>
+<td>Directives added to the global options of the <code>Caddyfile</code></td>
+</tr>
+<tr>
+<td><code>CADDY_SERVER_EXTRA_DIRECTIVES</code></td>
+<td>Directives added to the site of <code>SERVER_NAME</code>, such as a <code>tls</code> directive naming a certificate and its key</td>
+</tr>
+<tr>
+<td><code>CADDY_SERVER_LOG_OPTIONS</code></td>
+<td>Directives added to the <code>log</code> block of each site</td>
+</tr>
+<tr>
+<td><code>FRANKENPHP_CONFIG</code></td>
+<td>Directives of the <code>frankenphp</code> block. The production image sets <code>import worker.Caddyfile</code>, which is worker mode</td>
+</tr>
+<tr>
+<td><code>FRANKENPHP_WORKER_CONFIG</code></td>
+<td>Directives added to the <code>worker</code> block: the <code>watch</code> lines of the development stack, nothing in production</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-key-management-service">The key management service<a class="headerlink" href="#the-key-management-service" title="Link to this section">&para;</a></h2>
+<p>The DSN and the key identifier are what change from one backend to the next: the code and the envelope are
+the same. An envelope sealed by one backend does not open with another.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="sodium" name="__tabbed_1" type="radio" /><input id="a-file" name="__tabbed_1" type="radio" /><input id="hashicorp-vault" name="__tabbed_1" type="radio" /><input id="aws-kms" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="sodium">Sodium</label><label for="a-file">A file</label><label for="hashicorp-vault">HashiCorp Vault</label><label for="aws-kms">AWS KMS</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>A key inline in the environment, which is what the development stack provisions.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nv">BEFFROI_KMS_DSN</span><span class="o">=</span><span class="s2">"sodium://?keys[signing]=&lt;32 bytes, base64url&gt;"</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nv">BEFFROI_KMS_KEY_ID</span><span class="o">=</span><span class="s2">"signing"</span>
+</span></code></pre></div>
+<p>Whoever reads the environment of the process holds the master key.</p>
+</div>
+<div class="tabbed-block">
+<p>The same sodium key read from a file of its own, one per tenant, outside the web root and outside the
+sealed keys: it holds against a dump of the storage, not against a compromise of the host.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">BEFFROI_KMS_DSN</span><span class="o">=</span><span class="s2">"sodium+dir:///app/var/kms?ext=.key"</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nv">BEFFROI_KMS_KEY_ID</span><span class="o">=</span><span class="s2">"beffroi-{tenant}"</span>
+</span></code></pre></div>
+<p>The file of the tenant <code>default</code> is <code>/app/var/kms/beffroi-default.key</code>: thirty-two bytes and nothing else,
+mode <code>0600</code> in a directory <code>0700</code>, which the development stack writes this way when it is missing:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">umask</span><span class="w"> </span><span class="m">077</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/app/var/kms<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>/app/var/kms<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>head<span class="w"> </span>-c<span class="w"> </span><span class="m">32</span><span class="w"> </span>/dev/urandom<span class="w"> </span>&gt;<span class="w"> </span>/app/var/kms/beffroi-default.key
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>The Transit engine wraps the data key of every envelope, and the private key never reaches Vault.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">BEFFROI_KMS_DSN</span><span class="o">=</span><span class="s2">"hashicorp-vault-transit://&lt;token&gt;@&lt;host&gt;:8200"</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nv">BEFFROI_KMS_KEY_ID</span><span class="o">=</span><span class="s2">"beffroi-{tenant}"</span>
+</span></code></pre></div>
+<p>The Transit key of a tenant is <code>beffroi-&lt;slug&gt;</code>, of type <code>aes256-gcm96</code> and created with <code>derived=true</code>:
+the envelope carries a context that binds it to its tenant, Vault honours a context on a derived key only,
+and the bridge refuses to seal under a key that is not one. The development stack also creates it not
+exportable, with no plaintext backup, and refuses its deletion. The token needs three paths and nothing
+else:</p>
+<div class="language-hcl highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="err">path</span><span class="w"> </span><span class="s2">"transit/datakey/plaintext/beffroi-*"</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="na">capabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"update"</span><span class="p">]</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">}</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="err">path</span><span class="w"> </span><span class="s2">"transit/decrypt/beffroi-*"</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="na">capabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"update"</span><span class="p">]</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">}</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="err">path</span><span class="w"> </span><span class="s2">"transit/keys/beffroi-*"</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="na">capabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"read"</span><span class="p">]</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The Vault of the development stack is a dev server answering over plain HTTP, which its DSN says with
+<code>?scheme=http</code>.</p>
+</div>
+<div class="tabbed-block">
+<p>A symmetric key of the account wraps the data key of every envelope.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">BEFFROI_KMS_DSN</span><span class="o">=</span><span class="s2">"aws-kms://default?region=&lt;region&gt;"</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nv">BEFFROI_KMS_KEY_ID</span><span class="o">=</span><span class="s2">"alias/beffroi-{tenant}"</span>
+</span></code></pre></div>
+<p>The credentials come from the DSN or from the provider chain of async-aws, and any host other than
+<code>default</code> in the DSN is a custom endpoint. The key of a tenant is a <code>SYMMETRIC_DEFAULT</code> key for
+<code>ENCRYPT_DECRYPT</code>, behind the alias <code>alias/beffroi-&lt;slug&gt;</code>, so a new key behind the same alias changes
+nothing in the configuration.</p>
+</div>
+</div>
+</div>
+<h2 id="what-the-files-say">What the files say<a class="headerlink" href="#what-the-files-say" title="Link to this section">&para;</a></h2>
+<p>The configuration files are compiled into the container of the kernel when the image is built, so a change to
+them reaches a deployment with a new image. Outside the development environment,
+<code>config/packages/beffroi.yaml</code> says this:</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>What the application writes</th>
+<th>What it means for a deployment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant.look</code></td>
+<td>The logo at <code>/tenant-logo.svg</code>, a placeholder served from the issuer, and the colours <code>#1f6feb</code> on <code>#ffffff</code></td>
+<td>The mark and the colours of the tenant, on every page. A logo served from another host needs that origin in the <code>img-src</code> of <code>config/packages/nelmio_security.yaml</code>, and the host to answer <code>Cross-Origin-Resource-Policy: cross-origin</code>, the pages of the account requiring it</td>
+</tr>
+<tr>
+<td><code>tenant.self_served_claims</code></td>
+<td>Fourteen claims of OIDC Core §5.1, from <code>name</code> to <code>phone_number</code></td>
+<td>What a person may change of themselves on the page of their account. A tenant whose directory owns the data names none</td>
+</tr>
+<tr>
+<td><code>web_push.subject</code></td>
+<td><code>mailto:operator@op.localhost</code></td>
+<td>Naming a subject turns web push on (RFC 8292 §2.1): a <code>mailto:</code> or <code>https:</code> URI at which a push service reaches the operator. Without the section, no push leaves the deployment</td>
+</tr>
+<tr>
+<td><code>saml.identity_provider</code></td>
+<td>Requests signed, a key staged for seven days and working for a year, metadata cached for a day</td>
+<td>The tenant is a SAML identity provider and serves its metadata at <code>/saml/metadata</code>. Without the section, it draws no SAML key and serves no metadata</td>
+</tr>
+<tr>
+<td><code>tokens</code></td>
+<td>Codes for 60 seconds; refresh tokens for thirty days and ninety days at most from the authorization, the thirty days renewed at each rotation of the tokens that rotate, those of a public client bound to no key or certificate</td>
+<td>The lifetimes the environment does not carry</td>
+</tr>
+<tr>
+<td><code>clients</code></td>
+<td>None</td>
+<td>The clients of the deployment, declared as <a href="../../getting-started/your-first-client/">your first client</a> is</td>
+</tr>
+</tbody>
+</table>
+<p>The application writes no <code>client_registration</code> outside development, so its tenant has no registration
+endpoint. Everything else keeps the defaults of the bundle: an act of the journal and a change of a record are
+kept 180 days, an origin may send 2400 requests a minute and an authenticated client 1200.</p>
+<p><a href="../../reference/configuration/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The whole configuration tree</a></p>
+<h2 id="what-only-development-reads">What only development reads<a class="headerlink" href="#what-only-development-reads" title="Link to this section">&para;</a></h2>
+<p>The blocks under <code>when@dev</code> declare what the development stack needs and nothing a deployment does: the clients
+of the OpenID conformance suite and of the demonstrations, an open registration endpoint for the Dynamic OP
+plan, a SAML service provider with the peers it is judged by, and an issuer of assertions it trusts. Their
+variables are read in the development environment: <code>BEFFROI_REGISTRATION_MODE</code>, the <code>CONFORMANCE_*</code>,
+<code>OIDC_DEMO_*</code> and <code>DEMO_*</code> secrets and key sets, <code>BEFFROI_DEV_USER_SUBJECT</code>, <code>BEFFROI_DEMO_HOST_IP</code>,
+<code>APP_PROFILER</code> and <code>VAR_DUMPER_SERVER</code>. The demonstration of the flows is wired in the test environment of the
+application's own suite as well, so three of them are read there too, <code>DEMO_SERVICE_SECRET</code>,
+<code>DEMO_CIBA_POLL_SECRET</code> and <code>BEFFROI_DEV_USER_SUBJECT</code>, which <code>.env.test</code> gives as fixtures. A production
+kernel reads none of them.</p>
 
 
 
@@ -4465,7 +4896,7 @@ file that is committed.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:18 UTC">October 26, 2026</span>
   </span>
 
     
