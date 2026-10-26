@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The Doctrine mapping, the migrations, and the DBAL types.">
+        <meta name="description" content="The Doctrine mapping of the model, the tables, the migrations, the DBAL types, and what a sealed column changes about a query.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Persistence">
-  <meta property="og:description" content="The Doctrine mapping, the migrations, and the DBAL types.">
+  <meta property="og:description" content="The Doctrine mapping of the model, the tables, the migrations, the DBAL types, and what a sealed column changes about a query.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -2980,14 +2980,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3015,14 +3007,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3052,14 +3036,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3083,6 +3059,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Persistence
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3097,16 +3091,112 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-bundle-maps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the bundle maps
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The tables
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-value-object-in-one-column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A value object in one column
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sealed-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sealed columns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sealed columns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-a-sealed-column-changes-about-a-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a sealed column changes about a query
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-goes-away-and-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What goes away, and when
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3133,14 +3223,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3170,14 +3252,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3205,14 +3279,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3270,14 +3336,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3334,14 +3392,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3370,14 +3420,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3405,14 +3447,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3812,14 +3846,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4017,6 +4043,97 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-bundle-maps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the bundle maps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The tables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-value-object-in-one-column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A value object in one column
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sealed-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sealed columns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sealed columns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-a-sealed-column-changes-about-a-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a sealed column changes about a query
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-goes-away-and-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What goes away, and when
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4041,14 +4158,403 @@
 
 
 <h1 id="persistence">Persistence<a class="headerlink" href="#persistence" title="Link to this section">&para;</a></h1>
-<p>The model is mapped with XML, outside the entities, and a value object a column holds whole goes in one
-column with a DBAL type of the bundle that reads it back through the object's own constructor. An
-embeddable would fix the type of each of its fields once for the whole model, so the same kind of value
-could not be sealed in one table and readable in another, which is why there is one embeddable in the
-mapping and not a family of them: the authorization request, embedded by one entity, whose first field is
-an entity no mapping carries.</p>
-<p>This page will describe the schema, the migrations, the types, and what a sealed column changes about a
-query.</p>
+<p>The provider keeps its model with Doctrine ORM. The classes of the core, of OpenID Connect and of SAML know
+nothing of Doctrine: the bundle maps them from XML files of its own, declares their types and their
+migrations to Doctrine itself, and the application writes none of it. The schema is therefore the same
+whether the bundle is installed in an existing application or deployed in the standalone one.</p>
+<h2 id="what-the-bundle-maps">What the bundle maps<a class="headerlink" href="#what-the-bundle-maps" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Mapping</th>
+<th>Directory of the bundle</th>
+<th>Namespace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BeffroiCore</code></td>
+<td><code>config/doctrine/core</code></td>
+<td><code>Beffroi\Core\Domain</code></td>
+</tr>
+<tr>
+<td><code>BeffroiOidc</code></td>
+<td><code>config/doctrine/oidc</code></td>
+<td><code>Beffroi\Oidc\Domain</code></td>
+</tr>
+<tr>
+<td><code>BeffroiSaml</code></td>
+<td><code>config/doctrine/saml</code></td>
+<td><code>Beffroi\Saml\Domain</code></td>
+</tr>
+</tbody>
+</table>
+<p>One XML file per class, named after it, as <code>Identity.User.orm.xml</code>. The application maps its own entities
+beside them and none of them is ever a user of the provider: a person of the provider is a row of
+<code>beffroi_user</code>, whatever the host application calls its own users.</p>
+<h2 id="the-tables">The tables<a class="headerlink" href="#the-tables" title="Link to this section">&para;</a></h2>
+<p>Every table is prefixed <code>beffroi_</code>, and every table of the mapping but <code>beffroi_tenant</code> carries the tenant
+it belongs to, by a foreign key on <code>tenant_id</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="identity" name="__tabbed_1" type="radio" /><input id="openid-connect" name="__tabbed_1" type="radio" /><input id="saml" name="__tabbed_1" type="radio" /><input id="keys" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="identity">Identity</label><label for="openid-connect">OpenID Connect</label><label for="saml">SAML</label><label for="keys">Keys</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What a row is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi_tenant</code></td>
+<td>The tenant: its issuer, its slug, its name, its look, the claims its people may change, its <code>acr</code> vocabulary and the floor of its logins</td>
+</tr>
+<tr>
+<td><code>beffroi_user</code></td>
+<td>A person: the subject, in the clear and unique in the tenant, the username, the e-mail address, the telephone number, the postal address, the claims of the profile and the source that created them</td>
+</tr>
+<tr>
+<td><code>beffroi_password_credential</code></td>
+<td>The password of a person, its hash typed by its algorithm, and when a list of compromised passwords was last asked about it and when it was found there</td>
+</tr>
+<tr>
+<td><code>beffroi_passkey_credential</code></td>
+<td>A passkey: the credential record of WebAuthn, its name and its revocation</td>
+</tr>
+<tr>
+<td><code>beffroi_totp_credential</code></td>
+<td>An authenticator application: its secret, the last time step accepted and the hashed backup codes</td>
+</tr>
+<tr>
+<td><code>beffroi_enrolment_ticket</code></td>
+<td>The ticket that opens one enrolment of a first passkey, by a hash of its value</td>
+</tr>
+<tr>
+<td><code>beffroi_linked_identity</code></td>
+<td>Who a person is at an upstream provider, and what that provider said of them</td>
+</tr>
+<tr>
+<td><code>beffroi_group</code>, <code>beffroi_group_membership</code></td>
+<td>The groups of the tenant and who belongs to them, each with its source</td>
+</tr>
+<tr>
+<td><code>beffroi_push_subscription</code></td>
+<td>A browser of a person the provider can reach by <a href="../web-push/">web push</a></td>
+</tr>
+<tr>
+<td><code>beffroi_authentication_session</code></td>
+<td>A session: what it proved, from where it was opened and last seen, when it ends and why it ended</td>
+</tr>
+<tr>
+<td><code>beffroi_journal</code></td>
+<td>One act of the provider</td>
+</tr>
+<tr>
+<td><code>beffroi_claim_change</code></td>
+<td>What a claim of a person said before they changed it, and what it says now</td>
+</tr>
+<tr>
+<td><code>beffroi_personal_archive</code></td>
+<td>The archive a person asked for of everything the provider holds of them</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What a row is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi_client</code></td>
+<td>A client the provider registered itself. A client declared in the configuration has no row</td>
+</tr>
+<tr>
+<td><code>beffroi_initial_access_token</code></td>
+<td>An initial access token, by the digest of its value</td>
+</tr>
+<tr>
+<td><code>beffroi_interaction</code></td>
+<td>An authorization request parked while the person signs in and consents</td>
+</tr>
+<tr>
+<td><code>beffroi_pushed_authorization_request</code></td>
+<td>A pushed request, by the hash of its reference, its parameters as the client wrote them</td>
+</tr>
+<tr>
+<td><code>beffroi_consent</code></td>
+<td>What a person agreed to let a client obtain</td>
+</tr>
+<tr>
+<td><code>beffroi_authorization_code</code></td>
+<td>A code, by its hash, kept past its use so that a replay is told from an unknown code</td>
+</tr>
+<tr>
+<td><code>beffroi_device_authorization_request</code></td>
+<td>A device authorization request, by the hash of the code the device polls with</td>
+</tr>
+<tr>
+<td><code>beffroi_backchannel_authentication_request</code></td>
+<td>A backchannel authentication request, by the hash of the identifier the client comes back with</td>
+</tr>
+<tr>
+<td><code>beffroi_refresh_token</code>, <code>beffroi_refresh_token_family</code></td>
+<td>A refresh token by its hash, and the lineage every token of a grant names</td>
+</tr>
+<tr>
+<td><code>beffroi_access_token</code>, <code>beffroi_client_access_token</code>, <code>beffroi_subject_access_token</code></td>
+<td>An opaque access token by its hash: one somebody signed in for, one a client holds for itself, one whose subject was named by what the client presented</td>
+</tr>
+<tr>
+<td><code>beffroi_pairwise_subject</code></td>
+<td>The identifier one sector sees a person under</td>
+</tr>
+<tr>
+<td><code>beffroi_disclosure</code></td>
+<td>What a client was given of a person, at one act of the protocol</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What a row is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi_saml_service_provider</code></td>
+<td>The newest metadata document accepted for a service provider</td>
+</tr>
+<tr>
+<td><code>beffroi_saml_upstream_identity_provider</code></td>
+<td>The newest metadata document accepted for an upstream identity provider</td>
+</tr>
+<tr>
+<td><code>beffroi_saml_remembered_message</code></td>
+<td>An assertion or a logout message already accepted, until the window in which it would be accepted again has closed</td>
+</tr>
+<tr>
+<td><code>beffroi_saml_session_participant</code></td>
+<td>A service provider that took part in a session</td>
+</tr>
+<tr>
+<td><code>beffroi_saml_logout_chain</code></td>
+<td>A single logout the provider plays through the browser that began it</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What a row is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi_data_key</code></td>
+<td>A data key of a tenant, wrapped by its master key, with the client and the master key that wrapped it. No mapping describes it: it is the table of the data key store, created by a migration of the bundle and declared to the schema the ORM assembles, so that a comparison of the schema does not offer to drop it</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The keys of the tenant are not in the database. Each one is a file of <code>beffroi.keys.storage</code>, its private
+half sealed by the <a href="../key-management/">key management service</a>.</p>
+<h2 id="the-migrations">The migrations<a class="headerlink" href="#the-migrations" title="Link to this section">&para;</a></h2>
+<p>The bundle ships its migrations in its own directory, under the namespace <code>Beffroi\Bundle\Migrations</code>, and
+declares them to Doctrine Migrations. They are played with those of the application:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>doctrine:migrations:migrate
+</span></code></pre></div>
+<p><strong>They are written for PostgreSQL</strong>, and each one stops on another platform with <code>This migration is written
+for PostgreSQL.</code></p>
+<p><strong>A migration that seals columns says two things before it runs.</strong> It refuses a table that holds rows,
+naming the table and the count: a sealed column is binary and refuses a null, and nothing puts a value in
+clear into it, so the rows are sealed by a script of the deployment's own or the table is emptied. And it says
+to restart what serves requests and what consumes the buses once it has run, because a process that booted
+before it reads those columns with the type they had.</p>
+<h2 id="a-value-object-in-one-column">A value object in one column<a class="headerlink" href="#a-value-object-in-one-column" title="Link to this section">&para;</a></h2>
+<p><strong>A value object a column holds whole goes in one column</strong>, with a DBAL type of the bundle: the bundle
+declares thirty-three of them, <code>beffroi_subject</code>, <code>beffroi_scopes</code>, <code>beffroi_request_context</code> or
+<code>beffroi_password_hash</code> among them. What the column holds is written by the object itself, in the package
+that owns it, and read back through its constructor, so a row edited by hand into something the object
+refuses fails when it is loaded, as a conversion error naming the type, and never further down.</p>
+<p><strong>Some of them read the wiring back.</strong> A stored password hash names its algorithm, a confirmation of
+RFC 8705 or RFC 9449 names its kind, an <code>authorization_details</code> names its type, a PKCE challenge names its
+method, and the <code>acr</code> vocabulary and the floor of a tenant name their predicates. Each is read back as the
+class the deployment wires under that name, so a row naming something the deployment no longer wires fails
+at load rather than being read as something else: a password algorithm leaves the wiring once no hash of it
+is left, or every row holding one fails to load.</p>
+<p><strong>One embeddable is left in the mapping</strong>, the authorization request, embedded by <code>beffroi_interaction</code> and
+by nothing else. An embeddable fixes the type of each of its fields once for the whole model, so the same
+value could not be sealed in one table and readable in another; this one stays because its first field is a
+client, which no mapping carries, so no DBAL type could hand the object back whole.</p>
+<p><strong>A client is not a row a table joins.</strong> A client declared in the configuration has no row at all, so the
+tables keep <code>client_id</code>, and the client is put back on a row once it is loaded, from the sources of clients
+the deployment wires. A row whose client is no longer registered, removed from the configuration or deleted,
+is treated as absent: a token or a consent of a client that does not exist is not one.</p>
+<h2 id="sealed-columns">Sealed columns<a class="headerlink" href="#sealed-columns" title="Link to this section">&para;</a></h2>
+<p>Thirty-three columns hold a personal datum, or the secret of a client, sealed under a data key of their
+tenant. A data key is minted per tenant and per family of columns, the family being the name of the table
+without its prefix, so the key that opens one table of a tenant opens no other table and no other tenant.</p>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>The columns it seals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>username</code>, <code>email</code>, <code>phone_number</code>, <code>address</code>, <code>profile</code>, <code>source</code></td>
+</tr>
+<tr>
+<td><code>linked_identity</code></td>
+<td><code>provider</code>, <code>subject</code>, <code>claims</code></td>
+</tr>
+<tr>
+<td><code>passkey_credential</code></td>
+<td><code>name</code></td>
+</tr>
+<tr>
+<td><code>push_subscription</code></td>
+<td><code>endpoint</code>, <code>label</code></td>
+</tr>
+<tr>
+<td><code>authentication_session</code></td>
+<td><code>created_from</code>, <code>last_seen_from</code></td>
+</tr>
+<tr>
+<td><code>interaction</code></td>
+<td><code>login_hint</code>, <code>id_token_hint</code></td>
+</tr>
+<tr>
+<td><code>pushed_authorization_request</code></td>
+<td><code>parameters</code></td>
+</tr>
+<tr>
+<td><code>device_authorization_request</code></td>
+<td><code>requested_from</code></td>
+</tr>
+<tr>
+<td><code>backchannel_authentication_request</code></td>
+<td><code>binding_message</code>, <code>requested_from</code></td>
+</tr>
+<tr>
+<td><code>client</code></td>
+<td><code>metadata</code>, <code>assigned_metadata</code>, <code>secret</code></td>
+</tr>
+<tr>
+<td><code>journal</code></td>
+<td><code>context</code></td>
+</tr>
+<tr>
+<td><code>claim_change</code></td>
+<td><code>was</code>, <code>became</code>, <code>context</code></td>
+</tr>
+<tr>
+<td><code>disclosure</code></td>
+<td><code>scopes</code>, <code>claims</code>, <code>authorization_details</code></td>
+</tr>
+<tr>
+<td><code>personal_archive</code></td>
+<td><code>content</code></td>
+</tr>
+<tr>
+<td><code>saml_service_provider</code></td>
+<td><code>document</code></td>
+</tr>
+<tr>
+<td><code>saml_upstream_identity_provider</code></td>
+<td><code>document</code></td>
+</tr>
+</tbody>
+</table>
+<p>Three columns hold an envelope of the key management service instead, opened under the master key of the
+tenant: the secret of an authenticator application, and the identifier and the token of a backchannel request
+whose client the provider calls back.</p>
+<p>A value is sealed under the tenant of the unit of work in progress, and a write that has none is refused
+rather than sealed under a scope of no tenant. The data keys are what <a href="../console-commands/#data-keys">the console</a>
+lists, moves to another client and erases.</p>
+<h3 id="what-a-sealed-column-changes-about-a-query">What a sealed column changes about a query<a class="headerlink" href="#what-a-sealed-column-changes-about-a-query" title="Link to this section">&para;</a></h3>
+<ul>
+<li><strong>It cannot be searched.</strong> Every value is sealed under a random initialisation vector, so two writes of the
+  same username give two ciphertexts and <code>WHERE username = ?</code> matches nothing.</li>
+<li><strong>What is searched is a blind index</strong>, a keyed tag of the value in a column beside it, equal for equal
+  values. Four columns carry one: <code>beffroi_user.username</code> in <code>username_index</code>, <code>beffroi_user.email</code> in
+  <code>email_index</code>, folded whole, local part and domain, and the pair <code>provider</code> and <code>subject</code> of
+  <code>beffroi_linked_identity</code> in <code>provider_index</code> and <code>subject_index</code>. The unique constraints are held on those
+  columns, a constraint on a sealed column refusing nothing. The key of the tags is one per tenant, a data key
+  of its own that never rotates.</li>
+<li><strong>The tag is written by the bundle, on the flush of the entity manager</strong>, in the same statement as the
+  value. A row written through DBAL, or changed by a bulk <code>UPDATE</code>, keeps whatever tag it had, and a search
+  then finds the row by what it used to hold. <code>beffroi:user:reindex</code> derives the tags of every person of the
+  tenant again.</li>
+<li><strong>The column is unbounded binary.</strong> The <code>length</code> a mapping gives a sealed column is the length the model
+  checks, not the width of the column, and an option that describes the stored value no longer holds: no
+  query reads into the JSON of <code>beffroi_user.address</code>, which is a ciphertext.</li>
+<li><strong>A ciphertext is bound to its tenant, not to its row.</strong> Within one tenant and one family, a value copied
+  into another row of the same column opens there.</li>
+</ul>
+<p><a href="../../core/personal-data/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Personal data</a></p>
+<h2 id="what-goes-away-and-when">What goes away, and when<a class="headerlink" href="#what-goes-away-and-when" title="Link to this section">&para;</a></h2>
+<p>The protocol writes rows that stop being worth anything, and it keeps them past that moment on purpose, so
+that a second presentation of a code or a token is told from a value nobody issued. Timed steps of the
+<a href="../messenger/#what-time-does-on-its-own">schedule</a> then drop them, each statement bounded and the next run
+taking what it left.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Every</th>
+<th>What it drops</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The rows that are dead</td>
+<td>Hour</td>
+<td>Interactions, pushed requests, codes, device and backchannel requests, refresh tokens, opaque access tokens, enrolment tickets and sessions that nothing alive needs any more</td>
+</tr>
+<tr>
+<td>The journal</td>
+<td>Day</td>
+<td>The acts older than <code>beffroi.journal.retention</code> days, 180 by default, and the disclosures with them</td>
+</tr>
+<tr>
+<td>The history of a record</td>
+<td>Day</td>
+<td>The changes of claims older than <code>beffroi.history.retention</code> days, 180 by default</td>
+</tr>
+<tr>
+<td>The archives</td>
+<td>Hour</td>
+<td>The archives past their expiry, a week after they were asked for</td>
+</tr>
+<tr>
+<td>The unused clients</td>
+<td>Hour</td>
+<td>The clients that registered themselves and went unused longer than <code>client_registration.keep_a_client_unused_for</code>, ninety days by default, or were never used within <code>keep_a_client_never_used_for</code>, seven days by default</td>
+</tr>
+</tbody>
+</table>
+<p>A session is dropped last: the codes, refresh tokens and access tokens of a login name it under a foreign key
+that cascades, and their own time is past before the session's. The SAML store of messages already accepted
+and the logout chains drop their closed rows before each insertion.</p>
 
 
 
@@ -4069,7 +4575,7 @@ query.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 08:02:24 UTC">October 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
   </span>
 
     

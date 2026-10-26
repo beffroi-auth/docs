@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="What the bundle adds to the console.">
+        <meta name="description" content="An identity provider for the Symfony ecosystem. OAuth 2.0, OpenID Connect and SAML 2.0, on a pure-PHP core.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -69,8 +69,8 @@
   <meta name="theme-color" content="#0c1016" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
-  <meta property="og:title" content="Console commands">
-  <meta property="og:description" content="What the bundle adds to the console.">
+  <meta property="og:title" content="Beffroi">
+  <meta property="og:description" content="An identity provider for the Symfony ecosystem. OAuth 2.0, OpenID Connect and SAML 2.0, on a pure-PHP core.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -2980,14 +2980,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3015,14 +3007,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3052,14 +3036,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3087,14 +3063,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3124,14 +3092,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3160,14 +3120,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3195,14 +3147,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3260,14 +3204,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3324,14 +3260,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3355,6 +3283,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console commands
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3369,16 +3315,112 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-every-command-shares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What every command shares
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rotating-a-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating a key
+      
+    </span>
+  </a>
   
-
-      </a>
+    <nav class="md-nav" aria-label="Rotating a key">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#time-does-the-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time does the rest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rotating-by-hand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating by hand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-the-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking the keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-doctor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The doctor
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3405,14 +3447,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3812,14 +3846,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4017,6 +4043,97 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-every-command-shares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What every command shares
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rotating-a-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating a key
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rotating a key">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#time-does-the-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time does the rest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rotating-by-hand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotating by hand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-the-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking the keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-doctor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The doctor
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4040,12 +4157,185 @@
   
 
 
+<hr />
+<p>title: Console commands
+description: What the commands of the bundle need explained beyond their help: the rotation of a key, the data keys, and the doctor.</p>
+<hr />
 <h1 id="console-commands">Console commands<a class="headerlink" href="#console-commands" title="Link to this section">&para;</a></h1>
-<p>The bundle adds the commands for the tenant, users and their journal, groups, clients, keys, data keys, SAML
-metadata, the databases of addresses and FIDO metadata. They are listed, grouped and described in <a href="../../reference/console-commands/">the
-reference</a>.</p>
-<p>This page will describe the ones that need explaining beyond their help: the rotation of a key, the
-rewrapping of data keys, and the destruction that cannot be undone.</p>
+<p>The bundle adds the commands for the tenant, the people and their journal, groups, clients, keys, data keys,
+the metadata of SAML peers, the databases of addresses and the metadata of FIDO. <a href="../../reference/console-commands/">The
+reference</a> lists every one of them; <code>bin/console &lt;command&gt; --help</code> gives its
+arguments and options. This page explains the ones a help screen does not: the rotation of a key, the data
+keys, and the doctor.</p>
+<h2 id="what-every-command-shares">What every command shares<a class="headerlink" href="#what-every-command-shares" title="Link to this section">&para;</a></h2>
+<p><strong>A command works on the tenant of the configuration.</strong> One that needs its row stops when the row is missing
+or no longer says what the configuration says, and names the field and the command that fixes it:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>The tenant "default" of the configuration has no row yet: synchronise it before serving requests.
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Run "beffroi:tenant:synchronize" first.
+</span></code></pre></div>
+<p><strong>A command that reads is never the command that writes.</strong> <code>beffroi:user:show</code> reads and
+<code>beffroi:user:profile</code> writes; <code>beffroi:data-keys:list</code> reads and <code>beffroi:data-keys:rewrap</code> writes.</p>
+<p><strong>What a command does is an act like any other</strong>, written to the journal with the console as where it came
+from: <code>beffroi-console/&lt;command&gt; (&lt;user&gt;@&lt;host&gt;)</code>, the user being the one behind <code>sudo</code> before the one of the
+shell. A step of the schedule is written as <code>beffroi-scheduler/beffroi (&lt;host&gt;)</code>.</p>
+<h2 id="rotating-a-key">Rotating a key<a class="headerlink" href="#rotating-a-key" title="Link to this section">&para;</a></h2>
+<p>A key of the tenant is staged, then active, then retiring, then retired. Of the keys it publishes, the JWK Set
+carries the first three, so a relying party sees a key before anything is signed with it and keeps verifying
+it once another has taken over. <a href="../../core/keys/">Keys</a> says what each key of a tenant is for.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi:keys:generate</code></td>
+<td>Draws a key, seals it and makes it the active one of its algorithm at once. The right command for a tenant that has no key of that algorithm, and a rotation with no staging delay on one that has</td>
+</tr>
+<tr>
+<td><code>beffroi:keys:rotate</code></td>
+<td>Stages a key: published at once, active once the staging delay has elapsed. On a tenant that has no active key of the algorithm, the key is active at once</td>
+</tr>
+<tr>
+<td><code>beffroi:keys:activate &lt;kid&gt;</code></td>
+<td>Makes a staged key active before its delay has elapsed</td>
+</tr>
+<tr>
+<td><code>beffroi:keys:retire &lt;kid&gt;</code></td>
+<td>Takes a retiring key out of the JWK Set once its retirement date has passed, or before it with <code>--force</code>; <code>--due</code> retires every key past its date</td>
+</tr>
+<tr>
+<td><code>beffroi:keys:list</code></td>
+<td>The keys in service with their use, status and dates, or every key with <code>--all</code>; <code>--check</code> is described below</td>
+</tr>
+</tbody>
+</table>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate<span class="w"> </span>--algorithm<span class="o">=</span>ES256
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>bin/console<span class="w"> </span>beffroi:keys:list
+</span></code></pre></div>
+<p><code>--algorithm</code> names the key: a JWS algorithm for a key that signs, a JWE key management algorithm for a key
+clients encrypt to, or the name of a key the tenant keeps, <code>MESSAGE-SEAL</code>, <code>VAPID</code>, <code>SAML-SIGNING</code>, or
+<code>SAML-ENCRYPTION:</code> followed by the entity ID of an upstream identity provider. Left out, it is the default
+signature algorithm, <code>RS256</code>. One run reaches one algorithm, and a tenant holds one active key per algorithm.</p>
+<h3 id="time-does-the-rest">Time does the rest<a class="headerlink" href="#time-does-the-rest" title="Link to this section">&para;</a></h3>
+<p>The step <code>AdvanceKeyLifecycle</code> of <a href="../messenger/#what-time-does-on-its-own">the schedule</a> runs every minute and
+does, in this order, what the commands do by hand: it stages a successor for every active key that has worked
+for its age, activates every staged key whose delay has elapsed, and retires every retiring key past its date.
+A tenant nobody watches does not sign with the same key for ever, and the tick that stages a successor is never
+the one that activates it.</p>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Default</th>
+<th>Set by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The staging delay, how long a new key is published before it signs</td>
+<td><code>jwks_max_age</code> plus sixty seconds: 360 seconds with the default <code>jwks_max_age</code> of 300</td>
+<td><code>beffroi.keys.staging_delay</code></td>
+</tr>
+<tr>
+<td>The age, how long a key works before a successor is staged, counted from its activation</td>
+<td>90 days</td>
+<td><code>beffroi.keys.age</code>, in seconds</td>
+</tr>
+<tr>
+<td>The retirement window, how long a replaced key stays published</td>
+<td>The longest lifetime of what is bound to a key of that use: the ID tokens, access tokens, signed authorization responses and logout tokens for a key that signs, the request objects and pushed requests a client may still be encrypting for a key it encrypts to</td>
+<td>Read from those lifetimes, never set on its own</td>
+</tr>
+</tbody>
+</table>
+<p>The sixty seconds are the cooldown of Symfony's <code>oidc_login</code>, which fetches the JWK Set again on a <code>kid</code> it does
+not know only once its copy is that old: they cover a relying party whose copy came late through a shared
+cache. An age that is not
+longer than the retirement window of its use is refused at the first tick that reaches it, since every rotation
+would otherwise leave one more key in the JWK Set. The SAML signing key has figures of its own, seven days of
+staging and a year of age by default, under <a href="../../saml/identity-provider/"><code>beffroi.saml.identity_provider</code></a>.</p>
+<h3 id="rotating-by-hand">Rotating by hand<a class="headerlink" href="#rotating-by-hand" title="Link to this section">&para;</a></h3>
+<p><strong><code>--now</code> skips the staging delay.</strong> The new key signs at once and the previous one starts retiring: a relying
+party whose copy of the JWK Set is younger than sixty seconds refuses the new tokens, or encrypts to the old
+key, until its copy is that old. It is for an operator who knows every relying party is cold.</p>
+<p><strong><code>--compromised</code> leaves no window.</strong> The new key takes over at once and the compromised one leaves the JWK
+Set at the same moment: nothing bound to it is honoured from then on.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate<span class="w"> </span>--compromised<span class="w"> </span>--algorithm<span class="o">=</span>RS256
+</span></code></pre></div>
+<p><strong><code>beffroi:keys:retire --force</code></strong> takes a retiring key out before its date, after a compromise or when
+everything bound to it is known to have expired; the journal says it was retired before its date.</p>
+<h3 id="checking-the-keys">Checking the keys<a class="headerlink" href="#checking-the-keys" title="Link to this section">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:keys:list<span class="w"> </span>--check
+</span></code></pre></div>
+<p><code>--check</code> opens the active and the staged keys with the key management service, and says of each active key
+whether it has worked past its age and whether a successor is staged behind it. A retiring key is not opened
+by the check: in service, it is opened only to read what was encrypted to it. It fails in two cases, and says
+what to do in both:</p>
+<ul>
+<li><strong>A key the service cannot open.</strong> If the service is down, the same run passes once it is back. If it lost
+  the master key, the envelopes sealed under it are dead: the command prints one
+  <code>beffroi:keys:rotate --now --algorithm=&lt;name&gt;</code> per algorithm, each rotation sealing a new key under the master
+  key the service holds now, the dead key retiring with its window, its public half still verifying what it
+  signed. Nothing is deleted.</li>
+<li><strong>An active key past its age with nothing staged behind it.</strong> The step of the schedule stages one every
+  minute, so this is a worker that does not consume <code>scheduler_beffroi</code>: the command names the transport, and
+  the rotation that does the same thing by hand.</li>
+</ul>
+<h2 id="data-keys">Data keys<a class="headerlink" href="#data-keys" title="Link to this section">&para;</a></h2>
+<p>The columns that carry a personal datum are sealed under data keys of the tenant, one per family of columns,
+wrapped by its master key. <a href="../persistence/#sealed-columns">Persistence</a> says which columns; these commands
+are how an operator holds the keys.</p>
+<p><strong><code>beffroi:data-keys:list</code></strong> shows the keys by scope, <code>&lt;slug&gt;.&lt;family&gt;</code>, with when each was minted, the master
+key that wraps it and the client that opens it. The last key of a scope is the one a write uses; the ones before
+it still open what they sealed, and a rotation never erases them. A family that has sealed nothing yet has no
+key, a data key being minted at the first write of its family. The command never opens a key.</p>
+<p><strong><code>beffroi:data-keys:rewrap</code></strong> wraps the data keys of the tenant with another client from now on, or with
+another master key of the same one. No sealed value is read or rewritten: what changes is how a data key is
+protected, and every ciphertext goes on naming the same key.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second<span class="w"> </span>--dry-run
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second<span class="w"> </span>--from<span class="o">=</span>op
+</span></code></pre></div>
+<ul>
+<li><code>--to</code> names the client of <code>key_management.clients</code> that wraps the keys from now on, and the command lists
+  the clients of the deployment when it is missing.</li>
+<li><code>--from</code> moves only the keys that client holds; all of them without it.</li>
+<li><code>--dry-run</code> lists what would move and writes nothing.</li>
+</ul>
+<p>The master key is the one <code>beffroi.keys.key_id</code> gives the tenant, resolved from the configuration and never
+asked for: an operator who had to type it could type the one of another tenant. It moves one tenant, the one
+of the configuration, and nothing schedules it.</p>
+<p><strong><code>beffroi:data-keys:destroy</code></strong> erases every data key of the tenant, the key of its blind indexes with them.
+Every column they sealed keeps its ciphertext, and nothing in this database opens it again: that is the
+erasure of a tenant, and it cannot be undone, no more than <code>beffroi:tenant:login-floor</code>, which forgets the
+credentials the floor forbids, secret and row, or <code>beffroi:client:delete</code>, which deletes a client that
+registered itself. It asks for the slug of the tenant typed back, and has no <code>--force</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:destroy<span class="w"> </span>default
+</span></code></pre></div>
+<p>The rows stay; what is gone is the means of reading them. The keys of the tenant, its pairwise salt and the
+envelopes sealed under its master key are not touched.</p>
+<p><a href="../key-management/#moving-to-another-client"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Key management</a></p>
+<h2 id="the-doctor">The doctor<a class="headerlink" href="#the-doctor" title="Link to this section">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:doctor
+</span></code></pre></div>
+<p>The doctor reads and writes nothing, so it is safe on a provider serving traffic. It looks at every point
+before it answers, prints one line per point, explains the ones it does not answer for, and fails when one is
+red, so a deployment pipeline can ask the question. A point is a class tagged <code>beffroi.doctor_check</code>, so a
+deployment adds one by adding a class; a run with nothing tagged fails rather than answering for nothing.</p>
+<p>The bundle tags one point: whether the lane a logout token is sent on is retried on the schedule the token is
+written for, the one <code>beffroi.back_channel_logout</code> sets. On a deployment that keeps the lane of notifications
+the bundle declares, with the defaults of that section, the run reads:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a> [ok] Back-channel logout: how long a logout token is retried
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>      A logout token is retried on "async_notifications" for 3 minutes 20 seconds and stops being verifiable after 3 minutes 55 seconds, both read from the schedule this provider publishes (Beffroi\Bundle\Messenger\NotificationRetryPolicy): a client that is restarting is reached, and nothing arrives after the "exp" of the token has passed or after the key that signed it has left the JWK Set.
+</span></code></pre></div>
+<p>The two figures are the budget a logout token is written for; <a href="../messenger/#what-the-application-writes">Messenger</a>
+says what that budget bounds. The point is red when the notifications are routed to a lane retried on another
+schedule, or to no lane at all.</p>
+<p><a href="../messenger/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Messenger</a></p>
 
 
 
@@ -4066,7 +4356,7 @@ rewrapping of data keys, and the destruction that cannot be undone.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
   </span>
 
     

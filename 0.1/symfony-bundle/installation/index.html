@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Requiring it, registering it, importing its routes and running its migrations.">
+        <meta name="description" content="What the bundle requires, what it writes into the configuration of the other bundles, what the application writes, and the first run.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Installing the bundle">
-  <meta property="og:description" content="Requiring it, registering it, importing its routes and running its migrations.">
+  <meta property="og:description" content="What the bundle requires, what it writes into the configuration of the other bundles, what the application writes, and the first run.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -2975,6 +2975,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installing the bundle
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -2989,16 +3007,178 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-requires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it requires
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requiring-and-registering-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requiring and registering it
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-bundle-writes-for-the-other-bundles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the bundle writes for the other bundles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-application-writes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the application writes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What the application writes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-key-management-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The key management client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-configuration-of-the-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The configuration of the bundle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-routes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The routes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-firewall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The firewall
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The session
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-several-processes-share" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What several processes share
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-first-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The first run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-the-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking the result
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changing-the-configuration-later" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changing the configuration later
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3025,14 +3205,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3062,14 +3234,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3097,14 +3261,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3134,14 +3290,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3170,14 +3318,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3205,14 +3345,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3270,14 +3402,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3334,14 +3458,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3370,14 +3486,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3405,14 +3513,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3812,14 +3912,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4017,6 +4109,163 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-requires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it requires
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#requiring-and-registering-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requiring and registering it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-bundle-writes-for-the-other-bundles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the bundle writes for the other bundles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-application-writes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the application writes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What the application writes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-key-management-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The key management client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-configuration-of-the-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The configuration of the bundle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-routes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The routes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-firewall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The firewall
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The session
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-several-processes-share" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What several processes share
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-first-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The first run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-the-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking the result
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changing-the-configuration-later" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changing the configuration later
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4041,11 +4290,226 @@
 
 
 <h1 id="installing-the-bundle">Installing the bundle<a class="headerlink" href="#installing-the-bundle" title="Link to this section">&para;</a></h1>
-<p>Three things happen at installation: the bundle is registered, its routes are imported under the path of the
-issuer, and its Doctrine migrations are run. <a href="../../getting-started/installation/">Getting started</a> walks
-through all three.</p>
-<p>This page will describe the installation in detail, including what Flex does for you, what a deployment that
-serves two planes imports, and how to check the result.</p>
+<p>The bundle is installed as any Symfony bundle is, and most of what it needs from the other bundles of the
+kernel it writes itself. What it cannot know is the application's to write: the key management client, the
+issuer, the firewall, the path the routes are mounted under. <a href="../../getting-started/installation/">Getting started</a>
+is the short path through it; this page is the whole of it.</p>
+<h2 id="what-it-requires">What it requires<a class="headerlink" href="#what-it-requires" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PHP</td>
+<td>8.4 or later, with the <code>intl</code> and <code>zip</code> extensions</td>
+</tr>
+<tr>
+<td>Symfony</td>
+<td>8.2</td>
+</tr>
+<tr>
+<td>Doctrine</td>
+<td>ORM 3.7, DBAL 4.4, DoctrineBundle 3.3, Doctrine Migrations 3.9</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>PostgreSQL: the migrations the bundle ships are written for it and stop on any other platform</td>
+</tr>
+<tr>
+<td>Key management</td>
+<td>A client of <code>symfony/key-management</code>, declared by the application</td>
+</tr>
+</tbody>
+</table>
+<p>The kernel registers <code>FrameworkBundle</code>, <code>DoctrineBundle</code>, <code>SecurityBundle</code>, <code>TwigBundle</code> and the bundle
+itself. To play the migrations it also registers <code>DoctrineMigrationsBundle</code>, which the standalone
+application requires, and in development <code>WebProfilerBundle</code> shows <a href="../profiler/">the panel of the
+provider</a>.</p>
+<h2 id="requiring-and-registering-it">Requiring and registering it<a class="headerlink" href="#requiring-and-registering-it" title="Link to this section">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>composer<span class="w"> </span>require<span class="w"> </span>beffroi/symfony-bundle
+</span></code></pre></div>
+<p>The package has no Symfony Flex recipe: the configuration, the routes and the firewall below are written by
+hand. The bundle is registered for every environment:</p>
+<div class="language-php highlight"><span class="filename">config/bundles.php</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="x">return [</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="x">    // ...</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">    Beffroi\Bundle\BeffroiBundle::class =&gt; ['all' =&gt; true],</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="x">];</span>
+</span></code></pre></div>
+<h2 id="what-the-bundle-writes-for-the-other-bundles">What the bundle writes for the other bundles<a class="headerlink" href="#what-the-bundle-writes-for-the-other-bundles" title="Link to this section">&para;</a></h2>
+<p>When the container is built, the bundle prepends its part to the configuration of the bundles it works
+with, and only of those the kernel registers. An application writes none of this, and a prepended
+configuration being merged first, a key the application writes itself is the one that stands.</p>
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>What the bundle adds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>doctrine</code></td>
+<td>Its DBAL types, and three XML mappings, <code>BeffroiCore</code>, <code>BeffroiOidc</code> and <code>BeffroiSaml</code>, for the model of the three packages. The types that seal a column are registered when the bundles boot</td>
+</tr>
+<tr>
+<td><code>doctrine_migrations</code></td>
+<td>The directory of its migrations, under the namespace <code>Beffroi\Bundle\Migrations</code></td>
+</tr>
+<tr>
+<td><code>security</code></td>
+<td>The password hasher of <code>Beffroi\Bundle\Security\SecurityUser</code>, which is <code>Beffroi\Bundle\Security\CorePasswordHasher</code>, the hasher of the core</td>
+</tr>
+<tr>
+<td><code>rate_limiter</code></td>
+<td>Two limiters, <code>beffroi_code_attempts</code> and <code>beffroi_password_attempts</code>: five attempts per user in a sliding window of one minute</td>
+</tr>
+<tr>
+<td><code>framework</code></td>
+<td>Eight cache pools on <code>cache.app</code>: <code>beffroi.client_keys</code>, <code>beffroi.issuer_keys</code>, <code>beffroi.client_assertions</code>, <code>beffroi.issuer_assertions</code>, <code>beffroi.software_statements</code>, <code>beffroi.request_objects</code>, <code>beffroi.dpop</code> and <code>beffroi.load</code></td>
+</tr>
+<tr>
+<td><code>messenger</code></td>
+<td>The three buses, their middleware, the routing of every message, the serializer and the transports</td>
+</tr>
+<tr>
+<td><code>scheduler</code></td>
+<td><code>use_messenger_routing: true</code>, so that the recurring messages of the provider are routed by their class like every other message</td>
+</tr>
+</tbody>
+</table>
+<p><a href="../persistence/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Persistence</a> &nbsp; <a href="../messenger/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Messenger</a></p>
+<h2 id="what-the-application-writes">What the application writes<a class="headerlink" href="#what-the-application-writes" title="Link to this section">&para;</a></h2>
+<h3 id="the-key-management-client">The key management client<a class="headerlink" href="#the-key-management-client" title="Link to this section">&para;</a></h3>
+<p>The bundle seals with a client it does not build. The client is declared under <code>key_management.clients</code>,
+and the bundle names it:</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/key_management.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">key_management</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">op</span><span class="p">:</span><span class="w"> </span><span class="s">'service://beffroi.kms.op'</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nt">services</span><span class="p">:</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">beffroi.kms.op</span><span class="p">:</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Symfony\Component\KeyManagement\EncrypterInterface</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="nt">factory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'@key_management.factory'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'fromString'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">        </span><span class="nt">arguments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(BEFFROI_KMS_DSN)%'</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<p><a href="../key-management/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Key management</a></p>
+<h3 id="the-configuration-of-the-bundle">The configuration of the bundle<a class="headerlink" href="#the-configuration-of-the-bundle" title="Link to this section">&para;</a></h3>
+<p>Two sections are required: the tenant with its issuer, and the keys with the client that seals them and the
+master key they are sealed under. Every other section has a default, or is a feature the deployment does
+not serve until it names it.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">tenant</span><span class="p">:</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">issuer</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_ISSUER)%'</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">op</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KMS_KEY_ID)%'</span>
+</span></code></pre></div>
+<p>A <code>kms</code> that names no client of <code>key_management.clients</code> fails the build of the container, and the message
+lists the clients that are registered.</p>
+<p><a href="../configuration/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The configuration, section by section</a></p>
+<h3 id="the-routes">The routes<a class="headerlink" href="#the-routes" title="Link to this section">&para;</a></h3>
+<div class="language-yaml highlight"><span class="filename">config/routes/beffroi.yaml</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'@BeffroiBundle/config/routes.php'</span>
+</span></code></pre></div>
+<p>They are imported under the path of the issuer, which is no prefix at all for an issuer that is an origin.</p>
+<p><a href="../routes-and-planes/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Routes and planes</a></p>
+<h3 id="the-firewall">The firewall<a class="headerlink" href="#the-firewall" title="Link to this section">&para;</a></h3>
+<p>The application declares the user provider, the two firewalls of the provider and the authenticators on
+the second; the bundle declares none of it.</p>
+<p><a href="../security/#the-firewalls"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The firewalls</a></p>
+<h3 id="the-session">The session<a class="headerlink" href="#the-session" title="Link to this section">&para;</a></h3>
+<p>The pages bind a browser to its session through the HTTP session of the framework. The standalone
+application names and bounds that cookie this way:</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/framework.yaml</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">framework</span><span class="p">:</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">session</span><span class="p">:</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">'__Host-beffroi_session'</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">        </span><span class="nt">cookie_secure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span><span class="nt">cookie_httponly</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">        </span><span class="nt">cookie_samesite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lax</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">        </span><span class="nt">cookie_path</span><span class="p">:</span><span class="w"> </span><span class="s">'/'</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">        </span><span class="nt">cookie_domain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~</span>
+</span></code></pre></div>
+<p>The <code>__Host-</code> prefix has the browser refuse the cookie unless it is <code>Secure</code>, its path <code>/</code> and its domain
+unnamed, which the issuer of that application, an origin alone, allows. <code>lax</code> is the one value that cannot be
+tightened: a client sends the browser to the authorization endpoint by a top-level navigation from its own
+site, and <code>strict</code> would leave the cookie behind on it, so every authorization request would meet a provider
+that does not know the visitor. What <code>lax</code> does to a post from another site is answered by the provider
+itself.</p>
+<p><a href="../security/#a-post-from-another-site"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> A post from another site</a></p>
+<h3 id="what-several-processes-share">What several processes share<a class="headerlink" href="#what-several-processes-share" title="Link to this section">&para;</a></h3>
+<p>A provider is several processes, the ones that serve requests and the worker, and some of what they hold
+has to be the same for all of them.</p>
+<ul>
+<li><strong>The directory of the keys</strong>, <code>beffroi.keys.storage</code>: the worker rotates the keys the other processes
+  serve, so they read one directory.</li>
+<li><strong>The cache pools of the bundle</strong>, the keys published by clients and trusted issuers, the assertions,
+  statements, request objects and DPoP proofs already seen, and the counts of the load budgets: a
+  deployment of more than one machine points them at a store they share.</li>
+<li><strong>The counts of the two limiters</strong>, kept in the cache pool of the rate limiters.</li>
+</ul>
+<p>Messenger needs nothing more to start: every lane of the provider is the database unless the environment
+names a broker, and a worker consumes them.</p>
+<p><a href="../messenger/#the-worker"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The worker</a></p>
+<h2 id="the-first-run">The first run<a class="headerlink" href="#the-first-run" title="Link to this section">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>doctrine:migrations:migrate
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>bin/console<span class="w"> </span>beffroi:tenant:synchronize
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>MESSAGE-SEAL
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>bin/console<span class="w"> </span>beffroi:keys:generate
+</span></code></pre></div>
+<ol>
+<li><strong>The schema.</strong> The migrations of the bundle are played with those of the application.</li>
+<li><strong>The row of the tenant.</strong> The tenant is declared in the configuration and the command writes the row
+   that says the same thing. Until it exists, a request fails rather than being served, and a command that
+   works on the tenant stops and says to run this one first.</li>
+<li><strong>The key messages are sealed to.</strong> Every message the provider writes to a transport is sealed to a key
+   of the tenant, and a key that is drawn announces itself on a transport: this key comes first, or the
+   next command stops on <code>Tenant "default" holds no MESSAGE-SEAL key: it is the first key a tenant is given,
+   and nothing it writes to a transport leaves the process before it exists.</code></li>
+<li><strong>A signing key</strong>, of the default algorithm when none is named.</li>
+</ol>
+<p>A key of any other algorithm the deployment serves is drawn the same way, under its name: <code>VAPID</code> for <a href="../web-push/">web
+push</a>, <code>SAML-SIGNING</code> for <a href="../../saml/identity-provider/">the identity provider of SAML</a>. Then
+comes a first person.</p>
+<p><a href="../../getting-started/tenant-and-keys/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The tenant and its keys</a></p>
+<h2 id="checking-the-result">Checking the result<a class="headerlink" href="#checking-the-result" title="Link to this section">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bin/console<span class="w"> </span>beffroi:doctor
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>bin/console<span class="w"> </span>beffroi:keys:list<span class="w"> </span>--check
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>bin/console<span class="w"> </span>debug:router
+</span></code></pre></div>
+<ul>
+<li><code>beffroi:doctor</code> reads and writes nothing, says whether the deployment holds together point by point, and
+  fails on a point it does not answer for, so a deployment pipeline can ask the same question.</li>
+<li><code>beffroi:keys:list --check</code> opens the keys in use, and the ones about to be, with the key management
+  service, and fails on one it cannot open or on one that has worked past its age with nothing staged
+  behind it.</li>
+<li><code>debug:router</code> lists the routes, those of the bundle under names that carry their plane.</li>
+</ul>
+<p>The discovery document is the last check: <code>&lt;issuer&gt;/.well-known/openid-configuration</code> answers once the routes
+are where the issuer says they are. Otherwise the first request that needs the endpoints fails with an
+exception naming where the document is served and where the issuer makes clients look for it.</p>
+<h2 id="changing-the-configuration-later">Changing the configuration later<a class="headerlink" href="#changing-the-configuration-later" title="Link to this section">&para;</a></h2>
+<p><strong>What the configuration says of the tenant is copied to its row.</strong> After a change of its name, its look,
+the claims its people may change or its <code>acr</code> vocabulary, <code>beffroi:tenant:synchronize</code> writes the row again;
+until it does, a request fails with an exception naming the field that disagrees. A changed issuer is
+refused: every token issued so far names the old one, and another issuer is another tenant, under another
+slug.</p>
+<p><strong>A migration that seals columns says what to restart.</strong> A process that booted before it reads those
+columns with the type they had, so the processes that serve requests and the ones that consume the buses are
+restarted once it has run. Such a migration also refuses to run on a table that holds rows, naming the
+table and the count, since there is nothing to put in a sealed column from a value in clear.</p>
 
 
 
@@ -4066,7 +4530,7 @@ serves two planes imports, and how to check the result.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
   </span>
 
     

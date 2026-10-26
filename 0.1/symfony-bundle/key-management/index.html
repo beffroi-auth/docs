@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The client the private keys are sealed with.">
+        <meta name="description" content="The client of symfony/key-management the bundle seals with, what it seals, the backends it runs against, and what moves when the client changes.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Key management">
-  <meta property="og:description" content="The client the private keys are sealed with.">
+  <meta property="og:description" content="The client of symfony/key-management the bundle seals with, what it seals, the backends it runs against, and what moves when the client changes.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -2980,14 +2980,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3015,14 +3007,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3052,14 +3036,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3087,14 +3063,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3124,14 +3092,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3155,6 +3115,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key management
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3169,16 +3147,95 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#naming-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naming the client
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-seals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it seals
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-backends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The backends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opening-a-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opening a key
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-the-service-does-not-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When the service does not answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moving-to-another-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Moving to another client
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3205,14 +3262,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3270,14 +3319,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3334,14 +3375,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3370,14 +3403,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3405,14 +3430,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3812,14 +3829,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4017,6 +4026,80 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#naming-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naming the client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-seals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it seals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-backends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The backends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opening-a-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opening a key
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-the-service-does-not-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When the service does not answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moving-to-another-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Moving to another client
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4041,10 +4124,185 @@
 
 
 <h1 id="key-management">Key management<a class="headerlink" href="#key-management" title="Link to this section">&para;</a></h1>
-<p>The bundle seals private keys with a client of <code>symfony/key-management</code>, named in the configuration and
-declared where that component is configured. Which provider it talks to, and whether there are several, is a
-decision of the deployment and not of the bundle.</p>
-<p>This page will describe the clients available, what each one needs, and how to move from one to another.</p>
+<p>The bundle seals the private keys of the tenant, its data keys and the secrets it holds for people with a
+client of <code>symfony/key-management</code>, which the application declares and the bundle names. Which provider stands
+behind that client, and whether there are several, is a decision of the deployment and not of the bundle.
+The key management service keeps the master keys and never signs: a private key is opened in the process
+that uses it, and what is sealed never reaches the service, only the data key it is sealed with, to be
+wrapped or opened.</p>
+<h2 id="naming-the-client">Naming the client<a class="headerlink" href="#naming-the-client" title="Link to this section">&para;</a></h2>
+<div class="language-yaml highlight"><span class="filename">config/packages/key_management.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">key_management</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">op</span><span class="p">:</span><span class="w"> </span><span class="s">'service://beffroi.kms.op'</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nt">services</span><span class="p">:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">beffroi.kms.op</span><span class="p">:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Symfony\Component\KeyManagement\EncrypterInterface</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nt">factory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'@key_management.factory'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'fromString'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nt">arguments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(BEFFROI_KMS_DSN)%'</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">op</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KMS_KEY_ID)%'</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/var/keys'</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kms</code></td>
+<td>required</td>
+<td>The name of the client under <code>key_management.clients</code></td>
+</tr>
+<tr>
+<td><code>key_id</code></td>
+<td>required</td>
+<td>The master key of that client the keys of the tenant are sealed under, in the terms of the backend: the name of a sodium key, a Transit key of Vault, an alias or an ARN of AWS. <code>{tenant}</code> stands for the slug of the tenant, which gives every tenant a master key of its own</td>
+</tr>
+<tr>
+<td><code>storage</code></td>
+<td><code>%kernel.project_dir%/var/keys</code></td>
+<td>The directory of the sealed keys and of the pairwise salt</td>
+</tr>
+</tbody>
+</table>
+<p>The rest of <code>beffroi.keys</code>, how long the JWK Set is cached, how long a new key is staged and how long a key
+works, is on <a href="../configuration/">the configuration</a>, and what it does to a rotation on <a href="../console-commands/#rotating-a-key">the console
+commands</a>.</p>
+<p><strong>The DSN reaches the client through a service.</strong> The <code>dsn</code> of a client is validated when the container is
+built and takes no environment variable, while the DSN of a deployment comes from its environment and may
+carry a credential. So the client is built from the environment by the factory of the component and named
+with <code>service://</code>, which is what the standalone application and the suite of the bundle both do.</p>
+<p><strong>A name nothing answers to fails the build of the container</strong>, and says which names would have answered:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>The KMS client "vault" named by the "beffroi.keys.kms" configuration is not registered in "key_management.clients": the registered ones are "op", "second".
+</span></code></pre></div>
+<p><strong>A client may be made of several providers.</strong> Declared under <code>key_management.clients</code> with its <code>members</code>,
+each with the master key it wraps under or <code>~</code> for the one each call names, a composite client wraps what it
+seals under every member and reads it back through the first that answers, so losing one provider loses
+nothing. A member listed under <code>retired</code> is read and never written to.</p>
+<h2 id="what-it-seals">What it seals<a class="headerlink" href="#what-it-seals" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where it lives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The keys of the tenant, the ones that sign, the ones clients encrypt to, and the ones it keeps rather than publishing: the key messages are sealed to, the application server key of web push and the SAML keys</td>
+<td>One file per key, <code>&lt;storage&gt;/&lt;slug&gt;/&lt;kid&gt;.json</code>: the public half in the clear, the private half sealed. The directory is created <code>0700</code> and every file <code>0600</code></td>
+</tr>
+<tr>
+<td>The pairwise salt of the tenant (OIDC Core §8.1), drawn at its first use and never again</td>
+<td><code>&lt;storage&gt;/&lt;slug&gt;/pairwise.salt</code>, sealed</td>
+</tr>
+<tr>
+<td>The data keys of the sealed columns, one per tenant and per family of columns</td>
+<td>Rows of <code>beffroi_data_key</code>, wrapped by the master key of the tenant; each row names the client and the master key that wrapped it</td>
+</tr>
+<tr>
+<td>The secrets held for people: the secret of an authenticator application, the identifier and token of a backchannel request whose client is called back, the person a self-contained access token is about, an enrolment of an authenticator application in progress</td>
+<td>Envelopes, in their column, in the token, or in the HTTP session of the browser</td>
+</tr>
+</tbody>
+</table>
+<p>Every envelope is bound to its tenant and to its use: sealed for one tenant it does not open for another, and a
+sealed key does not open as a secret. Every process of a deployment reads the same storage directory: the
+worker rotates the keys the processes that serve requests open.</p>
+<p><a href="../../core/keys/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Keys</a> &nbsp; <a href="../../core/personal-data/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Personal data</a></p>
+<h2 id="the-backends">The backends<a class="headerlink" href="#the-backends" title="Link to this section">&para;</a></h2>
+<p>The DSN is the only thing that changes between two backends: the code and the envelope are the same. The
+suite of the bundle runs whole on a sodium key written in its DSN, and its tests of custody, the sealed keys,
+the secrets of an authenticator application and the search of a dump of the database, run again on a key file.
+The custody tests of Vault Transit and of AWS KMS run where the suite is pointed at one, which the development
+stack of the project does, AWS through LocalStack, and are skipped otherwise.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="sodium-in-the-environment" name="__tabbed_1" type="radio" /><input id="sodium-in-a-file" name="__tabbed_1" type="radio" /><input id="hashicorp-vault-transit" name="__tabbed_1" type="radio" /><input id="aws-kms" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="sodium-in-the-environment">Sodium, in the environment</label><label for="sodium-in-a-file">Sodium, in a file</label><label for="hashicorp-vault-transit">HashiCorp Vault Transit</label><label for="aws-kms">AWS KMS</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>A sodium key written in the DSN itself, which is the default of a development machine.</p>
+<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>BEFFROI_KMS_DSN="sodium://?keys[signing]=&lt;32 bytes, base64url&gt;"
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>BEFFROI_KMS_KEY_ID="signing"
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>The same sodium key read from a file of its own, mode <code>0600</code>, outside the web root and outside the
+storage of the sealed keys: what a self-hosted deployment without a key management service uses. It holds
+against a copy of the sealed keys, not against a compromise of the host.</p>
+<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>BEFFROI_KMS_DSN="sodium+dir:///app/var/kms?ext=.key"
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>A Transit key per tenant, and a token minted under a policy that allows data keys and decryption under
+those keys, their configuration and nothing else. The client is <code>symfony/hashicorp-vault-key-management</code>.
+The DSN below is the one of the Vault of the development stack, which answers in plain HTTP.</p>
+<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>BEFFROI_KMS_DSN="hashicorp-vault-transit://&lt;token&gt;@vault:8200?scheme=http"
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>An alias per tenant, and the credentials of the provider chain of the SDK. The client is
+<code>symfony/aws-key-management</code>.</p>
+<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>BEFFROI_KMS_DSN="aws-kms://default?region=&lt;region&gt;"
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>BEFFROI_KMS_KEY_ID="alias/beffroi-{tenant}"
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="opening-a-key">Opening a key<a class="headerlink" href="#opening-a-key" title="Link to this section">&para;</a></h2>
+<p>A process opens a key once, the first time it needs it, and keeps it open for as long as it lives, by tenant
+and by <code>kid</code>; a key that retires is forgotten. Served by FrankenPHP in worker mode, as the standalone
+application is, a process pays one opening per key for all the signatures it makes; a process rebuilt at each
+request pays one at each request. The sealed columns follow the same rule with their data keys, one opening
+per data key and per process.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bin/console<span class="w"> </span>beffroi:keys:list<span class="w"> </span>--check
+</span></code></pre></div>
+<p>Opens the keys in use and the ones about to be, and fails on a key the service cannot open: a key the provider
+cannot open is an outage at the first token request, so this is worth a run in a deployment pipeline.</p>
+<h2 id="when-the-service-does-not-answer">When the service does not answer<a class="headerlink" href="#when-the-service-does-not-answer" title="Link to this section">&para;</a></h2>
+<p>A key management service that does not answer, or whose backend refuses, is an outage and not an error of the
+request. Wherever it stands on the path of a request, the first opening of a signing key on a process that has
+not signed yet, the secret of an authenticator application at the code page, the enrolment of one, the request
+is answered <code>503 Service Unavailable</code> with <code>Retry-After: 10</code>, the same request being served once the service is
+back. Nothing was refused to the person and nothing was counted: a pending login keeps waiting for the same
+code. The outage is announced to the journal with the words of the service, and nothing of what was being
+opened.</p>
+<p>An envelope the service refuses to open, tampered with, sealed for another tenant or another use, or wrapped
+under a master key the service does not know when it opens it, is not an outage: it is an error, and no
+retry changes it.</p>
+<h2 id="moving-to-another-client">Moving to another client<a class="headerlink" href="#moving-to-another-client" title="Link to this section">&para;</a></h2>
+<p><strong>The data keys move without a single sealed value being read.</strong> Both clients are declared at once, and the
+data keys of the tenant are wrapped again by the new one:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second<span class="w"> </span>--dry-run
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second
+</span></code></pre></div>
+<p>The master key is the one <code>beffroi.keys.key_id</code> gives the tenant, resolved and never typed, so the new client
+holds a key under the same identifier. Every row names the client that wraps it, so the columns read through
+the rewrap and after it. A data key minted later, at the rotation of a family or at the first write of a new
+one, is wrapped by the client <code>beffroi.keys.kms</code> names, so the move ends by naming the new client there. The
+standalone application declares its second client for this, <code>second</code>, from <code>BEFFROI_KMS_DSN_SECOND</code>, which
+stays empty, and its client never built, on a deployment that moves nothing.</p>
+<p><strong>The keys of the tenant move by rotation.</strong> An envelope sealed by one client does not open with another, so
+once <code>beffroi.keys.kms</code> names the new client, every algorithm the tenant holds gets a new key sealed by it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate<span class="w"> </span>--now<span class="w"> </span>--algorithm<span class="o">=</span>RS256
+</span></code></pre></div>
+<p>The key it replaces retires with its window, its public half still verifying what it signed; nothing is
+deleted. <code>beffroi:keys:list --check</code> names the algorithms whose keys the client cannot open.</p>
+<p><strong>The pairwise salt and the secrets held for people have no command that moves them.</strong> They are opened
+through the client <code>beffroi.keys.kms</code> names, so they open only for as long as that client is the one that
+sealed them.</p>
+<p><a href="../console-commands/#data-keys"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The commands, in full</a></p>
 
 
 
@@ -4065,7 +4323,7 @@ decision of the deployment and not of the bundle.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
   </span>
 
     

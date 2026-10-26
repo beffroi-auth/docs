@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Which writes are asynchronous, and which the protocol waits for.">
+        <meta name="description" content="Which writes leave the request, the buses and lanes the bundle prepends, the worker, the timed steps, and the seal on every message.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Messenger">
-  <meta property="og:description" content="Which writes are asynchronous, and which the protocol waits for.">
+  <meta property="og:description" content="Which writes leave the request, the buses and lanes the bundle prepends, the worker, the timed steps, and the seal on every message.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -2980,14 +2980,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3015,14 +3007,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3052,14 +3036,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3087,14 +3063,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3124,14 +3092,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3160,14 +3120,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3195,14 +3147,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3255,6 +3199,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messenger
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3269,16 +3231,95 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-leaves-the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What leaves the request
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-contract-the-bundle-prepends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The contract the bundle prepends
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-application-writes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the application writes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The worker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-time-does-on-its-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What time does on its own
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-leaves-the-process-is-sealed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What leaves the process is sealed
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3334,14 +3375,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3370,14 +3403,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3405,14 +3430,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3812,14 +3829,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4017,6 +4026,80 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-leaves-the-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What leaves the request
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-contract-the-bundle-prepends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The contract the bundle prepends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-application-writes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the application writes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The worker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-time-does-on-its-own" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What time does on its own
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-leaves-the-process-is-sealed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What leaves the process is sealed
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4041,29 +4124,298 @@
 
 
 <h1 id="messenger">Messenger<a class="headerlink" href="#messenger" title="Link to this section">&para;</a></h1>
-<p>No write is synchronous unless the protocol needs its result in the same request, and every exception is
-listed in the Messenger configuration with the reason it is one. Messages are commands, queries, events or
-explicitly synchronous messages, and a handler calls a use case rather than holding logic of its own.</p>
-<p><strong>The buses, their middleware and where each kind of message is sent are a contract the bundle prepends</strong>
-to the Messenger configuration of the application, not a preference of whoever installs it: an
-installation that wires them itself and turns the default middleware off, or gets the Doctrine transaction
-middleware wrong, breaks the asynchronous half of the provider quietly. What is left to an application is
-its transports, and the lanes fall back to the database, so a new installation needs no broker to work.</p>
-<p><strong>The body of every message leaves the process sealed.</strong> What a column seals, a queue may not carry in
-clear: a message is sealed as a JWE towards the encryption key of the tenant, so what a broker, the table
-of a transport or the failure transport holds is worth nothing without the key management service. The
-sender holds the public half only and asks the key management service for nothing; the consumer unseals
-the private half once per process. That key is a key of the tenant like the others, rotated and rewrapped
-like them, and it is never published in the JWK Set: a key at the JWK Set is a key any reader of the
-discovery document could seal a body under.</p>
-<p>The transport headers carry the tenant, so a consumer knows which key to ask for before it touches the
-body and a failed message can be read without being opened. What decides is the protected header of the
-JWE, which is the authenticated data: a header swapped in transit makes the unsealing fail rather than
-succeed under another scope.</p>
-<p><strong>What time does on its own is one recurring message per step</strong>, handled on the command bus like every
-other write, so a deployment that runs the worker runs them.</p>
-<p>This page will describe the transports, the queues, what runs where, and what happens when the broker is
-down.</p>
+<p>What the protocol or the page needs in the same request, a code or a token issued, a session opened, a
+credential dated by the login that used it, a passkey renamed, is written by the use case in that request. The
+rest travels on a lane and a worker carries it out: the acts of the journal, the enrichment of where a request
+came from, the revocations that follow the end of a session, the calls to clients and push services. No
+message of the bundle travels on the synchronous transport. The buses, their middleware, where each message
+goes and how it is written are a contract the bundle prepends; what an application owns is its transports.</p>
+<h2 id="what-leaves-the-request">What leaves the request<a class="headerlink" href="#what-leaves-the-request" title="Link to this section">&para;</a></h2>
+<p>Every message of the bundle implements one marker, every event of the packages one interface, and that is
+what decides where it goes.</p>
+<table>
+<thead>
+<tr>
+<th>Marker</th>
+<th>Routed to</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Beffroi\Bundle\Message\Command</code></td>
+<td><code>async_priority_medium</code></td>
+<td>A write whose result the request does not need</td>
+</tr>
+<tr>
+<td><code>Beffroi\Bundle\Message\Event</code>, and every event of the core, of OpenID Connect and of SAML</td>
+<td><code>async_priority_low</code></td>
+<td>Something that happened. The events of the packages are routed by the interface they all implement, so an event added to one of them leaves the process without a line of configuration</td>
+</tr>
+<tr>
+<td><code>Beffroi\Bundle\Message\Notification</code></td>
+<td><code>async_notifications</code></td>
+<td>Something the provider carries to a third party it does not own</td>
+</tr>
+<tr>
+<td><code>Beffroi\Bundle\Message\Query</code></td>
+<td><code>sync</code></td>
+<td>A read</td>
+</tr>
+<tr>
+<td><code>Beffroi\Bundle\Message\SyncMessage</code></td>
+<td><code>sync</code></td>
+<td>A write the protocol needs the result of before it answers</td>
+</tr>
+</tbody>
+</table>
+<p>No message of the bundle implements <code>Query</code> or <code>SyncMessage</code>. A class implements one marker and never two:
+Messenger sends a message to every transport its class, its parents and its interfaces are routed to, so a
+message with two markers would be handled twice. The core announces its events in PSR-14, and its dispatcher
+puts each one on <code>event.bus</code>, once the handler in progress has committed when one is raised inside a handler:
+the lane carries it to a worker, and nothing listens to an event in the process that raised it.</p>
+<p>What the lanes carry out:</p>
+<table>
+<thead>
+<tr>
+<th>On</th>
+<th>What is done there</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>async_priority_low</code></td>
+<td>Every act written to the journal; where a session was seen from, enriched; the tokens of an ended session revoked, and again for a refresh that was in flight; the clients of an ended session handed a logout token to carry; the date a client was last used; what a client was given of a person; the archive a person asked for, built; the part of a SAML service provider in a session, recorded; the client of an answered backchannel request handed its notification to carry</td>
+</tr>
+<tr>
+<td><code>async_priority_medium</code></td>
+<td>A password that just signed somebody in, looked up in a list of compromised passwords; the language a person chose, written on their account; and every step of <a href="#what-time-does-on-its-own">the schedule</a></td>
+</tr>
+<tr>
+<td><code>async_notifications</code></td>
+<td>A logout token posted to a client (Back-Channel Logout 1.0 §2.5), a backchannel request whose client is told it was answered (CIBA Core §10.2), a person told that a request waits for them, through the channels the deployment wires, <a href="../web-push/">web push</a> among them</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-contract-the-bundle-prepends">The contract the bundle prepends<a class="headerlink" href="#the-contract-the-bundle-prepends" title="Link to this section">&para;</a></h2>
+<p><strong>The buses.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bus</th>
+<th>Middleware</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>command.bus</code>, the default bus</td>
+<td>The default middleware of Messenger, then <code>router_context</code>, <code>doctrine_ping_connection</code>, <code>doctrine_close_connection</code> and <code>doctrine_transaction</code></td>
+</tr>
+<tr>
+<td><code>event.bus</code></td>
+<td>The default middleware, with <code>allow_no_handlers</code>: an event nothing listens to is announced all the same</td>
+</tr>
+<tr>
+<td><code>query.bus</code></td>
+<td>The default middleware</td>
+</tr>
+</tbody>
+</table>
+<p><code>doctrine_transaction</code> makes a handler one unit of work, and the default middleware, which no bus turns off,
+is what has an event announced from a handler leave once that handler has committed. <code>router_context</code> gives
+a worker the context of the request that dispatched the message, so that a URL built there is an absolute URL
+of the issuer, and the two connection middleware are what let a worker run for days. This is why the bundle
+writes the buses and an application does not: one that wired them itself and got either of the first two
+wrong would break the asynchronous half of the provider, and nothing in a browser would show it.</p>
+<p><strong>The transports.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Transport</th>
+<th>DSN</th>
+<th>Tried again</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sync</code></td>
+<td><code>sync://</code></td>
+<td>Not at all</td>
+</tr>
+<tr>
+<td><code>async_priority_high</code>, <code>async_priority_medium</code>, <code>async_priority_low</code></td>
+<td><code>%env(BEFFROI_MESSENGER_DSN)%</code>, <code>doctrine://default</code> when the variable is not set</td>
+<td>Four times, one second before the first, each wait four times the one before, thirty seconds at most</td>
+</tr>
+<tr>
+<td><code>async_notifications</code></td>
+<td>The same</td>
+<td>On the schedule of <code>Beffroi\Bundle\Messenger\NotificationRetryPolicy</code>, which <code>beffroi.back_channel_logout</code> sets: by default two seconds before the first, each wait three times the one before, sixty seconds at most, the waits exact</td>
+</tr>
+<tr>
+<td><code>failed</code>, the failure transport</td>
+<td><code>doctrine://default?queue_name=failed</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The failure transport is the database whatever the lanes are on, a failure transport kept on the broker that
+failed being one nobody reads. The contract routes no message to <code>async_priority_high</code>.</p>
+<p><strong>The serializer.</strong> <code>beffroi.messenger.serializer</code> is the default serializer of every transport, the failure
+transport included: what it writes is the subject of <a href="#what-leaves-the-process-is-sealed">the last section</a>.</p>
+<h2 id="what-the-application-writes">What the application writes<a class="headerlink" href="#what-the-application-writes" title="Link to this section">&para;</a></h2>
+<p><strong>Nothing, to start.</strong> Every lane is the database, through the default connection, and a provider runs with
+no broker. <code>BEFFROI_MESSENGER_DSN</code> moves every lane to one DSN at once.</p>
+<p><strong>Its transports, to put lanes on a broker.</strong> A transport the application declares under the name of a lane
+keeps the application's settings, the prepended configuration being merged first. The standalone application
+runs RabbitMQ and binds each lane to a queue of its own on one exchange, which is the part of a transport only
+a deployment knows:</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/messenger.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">messenger</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">transports</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">async_priority_high</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MESSENGER_TRANSPORT_DSN)%'</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">                </span><span class="nt">exchange</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">beffroi_messages</span><span class="p p-Indicator">,</span><span class="nt"> type</span><span class="p">:</span><span class="w"> </span><span class="nv">direct</span><span class="p p-Indicator">,</span><span class="nt"> default_publish_routing_key</span><span class="p">:</span><span class="w"> </span><span class="nv">high</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">                </span><span class="nt">queues</span><span class="p">:</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">                    </span><span class="nt">beffroi_messages_high</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> binding_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">high</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nt">async_priority_medium</span><span class="p">:</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">            </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MESSENGER_TRANSPORT_DSN)%'</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">                </span><span class="nt">exchange</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">beffroi_messages</span><span class="p p-Indicator">,</span><span class="nt"> type</span><span class="p">:</span><span class="w"> </span><span class="nv">direct</span><span class="p p-Indicator">,</span><span class="nt"> default_publish_routing_key</span><span class="p">:</span><span class="w"> </span><span class="nv">medium</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">                </span><span class="nt">queues</span><span class="p">:</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">                    </span><span class="nt">beffroi_messages_medium</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> binding_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">medium</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="nt">async_priority_low</span><span class="p">:</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">            </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MESSENGER_TRANSPORT_DSN)%'</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">                </span><span class="nt">exchange</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">beffroi_messages</span><span class="p p-Indicator">,</span><span class="nt"> type</span><span class="p">:</span><span class="w"> </span><span class="nv">direct</span><span class="p p-Indicator">,</span><span class="nt"> default_publish_routing_key</span><span class="p">:</span><span class="w"> </span><span class="nv">low</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">                </span><span class="nt">queues</span><span class="p">:</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">                    </span><span class="nt">beffroi_messages_low</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> binding_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">low</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">        </span><span class="nt">async_notifications</span><span class="p">:</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">            </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MESSENGER_TRANSPORT_DSN)%'</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">            </span><span class="nt">options</span><span class="p">:</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">                </span><span class="nt">exchange</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">beffroi_messages</span><span class="p p-Indicator">,</span><span class="nt"> type</span><span class="p">:</span><span class="w"> </span><span class="nv">direct</span><span class="p p-Indicator">,</span><span class="nt"> default_publish_routing_key</span><span class="p">:</span><span class="w"> </span><span class="nv">notifications</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">                </span><span class="nt">queues</span><span class="p">:</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">                    </span><span class="nt">beffroi_messages_notifications</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> binding_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">notifications</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span></code></pre></div>
+<p>The block is under <code>messenger</code> and not <code>framework.messenger</code>: in Symfony 8.2 the component has an extension
+of its own, and a block written under <code>framework</code> does not override what the bundle prepends to
+<code>messenger</code>. The standalone application sets every lane to <code>sync://</code> in its test environment, where the
+writes are played inside the request.</p>
+<div class="admonition warning">
+<p class="admonition-title">The notifications keep the retry policy of the bundle</p>
+<p>The schedule of the lane is the one <code>beffroi.back_channel_logout</code> sets: <code>retries</code>, six by default,
+<code>retry_delay</code>, two seconds, <code>retry_multiplier</code>, three, and <code>retry_max_delay</code>, sixty seconds, with the
+<code>timeout</code> of one send, five seconds. These numbers make the budget a logout token is written for: with the
+defaults, waits of 2, 6, 18, 54, 60 and 60 seconds before the six retries, two hundred seconds in all, and
+five seconds for each of the seven sends they count. That budget is the <code>exp</code> of the token, and the key
+that signed it stays in the JWK Set at least that long once it retires. It bounds the token and not the
+sending: a client still out of reach when the budget has run out may be sent the token again,
+<code>retry_max_delay</code> seconds apart, and what it receives then is past its <code>exp</code>.</p>
+<p>A deployment that routes the notifications to a lane of its own, or names another retry service on
+<code>async_notifications</code>, keeps a provider that works and two figures that no longer agree: a client reached
+on a late retry refuses a token it can no longer verify, and the person stays signed in there.
+<code>beffroi:doctor</code> says so. Writing the four numbers of a retry strategy on the lane of the bundle changes
+nothing: the service the bundle prepends survives the merge, and the component prefers a service to its
+numbers.</p>
+</div>
+<h2 id="the-worker">The worker<a class="headerlink" href="#the-worker" title="Link to this section">&para;</a></h2>
+<p>The standalone application runs one worker, which consumes the schedule and then the lanes, the
+notifications first so that a relying party learns of a logout without waiting behind a batch of
+enrichments:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>messenger:consume<span class="w"> </span>scheduler_beffroi<span class="w"> </span>async_notifications<span class="w"> </span>async_priority_high<span class="w"> </span>async_priority_medium<span class="w"> </span>async_priority_low<span class="w"> </span>--time-limit<span class="o">=</span><span class="m">3600</span><span class="w"> </span>--memory-limit<span class="o">=</span>256M
+</span></code></pre></div>
+<p>One process at a time consumes <code>scheduler_beffroi</code>: the steps of the schedule are idempotent, not
+concurrent. The lanes may have more consumers than one. A worker asks the key management service once per key
+it opens and keeps the key for as long as it lives, which is what keeps the service off the path of every
+message.</p>
+<h2 id="what-time-does-on-its-own">What time does on its own<a class="headerlink" href="#what-time-does-on-its-own" title="Link to this section">&para;</a></h2>
+<p>The schedule of the bundle, <code>beffroi</code>, is one recurring message per step. Its transport is
+<code>scheduler_beffroi</code>, and the bundle prepends <code>use_messenger_routing: true</code> to the scheduler, so each message is
+routed by its class like every other: the worker that holds the clock only says when, and the step is handled
+on <code>async_priority_medium</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Every</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AdvanceKeyLifecycle</code></td>
+<td>Minute</td>
+<td>Stages a successor for every key past its age, activates every staged key whose delay has elapsed, retires every key past its retirement date</td>
+</tr>
+<tr>
+<td><code>ForgetTheRecordsThatAreDead</code></td>
+<td>Hour</td>
+<td>Drops the rows of the protocol that nothing alive needs any more</td>
+</tr>
+<tr>
+<td><code>ForgetTheExpiredArchives</code></td>
+<td>Hour</td>
+<td>Forgets the archives of persons past their week</td>
+</tr>
+<tr>
+<td><code>RemoveUnusedClients</code></td>
+<td>Hour</td>
+<td>Deletes the clients that registered themselves and nobody uses</td>
+</tr>
+<tr>
+<td><code>RefreshTheSamlMetadata</code></td>
+<td>Hour</td>
+<td>Reads again the metadata of the SAML peers of both roles</td>
+</tr>
+<tr>
+<td><code>ForgetTheActsPastTheirRetention</code></td>
+<td>Day</td>
+<td>Forgets the acts of the journal past its retention, and the disclosures with them</td>
+</tr>
+<tr>
+<td><code>ForgetTheChangesPastTheirRetention</code></td>
+<td>Day</td>
+<td>Forgets the changes of claims past their retention</td>
+</tr>
+<tr>
+<td><code>RefreshTheAddressDatabases</code></td>
+<td>Week</td>
+<td>Downloads the databases of addresses again, for a deployment that names a licence key</td>
+</tr>
+</tbody>
+</table>
+<p>A deployment whose worker does not consume the schedule rotates nothing on its own, and <code>beffroi:keys:list
+--check</code> fails on the first key that works past its age with nothing staged behind it, naming the transport
+to consume.</p>
+<p><a href="../console-commands/#rotating-a-key"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The rotation of a key</a></p>
+<h2 id="what-leaves-the-process-is-sealed">What leaves the process is sealed<a class="headerlink" href="#what-leaves-the-process-is-sealed" title="Link to this section">&para;</a></h2>
+<p>What a column seals, a queue does not carry in the clear. <strong>The body of every message is a compact JWE</strong>,
+sealed to the key the tenant keeps for it, <code>MESSAGE-SEAL</code>, under <code>ECDH-ES+A256KW</code> and <code>A256GCM</code>: what a broker
+keeps on its disk, what the table of a transport holds and what waits in the failure transport is worth
+nothing without the key management service.</p>
+<ul>
+<li><strong>The sender asks the key management service for nothing.</strong> It seals to the public half of the newest key
+  of that algorithm in service, a staged one included, so the event that announces the first key of a tenant
+  is sealed to that key.</li>
+<li><strong>The consumer opens the key the body names</strong>, by its <code>kid</code>, once per process. A body sealed to a key that
+  has retired since does not open, which bounds how long a message may wait in a queue.</li>
+<li><strong>The key is never published in the JWK Set</strong>: a key published there would let any reader of the discovery
+  document seal a body the provider opens. It rotates like every other key of the tenant.</li>
+<li><strong>A tenant that holds no such key writes no message at all</strong>, rather than one in the clear, which is why it
+  is the first key a tenant is given.</li>
+</ul>
+<p><strong>The headers of the transport say what the message is without opening it</strong>: <code>type</code>, the class of the
+message, and one <code>X-Message-Stamp-</code> header per class of stamp, among them the slug of the tenant the message
+was written for. So <code>messenger:failed:show</code> names, dates and explains a failed message without its body
+being opened, and nothing of a person is in any of them. What decides is not a header: the protected header
+of the JWE names the tenant as well, and being the authenticated data of the body, a header swapped on a
+transport makes the opening fail rather than succeed somewhere else.</p>
+<p><strong>A body that does not open is a failure of that message</strong>, which goes to the failure transport with the
+headers it arrived with: a body that is not a JWE, a message written for another tenant than the one the
+process serves, a key that has retired, a body that opens as another class than its header names. A key
+management service that does not answer is a failure of the process and not of the message, and is not turned
+into a failed message nobody would replay.</p>
 
 
 
@@ -4084,7 +4436,7 @@ down.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 08:02:24 UTC">October 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
   </span>
 
     

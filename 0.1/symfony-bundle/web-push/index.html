@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Reaching a person on a browser they signed in with, RFC 8030.">
+        <meta name="description" content="Reaching a person through the push service of a browser they signed in with (RFC 8030), what a notification carries, and what becomes of it.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Web push">
-  <meta property="og:description" content="Reaching a person on a browser they signed in with, RFC 8030.">
+  <meta property="og:description" content="Reaching a person through the push service of a browser they signed in with (RFC 8030), what a notification carries, and what becomes of it.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -2980,14 +2980,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3015,14 +3007,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3052,14 +3036,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3087,14 +3063,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3124,14 +3092,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3160,14 +3120,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3195,14 +3147,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3260,14 +3204,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3319,6 +3255,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web push
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3333,16 +3287,95 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#turning-it-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Turning it on
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-application-server-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The application server key
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The subscription
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-notification-carries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a notification carries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-comes-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What comes back
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-deployment-allows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the deployment allows
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3369,14 +3402,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3405,14 +3430,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3812,14 +3829,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4017,6 +4026,80 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#turning-it-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Turning it on
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-application-server-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The application server key
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The subscription
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-notification-carries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a notification carries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-comes-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What comes back
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-deployment-allows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the deployment allows
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4041,11 +4124,147 @@
 
 
 <h1 id="web-push">Web push<a class="headerlink" href="#web-push" title="Link to this section">&para;</a></h1>
-<p>A deployment that names a push subject lets the tenant draw an application server key and reach a person
-through the push service of a browser they signed in with, which is how a decoupled request can be confirmed
-without a second application. Nothing in a notification names the request it is about.</p>
-<p>This page will describe the subscription, the encryption, what a notification carries, and what a <code>410</code> from
-a push service does.</p>
+<p>A deployment that names a push subject reaches a person through the push service of a browser they signed in
+with (RFC 8030): the person subscribes that browser on a page of their account, and the provider pushes to it
+when a request waits for their answer. It is how a backchannel authentication request (CIBA Core §7) reaches
+the person it names without a second application. Nothing in a notification names the request it is about.</p>
+<h2 id="turning-it-on">Turning it on<a class="headerlink" href="#turning-it-on" title="Link to this section">&para;</a></h2>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">web_push</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">subject</span><span class="p">:</span><span class="w"> </span><span class="s">'mailto:operator@op.example.com'</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>subject</code></td>
+<td>none</td>
+<td>The <code>sub</code> of the token the provider signs for a push service (RFC 8292 §2.1): a <code>mailto:</code> or <code>https:</code> URI at which a push service can reach the operator of the deployment. Naming one is what turns web push on</td>
+</tr>
+<tr>
+<td><code>timeout</code></td>
+<td><code>3.0</code></td>
+<td>Seconds one push to one push service is given, connection included, so that a push service that hangs does not hold a worker</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Without a subject, nothing of it is wired.</strong> No push leaves the deployment, the tenant draws no
+application server key, and the page where a browser would subscribe says that the provider does not tell
+browsers. A key drawn before the subject was taken away is read by nothing until a subject is named again.</p>
+<h2 id="the-application-server-key">The application server key<a class="headerlink" href="#the-application-server-key" title="Link to this section">&para;</a></h2>
+<p>A browser subscribes under the public half of a key pair of the tenant, and its push service then takes only
+pushes signed by that key (RFC 8292 §4.2). The pair is drawn like every key of the tenant, under the name
+<code>VAPID</code>, ECDSA over P-256, and sealed by the <a href="../key-management/">key management service</a>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>VAPID
+</span></code></pre></div>
+<p>It is a key the tenant hands out rather than publishes: it is in no JWK Set, and the page of notifications
+hands its public half to the browser, as the uncompressed point of RFC 8292 §3.2 in base64url. A deployment
+that turns web push on and draws no key has no key to hand out, and the page says so in the same words.</p>
+<p><strong>A subscription is bound to the key it was made under</strong>, by its <code>kid</code>. A rotation moves the key a new
+browser subscribes under and never the key an old one is bound to: a subscription goes on being pushed to
+until its key retires, and is then worth nothing, a push service refusing what any other key signs.</p>
+<h2 id="the-subscription">The subscription<a class="headerlink" href="#the-subscription" title="Link to this section">&para;</a></h2>
+<p>The page is <code>/account/notifications</code>, one of <a href="../account/">the account pages</a>. It lists the browsers of the
+person that the provider can reach, each with the name its owner gave it, when it was added and when it was
+last pushed to, and it marks the browser reading the page when that browser is one of them.</p>
+<ol>
+<li>Opening the page registers the service worker of the bundle, <code>/push-worker.js</code>, served under the path the
+   routes are mounted at, so that its scope covers the pages it opens. It registers it each time, a browser
+   being able to lose its worker and keep its subscription.</li>
+<li>The button asks the person for permission, subscribes to the push service of their browser under the
+   application server key, and posts what the subscription carries to <code>POST /account/notifications</code>: the
+   endpoint, the <code>p256dh</code> key and the <code>auth</code> secret of the browser (RFC 8291 §3), and a name.</li>
+<li>The provider keeps it against the key the browser was handed. A browser that subscribes again hands back
+   the endpoint it already had, and that is the same browser: its row is what changes, and a row its owner had
+   taken out is in use again.</li>
+</ol>
+<p>The endpoint is taken as the browser gave it, and refused unless it is <code>https</code>; the two keys are refused
+unless they are base64url; a name longer than 255 characters is dropped. A browser is renamed at
+<code>POST /account/notifications/{id}/name</code> and taken out at <code>POST /account/notifications/{id}/revoke</code>, which keeps
+the row, marked revoked.</p>
+<p>The endpoint and the name are sealed in their columns, and a browser is recognised by the SHA-256 of its
+endpoint, which carries the unique constraint with the person.</p>
+<p><a href="../persistence/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Persistence</a></p>
+<h2 id="what-a-notification-carries">What a notification carries<a class="headerlink" href="#what-a-notification-carries" title="Link to this section">&para;</a></h2>
+<p>When a client makes a backchannel authentication request that names a person, the provider answers the
+client and puts the message that tells the person on the lane of notifications. The lane hands it to every
+channel the deployment wires; web push is the one the bundle ships, wired when a subject is named. A person
+who has subscribed no browser is told nothing, and finds the request where requests are answered.</p>
+<p>Every browser the person subscribed is pushed to, and each push carries three strings and nothing else, in
+the language the person reads:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it says</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>The name of the tenant</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>The name of the client and what it asks the person to approve, a sign-in or the binding message the client wrote when it wrote one, and that the answer is given in their account</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>The page of the account where waiting requests are answered, <code>/account/approvals</code></td>
+</tr>
+</tbody>
+</table>
+<p>No identifier of the request and no link that answers it: the notification says that something waits, and
+the person goes to a page of the provider they already know, where the request is found by who they are. The
+service worker shows the notification until it is dismissed, and a tap opens that page, or brings forward a
+window already on it.</p>
+<p>The payload is encrypted to the two keys the browser gave in <code>aes128gcm</code> (RFC 8291 §4), padded to 1024 octets
+before it is encrypted, so that a push service learns nothing of it, not even how long the binding message
+was. The request is signed by the application server key the subscription is bound to, with the subject as
+its <code>sub</code> (RFC 8292 §2.1). It is sent with <code>Urgency: high</code> (RFC 8030 §5.3), and a <code>TTL</code> that is the time left
+before the backchannel request expires (RFC 8030 §5.2), and never less than zero. The provider follows no
+redirection a push service answers with.</p>
+<h2 id="what-comes-back">What comes back<a class="headerlink" href="#what-comes-back" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>The push service answers</th>
+<th>What the provider does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>2xx</code></td>
+<td>The push was taken. The row records when this browser was last pushed to. What the push service does with it afterwards, the provider never learns</td>
+</tr>
+<tr>
+<td><code>404</code> or <code>410</code></td>
+<td>The subscription is gone (RFC 8030 §7.3). The row is taken out of use, revoked, and nothing is pushed to it again</td>
+</tr>
+<tr>
+<td>Anything else, or no answer within the timeout</td>
+<td>This attempt failed, the subscription is left as it is</td>
+</tr>
+</tbody>
+</table>
+<p>A subscription whose application server key has retired is treated as gone without asking the push service,
+which would refuse a request signed by any other key. When no browser of the person was reached and at least
+one push failed, the message goes back to the lane, which sends it again after the waits of its schedule; one
+browser reached is a person told, and the message is done.</p>
+<p><a href="../messenger/#the-contract-the-bundle-prepends"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The lane of notifications</a></p>
+<h2 id="what-the-deployment-allows">What the deployment allows<a class="headerlink" href="#what-the-deployment-allows" title="Link to this section">&para;</a></h2>
+<p>The scripts the page loads are served by the bundle from the origin of the provider, the page posts the
+subscription back to it, and the service worker is a script of that origin too. A deployment that writes its
+own <code>Content-Security-Policy</code> for the pages of the account allows them: the standalone application's names
+<code>'self'</code> in <code>script-src</code>, <code>connect-src</code>, <code>worker-src</code> and <code>form-action</code>.</p>
 
 
 
@@ -4066,7 +4285,7 @@ a push service does.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
   </span>
 
     

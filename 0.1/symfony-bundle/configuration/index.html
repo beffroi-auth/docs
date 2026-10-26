@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The tree under `beffroi`, section by section.">
+        <meta name="description" content="The tree under `beffroi`, section by section: what each one decides, when a deployment needs it, and what leaving it out means.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Configuration">
-  <meta property="og:description" content="The tree under `beffroi`, section by section.">
+  <meta property="og:description" content="The tree under `beffroi`, section by section: what each one decides, when a deployment needs it, and what leaving it out means.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -2980,14 +2980,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3011,6 +3003,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3025,16 +3035,282 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The sections
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-a-mistake-is-caught" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When a mistake is caught
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tenant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tenant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webauthn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        webauthn
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mutual_tls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mutual_tls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tokens
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#journal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        journal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geoip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        geoip
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#passwords" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        passwords
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        interaction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#back_channel_logout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        back_channel_logout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backchannel_authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        backchannel_authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web_push" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        web_push
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client_authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        client_authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#request_objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        request_objects
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dpop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dpop
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trusted_issuers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        trusted_issuers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        clients
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client_registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        client_registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#saml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        saml
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3061,14 +3337,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3098,14 +3366,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3133,14 +3393,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3170,14 +3422,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3205,14 +3449,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3270,14 +3506,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3334,14 +3562,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3370,14 +3590,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -3405,14 +3617,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -3812,14 +4016,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4017,6 +4213,267 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The sections
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-a-mistake-is-caught" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When a mistake is caught
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tenant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tenant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webauthn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        webauthn
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mutual_tls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mutual_tls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tokens
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#journal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        journal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geoip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        geoip
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#passwords" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        passwords
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        interaction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#back_channel_logout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        back_channel_logout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backchannel_authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        backchannel_authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web_push" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        web_push
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client_authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        client_authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#request_objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        request_objects
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dpop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dpop
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trusted_issuers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        trusted_issuers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        clients
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client_registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        client_registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#saml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        saml
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4041,11 +4498,450 @@
 
 
 <h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Link to this section">&para;</a></h1>
-<p>The configuration is one tree, built from a class per section, validated when the container is built rather
-than when a request arrives. A section a deployment leaves out is a feature it does not serve: a tenant with
-no <code>client_registration</code> has no registration endpoint, in its discovery document as on the wire.</p>
-<p>This page will describe each section and what it decides. The exhaustive tree is in
-<a href="../../reference/configuration/">the reference</a>.</p>
+<p>The bundle reads one tree under <code>beffroi</code>, and each key at its root is a section with a class of its own in
+the bundle. Two sections are required, <code>tenant</code> and <code>keys</code>. Every other one has defaults a provider runs on,
+and a capability whose section names nothing is either served with those defaults or not served at all: a
+tenant that names no registration <code>mode</code> has no registration endpoint, in its discovery document as on the
+wire. This page goes through the sections in the order of the tree; <a href="../../reference/configuration/">the reference</a>
+lists every option with its type, its default and its bounds.</p>
+<p>The smallest configuration names the issuer and the key management client the private keys are sealed with:</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tenant</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">issuer</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_ISSUER)%'</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KMS_KEY_ID)%'</span>
+</span></code></pre></div>
+<h2 id="the-sections">The sections<a class="headerlink" href="#the-sections" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>What it decides</th>
+<th>Left out</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#tenant"><code>tenant</code></a></td>
+<td>The issuer, the name and the look of the tenant, and its <code>acr</code> vocabulary</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><a href="#keys"><code>keys</code></a></td>
+<td>The client that seals the keys, where they are kept, and how they rotate</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><a href="#webauthn"><code>webauthn</code></a></td>
+<td>Where the FIDO metadata are kept</td>
+<td><code>var/webauthn</code> of the project</td>
+</tr>
+<tr>
+<td><a href="#mutual_tls"><code>mutual_tls</code></a></td>
+<td>The host that asks a client for its certificate</td>
+<td>No alias announced</td>
+</tr>
+<tr>
+<td><a href="#tokens"><code>tokens</code></a></td>
+<td>How long everything the provider issues stands</td>
+<td>The defaults, short</td>
+</tr>
+<tr>
+<td><a href="#load"><code>load</code></a></td>
+<td>The request budget of an address and of a client</td>
+<td>2400 and 1200 a minute</td>
+</tr>
+<tr>
+<td><a href="#journal"><code>journal</code></a></td>
+<td>How long an act is kept</td>
+<td>180 days</td>
+</tr>
+<tr>
+<td><a href="#history"><code>history</code></a></td>
+<td>How long a change of a claim is kept</td>
+<td>180 days</td>
+</tr>
+<tr>
+<td><a href="#geoip"><code>geoip</code></a></td>
+<td>The databases that place an address, and the key they are downloaded under</td>
+<td>An address, no place</td>
+</tr>
+<tr>
+<td><a href="#passwords"><code>passwords</code></a></td>
+<td>The list of compromised passwords a new one is compared with</td>
+<td>No list asked</td>
+</tr>
+<tr>
+<td><a href="#interaction"><code>interaction</code></a></td>
+<td>How the <code>login_hint</code> of an authorization request is read</td>
+<td>As a <code>sub</code></td>
+</tr>
+<tr>
+<td><a href="#back_channel_logout"><code>back_channel_logout</code></a></td>
+<td>How long a notification to a third party is tried</td>
+<td>Six retries, 235 seconds in all</td>
+</tr>
+<tr>
+<td><a href="#backchannel_authentication"><code>backchannel_authentication</code></a></td>
+<td>How the <code>login_hint</code> of a backchannel request is read</td>
+<td>As a <code>sub</code></td>
+</tr>
+<tr>
+<td><a href="#web_push"><code>web_push</code></a></td>
+<td>Whether the provider reaches people through their browsers</td>
+<td>No push</td>
+</tr>
+<tr>
+<td><a href="#client_authentication"><code>client_authentication</code></a></td>
+<td>What a client assertion and a published key set are held to</td>
+<td>The defaults</td>
+</tr>
+<tr>
+<td><a href="#request_objects"><code>request_objects</code></a></td>
+<td>What a request object and its <code>request_uri</code> are held to</td>
+<td>The defaults</td>
+</tr>
+<tr>
+<td><a href="#dpop"><code>dpop</code></a></td>
+<td>What a proof of possession is held to</td>
+<td>No nonce asked</td>
+</tr>
+<tr>
+<td><a href="#trusted_issuers"><code>trusted_issuers</code></a></td>
+<td>The issuers of the JWT bearer grant</td>
+<td>The grant serves nobody</td>
+</tr>
+<tr>
+<td><a href="#clients"><code>clients</code></a></td>
+<td>The clients the deployment declares</td>
+<td>No client</td>
+</tr>
+<tr>
+<td><a href="#client_registration"><code>client_registration</code></a></td>
+<td>Whether and how a client registers itself</td>
+<td>No registration endpoint</td>
+</tr>
+<tr>
+<td><a href="#saml"><code>saml</code></a></td>
+<td>The SAML roles of the tenant and its peers</td>
+<td>No SAML</td>
+</tr>
+</tbody>
+</table>
+<h2 id="when-a-mistake-is-caught">When a mistake is caught<a class="headerlink" href="#when-a-mistake-is-caught" title="Link to this section">&para;</a></h2>
+<p><strong>When the container is built</strong>, at <code>cache:clear</code>, at <code>cache:warmup</code>, or at the first boot of a process that
+finds no compiled container. The tree is checked there: an unknown key at any level, a value of the wrong
+type, a number written outside its bounds, a required option missing, a value outside its list. So are the
+rules the tree reads between options, a sliding refresh lifetime longer than the absolute one, a SAML
+<code>cache_duration</code> that is not shorter than the SAML staging delay, a SAML peer declared for a role that is off;
+the name of the key management client; and every SAML declaration, the claims it names included. A deployment
+pipeline that warms its cache stops there. A SAML declaration that holds an environment variable is checked at
+its first use instead.</p>
+<p><strong>When the provider first reads a declaration.</strong> What only the wiring can answer is checked against the
+wiring, the first time the provider builds the object: the tenant, each declared client, each trusted issuer,
+each authority of software statements, the default scope of registrations. A refusal names the option and,
+where the wiring decides, the names it is wired with, so a misspelt algorithm is answered with the algorithms
+that exist. What reads a declaration first is what meets its refusal:</p>
+<ul>
+<li><code>bin/console beffroi:tenant:synchronize</code> builds the tenant;</li>
+<li><code>bin/console beffroi:client:list</code>, once the tenant is synchronized, reads every declared client, and with one
+  client declared at least, every trusted issuer as well;</li>
+<li>the discovery document, <code>/.well-known/openid-configuration</code> under the issuer, builds all of it once the tenant
+  is synchronized: the tenant, the declared clients, the trusted issuers, and the policy of registration, its
+  authorities of software statements and its default scope included, which no command of the bundle builds.</li>
+</ul>
+<p>A deployment that runs <code>beffroi:tenant:synchronize</code> and then reads the discovery document has met every one of
+these refusals before a client asks anything. Otherwise the first request that needs the object meets it, and the policy of registration is
+also built by the timed step that removes the clients nobody uses.</p>
+<p><strong>No option does it wrong.</strong> The tree holds no <code>insecure_*</code> key and no compatibility switch. An exception a
+specification admits is named and bounded: <code>requires_pkce: false</code> exempts one confidential client, and is
+refused for a public one. <a href="../../the-project/secure-by-default/">Secure by default</a> is the rule.</p>
+<h2 id="tenant"><code>tenant</code><a class="headerlink" href="#tenant" title="Link to this section">&para;</a></h2>
+<p>Who the provider is, and required. <code>issuer</code> is the identifier every token carries as <code>iss</code> and the URL every
+endpoint is served under: the routes of the bundle are imported under its path, which the provider checks at
+the first request. <code>slug</code> names the tenant for good: its identifier is derived from it, and renaming it is
+creating another tenant. <code>name</code> and <code>look</code> are what the pages show of the tenant, <code>self_served_claims</code> what its
+people may change of themselves, and <code>authentication_classes</code> the <code>acr</code> it answers with.</p>
+<p>The logo is loaded by the browser of the visitor, under the <code>Content-Security-Policy</code> the application sends.
+The consent page adds the origin of the logo to its <code>img-src</code>, and no other page does: a logo served from
+another origin than the pages is named in the <code>img-src</code> of the application's own policy, as
+<a href="../../application/configuration/">the standalone application</a> says of its own.</p>
+<p>The row of the tenant follows the configuration through <code>bin/console beffroi:tenant:synchronize</code>, which is
+safe to run at every deployment.</p>
+<p><a href="../../core/tenants/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Tenants</a></p>
+<h2 id="keys"><code>keys</code><a class="headerlink" href="#keys" title="Link to this section">&para;</a></h2>
+<p>Where the keys of the tenant are sealed and kept, and required. The bundle builds no key management client:
+<code>kms</code> names one declared under <code>key_management.clients</code>, a DSN or a composite of several, and <code>key_id</code> names
+the key of that client the keys are sealed under, <code>{tenant}</code> standing for the slug.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'beffroi-{tenant}'</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/var/keys'</span>
+</span></code></pre></div>
+<p><code>storage</code> is the directory of the sealed key files and of the pairwise salt of the tenant, sealed the same
+way. The salt is drawn on first use and never again, and every pairwise subject of the tenant is computed from
+it, so the directory is part of what a deployment backs up.</p>
+<p>The three other options time the rotation of every key but the SAML keys. A relying party keeps the JWK Set
+for <code>jwks_max_age</code>, five minutes. A new key is published for <code>staging_delay</code> before it signs, by default
+<code>jwks_max_age</code> plus the sixty seconds after which Symfony's <code>oidc_login</code> reads the set again for a <code>kid</code> it
+does not hold. A key works for <code>age</code>, ninety days, before the timed step stages a successor behind it, which is
+inside the one to three years NIST SP 800-57 Part 1 Rev. 5 §5.3.6 gives a private signature key.</p>
+<p><a href="../key-management/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Key management</a> and <a href="../../core/keys/">keys</a></p>
+<h2 id="webauthn"><code>webauthn</code><a class="headerlink" href="#webauthn" title="Link to this section">&para;</a></h2>
+<p>Where the FIDO metadata a passkey's attestation is checked against are kept: what
+<code>beffroi:webauthn:mds-refresh</code> downloads and <code>beffroi:webauthn:mds-import</code> stores. Left out, the directory is
+<code>var/webauthn</code> of the project. A passkey enrols while it is empty.</p>
+<p><a href="../../core/credentials/passkeys/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Passkeys</a></p>
+<h2 id="mutual_tls"><code>mutual_tls</code><a class="headerlink" href="#mutual_tls" title="Link to this section">&para;</a></h2>
+<p>For a deployment whose clients authenticate with a certificate (RFC 8705) on a host whose TLS listener asks
+for one. Named, the discovery document announces every endpoint again under that host, in
+<code>mtls_endpoint_aliases</code>. Left out, or empty, no alias is announced, which is what a deployment serving one host
+does.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">mutual_tls</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">origin</span><span class="p">:</span><span class="w"> </span><span class="s">'https://mtls.op.example.com'</span>
+</span></code></pre></div>
+<p><a href="../../oidc/sender-constrained/mutual-tls/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Mutual TLS</a></p>
+<h2 id="tokens"><code>tokens</code><a class="headerlink" href="#tokens" title="Link to this section">&para;</a></h2>
+<p>How long the codes, requests and tokens the provider issues stand, in seconds. Left out, every lifetime is
+short: a minute for an authorization code and a pushed request, ten minutes for an access token and an ID
+token, thirty days of sliding life and ninety in all for a refresh token. The tree bounds them: an
+authorization code and a <code>request_uri</code> live ten minutes at most (RFC 6749 §4.1.2, RFC 9126 §2.2), a device code
+thirty minutes, a backchannel request an hour, an interval between two polls thirty seconds, and a refresh
+token never slides past the absolute lifetime of its family.</p>
+<p>The lifetimes of what a key signs are also how long that key stays published once another key takes over from
+it, so that a token still in use verifies: ten minutes for a signing key with the defaults. A longer
+<code>access_token_ttl</code> keeps a retiring key in the JWK Set for longer.</p>
+<p><a href="../../oidc/tokens/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Tokens</a></p>
+<h2 id="load"><code>load</code><a class="headerlink" href="#load" title="Link to this section">&para;</a></h2>
+<p>Every request is counted against two budgets, and the section sets their numbers, never whether they exist.
+The first counts the address of the client, on every route of the bundle and before anything is verified; the
+second counts a client of a tenant once it has authenticated. A request over a budget is answered <code>429</code> with a
+<code>Retry-After</code> header.</p>
+<p>The address is the one Symfony reads behind the trusted proxies of the application, so a deployment behind a
+load balancer declares the balancer as a trusted proxy, or every request counts against the address of the
+balancer. The counts live in the <code>beffroi.load</code> cache pool, on <code>cache.app</code> unless the deployment points the
+pool at a store its processes share. A number too low on <code>/token</code> or on <code>/jwks</code> refuses the deployment's own
+clients, so a deployment sets them from what its own clients send.</p>
+<h2 id="journal"><code>journal</code><a class="headerlink" href="#journal" title="Link to this section">&para;</a></h2>
+<p>How long an act of the journal is kept before the timed step forgets it: 180 days unless the section says
+otherwise. What a client was given of a person in an act is forgotten with that act. Nothing turns the journal
+on or off.</p>
+<h2 id="history"><code>history</code><a class="headerlink" href="#history" title="Link to this section">&para;</a></h2>
+<p>How long a change a person made to their claims is kept before the timed step forgets it: 180 days unless the
+section says otherwise, the default of the journal too, a change and the act that announced it being two
+halves of one answer.</p>
+<h2 id="geoip"><code>geoip</code><a class="headerlink" href="#geoip" title="Link to this section">&para;</a></h2>
+<p>Where the GeoLite2 databases that place the address of a request are kept, and the licence key of the MaxMind
+account they are downloaded under. MaxMind publishes them under its own licence, so nothing is shipped, and a
+deployment that names no key downloads nothing: every flow is served, and a provenance says an address and no
+place.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">geoip</span><span class="p">:</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">license_key</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(GEOIP_LICENSE_KEY)%'</span>
+</span></code></pre></div>
+<p>A weekly timed step downloads them, and <code>bin/console beffroi:geoip:refresh</code> does it at once.</p>
+<h2 id="passwords"><code>passwords</code><a class="headerlink" href="#passwords" title="Link to this section">&para;</a></h2>
+<p>The list of compromised passwords a password is compared with before it is written (NIST SP 800-63B
+§3.1.1.2). How long a password has to be and how hard it is to guess are rules of the core, and no option
+lowers them. Left out, no list is asked and nothing of a password leaves the deployment.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">passwords</span><span class="p">:</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="nt">breached</span><span class="p">:</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">            </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">'https://api.pwnedpasswords.com/range/'</span>
+</span></code></pre></div>
+<p>Named, the endpoint receives the first five hexadecimal characters of the SHA-1 of a password, and the rest is
+compared locally. A password the list counts is refused, and so is one the list could not be asked about,
+within <code>timeout</code>, two seconds. A password already set is looked up again after a login that used it, on the
+asynchronous lane.</p>
+<p><a href="../../core/credentials/passwords/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Passwords</a></p>
+<h2 id="interaction"><code>interaction</code><a class="headerlink" href="#interaction" title="Link to this section">&para;</a></h2>
+<p>How the <code>login_hint</code> of an authorization request is read (OIDC Core §3.1.2.1): <code>sub</code>, the subject the
+provider issued to that client, by default; <code>username</code>, the name a person signs in with; or <code>none</code>, for a
+deployment that tags a reading of its own <code>beffroi.oidc.login_hint</code>. It is read one way and never searched,
+and the login page offers the name of the person it names.</p>
+<p><a href="../../oidc/interactions/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Interactions</a></p>
+<h2 id="back_channel_logout"><code>back_channel_logout</code><a class="headerlink" href="#back_channel_logout" title="Link to this section">&para;</a></h2>
+<p>How a logout token is posted to a client that registered a <code>backchannel_logout_uri</code> (Back-Channel Logout 1.0
+§2.5): five seconds an attempt, then six retries, two seconds after the first failure and three times longer
+each time, a minute at most. The retry schedule is the one of every notification the provider carries to a
+third party, on the <code>async_notifications</code> transport the bundle configures: the logout tokens, the
+notifications of the backchannel authentication flow, and the pushes that tell a person something waits for
+them.</p>
+<p>The schedule is also the <code>exp</code> of a logout token, 235 seconds with the defaults, and a retiring signing key
+stays published that long at least, so that the provider stops trying when what it sends stops being
+verifiable. An application that routes the notifications to a transport of its own keeps that agreement only
+if the transport retries with the policy of the bundle; <code>bin/console beffroi:doctor</code> says whether it does.</p>
+<p><a href="../../oidc/logout/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Logout</a> and <a href="../messenger/">Messenger</a></p>
+<h2 id="backchannel_authentication"><code>backchannel_authentication</code><a class="headerlink" href="#backchannel_authentication" title="Link to this section">&para;</a></h2>
+<p>How the <code>login_hint</code> of a backchannel authentication request is read (CIBA Core §7.1), under the three readings
+of <code>interaction</code>, <code>none</code> being for a deployment that tags its own <code>beffroi.oidc.ciba_user_hint</code>, and how long
+one call to a client in <code>ping</code> mode may take. Nothing here opens the flow: a client takes part in it by
+registering its grant and a delivery mode.</p>
+<p><a href="../../oidc/grants/backchannel-authentication/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Backchannel authentication</a></p>
+<h2 id="web_push"><code>web_push</code><a class="headerlink" href="#web_push" title="Link to this section">&para;</a></h2>
+<p>Whether the provider reaches people through the push services of their browsers (RFC 8030). Naming a
+<code>subject</code> turns it on: a <code>mailto:</code> or <code>https:</code> URI at which a push service can reach the operator (RFC 8292
+§2.1). Left out, nothing of it is wired, no push leaves the deployment, and the page where a browser would
+subscribe says so.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">web_push</span><span class="p">:</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">        </span><span class="nt">subject</span><span class="p">:</span><span class="w"> </span><span class="s">'mailto:operator@example.com'</span>
+</span></code></pre></div>
+<p>The push is signed with the application server key of the tenant, drawn like every other key of the tenant:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>VAPID
+</span></code></pre></div>
+<p><a href="../web-push/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Web push</a></p>
+<h2 id="client_authentication"><code>client_authentication</code><a class="headerlink" href="#client_authentication" title="Link to this section">&para;</a></h2>
+<p>What a client assertion is held to (RFC 7523 §3), how far ahead its <code>exp</code> may be and how much clock it is
+allowed, and what one read of a <code>jwks_uri</code> may cost: its timeout, its size, how long its keys are kept and how
+often an unknown <code>kid</code> may read it again. The bounds of a read are those of every published key set the
+provider reads, the clients' and the trusted issuers'. Which methods a client may authenticate with is the
+wiring and its registration, and nothing of this section.</p>
+<p><a href="../../oidc/client-authentication/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Client authentication</a></p>
+<h2 id="request_objects"><code>request_objects</code><a class="headerlink" href="#request_objects" title="Link to this section">&para;</a></h2>
+<p>What a request object is held to (RFC 9101 §4), how long it may stand and how much clock it is allowed, and
+what one read of a <code>request_uri</code> may cost while the browser of a person waits on it. Which algorithm verifies
+an object is the registration of the client.</p>
+<p><a href="../../oidc/request-objects/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Request objects</a></p>
+<h2 id="dpop"><code>dpop</code><a class="headerlink" href="#dpop" title="Link to this section">&para;</a></h2>
+<p>What a proof of possession is held to (RFC 9449): its age, the clock allowed, and whether it carries a nonce of
+the provider (RFC 9449 §8). A client that sends no proof is not concerned.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="nt">dpop</span><span class="p">:</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">        </span><span class="nt">nonce</span><span class="p">:</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">            </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span></code></pre></div>
+<p><code>nonce.required</code> decides which class the container wires, so it is written as <code>true</code> or <code>false</code> in the file.</p>
+<p><a href="../../oidc/sender-constrained/dpop/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> DPoP</a></p>
+<h2 id="trusted_issuers"><code>trusted_issuers</code><a class="headerlink" href="#trusted_issuers" title="Link to this section">&para;</a></h2>
+<p>The issuers whose assertions the tenant accepts as an authorization grant (RFC 7523 §2.1). Whoever holds the
+signing key of one of them can name a user of the tenant and be answered with an access token, so each one is
+declared whole: its keys, the algorithms it signs with, the clients that may present its assertions, the
+source of the identities it names and the scopes it is trusted for. Left out, the grant serves nobody.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="nt">trusted_issuers</span><span class="p">:</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">        </span><span class="s">'https://workforce.example.com'</span><span class="p p-Indicator">:</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">            </span><span class="nt">jwks_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://workforce.example.com/jwks'</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">            </span><span class="nt">signing_algorithms</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'ES256'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">            </span><span class="nt">clients</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'job-runner'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">            </span><span class="nt">identity_provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workforce</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">            </span><span class="nt">trusted_scopes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'invoices.read'</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<p>The <code>sub</code> of an assertion names a user of the tenant only through a linked identity of the source
+<code>identity_provider</code> names, and no user is ever created from an assertion.</p>
+<p><a href="../../oidc/grants/jwt-bearer/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The JWT bearer grant</a></p>
+<h2 id="clients"><code>clients</code><a class="headerlink" href="#clients" title="Link to this section">&para;</a></h2>
+<p>The clients the deployment declares, keyed by <code>client_id</code>, each read like a registration of RFC 7591 §2. A
+client the configuration does not declare exists only if it registered itself, at the endpoint
+<code>client_registration</code> opens. A declared client that writes nothing takes the browser flow and its renewal, the
+scopes <code>openid profile email</code>, and the first wired method of authentication, <code>client_secret_basic</code>, which needs
+a secret.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">        </span><span class="nt">my-application</span><span class="p">:</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'My</span><span class="nv"> </span><span class="s">application'</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">            </span><span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MY_APPLICATION_SECRET)%'</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">            </span><span class="nt">redirect_uris</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://app.example.com/oidc/callback'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">            </span><span class="nt">post_logout_redirect_uris</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://app.example.com/'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'openid</span><span class="nv"> </span><span class="s">profile</span><span class="nv"> </span><span class="s">email</span><span class="nv"> </span><span class="s">offline_access'</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">        </span><span class="nt">reporting</span><span class="p">:</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">            </span><span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(REPORTING_SECRET)%'</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'client_credentials'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'invoices.read'</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">            </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://api.example.com/'</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<p>The options of a client hold together or the client is refused, naming the rule:</p>
+<ul>
+<li>the method of authentication decides what else is registered: a secret for <code>client_secret_basic</code>,
+  <code>client_secret_post</code> and <code>client_secret_jwt</code>, and for no other; keys in <code>jwks</code> or behind <code>jwks_uri</code> for
+  <code>private_key_jwt</code> and <code>self_signed_tls_client_auth</code>; one name of the certificate for <code>tls_client_auth</code>;</li>
+<li>a client registered for <code>authorization_code</code> registers a redirect URI at least, and a client registered for
+  no grant that sends the browser back registers none;</li>
+<li>a public client, <code>token_endpoint_auth_method: none</code>, keeps PKCE, writes plain <code>http</code> redirect URIs on
+  <code>127.0.0.1</code> or <code>[::1]</code> only, and is refused <code>client_credentials</code>;</li>
+<li>an encrypted response is named with both its algorithms, and the client publishes a key to encrypt to.</li>
+</ul>
+<p>The secret of a declared client belongs in the environment, as the example reads it, and it is hashed when the
+client is first read, except for <code>client_secret_jwt</code>, which needs the secret itself.</p>
+<p><a href="../../oidc/clients/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Clients</a> and <a href="../../getting-started/your-first-client/">your first client</a></p>
+<h2 id="client_registration"><code>client_registration</code><a class="headerlink" href="#client_registration" title="Link to this section">&para;</a></h2>
+<p>Whether a client nobody declared may register itself (RFC 7591), and on what authority. Left out, the tenant
+has no registration endpoint: none in its discovery document, and <code>404</code> on the wire. A <code>mode</code> opens it:
+<code>initial_access_token</code>, a token the tenant issues, limits and revokes; <code>software_statement</code>, a statement signed
+by an authority the tenant pins under <code>statement_issuers</code>; or <code>open</code>, no credential at all, for a tenant with no
+real user.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="nt">client_registration</span><span class="p">:</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">initial_access_token</span>
+</span></code></pre></div>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>bin/console<span class="w"> </span>beffroi:client:token:issue<span class="w"> </span><span class="s1">'Partner integration'</span><span class="w"> </span>--registrations<span class="o">=</span><span class="m">5</span><span class="w"> </span>--days<span class="o">=</span><span class="m">7</span>
+</span></code></pre></div>
+<p>The name says later which integration a token was for. Without the options, a token registers one client and
+is worth thirty days; its value is printed once, and the provider keeps only its digest.</p>
+<p>A client that registered itself is deleted after ninety days without use, or after seven days when it was never
+used. The rest of the section bounds the read of a <code>sector_identifier_uri</code> and the software statements, names
+the scopes of a client that asks for none, and, for a tenant whose clients send no <code>code_challenge</code>, exempts
+its confidential clients from PKCE, never a public one.</p>
+<p><a href="../../oidc/dynamic-registration/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Dynamic registration</a></p>
+<h2 id="saml"><code>saml</code><a class="headerlink" href="#saml" title="Link to this section">&para;</a></h2>
+<p>The SAML roles of the tenant, each off unless the section turns it on, and the peers of each. A role that is off
+wires nothing and answers <code>404</code> where its metadata would be, and the peers of a role are refused while it is
+off.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>What it is</th>
+<th>The page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>identity_provider</code></td>
+<td>The tenant as an identity provider, and the rotation of every SAML key</td>
+<td><a href="../../saml/identity-provider/">The identity provider</a></td>
+</tr>
+<tr>
+<td><code>service_providers</code></td>
+<td>The applications that sign their users in through it</td>
+<td><a href="../../saml/service-providers/">Service providers</a></td>
+</tr>
+<tr>
+<td><code>service_provider</code></td>
+<td>The tenant as a service provider to identity providers upstream of it</td>
+<td><a href="../../saml/upstream-identity-providers/">Upstream identity providers</a></td>
+</tr>
+<tr>
+<td><code>identity_providers</code></td>
+<td>The identity providers upstream of it, and the e-mail domains each answers for</td>
+<td><a href="../../saml/upstream-identity-providers/">Upstream identity providers</a></td>
+</tr>
+</tbody>
+</table>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">        </span><span class="nt">identity_provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span></code></pre></div>
+<p>Writing a role as a block turns it on as well, unless the block says <code>enabled: false</code>.</p>
 
 
 
@@ -4066,7 +4962,7 @@ no <code>client_registration</code> has no registration endpoint, in its discove
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
   </span>
 
     
