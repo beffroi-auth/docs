@@ -117,6 +117,11 @@ beffroi:
 way. The salt is drawn on first use and never again, and every pairwise subject of the tenant is computed from
 it, so the directory is part of what a deployment backs up.
 
+`data_key_secrets` lists the secrets every data key of personal data is bound to its row under, which the
+database does not hold, and is the secret of the kernel when it is left out. The first binds a new key and a
+key bound under any of them opens, so a secret is replaced by writing the new one first, as [personal
+data](../core/personal-data.md#rotating-the-secret-that-binds-them) says.
+
 The three other options time the rotation of every key but the SAML keys. A relying party keeps the JWK Set
 for `jwks_max_age`, five minutes. A new key is published for `staging_delay` before it signs, by default
 `jwks_max_age` plus the sixty seconds after which Symfony's `oidc_login` reads the set again for a `kid` it

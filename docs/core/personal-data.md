@@ -100,6 +100,14 @@ under. A process opens each data key once and keeps it, so the key management se
 once per value. Nothing in the ordinary life of a tenant removes a data key: a new key is minted beside the ones
 there, and a rewrap changes what protects a key and not the key.
 
+Each row is also bound to its reference and its scope: an HMAC-SHA256 of the two, under a key derived from the
+data key and from a secret the database does not hold. A row edited, copied under another reference or scope,
+or written into the table by whoever can write the database opens nothing, even when the key it carries is
+wrapped under a master key the provider may use. The secrets are those of `beffroi.keys.data_key_secrets`, the
+secret of the kernel unless the configuration names others, one list for the whole deployment: the first one
+binds a new row, and a row bound under any of them opens. A row bound under a secret that is no longer listed
+opens nothing, and neither does any value sealed under its key.
+
 ``` bash
 bin/console beffroi:data-keys:list
 ```
@@ -133,6 +141,28 @@ scopes the tenant holds. One tenant at a time, by hand: nothing schedules it.
 
 The keys of the tenant itself, its signing and encryption keys, are sealed apart, one file each, and no command
 rewraps them: a key sealed by another service is replaced by a [rotation](keys.md#rotating-without-an-outage).
+
+## Rotating the secret that binds them
+
+``` yaml title="config/packages/beffroi.yaml"
+beffroi:
+    keys:
+        data_key_secrets:
+            - '%env(DATA_KEY_SECRET)%'           # the new secret, which binds
+            - '%env(PREVIOUS_DATA_KEY_SECRET)%'  # the one it replaces, still read
+```
+
+1. Write the new secret first and keep the one it replaces second, and give that configuration to every
+   process of the deployment before going on: a process that does not list a secret opens no row bound under
+   it. The two variables are the deployment's own, and the bundle reads none of them by name.
+2. Run `beffroi:data-keys:rewrap` with `--to` naming the client that already wraps the keys of the tenant, the
+   one `beffroi.keys.kms` names unless a rewrap moved them. Every key is bound again under the first secret as
+   it moves, and its value and every ciphertext sealed under it stay as they are.
+3. Drop the old secret once the command has moved every key.
+
+The secret of the kernel is replaced the same way when the configuration names no secret of its own,
+`%kernel.secret%` written first and its previous value second: changed alone, it leaves every sealed value of
+the deployment unreadable.
 
 ## Destroying them
 

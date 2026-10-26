@@ -80,12 +80,19 @@ by the master key of the tenant.
 | Command | What it does |
 |---|---|
 | `beffroi:data-keys:list` | Lists the data keys of the tenant by scope, with when each was minted, the master key that wraps it and the key management client that opens it. Reads only, and never opens a key |
-| `beffroi:data-keys:rewrap --to=<client>` | Wraps the data keys of the tenant with another client from then on, or with another master key of the same one, `--from` narrowing it to the keys one client holds and `--dry-run` listing what would move. No sealed value is read or rewritten, and the master key is derived from `BEFFROI_KMS_KEY_ID` rather than asked for |
+| `beffroi:data-keys:rewrap --to=<client>` | Wraps the data keys of the tenant with another client from then on, or with another master key of the same one, `--from` narrowing it to the keys one client holds and `--dry-run` listing what would move. No sealed value is read or rewritten, and the master key is derived from `BEFFROI_KMS_KEY_ID` rather than asked for. Each key it moves is bound again under the first secret of `beffroi.keys.data_key_secrets` |
 | `beffroi:data-keys:destroy` | Erases the data keys of the tenant, which makes every personal datum it had sealed unreadable for good. It asks for the slug of the tenant to be typed back, and cannot be undone |
 
 The clients of this application are `op`, which every key of the tenant is sealed with, and `second`, which is
 built from `BEFFROI_KMS_DSN_SECOND` when that variable names one. Nothing schedules a rewrap: a person asks
 for it.
+
+The data keys are bound under `APP_SECRET`, which `beffroi.keys.data_key_secrets` takes as long as
+`config/packages/beffroi.yaml` names no secret of its own. A new value replaces it in the three steps of
+[personal data](../core/personal-data.md#rotating-the-secret-that-binds-them): `%kernel.secret%` first and the
+previous value second in `beffroi.keys.data_key_secrets`, given to every process; `beffroi:data-keys:rewrap`
+towards the client that wraps the keys, `op` unless they were moved; then the previous value dropped. Changed
+alone, it leaves every sealed value unreadable.
 
 ## The data downloaded
 
@@ -127,16 +134,17 @@ journal, `load.budget_spent`.
 
 ## What to back up
 
-One directory to back up, one key management service to lose.
+One directory to back up, one key management service and one secret to keep.
 
 | What | Where | What it holds |
 |---|---|---|
 | The database | PostgreSQL | Everything the model writes, the personal data sealed in their columns, and the data keys wrapped by the master key |
 | The sealed keys | `var/keys` | One file per key of the tenant, and the pairwise salt of the tenant beside them, each sealed by the key management service |
 | The master key | The key management service | What opens all of the above |
+| The secret of the kernel | `APP_SECRET`, in the environment of every process | What every data key is bound to its row under: under another secret, the database opens no sealed value |
 
 No command restores a deployment: a restore is the database and `var/keys` put back together, under the same
-master key. The pairwise subjects of OpenID Connect and the persistent identifiers of SAML are computed from
+master key and the same `APP_SECRET`. The pairwise subjects of OpenID Connect and the persistent identifiers of SAML are computed from
 the salt and never drawn, so they are the same after a restore that brings the salt back with the database. The GeoLite2
 databases in `var/geoip` and the FIDO metadata in `var/webauthn` are written again by the commands that wrote
 them.

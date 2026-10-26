@@ -122,7 +122,9 @@ key, a data key being minted at the first write of its family. The command never
 
 **`beffroi:data-keys:rewrap`** wraps the data keys of the tenant with another client from now on, or with
 another master key of the same one. No sealed value is read or rewritten: what changes is how a data key is
-protected, and every ciphertext goes on naming the same key.
+protected, and every ciphertext goes on naming the same key. Each key it moves is bound again under the first
+secret of `beffroi.keys.data_key_secrets`, so the command run towards the client that already wraps the keys
+is how that secret is replaced ([personal data](../core/personal-data.md#rotating-the-secret-that-binds-them)).
 
 ``` bash
 bin/console beffroi:data-keys:rewrap --to=second --dry-run
