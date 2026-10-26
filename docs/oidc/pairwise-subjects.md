@@ -94,16 +94,13 @@ client that presents it, in that client's sector and in no other:
 
 - a `login_hint` read as a `sub` ([interactions](interactions.md)) names somebody only when the client sending
   it was given that identifier, or a client of its sector was;
+- an `id_token_hint`, at the authorization endpoint ([interactions](interactions.md)) and at the end session
+  endpoint ([logout](logout.md)), names the person signed in when its `sub` is the identifier the client it was
+  issued to holds of that person;
 - the hints of a [backchannel authentication](grants/backchannel-authentication.md) request are read the same
   way;
 - a self-contained access token somebody signed in for is found to be that person's by its `sub`, read for
   the client it was issued to. An opaque access token names its person in its record, and a self-contained
   one whose `sub` another client named carries its person sealed, so neither is looked up.
-
-!!! note "`id_token_hint` at the authorization endpoint"
-
-    The authorization endpoint compares the `sub` of an `id_token_hint` with the subject identifier the account
-    carries, which is what a `public` client holds. A pairwise client that sends an `id_token_hint` there is sent
-    to the login page every time, and answered `login_required` when the request says `prompt=none`.
 
 [:beffroi-arrow-right: Clients](clients.md) and [scopes and claims](scopes-and-claims.md)
