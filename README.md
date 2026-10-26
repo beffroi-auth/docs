@@ -6,7 +6,7 @@ standalone application.
 
 Published with [MkDocs](https://www.mkdocs.org/) and
 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) on GitHub Pages:
-**<https://beffroi-auth.github.io/docs/>**
+**<https://doc.beffroi.tech/>**
 
 ## Writing
 
