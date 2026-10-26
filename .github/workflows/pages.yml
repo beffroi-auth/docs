@@ -2,7 +2,9 @@ name: Pages
 
 # One version of the site per branch, published by mike into gh-pages: 0.1 is served at /0.1/, and the
 # alias "latest" follows the highest version, which is what the root of the site redirects to. Pages is
-# configured to deploy from the gh-pages branch, root folder.
+# configured to deploy from the gh-pages branch, root folder, on the domain doc.beffroi.tech that the CNAME
+# file at the root of gh-pages names: mike writes only the directories of a version and of its aliases, the
+# root redirect and versions.json, so it never touches that file.
 on:
     push:
         branches:

@@ -1,6 +1,6 @@
 site_name: Beffroi
 site_description: An identity provider for the Symfony ecosystem. OAuth 2.0, OpenID Connect and SAML 2.0, on a pure-PHP core.
-site_url: https://beffroi-auth.github.io/docs/
+site_url: https://doc.beffroi.tech/
 site_author: The Beffroi contributors
 copyright: Released under the MIT licence
 repo_url: https://github.com/beffroi-auth/beffroi
