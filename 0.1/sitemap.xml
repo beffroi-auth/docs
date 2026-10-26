@@ -1,395 +1,395 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/</loc>
+         <loc>https://doc.beffroi.tech/0.1/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/application/</loc>
+         <loc>https://doc.beffroi.tech/0.1/application/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/application/configuration/</loc>
+         <loc>https://doc.beffroi.tech/0.1/application/configuration/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/application/deployment/</loc>
+         <loc>https://doc.beffroi.tech/0.1/application/deployment/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/application/observability/</loc>
+         <loc>https://doc.beffroi.tech/0.1/application/observability/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/application/operating/</loc>
+         <loc>https://doc.beffroi.tech/0.1/application/operating/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/authentication-sessions/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/authentication-sessions/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/events/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/events/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/groups/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/groups/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/keys/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/keys/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/linked-identities/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/linked-identities/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/personal-data/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/personal-data/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/ports/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/ports/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/tenants/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/tenants/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/users/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/users/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/credentials/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/credentials/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/credentials/backup-codes/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/credentials/backup-codes/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/credentials/passkeys/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/credentials/passkeys/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/credentials/passwords/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/credentials/passwords/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/core/credentials/totp/</loc>
+         <loc>https://doc.beffroi.tech/0.1/core/credentials/totp/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/getting-started/a-symfony-relying-party/</loc>
+         <loc>https://doc.beffroi.tech/0.1/getting-started/a-symfony-relying-party/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/getting-started/installation/</loc>
+         <loc>https://doc.beffroi.tech/0.1/getting-started/installation/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/getting-started/tenant-and-keys/</loc>
+         <loc>https://doc.beffroi.tech/0.1/getting-started/tenant-and-keys/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/getting-started/the-standalone-application/</loc>
+         <loc>https://doc.beffroi.tech/0.1/getting-started/the-standalone-application/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/getting-started/your-first-client/</loc>
+         <loc>https://doc.beffroi.tech/0.1/getting-started/your-first-client/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/migration/</loc>
+         <loc>https://doc.beffroi.tech/0.1/migration/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/authorization-details/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/authorization-details/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/authorization-request/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/authorization-request/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/client-authentication/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/client-authentication/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/clients/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/clients/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/consent/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/consent/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/discovery-and-jwks/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/discovery-and-jwks/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/dynamic-registration/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/dynamic-registration/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/errors/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/errors/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/interactions/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/interactions/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/introspection-and-revocation/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/introspection-and-revocation/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/logout/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/logout/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/pairwise-subjects/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/pairwise-subjects/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/ports/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/ports/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/pushed-authorization-requests/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/pushed-authorization-requests/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/request-objects/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/request-objects/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/resources/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/resources/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/response-modes/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/response-modes/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/scopes-and-claims/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/scopes-and-claims/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/userinfo/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/userinfo/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/grants/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/grants/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/grants/authorization-code/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/grants/authorization-code/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/grants/backchannel-authentication/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/grants/backchannel-authentication/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/grants/client-credentials/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/grants/client-credentials/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/grants/device-code/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/grants/device-code/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/grants/jwt-bearer/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/grants/jwt-bearer/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/grants/refresh-token/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/grants/refresh-token/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/grants/token-exchange/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/grants/token-exchange/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/sender-constrained/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/sender-constrained/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/sender-constrained/dpop/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/sender-constrained/dpop/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/sender-constrained/mutual-tls/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/sender-constrained/mutual-tls/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/tokens/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/tokens/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/tokens/access-tokens/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/tokens/access-tokens/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/tokens/encryption/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/tokens/encryption/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/tokens/id-tokens/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/tokens/id-tokens/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/oidc/tokens/refresh-tokens/</loc>
+         <loc>https://doc.beffroi.tech/0.1/oidc/tokens/refresh-tokens/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/reference/configuration/</loc>
+         <loc>https://doc.beffroi.tech/0.1/reference/configuration/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/reference/console-commands/</loc>
+         <loc>https://doc.beffroi.tech/0.1/reference/console-commands/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/reference/endpoints/</loc>
+         <loc>https://doc.beffroi.tech/0.1/reference/endpoints/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/reference/events/</loc>
+         <loc>https://doc.beffroi.tech/0.1/reference/events/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/reference/specifications/</loc>
+         <loc>https://doc.beffroi.tech/0.1/reference/specifications/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/saml/</loc>
+         <loc>https://doc.beffroi.tech/0.1/saml/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/saml/federated-sign-in/</loc>
+         <loc>https://doc.beffroi.tech/0.1/saml/federated-sign-in/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/saml/identity-provider/</loc>
+         <loc>https://doc.beffroi.tech/0.1/saml/identity-provider/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/saml/microsoft-entra-id/</loc>
+         <loc>https://doc.beffroi.tech/0.1/saml/microsoft-entra-id/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/saml/packages/</loc>
+         <loc>https://doc.beffroi.tech/0.1/saml/packages/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/saml/service-providers/</loc>
+         <loc>https://doc.beffroi.tech/0.1/saml/service-providers/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/saml/single-logout/</loc>
+         <loc>https://doc.beffroi.tech/0.1/saml/single-logout/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/saml/single-sign-on/</loc>
+         <loc>https://doc.beffroi.tech/0.1/saml/single-sign-on/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/saml/upstream-identity-providers/</loc>
+         <loc>https://doc.beffroi.tech/0.1/saml/upstream-identity-providers/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/scim/</loc>
+         <loc>https://doc.beffroi.tech/0.1/scim/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/account/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/account/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/configuration/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/configuration/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/console-commands/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/console-commands/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/installation/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/installation/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/key-management/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/key-management/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/messenger/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/messenger/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/pages/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/pages/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/persistence/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/persistence/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/profiler/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/profiler/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/routes-and-planes/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/routes-and-planes/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/security/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/security/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/translations/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/translations/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/symfony-bundle/web-push/</loc>
+         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/web-push/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/the-project/conformance/</loc>
+         <loc>https://doc.beffroi.tech/0.1/the-project/conformance/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/the-project/contributing/</loc>
+         <loc>https://doc.beffroi.tech/0.1/the-project/contributing/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/the-project/packages/</loc>
+         <loc>https://doc.beffroi.tech/0.1/the-project/packages/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/the-project/secure-by-default/</loc>
+         <loc>https://doc.beffroi.tech/0.1/the-project/secure-by-default/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/the-project/versions/</loc>
+         <loc>https://doc.beffroi.tech/0.1/the-project/versions/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
     <url>
-         <loc>https://beffroi-auth.github.io/docs/0.1/the-project/what-is-beffroi/</loc>
+         <loc>https://doc.beffroi.tech/0.1/the-project/what-is-beffroi/</loc>
          <lastmod>2026-10-26</lastmod>
     </url>
 </urlset>

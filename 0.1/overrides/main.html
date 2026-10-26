@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
 {#-
-  The favicon set of the brand and the default share image. The image is read from the "latest" version: it
-  is the same in every version, and a social network needs an absolute address.
+  The favicon set of the brand and the default share image. A social network needs an absolute address, so
+  the image is read from the version the page belongs to: mike sets site_url to the address of that version,
+  without a trailing slash.
 -#}
 {% block extrahead %}
   <link rel="icon" href="{{ 'assets/images/favicon.ico' | url }}" sizes="32x32">
@@ -13,7 +14,7 @@
   <meta property="og:site_name" content="{{ config.site_name }}">
   <meta property="og:title" content="{{ page.meta.title if page and page.meta and page.meta.title else config.site_name }}">
   <meta property="og:description" content="{{ page.meta.description if page and page.meta and page.meta.description else config.site_description }}">
-  <meta property="og:image" content="{{ config.site_url }}latest/assets/images/beffroi-og-image-1200x630.png">
+  <meta property="og:image" content="{{ config.site_url.rstrip('/') }}/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
