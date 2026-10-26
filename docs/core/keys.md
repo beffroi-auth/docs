@@ -69,6 +69,7 @@ beffroi:
 |---|---|---|
 | `kms` | required | The key management client that seals the keys, an entry of `key_management.clients` |
 | `key_id` | required | The master key of that service the keys are sealed under, `{tenant}` standing for the slug of the tenant, one master key each |
+| `data_key_secrets` | `['%kernel.secret%']`, the secret of the kernel | The secrets every data key of [personal data](personal-data.md#the-data-keys-of-a-tenant) is bound to its row under, the first binding a new one |
 | `storage` | `%kernel.project_dir%/var/keys` | The directory of the sealed keys, one JSON file per key under the slug of its tenant, written through a sibling file renamed into place |
 | `jwks_max_age` | `300` | How long a client may cache the JWK Set, in seconds, which the staging delay derives from |
 | `staging_delay` | `jwks_max_age` plus sixty seconds | How long a new key is published before it is used, in seconds |

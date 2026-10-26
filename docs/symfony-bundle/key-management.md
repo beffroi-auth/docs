@@ -66,7 +66,7 @@ nothing. A member listed under `retired` is read and never written to.
 |---|---|
 | The keys of the tenant, the ones that sign, the ones clients encrypt to, and the ones it keeps rather than publishing: the key messages are sealed to, the application server key of web push and the SAML keys | One file per key, `<storage>/<slug>/<kid>.json`: the public half in the clear, the private half sealed. The directory is created `0700` and every file `0600` |
 | The pairwise salt of the tenant (OIDC Core §8.1), drawn at its first use and never again | `<storage>/<slug>/pairwise.salt`, sealed |
-| The data keys of the sealed columns, one per tenant and per family of columns | Rows of `beffroi_data_key`, wrapped by the master key of the tenant; each row names the client and the master key that wrapped it |
+| The data keys of the sealed columns, one per tenant and per family of columns | Rows of `beffroi_data_key`, wrapped by the master key of the tenant; each row names the client and the master key that wrapped it, and is bound to its reference and its scope under a secret of `beffroi.keys.data_key_secrets`, which the database does not hold |
 | The secrets held for people: the secret of an authenticator application, the identifier and token of a backchannel request whose client is called back, the person a self-contained access token is about, an enrolment of an authenticator application in progress | Envelopes, in their column, in the token, or in the HTTP session of the browser |
 
 Every envelope is bound to its tenant and to its use: sealed for one tenant it does not open for another, and a

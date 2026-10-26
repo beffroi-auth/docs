@@ -39,7 +39,7 @@ first that answers sends the browser to the login page:
 | | The request | The browser is sent to log in |
 |---|---|---|
 | 1 | Any | When it holds no session of this tenant, or one that has ended or expired |
-| 2 | `id_token_hint` | When the `sub` of the hint is not the subject identifier of the account signed in |
+| 2 | `id_token_hint` | When the `sub` of the hint, read for the client of the request, names another person than the one signed in, or nobody |
 | 3 | `acr_values` or `claims` asking for an `acr` | When the session satisfies none of the classes asked for, and a credential of this person would: a step-up |
 | 4 | `prompt=login` | Always |
 | 5 | `prompt=select_account` | Always: there is no account chooser, so it is a login again |
@@ -52,9 +52,11 @@ stronger sign-in than the one the person has, with the credentials they hold tha
 the password, or the password followed by a code. A login of the person already signed in adds what it
 proved to the session the browser holds; a login of somebody else ends that session first.
 
-The `id_token_hint` is compared with the subject identifier the account carries, which is the `sub` a client
-of the `public` kind holds. An `id_token_hint` carrying the `sub` of a [pairwise](pairwise-subjects.md)
-client never names the account signed in, so a request carrying one is sent to the login page every time.
+The `sub` of an `id_token_hint` is the one the provider gave the client of the request, and it is read for
+that client, as every `sub` this provider gave a client is
+([the way back](pairwise-subjects.md#the-way-back)): the subject the account carries for a client of the
+`public` kind, the identifier of its sector for a [pairwise](pairwise-subjects.md) one. A `sub` that names
+nobody for that client is a hint of another person.
 
 ### The class asked for
 

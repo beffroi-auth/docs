@@ -40,9 +40,9 @@ what it carried, so the authorization endpoint reads a pushed request as it read
 |---|---|
 | `request_object_signing_alg` absent | Signed under any algorithm the provider verifies: `RS256`, `PS256`, `ES256` or `EdDSA`. Never unsigned |
 | `request_object_signing_alg` naming one of those | Signed under that algorithm and no other. The client publishes its keys in `jwks` or behind a `jwks_uri` |
-| `request_object_signing_alg: none` | Unsigned, and read all the same: the one exception, registered client by client, never a switch of the deployment |
+| `request_object_signing_alg: none` | Unsigned, and read all the same: the one exception, registered client by client, never a switch of the deployment, and never beside `require_signed_request_object` |
 | `request_uris` | The URLs its objects may be read back from, compared byte for byte, fragment included |
-| `require_signed_request_object` | Its authorization requests are read from a request object and from nothing else, signed as its `request_object_signing_alg` says. A request without one is refused on a page, with `invalid_request`, before its redirect URI is read. Its backchannel authentication requests are read from an object it signed, and from nothing else |
+| `require_signed_request_object` | Its authorization requests are read from a request object and from nothing else (RFC 9101 §10.5), signed as its `request_object_signing_alg` says, which names an algorithm or is left out: beside `none`, the registration is refused. A request without one is refused on a page, with `invalid_request`, before its redirect URI is read. Its backchannel authentication requests are read from an object it signed, and from nothing else |
 
 An object signed under an algorithm the client did not register is refused unread, whatever its signature is
 worth. The discovery document lists in `request_object_signing_alg_values_supported` the algorithms the

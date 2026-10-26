@@ -210,6 +210,8 @@ call for, or call for and lack; the rule a public client's loopback addresses fo
 - The token exchange grant and the `token_exchange` member come together or not at all, and the token types
   it names are ones the provider reads.
 - `requires_pkce: false` is refused to a public client.
+- A client with `require_signed_request_object` (RFC 9101 §10.5) does not register
+  `request_object_signing_alg: none`, the one value under which an unsigned request object is read.
 - `backchannel_logout_session_required` needs a `backchannel_logout_uri`, and
   `frontchannel_logout_session_required` a `frontchannel_logout_uri`.
 - An encryption names its `alg` and its `enc` together. OIDC Registration §2 would default the `enc` to

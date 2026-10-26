@@ -44,11 +44,11 @@ The session is the one the browser holds with the tenant.
 
 - **No active session:** there is nothing to end. The browser is sent to the `post_logout_redirect_uri`
   with its `state`, or shown the page that says it is signed out.
-- **A hint that proves the session:** its `sub` is the subject of the account signed in and its `sid` the
-  session the browser holds. The session ends at once, without a question. The `sub` is compared as it is,
-  with the subject the account carries, which is the `sub` a client of public identifiers receives: the hint
-  of a client that receives pairwise identifiers proves no session, and its person is always asked.
-- **Anything else:** no hint, a hint that could not be verified, a hint of another person, a hint of another
+- **A hint that proves the session:** its `sub`, read for the client the hint was issued to, names the person
+  signed in, and its `sid` is the session the browser holds. The session ends at once, without a question. A
+  client of [pairwise](pairwise-subjects.md) identifiers proves it with the identifier of its sector, as a
+  client of public identifiers does with the subject the account carries.
+- **Anything else:** no hint, a hint that could not be verified, a hint of another person or of nobody, a hint of another
   session or with no `sid`. The person is asked, on a page that names the client when one is named and the
   person signed in, with two buttons, *Sign out* and *Stay signed in*. The page posts the same parameters
   back with the answer and a form token; a form posted without a valid token is refused with a page, status
