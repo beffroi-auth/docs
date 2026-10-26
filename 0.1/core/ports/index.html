@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The interfaces the outside implements, one capability each.">
+        <meta name="description" content="The interfaces the outside implements for the core, one capability each, what each one answers, and what implements it in the core and in the bundle.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="The ports of the core">
-  <meta property="og:description" content="The interfaces the outside implements, one capability each.">
+  <meta property="og:description" content="The interfaces the outside implements for the core, one capability each, what each one answers, and what implements it in the core and in the bundle.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -950,14 +950,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1002,14 +994,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1038,14 +1022,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1067,20 +1043,12 @@
   <span class="md-ellipsis">
     
   
-    TOTP
+    Totp
   
 
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1109,14 +1077,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1154,14 +1114,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1190,14 +1142,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1225,14 +1169,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1290,14 +1226,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1321,6 +1249,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The ports of the core
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1335,16 +1281,117 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#where-the-implementations-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where the implementations live
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groups
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sessions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys-and-sealing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys and sealing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-journal-the-archive-and-the-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The journal, the archive and the rest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-else-the-bridge-of-the-core-ships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What else the bridge of the core ships
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1371,14 +1418,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4228,14 +4267,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4377,6 +4408,102 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#where-the-implementations-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where the implementations live
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groups
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sessions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys-and-sealing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys and sealing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-journal-the-archive-and-the-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The journal, the archive and the rest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-else-the-bridge-of-the-core-ships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What else the bridge of the core ships
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4401,10 +4528,579 @@
 
 
 <h1 id="the-ports-of-the-core">The ports of the core<a class="headerlink" href="#the-ports-of-the-core" title="Link to this section">&para;</a></h1>
-<p>The core asks the outside for what it cannot do itself: repositories, a clock, a source of randomness, a
-password hasher, a key management client. Each port has one to five methods, so a caller sees what it calls
-and nothing more, and what an implementation may throw is written in the contract.</p>
-<p>This page will list the ports, what each one is for, and which implementations ship in the bridge.</p>
+<p>The core asks the outside for what it cannot do itself: storage, randomness, a hasher, the key management
+service, the ceremonies of WebAuthn. Each of these is a port, an interface of <code>Beffroi\Core\Port</code>, and each port
+has one to five methods, so a caller sees what it calls and nothing more. When two callers need disjoint halves of
+a store, the store has two ports: a person's page reads <code>CanPageCredentialsInterface</code>, where a login reads
+<code>CredentialRepositoryInterface</code>.</p>
+<p>Where a port says what its implementations throw, it says it in its contract, as <code>@throws</code>: <code>JwsSignerInterface</code>
+throws when the tenant has no active key or when the key management service does not answer, and
+<code>GeoLocatorInterface</code> never throws at all, an address nothing knows being no place.</p>
+<p>Beside its ports, the core reads two PSR interfaces it is handed: a clock (PSR-20), which its use cases read the
+time from, and an event dispatcher (PSR-14), which the bundle binds to its event bus (<a href="../events/">events</a>).</p>
+<h2 id="where-the-implementations-live">Where the implementations live<a class="headerlink" href="#where-the-implementations-live" title="Link to this section">&para;</a></h2>
+<p>Most ports have one implementation, which the bundle aliases the interface to; a name in the tables below is that
+implementation, in the bridge of the core (<code>Beffroi\Core\Bridge</code>) or in the bundle. Where several implementations
+of one interface are read as one list, a port, an interface of the model or an interface of the bridge, a tag
+feeds that list, every service carrying the tag being in it:</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>What the class implements</th>
+<th>What reads the tagged list</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi.password_algorithm</code></td>
+<td><code>PasswordAlgorithmInterface</code></td>
+<td><code>WiredPasswordAlgorithms</code>, the hasher of the first wired making every new hash</td>
+</tr>
+<tr>
+<td><code>beffroi.password_hasher</code></td>
+<td><code>AlgorithmPasswordHasherInterface</code></td>
+<td><code>PasswordHasherRegistry</code>, which hands each hash to the hasher that supports its algorithm</td>
+</tr>
+<tr>
+<td><code>beffroi.authentication_predicate</code></td>
+<td><code>AuthenticationPredicateInterface</code></td>
+<td><code>WiredAuthenticationPredicates</code>, which the <code>acr</code> vocabulary and the floor of a tenant name predicates from</td>
+</tr>
+<tr>
+<td><code>beffroi.archive_chapter</code></td>
+<td><code>ArchiveChapterInterface</code></td>
+<td>The archive a person asks for, one chapter per class</td>
+</tr>
+<tr>
+<td><code>beffroi.dead_records</code></td>
+<td><code>DeadRecordsInterface</code></td>
+<td>The hourly step that drops the rows that can no longer do anything</td>
+</tr>
+<tr>
+<td><code>beffroi.key_bound_artifact</code></td>
+<td><code>KeyBoundArtifactInterface</code></td>
+<td>The retirement window of a key</td>
+</tr>
+<tr>
+<td><code>beffroi.signature_algorithm</code></td>
+<td><code>JoseSignatureAlgorithmInterface</code></td>
+<td><code>JoseSignatureAlgorithms</code>, the first wired being the default signature algorithm</td>
+</tr>
+<tr>
+<td><code>beffroi.key_encryption_algorithm</code></td>
+<td><code>JoseKeyEncryptionAlgorithmInterface</code></td>
+<td><code>JoseKeyEncryptionAlgorithms</code></td>
+</tr>
+<tr>
+<td><code>beffroi.content_encryption_algorithm</code></td>
+<td><code>JoseContentEncryptionAlgorithmInterface</code></td>
+<td><code>JoseContentEncryptionAlgorithms</code></td>
+</tr>
+<tr>
+<td><code>beffroi.message_sealing_algorithm</code></td>
+<td><code>JoseMessageSealingAlgorithmInterface</code></td>
+<td><code>JoseMessageSealingAlgorithms</code></td>
+</tr>
+<tr>
+<td><code>beffroi.application_server_algorithm</code></td>
+<td><code>JoseApplicationServerAlgorithmInterface</code></td>
+<td><code>JoseApplicationServerAlgorithms</code>, the configuration of web push tagging the algorithm when web push is turned on</td>
+</tr>
+<tr>
+<td><code>beffroi.claim</code></td>
+<td><code>ClaimInterface</code></td>
+<td><code>WiredClaims</code>, the claims a person may describe themselves with and an upstream profile may fill</td>
+</tr>
+</tbody>
+</table>
+<h2 id="identity">Identity<a class="headerlink" href="#identity" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UserRepositoryInterface</code></td>
+<td><code>find</code>, <code>findBySubject</code>, <code>findByUsername</code>, <code>findAllByEmail</code>, <code>save</code></td>
+<td>The users of a tenant, a username and an address being found by their blind indexes</td>
+<td><code>DoctrineUserRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>TenantRepositoryInterface</code></td>
+<td><code>save</code></td>
+<td>Where what a tenant decided of itself is written, the floor of its logins</td>
+<td><code>DoctrineTenantRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>AmbientTenantInterface</code></td>
+<td><code>provide</code></td>
+<td>The tenant of the unit of work in progress, for what is not a use case, such as a column type; it names that tenant or throws</td>
+<td><code>TenantProvider</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>LinkedIdentityRepositoryInterface</code></td>
+<td><code>find</code>, <code>save</code></td>
+<td>A linked identity by its provider and its subject</td>
+<td><code>DoctrineLinkedIdentityRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>LinkedIdentitiesOfAPersonInterface</code></td>
+<td><code>of</code></td>
+<td>The linked identities of one person, for their archive</td>
+<td><code>DoctrineLinkedIdentityRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>UpstreamProvidersInterface</code></td>
+<td><code>of</code></td>
+<td>The upstream providers a tenant declares, whatever their protocol</td>
+<td><code>SamlUpstreamProviders</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>ClaimHistoryInterface</code></td>
+<td><code>record</code>, <code>forgetBefore</code></td>
+<td>Where a change of a claim is written, and forgotten past its retention</td>
+<td><code>DoctrineClaimHistory</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>ChangesOfAPersonInterface</code></td>
+<td><code>lastOf</code>, <code>everyChangeOf</code></td>
+<td>The changes of one person, the last few or all of them in pages</td>
+<td><code>DoctrineClaimHistory</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>CanPageChangesOfAPersonInterface</code></td>
+<td><code>pageOfChanges</code></td>
+<td>One page of those changes, over a period</td>
+<td><code>DoctrineClaimHistory</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>AtomicWritesInterface</code></td>
+<td><code>atomically</code></td>
+<td>Several writes that are one fact, all of them kept or none</td>
+<td><code>DoctrineAtomicWrites</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>UuidGeneratorInterface</code></td>
+<td><code>timeOrdered</code>, <code>opaque</code></td>
+<td>A UUID version 7 for a row, a version 4 for a value a party sees, a subject above all</td>
+<td><code>SymfonyUuidGenerator</code> (core)</td>
+</tr>
+<tr>
+<td><code>RandomnessInterface</code></td>
+<td><code>bytes</code></td>
+<td>The bytes of the secret values drawn through it, an authorization code, a refresh token, a TOTP secret and a backup code among them</td>
+<td><code>PlatformRandomness</code> (core)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="groups">Groups<a class="headerlink" href="#groups" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GroupRepositoryInterface</code></td>
+<td><code>findByName</code>, <code>save</code></td>
+<td>The groups of a tenant, by their exact name</td>
+<td><code>DoctrineGroupRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>GroupMembershipRepositoryInterface</code></td>
+<td><code>save</code>, <code>remove</code></td>
+<td>Where a membership is written and taken back</td>
+<td><code>DoctrineGroupMembershipRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>GroupsOfAPersonInterface</code></td>
+<td><code>of</code></td>
+<td>The memberships of one person with their sources</td>
+<td><code>DoctrineGroupMembershipRepository</code> (bundle)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="credentials">Credentials<a class="headerlink" href="#credentials" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CredentialRepositoryInterface</code></td>
+<td><code>findByUser</code>, <code>find</code>, <code>findByExternalId</code>, <code>save</code></td>
+<td>The credentials of a person, of one kind or of all, the revoked ones included</td>
+<td><code>DoctrineCredentialRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>CanPageCredentialsInterface</code></td>
+<td><code>pageOfCredentials</code></td>
+<td>One page of the credentials of one kind a person holds</td>
+<td><code>DoctrineCredentialRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>CanForgetCredentialsInterface</code></td>
+<td><code>credentialsOf</code>, <code>forget</code></td>
+<td>Every credential of a tenant, and the removal of one, for the floor that forgets them</td>
+<td><code>DoctrineCredentialRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>PasswordHasherInterface</code></td>
+<td><code>hash</code>, <code>verify</code>, <code>needsRehash</code></td>
+<td>What a use case does with a password</td>
+<td><code>PasswordHasherRegistry</code> (core)</td>
+</tr>
+<tr>
+<td><code>AlgorithmPasswordHasherInterface</code></td>
+<td><code>supports</code>, <code>hash</code>, <code>verify</code>, <code>needsRehash</code></td>
+<td>A hasher of named algorithms, which only the registry calls</td>
+<td><code>NativePasswordHasher</code> (core), tagged</td>
+</tr>
+<tr>
+<td><code>PasswordAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code>, <code>defaultAlgorithm</code></td>
+<td>The algorithms a hash may name, the first naming the hasher of every new one</td>
+<td><code>WiredPasswordAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>PasswordAttemptLimiterInterface</code></td>
+<td><code>attempt</code>, <code>reset</code></td>
+<td>How many passwords may be tried on a person in a window</td>
+<td><code>RateLimitedAttempts</code> (bundle), five a minute</td>
+</tr>
+<tr>
+<td><code>CodeAttemptLimiterInterface</code></td>
+<td><code>mayAttempt</code>, <code>attempt</code></td>
+<td>How many codes a person may try in a window</td>
+<td><code>RateLimitedAttempts</code> (bundle), five a minute</td>
+</tr>
+<tr>
+<td><code>BreachedPasswordsInterface</code></td>
+<td><code>looksUp</code>, <code>timesSeen</code></td>
+<td>What a list of compromised passwords says of a digest</td>
+<td><code>PwnedPasswords</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>PasskeyRegistrarInterface</code></td>
+<td><code>creationOptions</code>, <code>verifyAttestation</code></td>
+<td>The registration ceremony of WebAuthn Level 3 §7.1</td>
+<td><code>WebauthnPasskeyRegistrar</code> (core)</td>
+</tr>
+<tr>
+<td><code>PasskeyAuthenticatorInterface</code></td>
+<td><code>requestOptions</code>, <code>verifyAssertion</code></td>
+<td>The authentication ceremony of WebAuthn Level 3 §7.2</td>
+<td><code>WebauthnPasskeyAuthenticator</code> (core)</td>
+</tr>
+<tr>
+<td><code>MetadataBlobStoreInterface</code></td>
+<td><code>write</code>, <code>readAll</code></td>
+<td>The FIDO metadata the ceremonies read</td>
+<td><code>FileMetadataBlobStore</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>TotpAlgorithmInterface</code></td>
+<td><code>codeAt</code>, <code>provisioningUri</code></td>
+<td>The code of a time step (RFC 6238 §4.2), and the URI an application scans</td>
+<td><code>OtphpTotpAlgorithm</code> (core)</td>
+</tr>
+<tr>
+<td><code>SecretSealerInterface</code></td>
+<td><code>seal</code>, <code>unseal</code></td>
+<td>The secret of a TOTP, sealed by the key management service of the tenant</td>
+<td><code>EnvelopeSecretSealer</code> (core)</td>
+</tr>
+<tr>
+<td><code>EnrolmentTicketRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
+<td>The enrolment tickets of a person</td>
+<td><code>DoctrineEnrolmentTicketRepository</code> (bundle)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sessions">Sessions<a class="headerlink" href="#sessions" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AuthenticationSessionRepositoryInterface</code></td>
+<td><code>find</code>, <code>findActiveByUser</code>, <code>save</code></td>
+<td>The sessions of the provider</td>
+<td><code>DoctrineAuthenticationSessionRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>CanPageActiveSessionsInterface</code></td>
+<td><code>pageOfActiveSessions</code></td>
+<td>One page of the sessions open in the name of a person</td>
+<td><code>DoctrineAuthenticationSessionRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>AuthenticationPredicatesInterface</code></td>
+<td><code>named</code></td>
+<td>A predicate of the <code>acr</code> policy by its name, refused when nothing wired carries it</td>
+<td><code>WiredAuthenticationPredicates</code> (core)</td>
+</tr>
+<tr>
+<td><code>GeoLocatorInterface</code></td>
+<td><code>locate</code></td>
+<td>The place of an address, on the lane and never on the path of a request</td>
+<td><code>GeoLite2GeoLocator</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>UserAgentParserInterface</code></td>
+<td><code>parse</code></td>
+<td>A device read from a user agent</td>
+<td><code>NullUserAgentParser</code> (core), which reads none</td>
+</tr>
+</tbody>
+</table>
+<h2 id="keys-and-sealing">Keys and sealing<a class="headerlink" href="#keys-and-sealing" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TenantKeyRepositoryInterface</code></td>
+<td><code>find</code>, <code>findActive</code>, <code>findInService</code>, <code>findAll</code>, <code>save</code></td>
+<td>The keys of a tenant, whatever they are for</td>
+<td><code>FileTenantKeyRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>KeyPairGeneratorInterface</code></td>
+<td><code>generate</code></td>
+<td>A key pair for a wired algorithm, its <code>kid</code> the RFC 7638 thumbprint</td>
+<td><code>JwtLibraryKeyPairGenerator</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeySealerInterface</code></td>
+<td><code>seal</code>, <code>unseal</code></td>
+<td>The private JWK of a key in an envelope of the key management service, bound to the tenant</td>
+<td><code>EnvelopeKeySealer</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeyAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code></td>
+<td>Every algorithm a key may be drawn for</td>
+<td><code>JoseKeyAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>SignatureAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code>, <code>defaultAlgorithm</code></td>
+<td>The JWS algorithms the provider signs with</td>
+<td><code>JoseSignatureAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeyEncryptionAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code></td>
+<td>The JWE key management algorithms a client encrypts to the provider with</td>
+<td><code>JoseKeyEncryptionAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>ContentEncryptionAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code></td>
+<td>The JWE content encryption algorithms the provider opens</td>
+<td><code>JoseContentEncryptionAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>ApplicationServerAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code></td>
+<td>The algorithms of the keys handed to browsers for web push</td>
+<td><code>JoseApplicationServerAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>MessageSealingAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>defaultAlgorithm</code>, <code>named</code></td>
+<td>The algorithm of the key message bodies are sealed to</td>
+<td><code>JoseMessageSealingAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>RotationSchedulesInterface</code></td>
+<td><code>of</code></td>
+<td>The staging delay and the age of the family of an algorithm</td>
+<td><code>JoseKeyAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeyBoundArtifactInterface</code></td>
+<td><code>keyUse</code>, <code>longestLifetime</code></td>
+<td>A kind of artifact bound to a key, and how long it stays usable</td>
+<td>Six kinds of <code>beffroi/oidc</code>, tagged</td>
+</tr>
+<tr>
+<td><code>SigningKeyProviderInterface</code></td>
+<td><code>activeKey</code></td>
+<td>The active key of a signature algorithm, opened</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>DecryptionKeyProviderInterface</code></td>
+<td><code>decryptionKey</code></td>
+<td>The published key a JWE names, opened</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>PublicKeySetProviderInterface</code></td>
+<td><code>publicKeys</code></td>
+<td>The JWK Set of the tenant, which opens nothing</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeptSigningKeyProviderInterface</code></td>
+<td><code>activeKeptSigningKey</code></td>
+<td>The active key of a kept algorithm that signs, the SAML key</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeptDecryptionKeyProviderInterface</code></td>
+<td><code>keptDecryptionKeys</code></td>
+<td>The kept keys a peer encrypts to, the keys of an upstream SAML identity provider</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>ApplicationServerKeyProviderInterface</code></td>
+<td><code>activeApplicationServerKey</code>, <code>applicationServerKey</code></td>
+<td>The key a browser is handed, and the key a subscription was made under</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>MessageKeyProviderInterface</code></td>
+<td><code>sealingKey</code>, <code>messageKey</code></td>
+<td>The key a body is sealed to, and the key a sealed body names</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>JwsSignerInterface</code></td>
+<td><code>sign</code></td>
+<td>A compact JWS signed by the active key of an algorithm</td>
+<td><code>JwtLibraryJwsSigner</code> (core)</td>
+</tr>
+<tr>
+<td><code>JwsVerifierInterface</code></td>
+<td><code>verify</code></td>
+<td>A compact JWS verified against the published keys of the tenant</td>
+<td><code>JwtLibraryJwsVerifier</code> (core)</td>
+</tr>
+<tr>
+<td><code>JweDecrypterInterface</code></td>
+<td><code>decrypt</code></td>
+<td>A compact JWE encrypted to a published key, opened</td>
+<td><code>JwtLibraryJweDecrypter</code> (core)</td>
+</tr>
+<tr>
+<td><code>MessageBodySealerInterface</code></td>
+<td><code>seal</code></td>
+<td>The body of a message sealed to the message key, without asking the key management service anything</td>
+<td><code>JwtLibraryMessageBodySealer</code> (core)</td>
+</tr>
+<tr>
+<td><code>MessageBodyOpenerInterface</code></td>
+<td><code>open</code></td>
+<td>A sealed body opened by the process that consumes it</td>
+<td><code>JwtLibraryMessageBodyOpener</code> (core)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-journal-the-archive-and-the-rest">The journal, the archive and the rest<a class="headerlink" href="#the-journal-the-archive-and-the-rest" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>JournalInterface</code></td>
+<td><code>record</code>, <code>forgetBefore</code></td>
+<td>Where an act is written, and forgotten past its retention</td>
+<td><code>DoctrineJournal</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>ActsOfAPersonInterface</code></td>
+<td><code>lastOf</code>, <code>everyActOf</code></td>
+<td>The acts of one person, the last of some names or all of them in pages</td>
+<td><code>DoctrineJournal</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>CanPageActsOfAPersonInterface</code></td>
+<td><code>pageOfActs</code></td>
+<td>One page of the journal of a person</td>
+<td><code>DoctrineJournal</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>PersonalArchiveRepositoryInterface</code></td>
+<td><code>find</code>, <code>latestOf</code>, <code>save</code>, <code>forget</code>, <code>forgetExpired</code></td>
+<td>The archives people asked for</td>
+<td><code>DoctrinePersonalArchiveRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>ArchiveChapterInterface</code></td>
+<td><code>name</code>, <code>of</code></td>
+<td>One chapter of an archive, read in the clear</td>
+<td>Seven chapters of the core and two of <code>beffroi/oidc</code>, tagged</td>
+</tr>
+<tr>
+<td><code>ArchiveContainerInterface</code></td>
+<td><code>mediaType</code>, <code>extension</code>, <code>wrap</code></td>
+<td>The archive wrapped under the passphrase a person chose</td>
+<td><code>ZipArchiveContainer</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>DeadRecordsInterface</code></td>
+<td><code>forgetWhatIsDead</code></td>
+<td>The rows of a store that can no longer do anything, dropped and counted</td>
+<td>Nine stores of the bundle, tagged</td>
+</tr>
+<tr>
+<td><code>PushSubscriptionRepositoryInterface</code></td>
+<td><code>findActiveByUser</code>, <code>findByEndpoint</code>, <code>find</code>, <code>save</code></td>
+<td>The browsers of a person the provider may push to</td>
+<td><code>DoctrinePushSubscriptionRepository</code> (bundle)</td>
+</tr>
+<tr>
+<td><code>CanPageActiveSubscriptionsInterface</code></td>
+<td><code>pageOfActiveSubscriptions</code></td>
+<td>One page of those browsers</td>
+<td><code>DoctrinePushSubscriptionRepository</code> (bundle)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-else-the-bridge-of-the-core-ships">What else the bridge of the core ships<a class="headerlink" href="#what-else-the-bridge-of-the-core-ships" title="Link to this section">&para;</a></h2>
+<p>The bridge of the core holds fourteen stores in memory, for tests and for whoever wires the core without the
+bundle: <code>InMemoryUserRepository</code>, <code>InMemoryCredentialRepository</code>, <code>InMemoryAuthenticationSessionRepository</code>,
+<code>InMemoryTenantKeyRepository</code> and their siblings; the journal has none. It holds three implementations that
+answer nothing, <code>NullBreachedPasswords</code>, which asks no list, <code>NullGeoLocator</code>, which finds no place, and
+<code>NullUserAgentParser</code>, which reads no device, and two sources fixed for tests, <code>FixedUuidGenerator</code> and
+<code>FixedRandomness</code>. The protocol has ports of its own, which <a href="../../oidc/ports/">the ports of the protocol</a> list.</p>
 
 
 
@@ -4425,7 +5121,7 @@ and nothing more, and what an implementation may throw is written in the contrac
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:20 UTC">October 26, 2026</span>
   </span>
 
     

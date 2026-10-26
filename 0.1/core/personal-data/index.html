@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Sealed columns, blind indexes, and data keys that can be rewrapped live.">
+        <meta name="description" content="What is sealed, what is indexed blind, the data keys of a tenant and what they cover, what leaves the process sealed, and the one operation that cannot be undone.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Personal data">
-  <meta property="og:description" content="Sealed columns, blind indexes, and data keys that can be rewrapped live.">
+  <meta property="og:description" content="What is sealed, what is indexed blind, the data keys of a tenant and what they cover, what leaves the process sealed, and the one operation that cannot be undone.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -950,14 +950,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1002,14 +994,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1038,14 +1022,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1067,20 +1043,12 @@
   <span class="md-ellipsis">
     
   
-    TOTP
+    Totp
   
 
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1109,14 +1077,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1154,14 +1114,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1190,14 +1142,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1225,14 +1169,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1285,6 +1221,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Personal data
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1299,16 +1253,106 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-sealed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is sealed
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blind-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blind indexes
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-data-keys-of-a-tenant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The data keys of a tenant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wrapping-them-with-another-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrapping them with another client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroying-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Destroying them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#past-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Past the database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-long-it-is-kept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How long it is kept
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1335,14 +1379,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1371,14 +1407,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4228,14 +4256,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -4377,6 +4397,91 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-sealed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is sealed
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blind-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blind indexes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-data-keys-of-a-tenant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The data keys of a tenant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wrapping-them-with-another-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrapping them with another client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroying-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Destroying them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#past-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Past the database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-long-it-is-kept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How long it is kept
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4401,25 +4506,273 @@
 
 
 <h1 id="personal-data">Personal data<a class="headerlink" href="#personal-data" title="Link to this section">&para;</a></h1>
-<p>Personal data is sealed in its column with a data key of the tenant, itself wrapped by the key management
-service, so a database alone reads nothing. The lookups that must still work use blind indexes rather than
-a readable column.</p>
-<p>The data keys can be rewrapped onto another key management client while the provider serves sign-ins, and
-destroying them is the one operation that cannot be undone.</p>
-<p>The same rule holds past the database. The body of every message the provider writes to a transport is
-sealed as well, so a broker or the table of a transport holds nothing readable, and the journal of the
-acts, what a client was given at each of them, what a record used to say and the archive a person asks for
-are sealed where they sit like every other column of a person. So is the source of a person, which says
-which organisation they belong to, and so are the metadata accepted for a SAML peer, whose contacts name
-people.</p>
-<p><strong>The archive is the one file in which all of it stands in clear at once</strong>, so it is held by rules rather
-than by settings: it is sealed at rest in a scope of its own, it expires a week after it was asked for,
-and that week is a figure in the code. It leaves under a passphrase of the person's choosing when they
-ask for one.</p>
+<p>Personal data is sealed in its column with a data key of the tenant, itself wrapped by the master key of that
+tenant in the key management service, so a database alone reads nothing. The lookups that must still work match a
+blind index, a keyed tag of the value, rather than a readable column.</p>
+<p>The data keys can be wrapped by another key management client while the provider serves sign-ins, and destroying
+them is the one operation that cannot be undone. The same rule holds past the database: what the provider writes
+to a transport leaves sealed too.</p>
+<h2 id="what-is-sealed">What is sealed<a class="headerlink" href="#what-is-sealed" title="Link to this section">&para;</a></h2>
+<p>Every class of the model that a row holds says, field by field, what it holds of a person: a personal datum sealed
+under the data key of its table, a blind index of such a datum, or a field a dump gives away together with the
+sentence that says why that gives nothing away. The suite of the bundle walks the schema against those
+declarations, and refuses a column no declaration names, a declaration no column carries, and a field sealed under
+the key of another table than its own.</p>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>What it seals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td>The username, the email address, the profile, the phone number, the postal address, and the source that created the person, which says which organisation they are of</td>
+</tr>
+<tr>
+<td><code>linked_identity</code></td>
+<td>The provider, the subject it gives the person, and the snapshot of what it said</td>
+</tr>
+<tr>
+<td><code>passkey_credential</code></td>
+<td>The name a person gave a passkey</td>
+</tr>
+<tr>
+<td><code>push_subscription</code></td>
+<td>The endpoint of a browser web push reaches, and the name a person gave it</td>
+</tr>
+<tr>
+<td><code>authentication_session</code></td>
+<td>Where a session was opened from and last seen from</td>
+</tr>
+<tr>
+<td><code>claim_change</code></td>
+<td>What a claim said before a person changed it, what it says after, and where the change came from</td>
+</tr>
+<tr>
+<td><code>journal</code></td>
+<td>Where each act came from</td>
+</tr>
+<tr>
+<td><code>personal_archive</code></td>
+<td>The archive a person asked for</td>
+</tr>
+<tr>
+<td><code>interaction</code></td>
+<td>The <code>login_hint</code> and the <code>id_token_hint</code> of an authorization request</td>
+</tr>
+<tr>
+<td><code>pushed_authorization_request</code></td>
+<td>The parameters a client pushed</td>
+</tr>
+<tr>
+<td><code>device_authorization_request</code></td>
+<td>Where a device authorization request came from</td>
+</tr>
+<tr>
+<td><code>backchannel_authentication_request</code></td>
+<td>The binding message of a backchannel request, and where it came from</td>
+</tr>
+<tr>
+<td><code>client</code></td>
+<td>What a registered client wrote of itself, what the registration policy wrote on it, and its secret</td>
+</tr>
+<tr>
+<td><code>disclosure</code></td>
+<td>What a client was given of a person: the scopes, the claims and the authorization details</td>
+</tr>
+<tr>
+<td><code>saml_service_provider</code>, <code>saml_upstream_identity_provider</code></td>
+<td>The metadata accepted for a SAML peer, whose contacts name people</td>
+</tr>
+</tbody>
+</table>
+<p>Each family is the name of its table without the <code>beffroi_</code> prefix. What stays readable is named as plainly, each
+field with the sentence that says why it gives nothing away. Among them: the subject, a stable pseudonym that names a
+person without saying anything about them; the tenant; dates, states and counts; digests and envelopes, which do
+not open; what a browser, an authenticator or a client publishes anyway, such as the public key of a passkey;
+identifiers drawn at random; the identifier of a client, and what a request asked of the protocol, such as its
+scopes; what a session proved, which every token issued from it carries; the names of the groups of the tenant;
+and the name of an act or of a claim, never its value.</p>
+<p>A sealed column is binary in the database, whatever length its mapping states: that length is the one the model
+checks of the value in clear. An option of the mapping that describes the stored value, such as <code>jsonb</code>, does not
+apply to a sealed column, which holds a ciphertext no query of the database reads into.</p>
+<div class="admonition note">
+<p class="admonition-title">A ciphertext is bound to its tenant, not to its row</p>
+<p>The authenticated data of every sealed value name the tenant, so a value of one tenant does not open for
+another, wherever it is found. They do not name the table, the column or the row: within one tenant and one
+family, a value moved into another row of the same column opens there.</p>
+</div>
+<h2 id="blind-indexes">Blind indexes<a class="headerlink" href="#blind-indexes" title="Link to this section">&para;</a></h2>
+<p>A sealed column holds a different ciphertext for every write of the same value, so <code>WHERE username = ?</code> matches
+nothing. The columns that are looked up carry a sibling instead: a keyed tag of the value under the index key of
+the tenant, sixty-four hexadecimal characters, written in the same statement as the value it indexes, which is what
+a lookup matches and what a unique constraint holds.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Read as</th>
+<th>What matches on it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The username of a person</td>
+<td>Byte for byte</td>
+<td>A login, the console naming a person, the uniqueness of a username in the tenant</td>
+</tr>
+<tr>
+<td>The email address of a person</td>
+<td>The whole address in lower case, its local part included</td>
+<td>A sign-in through an upstream provider, the first one or a later one that brings another address, which refuses an address another person holds</td>
+</tr>
+<tr>
+<td>The provider of a linked identity</td>
+<td>Byte for byte</td>
+<td>Every lookup of a linked identity, beside the subject, and the uniqueness of a pair</td>
+</tr>
+<tr>
+<td>The subject of a linked identity</td>
+<td>Byte for byte</td>
+<td>The sign-in through a provider, and an assertion of a trusted issuer</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A tag says which rows share a value and never what the value is.</strong> That is the one thing a column gives up by
+carrying one, which is why only these four do: a username, an address and a subject are high-entropy and looked
+up by equality. The provider is not: a tenant federates from a handful of them, so its column says which rows
+share one and the largest group is guessable. It carries a tag because a linked identity is looked up, and held
+unique, by the pair.
+<code>gender</code>, <code>locale</code>, <code>zoneinfo</code> and <code>birthdate</code> carry none.</p>
+<p>The columns derive their tags under subkeys named after themselves, so a username that happens to be an address
+does not share the tag of that address. A deployment whose projection of the username or of the address changed
+derives those tags again for every person of the tenant, in pages of a hundred, a second run writing nothing; the
+tags of the linked identities are not re-derived by it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>beffroi:user:reindex
+</span></code></pre></div>
+<h2 id="the-data-keys-of-a-tenant">The data keys of a tenant<a class="headerlink" href="#the-data-keys-of-a-tenant" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>What it covers</th>
+<th>Its life</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;slug&gt;.&lt;family&gt;</code>, one per family of the table above</td>
+<td>Every sealed value of that family</td>
+<td>Minted at the first write of the family. After thirty days, the next write mints another, and the older keys stay to open what they sealed</td>
+</tr>
+<tr>
+<td><code>&lt;slug&gt;.blind_index</code></td>
+<td>Every blind index of the tenant</td>
+<td>Minted at the first lookup or write that needs it, never replaced: every tag already written was derived under it</td>
+</tr>
+</tbody>
+</table>
+<p>A data key is 32 bytes, AES-256-GCM, held wrapped in the table <code>beffroi_data_key</code> by the master key the
+configuration names for the tenant, <code>beffroi.keys.key_id</code> resolved for its slug, the one its own keys are sealed
+under. A process opens each data key once and keeps it, so the key management service is asked once per key and not
+once per value. Nothing in the ordinary life of a tenant removes a data key: a new key is minted beside the ones
+there, and a rewrap changes what protects a key and not the key.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:list
+</span></code></pre></div>
+<p>It lists the keys of the tenant by scope, each with its reference, when it was minted, the master key that wraps
+it, the key management client that opens it and whether it is the current key of its scope or a retired one. It
+never opens a key. A tenant that holds none has sealed nothing yet, and the command says which families there are.</p>
+<h2 id="wrapping-them-with-another-client">Wrapping them with another client<a class="headerlink" href="#wrapping-them-with-another-client" title="Link to this section">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second<span class="w"> </span>--dry-run
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>What it says</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--to</code></td>
+<td>The key management client that wraps the data keys the tenant holds, a name of <code>key_management.clients</code></td>
+</tr>
+<tr>
+<td><code>--from</code></td>
+<td>Move only the keys that client wraps; all of them when it is left out</td>
+</tr>
+<tr>
+<td><code>--dry-run</code></td>
+<td>List what would move, and write nothing</td>
+</tr>
+</tbody>
+</table>
+<p>The master key is not asked for: it is the one the configuration resolves for the slug of the tenant, so an
+operator cannot type the master key of another tenant. No sealed value is read and none is rewritten, every
+ciphertext going on referring to the same data key, the index key included. The provider serves while the keys
+move: a read resolves the client and the master key from the row of the data key it names, whatever wrapped it.
+The command moves the keys the tenant holds when it runs; a key minted afterwards, the first of a family or the
+next one after thirty days, is wrapped by the client <code>beffroi.keys.kms</code> names. The act
+<code>tenant.data_keys_rewrapped</code> goes to the journal, and its event carries the client the keys were taken from when
+<code>--from</code> named one, the client and the master key that wrap them afterwards, how many keys moved, and how many
+scopes the tenant holds. One tenant at a time, by hand: nothing schedules it.</p>
+<p>The keys of the tenant itself, its signing and encryption keys, are sealed apart, one file each, and no command
+rewraps them: a key sealed by another service is replaced by a <a href="../keys/#rotating-without-an-outage">rotation</a>.</p>
+<h2 id="destroying-them">Destroying them<a class="headerlink" href="#destroying-them" title="Link to this section">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:destroy<span class="w"> </span>example
+</span></code></pre></div>
+<p>The command erases every data key of the tenant, the index key included, and the slug has to be typed back:
+without it, or with another one, it says how many keys over which scopes it would erase, and erases nothing. There
+is no <code>--force</code>. Afterwards every column the keys sealed holds a ciphertext nothing opens, by anybody, and the rows
+are still there: what is gone is the means of reading them. The act <code>tenant.data_keys_destroyed</code> goes to the
+journal, and its event carries how many keys over how many scopes were erased, which is what cannot be counted
+afterwards. It cannot be undone.</p>
+<h2 id="past-the-database">Past the database<a class="headerlink" href="#past-the-database" title="Link to this section">&para;</a></h2>
+<p><strong>What leaves the process on a transport leaves sealed.</strong> The body of every message the provider writes to a
+transport, an event, a command or a notification, is a JWE to the <code>MESSAGE-SEAL</code> key of the tenant, under
+<code>ECDH-ES+A256KW</code> and <code>A256GCM</code>, its protected header naming the tenant, so a body moved to the queue of another
+tenant does not open there. The serializer that seals it is the default one of every transport, the failure
+transport included, so a broker, the table of a transport and a backup of either hold nothing readable. What stays
+in the clear on a message is what makes a failed one readable: the class of the message, its stamps and the slug of
+the tenant it was written under, nothing of a person among them.</p>
+<p>The journal of the acts, what a client was given at each of them, what a record used to say and the archive a person
+asks for are sealed where they sit like every other column of a person.</p>
+<h2 id="how-long-it-is-kept">How long it is kept<a class="headerlink" href="#how-long-it-is-kept" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Kept for</th>
+<th>Forgotten by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An act of the journal, and what a client was given at it</td>
+<td><code>beffroi.journal.retention</code> days, 180 by default</td>
+<td>A daily step</td>
+</tr>
+<tr>
+<td>A change of a claim</td>
+<td><code>beffroi.history.retention</code> days, 180 by default</td>
+<td>A daily step</td>
+</tr>
+<tr>
+<td>The archive a person asked for</td>
+<td>Seven days from the moment it was asked for, a figure in the code</td>
+<td>An hourly step</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The archive is the one file in which all of it stands in clear at once</strong>, so it is held by rules rather than by
+settings: it is sealed at rest in a family of its own, it expires a week after it was asked for, whether it was
+built or not, and it leaves under a passphrase of the person's choosing when they ask for one, sixteen characters
+at the least.</p>
 <p><a href="../../symfony-bundle/account/#your-data"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Your data, on the account pages</a></p>
-<p>This page will describe what is sealed, what is indexed blind, the scopes a data key covers, and the
-rewrapping.</p>
 
 
 
@@ -4440,7 +4793,7 @@ rewrapping.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:30:55 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:20 UTC">October 26, 2026</span>
   </span>
 
     

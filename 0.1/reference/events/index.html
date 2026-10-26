@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Every event both packages dispatch, and what each one carries.">
+        <meta name="description" content="Every event the core, the protocol and the SAML package dispatch, what each one carries, what listens to it, and how it crosses the broker.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -70,7 +70,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Events">
-  <meta property="og:description" content="Every event both packages dispatch, and what each one carries.">
+  <meta property="og:description" content="Every event the core, the protocol and the SAML package dispatch, what each one carries, what listens to it, and how it crosses the broker.">
   <meta property="og:image" content="https://beffroi-auth.github.io/docs/0.1latest/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -948,14 +948,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
             </a>
             
@@ -1000,14 +992,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1036,14 +1020,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1065,20 +1041,12 @@
   <span class="md-ellipsis">
     
   
-    TOTP
+    Totp
   
 
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1107,14 +1075,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1152,14 +1112,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1188,14 +1140,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1223,14 +1167,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -1288,14 +1224,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1324,14 +1252,6 @@
   </span>
   
   
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
-  
 
       </a>
     </li>
@@ -1359,14 +1279,6 @@
     
   </span>
   
-  
-    
-  
-  
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
-    </span>
-  
-
   
 
       </a>
@@ -4213,6 +4125,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -4227,16 +4157,84 @@
   </span>
   
   
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
     
   
   
-    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#every-event-crosses-the-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every event crosses the broker
+      
     </span>
+  </a>
   
-
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-listens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What listens
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-events-of-the-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The events of the core
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-events-of-the-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The events of the protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-event-of-the-saml-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The event of the SAML package
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -4377,6 +4375,69 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#every-event-crosses-the-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every event crosses the broker
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-listens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What listens
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-events-of-the-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The events of the core
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-events-of-the-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The events of the protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-event-of-the-saml-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The event of the SAML package
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4401,10 +4462,455 @@
 
 
 <h1 id="events">Events<a class="headerlink" href="#events" title="Link to this section">&para;</a></h1>
-<p>The core and the protocol dispatch PSR-14 events, and the bundle turns the ones that must leave the process
-into messages. An event carries exactly what it is about: a domain object only when that object survives a
-queue, and facts by identifier otherwise.</p>
-<p>This page will list every event of both packages, what it carries, and whether it crosses a broker.</p>
+<p>The core, <code>beffroi/oidc</code> and <code>beffroi/saml</code> dispatch PSR-14 events, and the bundle replays them on Messenger. Every
+event names its act, the date it happened, its tenant and the provenance of the request it came from, as <a href="../../core/events/#what-every-event-carries">the
+events of the core</a> describe; the tables below say what each one
+carries beyond those four, and who it concerns:</p>
+<ul>
+<li><strong>a person</strong>, when it implements <code>ConcernsAPersonInterface</code> and names the subject of their account, never the
+  <code>sub</code> a client was given;</li>
+<li><strong>a client</strong>, when it implements <code>ConcernsAClientInterface</code> and names the client by the identifier it was
+  registered under, never the client itself.</li>
+</ul>
+<h2 id="every-event-crosses-the-broker">Every event crosses the broker<a class="headerlink" href="#every-event-crosses-the-broker" title="Link to this section">&para;</a></h2>
+<p>An event is routed to the transport <code>async_priority_low</code>, the database unless the deployment names a broker,
+every one of them by the interface they all implement, so an event added to a package leaves the process without
+a line of configuration. Its body is a JWE to the message key of the tenant; what stays readable on the transport
+is the class of the event, its stamps and the slug of its tenant. Nothing listens in the process that raised it,
+and an event nothing listens to is announced all the same.</p>
+<h2 id="what-listens">What listens<a class="headerlink" href="#what-listens" title="Link to this section">&para;</a></h2>
+<p><strong>Every event is written to the journal.</strong> <code>WriteTheActDownHandler</code> hears every event of the three packages and
+writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person and the
+client when it concerns a client, and nothing else. A row is kept <code>beffroi.journal.retention</code> days, 180 by default,
+and <code>beffroi:user:journal</code> reads it back for a person.</p>
+<p>The other listeners of the bundle each hear one event, or an interface a few of them implement:</p>
+<table>
+<thead>
+<tr>
+<th>Listener</th>
+<th>Hears</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BackChannelLogoutHandler</code></td>
+<td><code>session.ended</code></td>
+<td>Mints a logout token for each client of the session that registered a back-channel logout URI (Back-Channel Logout 1.0 §2.6), each one raising <code>logout_token.issued</code></td>
+</tr>
+<tr>
+<td><code>RevokeTheTokensOfTheSessionHandler</code></td>
+<td><code>session.ended</code></td>
+<td>Revokes the refresh tokens of the session and removes its opaque access tokens, dated by the end of the session</td>
+</tr>
+<tr>
+<td><code>RevokeWhatOutlivedTheSessionHandler</code></td>
+<td><code>refresh_token.outlived_its_session</code></td>
+<td>The same again, dated by the end of the session, for what a refresh in flight had saved</td>
+</tr>
+<tr>
+<td><code>EnrichTheProvenanceHandler</code></td>
+<td><code>user.authenticated</code>, through <code>SessionProvenanceInterface</code></td>
+<td>Finds the place of the two provenances of the session and writes it on its row</td>
+</tr>
+<tr>
+<td><code>BuildThePersonalArchiveHandler</code></td>
+<td><code>archive.asked</code></td>
+<td>Builds the archive the person asked for</td>
+</tr>
+<tr>
+<td><code>RecordClientUseHandler</code></td>
+<td><code>authorization_code.issued</code> and <code>tokens.issued</code>, through <code>ClientInUseInterface</code></td>
+<td>Dates the last use of the client, which the removal of the clients nobody uses reads</td>
+</tr>
+<tr>
+<td><code>WriteWhatTheClientWasGivenHandler</code></td>
+<td><code>tokens.issued</code></td>
+<td>Writes, beside the act, what the client was given of the person, kept as long as the act</td>
+</tr>
+<tr>
+<td><code>QueueLogoutTokenHandler</code></td>
+<td><code>logout_token.issued</code></td>
+<td>Hands the token to the notifications lane, <code>async_notifications</code>, which posts it to the client</td>
+</tr>
+<tr>
+<td><code>QueueClientNotificationHandler</code></td>
+<td><code>backchannel_request.answered</code></td>
+<td>Hands the call to the notification endpoint of the client to the same lane</td>
+</tr>
+<tr>
+<td><code>RecordTheServiceProviderOfTheSessionHandler</code></td>
+<td><code>saml.service_provider.signed_in</code></td>
+<td>Records the part of the service provider in the session, for the logout the identity provider starts</td>
+</tr>
+</tbody>
+</table>
+<p>A logout token its client refuses is given up at once. One that cannot be delivered is tried again on the
+schedule of <code>beffroi.back_channel_logout</code>, and goes to the failure transport once that schedule runs out. Either
+way, <code>logout_token.given_up</code> is raised.</p>
+<h2 id="the-events-of-the-core">The events of the core<a class="headerlink" href="#the-events-of-the-core" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Act</th>
+<th>Class</th>
+<th>Raised when</th>
+<th>Carries beyond the four</th>
+<th>Concerns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user.authenticated</code></td>
+<td><code>UserAuthenticated</code></td>
+<td>A session is opened</td>
+<td>The session</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>authentication.failed</code></td>
+<td><code>AuthenticationFailed</code></td>
+<td>A login is refused</td>
+<td>The method claimed, the reason, the identifier as typed, the user when one answers</td>
+<td>A person, or nobody</td>
+</tr>
+<tr>
+<td><code>session.ended</code></td>
+<td><code>AuthenticationSessionEnded</code></td>
+<td>A session ends</td>
+<td>The session, which says who ended it</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>password.used</code></td>
+<td><code>PasswordUsed</code></td>
+<td>A password is accepted</td>
+<td>The credential</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>passkey.used</code></td>
+<td><code>PasskeyUsed</code></td>
+<td>A passkey assertion is verified</td>
+<td>The credential, and whether its sign count did not grow</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>totp.used</code></td>
+<td><code>TotpUsed</code></td>
+<td>A code of the authenticator application is accepted</td>
+<td>The credential</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>backup_code.used</code></td>
+<td><code>BackupCodeUsed</code></td>
+<td>A backup code is spent</td>
+<td>The credential</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>person.provisioned</code></td>
+<td><code>PersonProvisioned</code></td>
+<td>An upstream provider creates a person</td>
+<td>The subject and the name of the provider</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>credential.enrolled</code></td>
+<td><code>CredentialEnrolled</code></td>
+<td>A passkey or a TOTP is enrolled</td>
+<td>The credential</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>credential.renamed</code></td>
+<td><code>CredentialRenamed</code></td>
+<td>A passkey is renamed</td>
+<td>The credential, and the name it had</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>credential.revoked</code></td>
+<td><code>CredentialRevoked</code></td>
+<td>A credential is revoked</td>
+<td>The credential</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>credential.forgotten</code></td>
+<td><code>CredentialForgotten</code></td>
+<td>The floor of the tenant forgets a credential</td>
+<td>The credential</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>password.changed</code></td>
+<td><code>PasswordChanged</code></td>
+<td>A person replaces their own password</td>
+<td>The credential</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>password.rehashed</code></td>
+<td><code>PasswordRehashed</code></td>
+<td>A password is stored again under the algorithm and the parameters of the hasher</td>
+<td>The credential</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>backup_codes.renewed</code></td>
+<td><code>BackupCodesRenewed</code></td>
+<td>A person draws another set of backup codes</td>
+<td>The credential</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>enrolment_ticket.issued</code></td>
+<td><code>EnrolmentTicketIssued</code></td>
+<td>An enrolment ticket is issued</td>
+<td>The ticket</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>person.described_themselves</code></td>
+<td><code>PersonDescribedThemselves</code></td>
+<td>A person says something of themselves</td>
+<td>The user, the name of the claim, whether it was taken back</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>archive.asked</code></td>
+<td><code>PersonAskedForTheirArchive</code></td>
+<td>A person asks for their archive</td>
+<td>The identifier of the archive and the subject</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>archive.taken</code></td>
+<td><code>PersonTookTheirArchive</code></td>
+<td>A person downloads it</td>
+<td>The same</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>archive.dropped</code></td>
+<td><code>PersonDroppedTheirArchive</code></td>
+<td>A person has it dropped</td>
+<td>The same</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>tenant.key_staged</code></td>
+<td><code>TenantKeyStaged</code></td>
+<td>A key is drawn and staged, published in the JWK Set when its algorithm is one the set carries</td>
+<td>The key</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>tenant.key_rotated</code></td>
+<td><code>TenantKeyRotated</code></td>
+<td>A key takes over</td>
+<td>The key activated, and the one it replaced</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>tenant.key_retired</code></td>
+<td><code>TenantKeyRetired</code></td>
+<td>A key leaves the service</td>
+<td>The key, and why</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>tenant.data_keys_rewrapped</code></td>
+<td><code>TenantDataKeysRewrapped</code></td>
+<td>The data keys are wrapped by another client</td>
+<td>The counts, the clients and the master key</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>tenant.data_keys_destroyed</code></td>
+<td><code>TenantDataKeysDestroyed</code></td>
+<td>The data keys are erased</td>
+<td>The counts</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>kms.unavailable</code></td>
+<td><code>KmsUnavailable</code></td>
+<td>The key management service fails on the path of a request</td>
+<td>What the service said</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>load.budget_spent</code></td>
+<td><code>LoadBudgetSpent</code></td>
+<td>A request is refused for a spent load budget</td>
+<td>The budget, the route, the client when one was authenticated</td>
+<td>Nobody</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-events-of-the-protocol">The events of the protocol<a class="headerlink" href="#the-events-of-the-protocol" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Act</th>
+<th>Class</th>
+<th>Raised when</th>
+<th>Carries beyond the four</th>
+<th>Concerns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>authorization_code.issued</code></td>
+<td><code>AuthorizationCodeIssued</code></td>
+<td>An authorization code leaves for a client</td>
+<td>The client, the subject, the grant, the session, the hash of the code, the scopes, when it expires</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>authorization_code.replayed</code></td>
+<td><code>AuthorizationCodeReplayed</code></td>
+<td>A code is presented a second time (RFC 6749 §4.1.2), and the tokens issued from it are revoked</td>
+<td>The hash of the code, the subject, the client it was issued to, the client that presented it, the hashes of the tokens revoked</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>tokens.issued</code></td>
+<td><code>TokensIssued</code></td>
+<td>The token endpoint answers a client, whatever the grant</td>
+<td>The grant type and the grant, the client, the subject, null for a client acting for itself (RFC 6749 §4.4), the session, the scopes granted, when the access token expires, whether an ID token left, what the tokens are bound to, the hash of the refresh token, the claims asked for by name, the authorization details, the shape of the access token; never a token</td>
+<td>A person or nobody, a client</td>
+</tr>
+<tr>
+<td><code>refresh_token.rotated</code></td>
+<td><code>RefreshTokenRotated</code></td>
+<td>A refresh token is replaced by its successor (RFC 6749 §6)</td>
+<td>The client, the subject, the family, the hashes of both tokens, when the successor expires</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>refresh_token.reuse_detected</code></td>
+<td><code>RefreshTokenReuseDetected</code></td>
+<td>A rotated refresh token is presented again, and its whole family revoked (RFC 9700 §4.13.2)</td>
+<td>The client, the subject, the family, the hash presented, the hashes revoked</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>refresh_token.outlived_its_session</code></td>
+<td><code>RefreshTokenOutlivedItsSession</code></td>
+<td>A refresh token still recorded active is presented for a session that ended, and refused</td>
+<td>The client, the subject, the session, when the session ended</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>token.revoked</code></td>
+<td><code>TokenRevoked</code></td>
+<td>A client gives a token back at the revocation endpoint (RFC 7009 §2.1)</td>
+<td>The client that revoked it, the subject, null for a token naming nobody, the type of the token, its hash, the grant, the access tokens revoked with a refresh token</td>
+<td>A person, or nobody</td>
+</tr>
+<tr>
+<td><code>client_authentication.failed</code></td>
+<td><code>ClientAuthenticationFailed</code></td>
+<td>A client fails to authenticate, at any endpoint that authenticates one</td>
+<td>The reason, the client identifier as typed, the method presented</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>consent.granted</code></td>
+<td><code>ConsentGranted</code></td>
+<td>A person agrees, on the consent page, on the page that confirms a device code, or when answering a backchannel request</td>
+<td>The consent, the client, the subject, the scopes, the authorization details, the consent it takes over from</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>consent.revoked</code></td>
+<td><code>ConsentRevoked</code></td>
+<td>A person takes a consent back, on their account or by the console</td>
+<td>The consent, the client, the subject, the grants revoked with it, and the hashes of the refresh and access tokens revoked</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>introspection.answered</code></td>
+<td><code>IntrospectionAnswered</code></td>
+<td>A resource server is told who an active token names (RFC 7662 §2.2). An inactive token, or one naming nobody, raises nothing</td>
+<td>The client that asked, the subject</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>userinfo.answered</code></td>
+<td><code>UserInfoAnswered</code></td>
+<td>A client is answered the claims of a person (OIDC Core §5.3)</td>
+<td>The client, the subject; never which claims</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>logout_token.issued</code></td>
+<td><code>LogoutTokenIssued</code></td>
+<td>A logout token is minted for a client of a session that ended (Back-Channel Logout 1.0 §2.6)</td>
+<td>The client, the subject, the logout URI, the session, the token</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>logout_token.given_up</code></td>
+<td><code>LogoutTokenGivenUp</code></td>
+<td>A logout token is refused by its client, or could not be delivered within the retries (Back-Channel Logout 1.0 §2.8)</td>
+<td>The client, the subject, the session, what the last attempt came back with; never the token</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>backchannel_request.answered</code></td>
+<td><code>BackchannelRequestAnswered</code></td>
+<td>A backchannel request is answered, yes or no, for a client registered to be called (CIBA Core §10.2)</td>
+<td>The client, the subject, null when the request named nobody, the notification endpoint, the identifier of the request, the notification token</td>
+<td>A person or nobody, a client</td>
+</tr>
+<tr>
+<td><code>pushed_request.refused</code></td>
+<td><code>PushedRequestRefused</code></td>
+<td>A <code>request_uri</code> presented at the authorization endpoint grants nothing (RFC 9126 §4)</td>
+<td>The reason, the client that presented it, the client it was pushed by; never the reference</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>registered_client.deleted</code></td>
+<td><code>RegisteredClientDeleted</code></td>
+<td>A client that registered itself is gone: deleted at its configuration endpoint (RFC 7592 §2.3), by <code>beffroi:client:delete</code>, or dropped for want of use</td>
+<td>The client</td>
+<td>A client</td>
+</tr>
+</tbody>
+</table>
+<p>The reason of <code>client_authentication.failed</code> is one of <code>malformed_credentials</code>, <code>multiple_mechanisms</code>,
+<code>mismatched_client_id</code>, <code>unsupported_scheme</code>, <code>no_credentials</code>, <code>unknown_client</code>, <code>unexpected_method</code>,
+<code>invalid_secret</code>, <code>invalid_assertion</code>, <code>replayed_assertion</code>, <code>unreadable_client_keys</code>, <code>unexpected_certificate</code> and
+<code>unreadable_certificate</code>; the client is answered <code>invalid_request</code> or <code>invalid_client</code> (RFC 6749 §5.2) whatever it
+is. The reason of <code>pushed_request.refused</code> is one of <code>unknown_request_uri</code>, <code>expired_request_uri</code>,
+<code>already_used_request_uri</code> and <code>other_client</code>; the client is answered <code>invalid_request_uri</code> whatever it is.</p>
+<h2 id="the-event-of-the-saml-package">The event of the SAML package<a class="headerlink" href="#the-event-of-the-saml-package" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Act</th>
+<th>Class</th>
+<th>Raised when</th>
+<th>Carries beyond the four</th>
+<th>Concerns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>saml.service_provider.signed_in</code></td>
+<td><code>ServiceProviderSignedIn</code></td>
+<td>Single sign-on answers a service provider with an assertion written from a session</td>
+<td>The session, the entity ID of the service provider, the subject; never the <code>NameID</code> it was given</td>
+<td>A person</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -4425,7 +4931,7 @@ queue, and facts by identifier otherwise.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 3, 2026 11:39:49 UTC">October 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:20 UTC">October 26, 2026</span>
   </span>
 
     
