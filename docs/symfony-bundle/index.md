@@ -5,15 +5,17 @@ description: What beffroi/symfony-bundle adds to an application: configuration, 
 
 # The Symfony bundle
 
-`beffroi/symfony-bundle` is the only place in Beffroi where Symfony appears. A `Request`, the container, the
-entity manager, a Twig template and a console command live here and nowhere else, which is what keeps the
-packages underneath usable without a framework.
+`beffroi/symfony-bundle` is the only place in Beffroi where the Symfony framework appears. A `Request`, the
+container, the entity manager, a Twig template and a console command live here and nowhere else, which is what
+keeps the packages underneath usable without a framework: they use a few standalone components,
+`symfony/uid` for identifiers and `symfony/key-management` for the key management service, and nothing of
+the framework.
 
 ## What it brings
 
 | Page | What it covers |
 |---|---|
-| [Configuration](configuration.md) | One tree under `beffroi`, section by section, validated when the container is built |
+| [Configuration](configuration.md) | One tree under `beffroi`, section by section: its shape checked when the container is built, the values of the tenant, the clients and the trusted issuers when the provider first builds them |
 | [Routes and planes](routes-and-planes.md) | The controllers of both planes, and `BEFFROI_PLANE` to restrict a process to one |
 | [Persistence](persistence.md) | The Doctrine mapping, the migrations, and the DBAL types that read value objects back |
 | [Security](security.md) | The firewalls, the authenticators, and what a session carries |
@@ -45,8 +47,10 @@ Knowing these makes the rest of this section predictable.
   back through the object's own constructor, rather than a Doctrine embeddable fixing one type per field
   for the whole model. One embeddable is left in the mapping, embedded by one entity, and it is named where
   the mapping is described.
-- **No write is synchronous unless the protocol needs its result in the same request.** Every exception is
-  listed in the Messenger configuration with the reason it is one.
+- **What a request does not need the result of leaves as a message.** What the protocol or the page needs in
+  the same request, a session opened or a passkey renamed, is written by the use case in that request; the
+  rest, the acts of the journal, the enrichment of a provenance, the notifications, travels on a lane, and no
+  message of the bundle travels on the synchronous transport.
 - **Every user-facing string is translated.** A signed-in person reads the pages in the language of their
   record; for anybody else the language comes from what the browser asked for, then `ui_locales`, then
   `Accept-Language`, and never from the URL.
