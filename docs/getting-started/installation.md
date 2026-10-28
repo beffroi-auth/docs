@@ -15,9 +15,10 @@ description: What Beffroi needs to run, and how to require it in an application 
 | TLS | The provider serves nothing useful over plain HTTP, and the specifications require HTTPS on every endpoint |
 
 A message broker is not required to start. The writes the protocol does not need the result of are
-dispatched asynchronously, to transports that default to the database, `doctrine://default`, where they wait
-for a worker that consumes them (`messenger:consume`). A broker takes their place by its DSN in
-`BEFFROI_MESSENGER_DSN`.
+dispatched asynchronously, to four lanes that default to the database, a queue each of
+`doctrine://default?queue_name={lane}`, where they wait for a worker that consumes them
+(`messenger:consume`). A broker takes their place by its DSN in `BEFFROI_MESSENGER_DSN`, which writes `{lane}`
+where the name of each lane goes.
 
 !!! info "Nothing is published yet"
 

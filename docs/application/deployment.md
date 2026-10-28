@@ -6,8 +6,8 @@ description: The image, the HTTP server in worker mode, the worker, the two plan
 # Deployment
 
 One image runs two kinds of process: the HTTP server, FrankenPHP in worker mode inside the Caddy server it is
-built on, and the worker, which consumes the lanes of Messenger and the schedule of the timed steps. Beside them the provider
-needs PostgreSQL, RabbitMQ and a key management service.
+built on, and the worker, which consumes the lanes of Messenger and the schedule of the timed steps. Beside them
+the provider needs PostgreSQL and a key management service, and a broker when a deployment names one.
 
 ## The image
 
@@ -19,15 +19,16 @@ root of the monorepo, because the application installs the packages beside it th
 |---|---|
 | `frankenphp_base` | The extensions, the PHP settings of the application, the entrypoint and the Caddy configuration |
 | `frankenphp_dev` | The development image, into which the stack mounts the monorepo, running FrankenPHP with `--watch` |
-| `frankenphp_prod` | The production image: the packages are copied to `/src` and the application to `/app`, installed without the development dependencies, with an authoritative class map, `.env` and any `.env.local` beside it compiled for production, the stylesheet built and the assets compiled |
+| `frankenphp_prod` | The production image: the packages are copied to `/src` and the application to `/app`, installed without the development dependencies, with an authoritative class map, the `.env` of the repository compiled for production, the stylesheet built and the assets compiled |
 
 ``` bash
 docker build --file apps/op/Dockerfile --target frankenphp_prod .
 ```
 
-`apps/op/` is copied as the working copy holds it, and `composer dump-env prod` compiles a `.env.local` it
-finds there. The one the development stack writes holds its key management service, the secrets of its clients
-and the password of its user, so the image is built from a checkout that holds no `.env.local`.
+`apps/op/` is copied without what a working copy holds beside the repository: `Dockerfile.dockerignore` leaves
+out its `.env.local`, where the development stack writes its key management service, the secrets of its
+clients and the password of its user, and its `var/` and `vendor/`. The image compiles the environment the
+repository holds, and a deployment sets its own: [configuration](configuration.md).
 
 The production image sets `APP_ENV=prod`, reads `php.ini-production`, preloads `config/preload.php` into
 OPcache, and turns worker mode on: the kernel is booted once per worker and serves every request that worker
@@ -45,7 +46,8 @@ entrypoint does two things when `.env` names a `DATABASE_URL`, which the one of 
    server starts. The migrations of the bundle are written for PostgreSQL and refuse any other platform.
 
 The health check of the image asks the metrics endpoint of the Caddy admin API inside the container,
-`curl -f http://localhost:2019/metrics`, after a start period of sixty seconds.
+`curl -f http://localhost:2019/metrics`, after a start period of sixty seconds. Only the server runs Caddy, so
+a container that runs the worker turns that check off or replaces it.
 
 ### The two planes
 
@@ -88,12 +90,15 @@ starts it again.
 | `async_priority_low` | The events of the core and of the protocol, which the journal writes down and the enrichment of a provenance reads |
 
 The worker is therefore the one process that calls a client back, and the one that writes the
-[journal](observability.md). A provider whose worker stops goes on answering requests, and the broker keeps
-the messages until a worker consumes them.
+[journal](observability.md). A provider whose worker stops goes on answering requests, and the lanes keep the
+messages until a worker consumes them.
 
-The lanes are transports of RabbitMQ: each of them names the exchange `beffroi_messages` and a queue bound to
-its routing key, options an AMQP transport takes and the Doctrine transport refuses. What fails for good lands
-in the failure transport, `failed`, which is a table of the database whatever the broker.
+The lanes are four queues of the table `messenger_messages` of the database, one per lane, unless
+`BEFFROI_MESSENGER_DSN` names a broker, where each lane is a queue of its own as well: on RabbitMQ an exchange
+and a queue named after the lane, which the first process that reaches them declares. What fails for good lands
+in the failure transport, `failed`, which is a table of the database whatever the lanes are on.
+
+[:beffroi-arrow-right: The lanes on RabbitMQ](examples.md#the-lanes-on-rabbitmq)
 
 ## What the processes share
 
@@ -103,7 +108,7 @@ so some state has to be the same for all of them.
 | What | Where | Written by | Read by |
 |---|---|---|---|
 | The sealed keys of the tenant, and its pairwise salt | `var/keys` | `beffroi:keys:*`, the timed step of the key lifecycle, and the first process that needs the salt | Every process that signs, decrypts or seals |
-| The key of the file backend, when that is the key management service | `var/kms` | Whoever provisions it | Every process |
+| The key of the file backend, when that is the key management service | The directory its DSN names: `/run/secrets` for a secret the orchestrator mounts, `var/kms` on the development stack | Whoever provisions it | Every process |
 | The GeoLite2 databases of addresses | `var/geoip` | `beffroi:geoip:refresh`, the weekly step | The worker, which enriches a provenance |
 | The FIDO metadata | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import` | The passkey ceremonies, which check an attestation against it |
 
@@ -165,6 +170,8 @@ The address of a request is read by Symfony behind the proxies it trusts, and th
 is counted under, 2400 requests a minute by default before a `429`, and what every session and every act of
 the journal records as where it came from. Behind a proxy that is not named there, every request has the
 address of the proxy.
+
+[:beffroi-arrow-right: Behind a proxy that terminates TLS](examples.md#behind-a-proxy-that-terminates-tls)
 
 ## The headers
 
