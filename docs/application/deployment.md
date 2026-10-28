@@ -112,9 +112,10 @@ so some state has to be the same for all of them.
 | The GeoLite2 databases of addresses | `var/geoip` | `beffroi:geoip:refresh`, the weekly step | The worker, which enriches a provenance |
 | The FIDO metadata | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import` | The passkey ceremonies, which check an attestation against it |
 
-The development stack gives `var/keys`, `var/kms` and `var/geoip` a volume each, mounted on the server and on
-the worker alike: a rotation done by one process changes nothing for another that does not see the same
-directory.
+The development stack gives `var/keys`, `var/kms` and `var/geoip` a volume each, and the Compose file of the
+image, [`compose.prod.yaml`](../getting-started/the-standalone-application.md#the-compose-file-of-the-image),
+adds `var/webauthn` and `var/share` to them, mounted on the server and on the worker alike: a rotation done by
+one process changes nothing for another that does not see the same directory.
 
 The bundle keeps eight caches in pools of their own, so that a deployment can point them at a shared store
 without touching the rest of its cache:
