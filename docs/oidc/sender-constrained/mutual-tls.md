@@ -153,9 +153,8 @@ is a variable that does not hold a PEM certificate, the listener being misconfig
     | `CADDY_EXTRA_CONFIG` | Caddy | `import mtls.Caddyfile`, which adds that site block |
     | `BEFFROI_MTLS_ORIGIN` | The application | The origin of that host, which becomes `mutual_tls.origin` |
 
-    The `.env` of the application names the host of its development stack, `https://mtls.op.localhost`, so a
-    deployment sets `BEFFROI_MTLS_ORIGIN` to its own host, or to nothing when it serves no such host and
-    announces no alias.
+    The image leaves `BEFFROI_MTLS_ORIGIN` empty and announces no alias until a deployment names the origin
+    of its own host; the development stack names `https://mtls.op.localhost`.
 
     The site block asks for a certificate without requiring one (`client_auth` in `mode request`), so a
     client that authenticates another way completes its handshake on that host too. A certificate is only

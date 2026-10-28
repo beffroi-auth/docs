@@ -61,7 +61,7 @@ wrong would break the asynchronous half of the provider, and nothing in a browse
 | Transport | DSN | Tried again |
 |---|---|---|
 | `sync` | `sync://` | Not at all |
-| `async_priority_high`, `async_priority_medium`, `async_priority_low` | `%env(BEFFROI_MESSENGER_DSN)%`, `doctrine://default` when the variable is not set | Four times, one second before the first, each wait four times the one before, thirty seconds at most |
+| `async_priority_high`, `async_priority_medium`, `async_priority_low` | `BEFFROI_MESSENGER_DSN`, with the name of the lane in place of `{lane}`: `doctrine://default?queue_name={lane}` when the variable is not set | Four times, one second before the first, each wait four times the one before, thirty seconds at most |
 | `async_notifications` | The same | On the schedule of `Beffroi\Bundle\Messenger\NotificationRetryPolicy`, which `beffroi.back_channel_logout` sets: by default two seconds before the first, each wait three times the one before, sixty seconds at most, the waits exact |
 | `failed`, the failure transport | `doctrine://default?queue_name=failed` | |
 
@@ -73,41 +73,30 @@ transport included: what it writes is the subject of [the last section](#what-le
 
 ## What the application writes
 
-**Nothing, to start.** Every lane is the database, through the default connection, and a provider runs with
-no broker. `BEFFROI_MESSENGER_DSN` moves every lane to one DSN at once.
+**Nothing, to start.** Every lane is a queue of its own in the database, through the default connection: the
+table `messenger_messages`, which the transport creates the first time it reaches it, and a provider runs with
+no broker.
 
-**Its transports, to put lanes on a broker.** A transport the application declares under the name of a lane
-keeps the application's settings, the prepended configuration being merged first. The standalone application
-runs RabbitMQ and binds each lane to a queue of its own on one exchange, which is the part of a transport only
-a deployment knows:
+**One variable, to put the lanes on a broker.** `BEFFROI_MESSENGER_DSN` names where the four lanes go, `{lane}`
+standing where the name of each lane is written, so that one DSN moves the four and keeps them four. A DSN of
+the database writes it in `queue_name`, a DSN of RabbitMQ in the name of the exchange, which is also the name
+of its queue:
+
+``` dotenv title=".env.local"
+BEFFROI_MESSENGER_DSN='amqp://beffroi:<password>@rabbitmq:5672/%2f/beffroi_{lane}'
+```
+
+A DSN that names no `{lane}` is refused when the transport of a lane is built, the variable named and its
+value never written, since four lanes on one queue are one lane. The failure transport is not moved.
+
+**Its own transport, to put one lane apart.** A transport the application declares under the name of a lane
+is merged over the one the bundle prepends: its DSN wins, and the retry service of the bundle stays.
 
 ``` yaml title="config/packages/messenger.yaml"
 messenger:
     transports:
-        async_priority_high:
-            dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-            options:
-                exchange: { name: beffroi_messages, type: direct, default_publish_routing_key: high }
-                queues:
-                    beffroi_messages_high: { binding_keys: [high] }
-        async_priority_medium:
-            dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-            options:
-                exchange: { name: beffroi_messages, type: direct, default_publish_routing_key: medium }
-                queues:
-                    beffroi_messages_medium: { binding_keys: [medium] }
-        async_priority_low:
-            dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-            options:
-                exchange: { name: beffroi_messages, type: direct, default_publish_routing_key: low }
-                queues:
-                    beffroi_messages_low: { binding_keys: [low] }
         async_notifications:
-            dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-            options:
-                exchange: { name: beffroi_messages, type: direct, default_publish_routing_key: notifications }
-                queues:
-                    beffroi_messages_notifications: { binding_keys: [notifications] }
+            dsn: '%env(NOTIFICATIONS_DSN)%'
 ```
 
 The block is under `messenger` and not `framework.messenger`: in Symfony 8.2 the component has an extension

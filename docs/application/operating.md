@@ -87,13 +87,17 @@ The clients of this application are `op`, which every key of the tenant is seale
 built from `BEFFROI_KMS_DSN_SECOND` when that variable names one. Nothing schedules a rewrap: a person asks
 for it.
 
-The data keys are bound under `APP_SECRET`, which `beffroi.keys.data_key_secrets` takes as long as
-`config/packages/beffroi.yaml` names no secret of its own. A new value replaces it in the three steps of
-[personal data](../core/personal-data.md#rotating-the-secret-that-binds-them): `%kernel.secret%` first and the
-previous value second in `beffroi.keys.data_key_secrets`, given to every process; `beffroi:data-keys:rewrap`
-towards the client that wraps the keys, `op` unless they were moved; then the previous value dropped. Changed
-alone, it leaves the personal data sealed in the database unreadable, and the lookups by a blind index with
-them.
+The data keys are bound under `APP_SECRET` as long as `BEFFROI_DATA_KEY_SECRETS` is not set. A new value
+replaces it in the three steps of
+[personal data](../core/personal-data.md#rotating-the-secret-that-binds-them), given to every process:
+
+1. `APP_SECRET` set to the new value, and `BEFFROI_DATA_KEY_SECRETS` to the new value first and the previous
+   one second, `'["<new>","<previous>"]'`;
+2. `beffroi:data-keys:rewrap` towards the client that wraps the keys, `op` unless they were moved;
+3. `BEFFROI_DATA_KEY_SECRETS` taken out again, which leaves the new `APP_SECRET` alone.
+
+Changed alone, `APP_SECRET` leaves the personal data sealed in the database unreadable, and the lookups by a
+blind index with them.
 
 ## The data downloaded
 

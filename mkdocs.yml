@@ -239,6 +239,7 @@ nav:
       - application/index.md
       - application/deployment.md
       - application/configuration.md
+      - application/examples.md
       - application/operating.md
       - application/observability.md
   - SCIM:

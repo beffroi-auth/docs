@@ -207,7 +207,7 @@ the provider reads behind a `jwks_uri`: the clients' and the [trusted issuers'](
 |---|---|---|---|
 | `proof_max_age` | integer, 1 or more | `60`, one minute | How long a proof stands, from its `iat` (RFC 9449 §4.3) |
 | `leeway` | integer, 0 or more | `30` | Seconds allowed for the clock of a client, both ways |
-| `nonce.required` | boolean | `false` | Whether a proof carries a nonce of the provider (RFC 9449 §8). On, a proof without a valid one is refused with `use_dpop_nonce` and a fresh nonce in the `DPoP-Nonce` header. It decides which class the container wires, so it is written as `true` or `false` in the file |
+| `nonce.required` | boolean | `false` | Whether a proof carries a nonce of the provider (RFC 9449 §8). On, a proof without a valid one is refused with `use_dpop_nonce` and a fresh nonce in the `DPoP-Nonce` header. It is read once, when the port that checks the proofs is built, so an environment variable may carry it |
 | `nonce.ttl` | integer, 1 or more | `300`, five minutes | How long a nonce the provider issued is accepted |
 
 ## `trusted_issuers`

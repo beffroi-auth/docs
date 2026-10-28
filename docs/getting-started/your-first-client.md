@@ -8,9 +8,22 @@ description: Declaring a client in the configuration, what each field means, and
 A client is an application the provider answers. It has an identifier, a way of authenticating itself, and
 the exact addresses it may be sent back to.
 
+!!! note "With the image of the standalone application"
+
+    The image declares no client and reads none from its environment: a client registers itself (RFC 7591 §3).
+    With `BEFFROI_REGISTRATION_MODE=initial_access_token`, the console issues the token the client presents,
+    printed once:
+
+    ``` bash
+    bin/console beffroi:client:token:issue 'My application' --registrations=1 --days=1
+    ```
+
+    The client then posts the fields below to `/register` in JSON, the secret aside, which the provider
+    issues: [dynamic registration](../oidc/dynamic-registration.md).
+
 ## Declaring one
 
-Clients a deployment knows in advance are declared in the configuration. The key is the `client_id`.
+Clients a Symfony application knows in advance are declared in its configuration. The key is the `client_id`.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:

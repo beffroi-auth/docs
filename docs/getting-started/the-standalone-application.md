@@ -7,8 +7,9 @@ description: beffroi/op on your machine and as a deployment of its own: the deve
 
 `beffroi/op` is a provider you deploy rather than a provider you assemble: a Symfony skeleton on
 [the bundle](../symfony-bundle/index.md), served by FrankenPHP in worker mode, with PostgreSQL for the model
-and RabbitMQ for the writes the protocol does not wait on. It is the deployment the project supports, and the
-development stack the conformance plans run against is this application.
+and for the writes the protocol does not wait on, unless a deployment names a broker for those. It is the
+deployment the project supports, and the development stack the conformance plans run against is this
+application.
 
 It is the `apps/op` directory of the monorepo, [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi).
 Its `composer.json` resolves the `beffroi/*` packages through path repositories to `../../src/*`, so the
@@ -28,7 +29,6 @@ commands. The application brings what a deployment decides, and nothing else.
 | The root of the issuer, `/`, which sends a browser to the home of the account | `config/routes/home.yaml` |
 | The firewall of the interaction pages, with the four logins of the bundle: a password, a passkey, a code, and an upstream SAML identity provider | `config/packages/security.yaml` |
 | The headers a deployment answers with, and the name and attributes of the session cookie | `config/packages/nelmio_security.yaml`, `nelmio_cors.yaml`, `framework.yaml` |
-| The transports of Messenger, on RabbitMQ | `config/packages/messenger.yaml` |
 | FrankenPHP and Caddy, with the host that asks for a client certificate | `frankenphp/` |
 | One type of authorization detail, `invoice_payment` (RFC 9396 §2), the bundle wiring none | `src/AuthorizationDetails/` |
 
@@ -84,15 +84,14 @@ expects:
 docker build --file apps/op/Dockerfile --target frankenphp_prod .
 ```
 
-The build copies `apps/op/` of the working copy as it stands, installs the application without its
-development dependencies, compiles `.env` for production with `composer dump-env prod`, builds the stylesheet
-and compiles the assets. `composer dump-env` compiles a `.env.local` too when one is there, and the one the
-development stack writes holds its key management service, the secrets of its clients and the password of its
-user: the image is built from a checkout that holds no `.env.local`. What changes from one machine to the next
-is then read from the environment when the container starts: the issuer, the database, the broker, the key
-management service.
+The build copies `apps/op/` without what a working copy holds beside the repository, such as the `.env.local`
+the development stack writes, installs the application without its development dependencies, compiles
+the `.env` of the repository for production with `composer dump-env prod`, builds the stylesheet and compiles
+the assets. What a deployment chooses is then read from the environment when the container starts: the
+issuer, the database, the key management service, the lanes, and every setting the configuration lists.
 
-[:beffroi-arrow-right: The environment the application reads](../application/configuration.md)
+[:beffroi-arrow-right: The environment the application reads](../application/configuration.md) and
+[whole deployments written with it](../application/examples.md)
 
 ### The first start, in order
 
@@ -143,5 +142,5 @@ has a row before it has a key, and its first key is the one messages are sealed 
 ## Then
 
 1. [The tenant and its keys](tenant-and-keys.md), for what each of those commands does.
-2. [Your first client](your-first-client.md): outside development the application declares none.
+2. [Your first client](your-first-client.md): the image declares none, and a client registers itself.
 3. [A Symfony relying party](a-symfony-relying-party.md), to see a sign-in end to end.
