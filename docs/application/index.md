@@ -7,7 +7,7 @@ description: beffroi/op, the deployment the project recommends: the Symfony skel
 
 `beffroi/op` is a provider you deploy rather than a provider you assemble: a Symfony skeleton on
 [the bundle](../symfony-bundle/index.md), served by FrankenPHP in worker mode, with PostgreSQL for the
-model and for the writes the protocol does not wait on, unless a deployment names a broker for those.
+model and for the writes the protocol does not wait on.
 
 It is the deployment the project supports, and the one the conformance plans are run against, so a profile
 reported green is green on this application.
@@ -25,7 +25,7 @@ guide. A team that wants to make them differently still can: the bundle is the s
 |---|---|
 | [Deployment](deployment.md) | The image, FrankenPHP in worker mode, and the two planes |
 | [Configuration](configuration.md) | Every variable of the environment the image reads, its value in the image, and what it decides |
-| [Examples](examples.md) | Whole deployments written with those variables: one host, the lanes on RabbitMQ, behind a proxy, lists in JSON |
+| [Examples](examples.md) | Whole deployments written with those variables: one host, behind a proxy, lists in JSON |
 | [Operating it](operating.md) | Rotating keys, rewrapping data keys, migrations, backups |
 | [Observability](observability.md) | What the provider records of a request, a session and a token |
 

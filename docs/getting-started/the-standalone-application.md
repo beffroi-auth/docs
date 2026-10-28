@@ -7,7 +7,7 @@ description: beffroi/op on your machine and as a deployment of its own: the deve
 
 `beffroi/op` is a provider you deploy rather than a provider you assemble: a Symfony skeleton on
 [the bundle](../symfony-bundle/index.md), served by FrankenPHP in worker mode, with PostgreSQL for the model
-and for the writes the protocol does not wait on, unless a deployment names a broker for those. It is the
+and for the writes the protocol does not wait on. It is the
 deployment the project supports, and the development stack the conformance plans run against is this
 application.
 
@@ -38,7 +38,7 @@ The development stack runs the application in Docker beside PostgreSQL, whose ta
 lanes as well. It is driven from the
 root of the monorepo by Castor, 0.23 or later, and asks the machine for Docker Compose and Composer besides.
 The two `composer install` below run on the machine and not in a container, so it also needs PHP 8.4 or later
-with the extensions the locked packages require, `intl`, `dom`, `zip` and `amqp` among them.
+with the extensions the locked packages require, `intl`, `dom` and `zip` among them.
 
 ``` bash
 git clone git@github.com:beffroi-auth/beffroi.git && cd beffroi

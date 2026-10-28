@@ -1,6 +1,6 @@
 ---
 title: Examples
-description: Whole deployments of the image written with its variables alone: one host with PostgreSQL, the lanes on RabbitMQ, behind a proxy that terminates TLS, and the lists a deployment writes in JSON.
+description: Whole deployments of the image written with its variables alone: one host with PostgreSQL, behind a proxy that terminates TLS, and the lists a deployment writes in JSON.
 ---
 
 # Examples
@@ -143,53 +143,6 @@ presents as a bearer token to `https://op.example.com/register`
 ``` bash
 docker compose exec op bin/console beffroi:client:token:issue 'My application' --registrations=1 --days=1
 ```
-
-## The lanes on RabbitMQ
-
-One variable moves the four lanes, given to both processes. Compose merges a `compose.override.yaml` beside
-`compose.yaml` into it:
-
-``` yaml title="compose.override.yaml"
-services:
-  rabbitmq:
-    image: rabbitmq:4-alpine
-    hostname: rabbitmq
-    environment:
-      RABBITMQ_DEFAULT_USER: beffroi
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?}
-    volumes:
-      - rabbitmq:/var/lib/rabbitmq
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 10s
-      start_period: 30s
-    restart: unless-stopped
-
-  op:
-    environment:
-      BEFFROI_MESSENGER_DSN: amqp://beffroi:${RABBITMQ_PASSWORD}@rabbitmq:5672/%2f/beffroi_{lane}
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-
-  worker:
-    environment:
-      BEFFROI_MESSENGER_DSN: amqp://beffroi:${RABBITMQ_PASSWORD}@rabbitmq:5672/%2f/beffroi_{lane}
-
-volumes:
-  rabbitmq:
-```
-
-- **`RABBITMQ_PASSWORD` goes into a URL as it is written**, so it is made of letters and digits, as
-  `openssl rand -hex 24` gives one, or percent-encoded.
-- **`hostname` keeps the name of the node**, which RabbitMQ keeps its durable queues under: a container
-  under another name starts without them.
-- **Each lane is an exchange and a queue of its own**, `beffroi_async_priority_low` and the three others,
-  declared by whichever process reaches them first.
-- **A worker opens one connection per lane and polls its queues.** RabbitMQ lists its four connections, and
-  lists no consumer on any queue: what shows a worker that keeps up is a count of ready messages that goes
-  back to zero.
-- **What fails for good stays in the database**, in the failure transport.
 
 ## Behind a proxy that terminates TLS
 

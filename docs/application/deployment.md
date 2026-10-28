@@ -7,12 +7,12 @@ description: The image, the HTTP server in worker mode, the worker, the two plan
 
 One image runs two kinds of process: the HTTP server, FrankenPHP in worker mode inside the Caddy server it is
 built on, and the worker, which consumes the lanes of Messenger and the schedule of the timed steps. Beside them
-the provider needs PostgreSQL and a key management service, and a broker when a deployment names one.
+the provider needs PostgreSQL and a key management service, and no broker.
 
 ## The image
 
 `apps/op/Dockerfile` builds on `dunglas/frankenphp:1-php8.5` and adds the extensions the provider needs:
-`apcu`, `intl`, `opcache`, `zip`, `pdo_pgsql`, `amqp`, `gmp`, `sodium` and `uuid`. Its build context is the
+`apcu`, `intl`, `opcache`, `zip`, `pdo_pgsql`, `gmp`, `sodium` and `uuid`. Its build context is the
 root of the monorepo, because the application installs the packages beside it through path repositories.
 
 | Stage | What it is |
@@ -93,12 +93,10 @@ The worker is therefore the one process that calls a client back, and the one th
 [journal](observability.md). A provider whose worker stops goes on answering requests, and the lanes keep the
 messages until a worker consumes them.
 
-The lanes are four queues of the table `messenger_messages` of the database, one per lane, unless
-`BEFFROI_MESSENGER_DSN` names a broker, where each lane is a queue of its own as well: on RabbitMQ an exchange
-and a queue named after the lane, which the first process that reaches them declares. What fails for good lands
-in the failure transport, `failed`, which is a table of the database whatever the lanes are on.
-
-[:beffroi-arrow-right: The lanes on RabbitMQ](examples.md#the-lanes-on-rabbitmq)
+The lanes are four queues of the table `messenger_messages` of the database, one per lane, which the transport
+creates the first time it reaches it. The application requires the transport of no broker, and the image
+carries the PHP extension of none. What fails for good lands in the failure transport, `failed`, a queue of the
+same table.
 
 ## What the processes share
 

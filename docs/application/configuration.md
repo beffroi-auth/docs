@@ -84,7 +84,7 @@ still on the previous value stops serving from that moment.
 | Variable | In the image | What it decides |
 |---|---|---|
 | `DATABASE_URL` | `postgresql://beffroi:beffroi@127.0.0.1:5432/beffroi?serverVersion=16&charset=utf8` | The PostgreSQL database, as a URL of Doctrine DBAL. The entrypoint of the image waits for it before it starts the server, the worker or a command, and the migrations refuse any other platform |
-| `BEFFROI_MESSENGER_DSN` | `doctrine://default?queue_name={lane}` | Where the four lanes of the provider go, one DSN for the four: `{lane}` stands where the name of each lane is written, so that each lane is a queue of its own. In the image, a queue each of the table `messenger_messages` of the database, which the transport creates the first time it reaches it. `amqp://<user>:<password>@<host>:5672/%2f/beffroi_{lane}` puts them on RabbitMQ, an exchange and a queue each. A DSN without `{lane}` is refused when the transport of a lane is built. What fails for good stays in the database, whatever this names |
+| `BEFFROI_MESSENGER_DSN` | `doctrine://default?queue_name={lane}` | Where the four lanes of the provider go, one DSN for the four: `{lane}` stands where the name of each lane is written, so that each lane is a queue of its own. In the image, a queue each of the table `messenger_messages` of the database, which the transport creates the first time it reaches it. The application requires the transport of no broker, so the image takes a `doctrine://` DSN alone. A DSN without `{lane}` is refused when the transport of a lane is built. What fails for good stays in the database, whatever this names |
 
 ## Symfony
 
