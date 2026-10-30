@@ -138,8 +138,10 @@ where the native handler of PHP keeps it, in the container that served it.
 
 ## TLS and the two hosts
 
-Caddy terminates TLS for the host of `SERVER_NAME`. Both hosts of the image use one snippet of its
-`Caddyfile`, which is the TLS a FAPI 1.0 plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two
+Caddy terminates TLS for the host of `SERVER_NAME`, unless a proxy in front of the image does
+([below](#behind-a-proxy)), and for the host that asks for a client certificate in every deployment. On the
+hosts of the image whose TLS it terminates, it serves one snippet of its `Caddyfile`, which is the TLS a
+FAPI 1.0 plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two
 suites of FAPI 1.0 Advanced Final §8.5 a listener built on Go can offer,
 `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` and `TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384`. TLS 1.2 is the floor
 Caddy already holds.
@@ -164,11 +166,33 @@ for nothing.
 
 ## Behind a proxy
 
-The address of a request is read by Symfony behind the proxies it trusts, and the application names none:
-`framework.trusted_proxies` reads `SYMFONY_TRUSTED_PROXIES`. That address is what the load budget of an origin
-is counted under, 2400 requests a minute by default before a `429`, and what every session and every act of
-the journal records as where it came from. Behind a proxy that is not named there, every request has the
-address of the proxy.
+**A proxy that terminates TLS sends the server plain HTTP.** With `TLS_TERMINATION` set to `proxy`, the site of
+`SERVER_NAME` is `http://` followed by `SERVER_NAME`, which then names one host, the one the proxy asks for, or
+`:<port>` for any host. It is served on port 80 unless `SERVER_NAME` names another, and never with the TLS
+Caddy would choose by itself for a host: a list of hosts is refused, or read as one address. A scheme written
+there, `http://op.example.com`, gives a site no request of the proxy reaches. Under `caddy`, the value the
+variable takes when it is not set, the site carries the TLS above, and Caddy refuses a plain HTTP address. A
+misspelt value, `Proxy` or an empty one, stops Caddy as it starts without a word in its log, and
+`frankenphp adapt --config /etc/frankenphp/Caddyfile`, run in the image with the same environment, says why.
+The TLS a client meets on the host of `SERVER_NAME` is then the one of the proxy.
+
+The scheme and the address of a request are read by Symfony behind the proxies it trusts, and the application
+names none: `framework.trusted_proxies` reads `SYMFONY_TRUSTED_PROXIES`. That address is what the load budget
+of an origin is counted under, 2400 requests a minute by default before a `429`, and what every session and
+every act of the journal records as where it came from. Behind a proxy that is not named there, every request
+reads as plain HTTP and has the address of the proxy: a request of a safe method, a `GET`, a `HEAD` or an
+`OPTIONS`, is sent to the same address over HTTPS, without end, and the others, a `POST` among them, are
+served as they came, under the address of the proxy.
+
+A proxy that names the client in a header Symfony does not read, `CF-Connecting-IP` behind Cloudflare, has
+Caddy read it, with `client_ip_headers` and `trusted_proxies` in the `servers` block of `CADDY_GLOBAL_OPTIONS`,
+and write it into `X-Forwarded-For`, with `request_header X-Forwarded-For {client_ip}` in
+`CADDY_SERVER_EXTRA_DIRECTIVES`: FrankenPHP hands PHP the address of its peer and the headers as they arrived,
+whatever Caddy read.
+
+The host that asks for a client certificate terminates its TLS in Caddy whatever `TLS_TERMINATION` says. A
+client presents its certificate in the handshake, so a proxy in front of that host passes its connections
+through without terminating them.
 
 [:beffroi-arrow-right: Behind a proxy that terminates TLS](examples.md#behind-a-proxy-that-terminates-tls)
 

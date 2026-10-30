@@ -116,6 +116,10 @@ docker compose -f compose.prod.yaml up -d --wait op
   processes alone.
 - **The host that asks for a client certificate is off**, and three commented variables of the server turn it
   on: `CADDY_EXTRA_CONFIG`, `MTLS_SERVER_NAME` and `BEFFROI_MTLS_ORIGIN`.
+- **Caddy terminates TLS**, and two commented variables of the server hand it to a proxy in front of the
+  image: `TLS_TERMINATION`, which serves the site of `SERVER_NAME` on plain HTTP, on port 80, to the proxy
+  that asks for that host, and `SYMFONY_TRUSTED_PROXIES`, which names the proxy to Symfony:
+  [behind a proxy](../application/deployment.md#behind-a-proxy).
 
 Its header gives the first start in the order below, the worker started last.
 
