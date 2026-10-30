@@ -156,6 +156,10 @@ is a variable that does not hold a PEM certificate, the listener being misconfig
     The image leaves `BEFFROI_MTLS_ORIGIN` empty and announces no alias until a deployment names the origin
     of its own host; the development stack names `https://mtls.op.localhost`.
 
+    Caddy terminates the TLS of that host in every deployment, including one whose proxy terminates the TLS
+    of the host of `SERVER_NAME`: the certificate is presented in the handshake, so a proxy in front of that
+    host passes its connections through without terminating them.
+
     The site block asks for a certificate without requiring one (`client_auth` in `mode request`), so a
     client that authenticates another way completes its handshake on that host too. A certificate is only
     accepted with the signature of the handshake that proves its holder has the private key (RFC 8446

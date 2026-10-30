@@ -79,11 +79,11 @@ no broker.
 
 **One variable, to put the lanes on a broker.** `BEFFROI_MESSENGER_DSN` names where the four lanes go, `{lane}`
 standing where the name of each lane is written, so that one DSN moves the four and keeps them four. A DSN of
-the database writes it in `queue_name`, a DSN of RabbitMQ in the name of the exchange, which is also the name
-of its queue:
+the database writes it in `queue_name`, a DSN of Redis in the name of the stream, the transport of the
+broker being one the application requires:
 
 ``` dotenv title=".env.local"
-BEFFROI_MESSENGER_DSN='amqp://beffroi:<password>@rabbitmq:5672/%2f/beffroi_{lane}'
+BEFFROI_MESSENGER_DSN='redis://beffroi:<password>@redis:6379/beffroi_{lane}'
 ```
 
 A DSN that names no `{lane}` is refused when the transport of a lane is built, the variable named and its

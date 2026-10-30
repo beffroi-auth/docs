@@ -28,7 +28,7 @@ The image carries the values of the development stack, and these have to be repl
 | `DATABASE_URL` | The image names the database of the development stack |
 | `BEFFROI_ISSUER` and `DEFAULT_URI` | The image names the issuer of the development stack, `https://op.localhost` |
 | `BEFFROI_KMS_DSN` and `BEFFROI_KMS_KEY_ID` | The image names no key management service, and nothing is sealed or signed without one |
-| `SERVER_NAME` | The host the image serves and obtains a certificate for, `localhost` otherwise. Behind a proxy that terminates TLS, the image is served [otherwise](examples.md#behind-a-proxy-that-terminates-tls) |
+| `SERVER_NAME` | The host the image serves and obtains a certificate for, `localhost` otherwise. Behind a proxy that terminates TLS, the host the proxy asks for, which `TLS_TERMINATION` serves over plain HTTP: [behind a proxy](examples.md#behind-a-proxy-that-terminates-tls) |
 
 Three more decide what a deployment of real people does:
 
@@ -84,7 +84,7 @@ still on the previous value stops serving from that moment.
 | Variable | In the image | What it decides |
 |---|---|---|
 | `DATABASE_URL` | `postgresql://beffroi:beffroi@127.0.0.1:5432/beffroi?serverVersion=16&charset=utf8` | The PostgreSQL database, as a URL of Doctrine DBAL. The entrypoint of the image waits for it before it starts the server, the worker or a command, and the migrations refuse any other platform |
-| `BEFFROI_MESSENGER_DSN` | `doctrine://default?queue_name={lane}` | Where the four lanes of the provider go, one DSN for the four: `{lane}` stands where the name of each lane is written, so that each lane is a queue of its own. In the image, a queue each of the table `messenger_messages` of the database, which the transport creates the first time it reaches it. `amqp://<user>:<password>@<host>:5672/%2f/beffroi_{lane}` puts them on RabbitMQ, an exchange and a queue each. A DSN without `{lane}` is refused when the transport of a lane is built. What fails for good stays in the database, whatever this names |
+| `BEFFROI_MESSENGER_DSN` | `doctrine://default?queue_name={lane}` | Where the four lanes of the provider go, one DSN for the four: `{lane}` stands where the name of each lane is written, so that each lane is a queue of its own. In the image, a queue each of the table `messenger_messages` of the database, which the transport creates the first time it reaches it. The application requires the transport of no broker, so the image takes a `doctrine://` DSN alone. A DSN without `{lane}` is refused when the transport of a lane is built. What fails for good stays in the database, whatever this names |
 
 ## Symfony
 
@@ -208,7 +208,8 @@ These are read by Caddy and FrankenPHP, not by the kernel.
 
 | Variable | In the image | What it decides |
 |---|---|---|
-| `SERVER_NAME` | not set | The host Caddy serves the provider on, `localhost` when it is not set. Caddy obtains its certificate itself, from a public authority for a public name and from its internal authority for `localhost`, and keeps it under `/data`. The site always carries a `tls` directive, so a plain HTTP address is refused here: behind a proxy that terminates TLS, the application is served by [a site of its own](examples.md#behind-a-proxy-that-terminates-tls) |
+| `SERVER_NAME` | not set | The host Caddy serves the provider on, `localhost` when it is not set. When Caddy terminates TLS, it obtains the certificate of that host itself, from a public authority for a public name and from its internal authority for `localhost`, and keeps it under `/data`; a plain HTTP address is refused then. When a proxy does, one host, the one the proxy asks for, or `:<port>` for any host, written without a scheme |
+| `TLS_TERMINATION` | not set | Who terminates TLS for the site of `SERVER_NAME`: `caddy` when it is not set, with the TLS of the image, or `proxy`, a proxy in front of the image, the site then being `http://` followed by `SERVER_NAME`, on port 80 unless `SERVER_NAME` names another. Caddy refuses to start on a misspelt value, `Proxy` or an empty one. The host of `MTLS_SERVER_NAME` terminates its TLS in Caddy whatever this says: [behind a proxy](deployment.md#behind-a-proxy) |
 | `MTLS_SERVER_NAME` | not set | The host of the listener that asks for a client certificate, in `mtls.Caddyfile` |
 | `CADDY_EXTRA_CONFIG` | not set | Configuration added to the `Caddyfile` beside the site of `SERVER_NAME`. `import mtls.Caddyfile` is what serves the host that asks for a client certificate |
 | `CADDY_GLOBAL_OPTIONS` | not set | Directives added to the global options of the `Caddyfile` |
