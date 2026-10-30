@@ -146,39 +146,61 @@ docker compose exec op bin/console beffroi:client:token:issue 'My application' -
 
 ## Behind a proxy that terminates TLS
 
-The site of `SERVER_NAME` carries the TLS the image ships with, which Caddy refuses to serve on a plain HTTP
-address. Behind a proxy that terminates TLS, the application is therefore served by a site of its own on a
-plain HTTP port, which the proxy sends its requests to, and the site of the image stays on `localhost`, where
-nothing calls it.
+The proxy terminates TLS for `op.example.com` and sends the server plain HTTP on port 8080 of the machine,
+asking for `op.example.com`. The issuer and `SERVER_NAME` stay what the file above names.
 
 ``` yaml title="compose.override.yaml"
 services:
   op:
     environment:
-      SERVER_NAME: localhost
-      CADDY_EXTRA_CONFIG: |
-        :8080 {
-          root * /app/public
-          encode zstd br gzip
-          php_server
-        }
+      TLS_TERMINATION: proxy
       SYMFONY_TRUSTED_PROXIES: private_ranges
       SYMFONY_TRUSTED_HOSTS: '^op\.example\.com$$'
     ports: !override
-      - "8080:8080"
+      - "127.0.0.1:8080:80"
 ```
 
+- **`TLS_TERMINATION: proxy` serves the site of `SERVER_NAME` on plain HTTP**, as `http://op.example.com` on
+  port 80 of the container, which answers that host alone; `SERVER_NAME: ":80"` would answer every host. The
+  TLS a client meets is the one of the proxy: [behind a proxy](deployment.md#behind-a-proxy).
 - **The proxy is trusted for what it forwards.** It sends `X-Forwarded-For`, `X-Forwarded-Proto` and
   `X-Forwarded-Port`, and `SYMFONY_TRUSTED_PROXIES` names where it connects from: `private_ranges` for a
   proxy on a private network, its address otherwise. Without it, every request comes from the proxy and over
-  plain HTTP, and the provider sends it to HTTPS again and again.
-- **`SYMFONY_TRUSTED_HOSTS` refuses any other host with `400`.** `$$` is how a Compose file writes a `$`.
-- **`!override` replaces the ports of `compose.yaml`** instead of adding to them: the proxy reaches port 8080,
-  and nothing else is published.
+  plain HTTP, and the provider sends a `GET` to HTTPS again and again.
+- **`SYMFONY_TRUSTED_HOSTS` refuses with `400` any other host that reaches Symfony.** Caddy answers a host
+  other than `op.example.com` with an empty `200` before it does, and the variable is what holds the line under
+  `SERVER_NAME: ":80"`. `$$` is how a Compose file writes a `$`.
+- **`!override` replaces the ports of `compose.yaml`** instead of adding to them: the proxy reaches port 8080
+  on the loopback address of the machine, and nothing else is published.
 - **The address of a person is read from `X-Forwarded-For`, past the proxies Symfony trusts.** It is what the
-  load budget of an origin counts and what a session and an act of the journal record, so behind a second
-  proxy that is not trusted, a content delivery network for one, the address recorded is the one of that
-  proxy.
+  load budget of an origin counts and what a session and an act of the journal record.
+
+A proxy that names the person in a header of its own, `CF-Connecting-IP` behind Cloudflare, has Caddy read
+that header and write the address into `X-Forwarded-For`, where Symfony reads it. The same override, with two
+more variables:
+
+``` yaml title="compose.override.yaml"
+services:
+  op:
+    environment:
+      TLS_TERMINATION: proxy
+      SYMFONY_TRUSTED_PROXIES: private_ranges
+      SYMFONY_TRUSTED_HOSTS: '^op\.example\.com$$'
+      CADDY_GLOBAL_OPTIONS: |
+        servers {
+          trusted_proxies static private_ranges
+          client_ip_headers CF-Connecting-IP X-Forwarded-For
+        }
+      CADDY_SERVER_EXTRA_DIRECTIVES: request_header X-Forwarded-For {client_ip}
+    ports: !override
+      - "127.0.0.1:8080:80"
+```
+
+Caddy reads the first of those headers the request carries when it comes from a proxy `trusted_proxies`
+names, and the address of the peer otherwise. FrankenPHP hands PHP the request as it arrived, so without
+`CADDY_SERVER_EXTRA_DIRECTIVES` Symfony never sees what Caddy read. Whoever reaches the proxy without going through the
+network that writes the header writes it at will: the address is worth what the filtering of the origin is
+worth.
 
 ## Lists in JSON
 
