@@ -350,38 +350,52 @@ html :focus-visible {
   }
 }
 
-/* A section title is a label: an 8 px ultramarine square, its number, its name, in Martian Mono capitals. */
+/* A chapter is a label: an 8 px ultramarine square, its number, its name, in Martian Mono capitals. It folds
+   its pages away, and the chapter of the open page is unfolded. */
 .md-nav--primary > .md-nav__list {
-  counter-reset: bf-section;
+  counter-reset: bf-chapter;
 }
 
-.md-nav--primary .md-nav__item--section {
-  counter-increment: bf-section;
+.md-nav--primary > .md-nav__list > .md-nav__item--nested {
+  counter-increment: bf-chapter;
+  margin-top: 0.3rem;
 }
 
-.md-nav--primary .md-nav__item--section > .md-nav__link {
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > label.md-nav__link,
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__container > a.md-nav__link {
   color: var(--bf-muted);
-  cursor: default;
   font-family: var(--bf-font-mono);
   font-size: 0.55rem;
   font-weight: 500;
   letter-spacing: 0.08em;
-  margin-bottom: 0.3rem;
-  margin-top: 1.4rem;
+  padding-bottom: 0.45rem;
+  padding-top: 0.45rem;
   text-transform: uppercase;
 }
 
-.md-nav--primary .md-nav__item--section > .md-nav__link .md-ellipsis::before {
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > label.md-nav__link .md-ellipsis::before,
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__container > a.md-nav__link .md-ellipsis::before {
   background: linear-gradient(var(--bf-accent), var(--bf-accent)) no-repeat left center / 8px 8px;
-  content: "[" counter(bf-section, decimal-leading-zero) "] ";
+  content: "[" counter(bf-chapter, decimal-leading-zero) "] ";
   padding-left: 14px;
 }
 
-.md-nav--primary .md-nav__item--section > .md-nav__link--active,
-.md-nav--primary .md-nav__item--section > .md-nav__container > .md-nav__link--active {
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__link--active,
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__container > .md-nav__link--active {
   background-color: transparent;
   box-shadow: none;
   color: var(--bf-accent-text);
+}
+
+/* The chevron of a chapter that has its own page sits where it sits on the others. */
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__container > label.md-nav__link,
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav__container > label.md-nav__link:hover {
+  padding: 0.45rem 0.5rem 0 0;
+}
+
+/* The pages of an unfolded chapter, under its label. */
+.md-nav--primary > .md-nav__list > .md-nav__item--nested > .md-nav > .md-nav__list {
+  padding-bottom: 0.6rem;
 }
 
 .md-nav__item .md-nav__link {
@@ -453,6 +467,12 @@ html :focus-visible {
   background-color: transparent;
   box-shadow: none;
   padding: 0;
+}
+
+/* Its chevron keeps the top and right padding of a link, so it lines up with the chevrons of the others. */
+.md-nav__item .md-nav__container > label.md-nav__link,
+.md-nav__item .md-nav__container > label.md-nav__link:hover {
+  padding: 0.28rem 0.5rem 0 0;
 }
 
 .md-nav__container > a.md-nav__link {
