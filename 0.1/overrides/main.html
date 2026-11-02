@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 
 {#-
+  The audience, counted by Plausible, which sets no cookie. Its script follows the history of the browser, so
+  the pages instant navigation opens without a reload are counted too.
+-#}
+{% block analytics %}
+  <script async src="https://plausible.coolify.kloude.fr/js/pa-jebRWwFHmq2R7pgJHl5Dm.js"></script>
+  <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+  </script>
+{% endblock %}
+
+{#-
   The favicon set of the brand and the default share image. A social network needs an absolute address, so
   the image is read from the version the page belongs to: mike sets site_url to the address of that version,
   without a trailing slash.
