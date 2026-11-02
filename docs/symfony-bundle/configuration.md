@@ -55,10 +55,12 @@ beffroi:
 finds no compiled container. The tree is checked there: an unknown key at any level, a value of the wrong
 type, a number written outside its bounds, a required option missing, a value outside its list. So are the
 rules the tree reads between options, a sliding refresh lifetime longer than the absolute one, a SAML
-`cache_duration` that is not shorter than the SAML staging delay, a SAML peer declared for a role that is off;
+`cache_duration` that is not shorter than the SAML staging delay, a SAML peer declared for a role written off;
 the name of the key management client; and every SAML declaration, the claims it names included. A deployment
 pipeline that warms its cache stops there. A SAML declaration that holds an environment variable is checked at
-its first use instead.
+its first use instead. So is a value read from the environment wherever the tree holds a value to bounds: it
+is held to the same bounds, and to the same rules between options, when the service it reaches is built, so
+the first request or command that needs it refuses a value out of bounds.
 
 **When the provider first reads a declaration.** What only the wiring can answer is checked against the
 wiring, the first time the provider builds the object: the tenant, each declared client, each trusted issuer,
@@ -266,7 +268,8 @@ registering its grant and a delivery mode.
 
 Whether the provider reaches people through the push services of their browsers (RFC 8030). Naming a
 `subject` turns it on: a `mailto:` or `https:` URI at which a push service can reach the operator (RFC 8292
-§2.1). Left out, nothing of it is wired, no push leaves the deployment, and the page where a browser would
+§2.1). Its services and routes are always wired, and the subject may be an environment variable.
+Without a subject, web push serves nothing, no push leaves the deployment, and the page where a browser would
 subscribe says so.
 
 ``` yaml title="config/packages/beffroi.yaml"
@@ -410,9 +413,10 @@ its confidential clients from PKCE, never a public one.
 
 ## `saml`
 
-The SAML roles of the tenant, each off unless the section turns it on, and the peers of each. A role that is off
-wires nothing and answers `404` where its metadata would be, and the peers of a role are refused while it is
-off.
+The SAML roles of the tenant, each off unless the section turns it on, and the peers of each. Whether a role is
+on may be an environment variable. A role that is off serves nothing and answers `404` where its metadata would
+be. The peers of a role written off are refused, and those of a role an environment variable turns off are
+served by nothing.
 
 | Key | What it is | The page |
 |---|---|---|

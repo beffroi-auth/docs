@@ -160,7 +160,7 @@ answers one, so that nothing reaching the person from outside can carry them to 
 What carries it to the person is a channel the deployment wires: a class implementing
 `Beffroi\Bundle\Ciba\PendingApprovalChannelInterface`, tagged `beffroi.pending_approval_channel`. The bundle
 ships one, [web push](../../symfony-bundle/web-push.md) to the browsers the person subscribed on the
-notifications page of their account, wired when `web_push.subject` is set. A deployment that wires no channel
+notifications page of their account, in the lane while `web_push.subject` names a subject. A deployment that wires no channel
 still serves this flow: the person finds the request on the page where requests are answered, which is where
 any channel sends them anyway.
 

@@ -21,7 +21,7 @@ beffroi:
 
 | Option | Default | What it decides |
 |---|---|---|
-| `enabled` | `false` | Whether the role exists at all. Off, its metadata answer `404`, no service provider may be declared, and every message at its single sign-on and single logout services is refused |
+| `enabled` | `false` | Whether the role is on. Off, its metadata answer `404`, it serves none of the service providers declared, and every message at its single sign-on and single logout services is refused. Written `false`, or with the block left out, no service provider may be declared at all. It may be an environment variable, read when the container builds what the role changes, so turning the role on or off asks for a restart and not for a new build of the container |
 | `want_authn_requests_signed` | `true` | What the metadata say in `WantAuthnRequestsSigned` (SAML Metadata §2.4.3) |
 | `staging_delay` | `604800`, seven days | How long a new SAML signing key is published in the metadata before it signs, in seconds |
 | `age` | `31536000`, 365 days | How long a SAML signing key works before a successor is staged behind it, in seconds, counted from its activation |
@@ -29,7 +29,10 @@ beffroi:
 
 The three figures belong to the deployment and not to a tenant, as those of `beffroi.keys` do, and they are
 the figures of the SAML key whichever role draws it: the [service provider](upstream-identity-providers.md)
-of the tenant signs with the same key.
+of the tenant signs with the same key. Each of the four options under `enabled` may be an environment variable
+too. Its value is then held to the same rules, `cache_duration` shorter than `staging_delay` included, when
+the service that reads it is built: the first request or command that needs it refuses a value out of bounds,
+not the build of the container.
 
 `want_authn_requests_signed` is an announcement, and nothing more. It tells a service provider configured
 from the metadata to sign its requests, which is what a broker such as SimpleSAMLphp does when it reads
