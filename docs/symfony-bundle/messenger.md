@@ -61,7 +61,7 @@ wrong would break the asynchronous half of the provider, and nothing in a browse
 | Transport | DSN | Tried again |
 |---|---|---|
 | `sync` | `sync://` | Not at all |
-| `async_priority_high`, `async_priority_medium`, `async_priority_low` | `%env(BEFFROI_MESSENGER_DSN)%`, `doctrine://default` when the variable is not set | Four times, one second before the first, each wait four times the one before, thirty seconds at most |
+| `async_priority_high`, `async_priority_medium`, `async_priority_low` | `BEFFROI_MESSENGER_DSN`, `{lane}` in it replaced by the name of the lane; `doctrine://default?queue_name={lane}` when the variable is not set | Four times, one second before the first, each wait four times the one before, thirty seconds at most |
 | `async_notifications` | The same | On the schedule of `Beffroi\Bundle\Messenger\NotificationRetryPolicy`, which `beffroi.back_channel_logout` sets: by default two seconds before the first, each wait three times the one before, sixty seconds at most, the waits exact |
 | `failed`, the failure transport | `doctrine://default?queue_name=failed` | |
 
@@ -74,46 +74,28 @@ transport included: what it writes is the subject of [the last section](#what-le
 ## What the application writes
 
 **Nothing, to start.** Every lane is the database, through the default connection, and a provider runs with
-no broker. `BEFFROI_MESSENGER_DSN` moves every lane to one DSN at once.
+no broker, each lane a queue of its own. `BEFFROI_MESSENGER_DSN` moves every lane to one DSN at once, and keeps
+them four: `{lane}` in it is where the name of each lane goes, and a DSN that names no `{lane}` is refused
+when the transport of a lane is built.
 
-**Its transports, to put lanes on a broker.** A transport the application declares under the name of a lane
-keeps the application's settings, the prepended configuration being merged first. The standalone application
-runs RabbitMQ and binds each lane to a queue of its own on one exchange, which is the part of a transport only
-a deployment knows:
+**Its transports, for a lane apart.** A transport the application declares under the name of a lane keeps
+the application's settings, the prepended configuration being merged first. The standalone application declares
+none outside its tests, so its lanes are queues of the database. Its test environment plays every lane inside
+the request that sent it:
 
-``` yaml title="config/packages/messenger.yaml"
+``` yaml title="config/packages/test/messenger.yaml"
 messenger:
     transports:
-        async_priority_high:
-            dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-            options:
-                exchange: { name: beffroi_messages, type: direct, default_publish_routing_key: high }
-                queues:
-                    beffroi_messages_high: { binding_keys: [high] }
-        async_priority_medium:
-            dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-            options:
-                exchange: { name: beffroi_messages, type: direct, default_publish_routing_key: medium }
-                queues:
-                    beffroi_messages_medium: { binding_keys: [medium] }
-        async_priority_low:
-            dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-            options:
-                exchange: { name: beffroi_messages, type: direct, default_publish_routing_key: low }
-                queues:
-                    beffroi_messages_low: { binding_keys: [low] }
-        async_notifications:
-            dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-            options:
-                exchange: { name: beffroi_messages, type: direct, default_publish_routing_key: notifications }
-                queues:
-                    beffroi_messages_notifications: { binding_keys: [notifications] }
+        async_priority_high: 'sync://'
+        async_priority_medium: 'sync://'
+        async_priority_low: 'sync://'
+        async_notifications: 'sync://'
+        failed: 'sync://'
 ```
 
 The block is under `messenger` and not `framework.messenger`: in Symfony 8.2 the component has an extension
 of its own, and a block written under `framework` does not override what the bundle prepends to
-`messenger`. The standalone application sets every lane to `sync://` in its test environment, where the
-writes are played inside the request.
+`messenger`.
 
 !!! warning "The notifications keep the retry policy of the bundle"
 

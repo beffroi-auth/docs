@@ -7,12 +7,12 @@ description: The image, the HTTP server in worker mode, the worker, the two plan
 
 One image runs two kinds of process: the HTTP server, FrankenPHP in worker mode inside the Caddy server it is
 built on, and the worker, which consumes the lanes of Messenger and the schedule of the timed steps. Beside them the provider
-needs PostgreSQL, RabbitMQ and a key management service.
+needs PostgreSQL, which holds the lanes of Messenger as well as the model, and a key management service.
 
 ## The image
 
 `apps/op/Dockerfile` builds on `dunglas/frankenphp:1-php8.5` and adds the extensions the provider needs:
-`apcu`, `intl`, `opcache`, `zip`, `pdo_pgsql`, `amqp`, `gmp`, `sodium` and `uuid`. Its build context is the
+`apcu`, `intl`, `opcache`, `zip`, `pdo_pgsql`, `gmp`, `sodium` and `uuid`. Its build context is the
 root of the monorepo, because the application installs the packages beside it through path repositories.
 
 | Stage | What it is |
@@ -88,12 +88,12 @@ starts it again.
 | `async_priority_low` | The events of the core and of the protocol, which the journal writes down and the enrichment of a provenance reads |
 
 The worker is therefore the one process that calls a client back, and the one that writes the
-[journal](observability.md). A provider whose worker stops goes on answering requests, and the broker keeps
+[journal](observability.md). A provider whose worker stops goes on answering requests, and the database keeps
 the messages until a worker consumes them.
 
-The lanes are transports of RabbitMQ: each of them names the exchange `beffroi_messages` and a queue bound to
-its routing key, options an AMQP transport takes and the Doctrine transport refuses. What fails for good lands
-in the failure transport, `failed`, which is a table of the database whatever the broker.
+Each lane is a queue of its own in the table `messenger_messages`: `.env` names
+`doctrine://default?queue_name={lane}` in `BEFFROI_MESSENGER_DSN`, and the image carries the transport of no
+broker. What fails for good lands in the failure transport, `failed`, a queue of the same table.
 
 ## What the processes share
 
