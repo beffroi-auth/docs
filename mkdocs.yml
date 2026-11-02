@@ -58,9 +58,12 @@ extra_css:
 
 plugins:
   - search
-  # Any external asset the theme asks for is downloaded at build time and served from this site. Nothing a
-  # reader loads reaches a third party.
-  - privacy
+  # Any external asset the theme asks for is downloaded at build time and served from this site, except the
+  # script of Plausible: it is loaded from the instance that counts the visits, which serves its current
+  # version, and that instance is the one third party a reader reaches.
+  - privacy:
+      assets_exclude:
+        - plausible.coolify.kloude.fr/*
   - git-revision-date-localized:
       enable_creation_date: false
       type: date
