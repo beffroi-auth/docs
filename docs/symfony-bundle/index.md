@@ -1,6 +1,6 @@
 ---
 title: The Symfony bundle
-description: What beffroi/symfony-bundle adds to an application: configuration, routes, persistence, security, pages and commands.
+description: 'What beffroi/symfony-bundle adds to an application: configuration, routes, persistence, security, pages and commands.'
 ---
 
 # The Symfony bundle

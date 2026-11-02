@@ -1,6 +1,6 @@
 ---
 title: TOTP
-description: A time-based one-time password as the second factor of a password, RFC 6238: its parameters, its enrolment, the code page, replay and revocation.
+description: 'A time-based one-time password as the second factor of a password, RFC 6238: its parameters, its enrolment, the code page, replay and revocation.'
 ---
 
 # TOTP

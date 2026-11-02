@@ -1,6 +1,6 @@
 ---
 title: OAuth 2.0 and OpenID Connect
-description: What beffroi/oidc implements: clients, authorization requests, grants, tokens, discovery, logout.
+description: 'What beffroi/oidc implements: clients, authorization requests, grants, tokens, discovery, logout.'
 ---
 
 # OAuth 2.0 and OpenID Connect

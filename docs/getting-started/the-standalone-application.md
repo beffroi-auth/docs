@@ -1,6 +1,6 @@
 ---
 title: The standalone application
-description: beffroi/op on your machine and as a deployment of its own: the development stack, the production image, and the first start in the order it has to happen.
+description: 'beffroi/op on your machine and as a deployment of its own: the development stack, the production image, and the first start in the order it has to happen.'
 ---
 
 # The standalone application

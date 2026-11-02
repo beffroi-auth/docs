@@ -1,6 +1,6 @@
 ---
 title: Users
-description: A person of a tenant: the username, the subject clients know them by, the claims of their profile, and the source that created them.
+description: 'A person of a tenant: the username, the subject clients know them by, the claims of their profile, and the source that created them.'
 ---
 
 # Users

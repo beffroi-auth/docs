@@ -1,6 +1,6 @@
 ---
 title: Console commands
-description: What the commands of the bundle need explained beyond their help: the rotation of a key, the data keys, and the doctor.
+description: 'What the commands of the bundle need explained beyond their help: the rotation of a key, the data keys, and the doctor.'
 ---
 
 # Console commands
