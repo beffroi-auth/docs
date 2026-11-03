@@ -81,20 +81,32 @@ Final §6.2.1), so that the client and the provider find the same exchange in th
 
 ## Refusals
 
-Every refusal is a challenge of RFC 6750 §3: a `WWW-Authenticate` header naming the scheme that would have
-worked and, unless the request carried no token at all, the `error` and its `error_description`, repeated as
-a JSON body. The same two caching headers come with each.
+Every refusal is a challenge of RFC 6750 §3: a `WWW-Authenticate` header naming a scheme and, unless the
+request carried no token at all, the `error` and its `error_description`, repeated as a JSON body. The scheme
+is the one the request presented the token under, so a client that sends its token under `DPoP` is answered
+under `DPoP` (RFC 9449 §7.2), save in three cases the table names: a refused proof is answered under `DPoP`, a
+token presented the wrong way under the scheme that would have worked, and a request whose token cannot be
+read under `Bearer`. Every challenge under `DPoP` names in `algs` the algorithms a proof may be signed with
+(RFC 9449 §7.1), the ones the discovery document announces in `dpop_signing_alg_values_supported`. The same
+two caching headers come with each.
 
 | The request | Status | `WWW-Authenticate` |
 |---|---|---|
-| Carries no access token | `401` | `Bearer, DPoP`, with no error and an empty body |
+| Carries no access token | `401` | `Bearer, DPoP algs="..."`, with no error and an empty body |
 | Sends the token in the header and in the body, or in a header or a parameter of the wrong shape | `400` | `Bearer error="invalid_request"` |
 | Carries a client certificate in a header, or reaches PHP with a certificate that cannot be read | `400` | `Bearer error="invalid_request"` |
 | Carries a DPoP proof that does not verify, or names another request or another token | `401` | `DPoP error="invalid_dpop_proof"` |
 | Carries a proof without the nonce the provider asks for | `401` | `DPoP error="use_dpop_nonce"`, and a fresh nonce in `DPoP-Nonce` |
-| Presents a token the provider does not honour, or one addressed to a resource, which every token a client holds for itself is | `401` | `Bearer error="invalid_token"` |
+| Presents a token the provider does not honour, or one addressed to a resource, which every token a client holds for itself is | `401` | `error="invalid_token"`, under the scheme the token was presented under |
 | Does not prove what the token is bound to, or presents it under the wrong scheme | `401` | `error="invalid_token"`, under `DPoP` for a token bound to a key and `Bearer` for one bound to a certificate |
-| Presents a token somebody signed in for, without `openid` | `403` | `Bearer error="insufficient_scope"`, with `scope="openid"` |
+| Presents a token somebody signed in for, without `openid` | `403` | `error="insufficient_scope"`, with `scope="openid"`, under the scheme the token was presented under |
+
+A token that expired, presented under `DPoP` with a valid proof, is refused with:
+
+``` http
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: DPoP error="invalid_token", error_description="The access token expired.", algs="RS256 PS256 ES256 EdDSA"
+```
 
 The descriptions say which rule refused and nothing more: a token refused because it was not issued here
 reads the same whatever gave it away. [DPoP](sender-constrained/dpop.md) gives the rules of a proof.
