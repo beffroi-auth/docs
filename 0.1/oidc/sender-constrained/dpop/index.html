@@ -4193,7 +4193,8 @@ next refusal.</p>
 </tbody>
 </table>
 <p>What a proof may be signed with is not an option: it is the list of signature algorithms the provider is
-wired with, which the discovery document announces in <code>dpop_signing_alg_values_supported</code>.</p>
+wired with, which the discovery document announces in <code>dpop_signing_alg_values_supported</code> and every challenge
+of UserInfo under <code>DPoP</code> names in <code>algs</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">The proofs already seen and the nonces live in a cache pool</p>
 <p>Both are kept in the pool <code>beffroi.dpop</code>, which the application declares on <code>cache.app</code>. A deployment that
@@ -4207,7 +4208,9 @@ that.</p>
 <p><strong>UserInfo</strong>, the resource of the provider, honours a token bound to a key only when the request presents it
 under the <code>DPoP</code> scheme with a valid proof of that key, and refuses it with a <code>401</code> whose challenge names the
 scheme that would have worked. The proof is verified before the token is read, and the binding once the token
-is known to be valid:</p>
+is known to be valid, so a bound token that no longer holds, an expired one for instance, is refused for that
+first, under the scheme it was presented under (RFC 9449 §7.2). Every challenge under <code>DPoP</code> names in <code>algs</code>
+the algorithms a proof may be signed with (RFC 9449 §7.1):</p>
 <table>
 <thead>
 <tr>
@@ -4220,22 +4223,27 @@ is known to be valid:</p>
 <tr>
 <td>Presents the bound token as <code>Bearer</code></td>
 <td><code>401</code></td>
-<td><code>DPoP error="invalid_token"</code></td>
+<td><code>DPoP error="invalid_token"</code>, with <code>algs</code></td>
 </tr>
 <tr>
 <td>Presents it as <code>DPoP</code> with no proof, or with a proof of another key</td>
 <td><code>401</code></td>
-<td><code>DPoP error="invalid_token"</code></td>
+<td><code>DPoP error="invalid_token"</code>, with <code>algs</code></td>
+</tr>
+<tr>
+<td>Presents it as <code>DPoP</code> with a valid proof once it has expired or is no longer honoured</td>
+<td><code>401</code></td>
+<td><code>DPoP error="invalid_token"</code>, with <code>algs</code></td>
 </tr>
 <tr>
 <td>Carries a proof that does not verify, or that names another request or another token</td>
 <td><code>401</code></td>
-<td><code>DPoP error="invalid_dpop_proof"</code></td>
+<td><code>DPoP error="invalid_dpop_proof"</code>, with <code>algs</code></td>
 </tr>
 <tr>
 <td>Carries no nonce, or a stale one, while the provider asks for one</td>
 <td><code>401</code></td>
-<td><code>DPoP error="use_dpop_nonce"</code>, and the fresh nonce in <code>DPoP-Nonce</code></td>
+<td><code>DPoP error="use_dpop_nonce"</code>, with <code>algs</code>, and the fresh nonce in <code>DPoP-Nonce</code></td>
 </tr>
 </tbody>
 </table>
