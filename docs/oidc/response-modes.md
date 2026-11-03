@@ -1,6 +1,6 @@
 ---
 title: Response modes
-description: How the answer of the authorization endpoint travels back to the client: in the query, in a form the browser posts, or as a JWT the tenant signs and may encrypt.
+description: 'How the answer of the authorization endpoint travels back to the client: in the query, in a form the browser posts, or as a JWT the tenant signs and may encrypt.'
 ---
 
 # Response modes

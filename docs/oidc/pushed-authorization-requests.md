@@ -1,6 +1,6 @@
 ---
 title: Pushed authorization requests
-description: The authorization request sent server to server first, RFC 9126: the endpoint, the reference it answers with, how long it lives, and what a client may be held to.
+description: 'The authorization request sent server to server first, RFC 9126: the endpoint, the reference it answers with, how long it lives, and what a client may be held to.'
 ---
 
 # Pushed authorization requests

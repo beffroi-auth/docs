@@ -1,6 +1,6 @@
 ---
 title: Dynamic registration
-description: A client the provider has never seen, RFC 7591 and RFC 7592: closed by default, the three modes a tenant opens it in, what a registration may and may not ask for, and how a client reads, replaces and deletes itself.
+description: 'A client the provider has never seen, RFC 7591 and RFC 7592: closed by default, the three modes a tenant opens it in, what a registration may and may not ask for, and how a client reads, replaces and deletes itself.'
 ---
 
 # Dynamic registration

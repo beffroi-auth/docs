@@ -1,6 +1,6 @@
 ---
 title: Keys
-description: The keys of a tenant: what each one is for, sealed by the key management service, published or kept, and rotated without an outage.
+description: 'The keys of a tenant: what each one is for, sealed by the key management service, published or kept, and rotated without an outage.'
 ---
 
 # Keys

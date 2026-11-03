@@ -1,6 +1,6 @@
 ---
 title: Authorization details
-description: Asking for what a scope cannot say, RFC 9396: the types a deployment wires, how a request is judged, what the person reads and what the token carries.
+description: 'Asking for what a scope cannot say, RFC 9396: the types a deployment wires, how a request is judged, what the person reads and what the token carries.'
 ---
 
 # Authorization details

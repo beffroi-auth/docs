@@ -1,6 +1,6 @@
 ---
 title: Pairwise subjects
-description: The same person under a different identifier per sector, OIDC Core §8.1: how a client chooses the kind, how the identifier is computed, what the sector is, and what keeps it stable.
+description: 'The same person under a different identifier per sector, OIDC Core §8.1: how a client chooses the kind, how the identifier is computed, what the sector is, and what keeps it stable.'
 ---
 
 # Pairwise subjects

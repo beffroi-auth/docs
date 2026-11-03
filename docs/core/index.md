@@ -1,6 +1,6 @@
 ---
 title: Identity core
-description: What beffroi/core holds: tenants, users, credentials, groups, sessions and keys, in pure PHP.
+description: 'What beffroi/core holds: tenants, users, credentials, groups, sessions and keys, in pure PHP.'
 ---
 
 # Identity core

@@ -1,6 +1,6 @@
 ---
 title: The standalone application
-description: beffroi/op, the deployment the project recommends: the Symfony skeleton, the bundle and FrankenPHP.
+description: 'beffroi/op, the deployment the project recommends: the Symfony skeleton, the bundle and FrankenPHP.'
 ---
 
 # The standalone application

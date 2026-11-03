@@ -1,6 +1,6 @@
 ---
 title: Request objects
-description: The authorization request as a JWT the client signed, RFC 9101: by value or by reference, the algorithms a client registers, what is checked, and what is refused.
+description: 'The authorization request as a JWT the client signed, RFC 9101: by value or by reference, the algorithms a client registers, what is checked, and what is refused.'
 ---
 
 # Request objects
