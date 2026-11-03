@@ -40,7 +40,9 @@ beffroi:
 | `encrypt_assertions` | `false` | Its assertions are encrypted for a key of its metadata |
 | `signs_authn_requests` | `true` | It signs its authentication requests |
 
-A declaration is refused while the identity provider of the tenant is not enabled, and a declaration that
+A declaration is refused while the identity provider of the tenant is written off, `enabled: false` or the
+block left out. One kept while an environment variable turns the role off is served by nothing until the
+variable turns it on again. A declaration that
 does not hold together fails the build of the deployment rather than its first login: when the container is
 compiled for every rule, and right after it, in the same build, for the claims the attributes name. A
 declaration that holds an environment variable, whose value only the running deployment knows, is held to

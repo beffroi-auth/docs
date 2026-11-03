@@ -314,10 +314,13 @@ How a client nobody declared comes to exist (RFC 7591). Without a `mode`, the te
 
 ## `saml`
 
-The SAML roles of the tenant and its peers. A role that is off wires nothing. Service providers are declared
-only while the identity provider is on, and upstream identity providers only while the service provider is
-on: the configuration is refused otherwise. A declaration of a peer that does not hold together fails the
-build of the container, and one that holds an environment variable fails at its first use.
+The SAML roles of the tenant and its peers. The routes and services of both roles are always wired,
+and a role that is off serves nothing. Whether a role is on may be an environment variable, read when the
+container builds what the role changes. Service providers are declared only while the identity provider is not
+written off, and upstream identity providers only while the service provider is not: the configuration is
+refused otherwise. A peer kept while an environment variable turns its role off is served by nothing. A
+declaration of a peer that does not hold together fails the build of the container, and one that holds an
+environment variable fails at its first use.
 
 ### `saml.identity_provider`
 
@@ -325,7 +328,7 @@ build of the container, and one that holds an environment variable fails at its 
 
 | Option | Type | Default | What it decides |
 |---|---|---|---|
-| `enabled` | boolean | `false` | Whether the tenant is a SAML identity provider. Writing the block turns it on unless it says `enabled: false`, and `identity_provider: true` is the short form. Off, the tenant serves no metadata and declares no service provider |
+| `enabled` | boolean | `false` | Whether the tenant is a SAML identity provider. Writing the block turns it on unless it says `enabled: false`, and `identity_provider: true` is the short form. Off, the tenant serves no metadata and none of the service providers declared; written off, it declares none |
 | `want_authn_requests_signed` | boolean | `true` | What the metadata say in `WantAuthnRequestsSigned` (SAML Metadata §2.4.3). It announces, and decides nothing: whether a request needs a signature is decided per service provider |
 | `staging_delay` | integer, 0 or more | `604800`, seven days | How long a new SAML key is published before it is used |
 | `age` | integer, 1 or more | `31536000`, 365 days | How long a SAML key works before the timed step stages a successor behind it, counted from its activation |
@@ -341,7 +344,7 @@ of both roles.
 
 | Option | Type | Default | What it decides |
 |---|---|---|---|
-| `enabled` | boolean | `false` | Whether the tenant is a SAML service provider to identity providers upstream of it, with the same short form. Off, nothing of it is wired |
+| `enabled` | boolean | `false` | Whether the tenant is a SAML service provider to identity providers upstream of it, with the same short form. Off, it serves nothing, and its routes answer `404` |
 | `entity_id` | string, not empty | the URL of its metadata | The entity ID of the service provider: an absolute URI of 1024 characters at most, with no whitespace, control, format or invisible character, and never the entity ID of the identity provider of the tenant |
 
 ### `saml.service_providers`

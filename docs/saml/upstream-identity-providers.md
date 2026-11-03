@@ -21,7 +21,7 @@ beffroi:
 
 | Option | Default | What it decides |
 |---|---|---|
-| `enabled` | `false` | Whether the role exists. Off, nothing of it is wired, and its metadata, its assertion consumer service and its sign-on answer `404` |
+| `enabled` | `false` | Whether the role is on. Its routes and services are always wired; off, it serves nothing, and its metadata, its assertion consumer service and its sign-on answer `404`. It may be an environment variable, read when the container builds what the role changes, so turning the role on or off asks for a restart and not for a new build of the container |
 | `entity_id` | the URL of its metadata | The entity ID of the service provider, for one its identity providers already know by a name it keeps: an absolute URI of 1024 characters at most, with no whitespace, control, format or invisible character |
 
 The service provider signs with the SAML signing key of the [identity provider](identity-provider.md#the-key),
@@ -85,7 +85,9 @@ beffroi:
 | `require_encrypted_assertions` | `false` | An assertion arrives encrypted, or it is refused |
 | `address_parameter` | none | The parameter of its single sign-on service that takes the address the person typed, which it prefills its sign-in with |
 
-A declaration is refused while the service provider of the tenant is not enabled, and one that does not hold
+A declaration is refused while the service provider of the tenant is written off, `enabled: false` or the
+block left out. One kept while an environment variable turns the role off is served by nothing until the
+variable turns it on again. A declaration that does not hold
 together fails the build of the deployment, the claims of `profile` included, which are checked right after
 the container is compiled. A declaration holding an environment variable is held to the same rules at its
 first use.

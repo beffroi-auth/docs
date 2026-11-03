@@ -23,9 +23,12 @@ beffroi:
 | `subject` | none | The `sub` of the token the provider signs for a push service (RFC 8292 §2.1): a `mailto:` or `https:` URI at which a push service can reach the operator of the deployment. Naming one is what turns web push on |
 | `timeout` | `3.0` | Seconds one push to one push service is given, connection included, so that a push service that hangs does not hold a worker |
 
-**Without a subject, nothing of it is wired.** No push leaves the deployment, the tenant draws no
-application server key, and the page where a browser would subscribe says that the provider does not tell
-browsers. A key drawn before the subject was taken away is read by nothing until a subject is named again.
+**Without a subject, web push serves nothing.** Its services and its routes are always wired, and the subject
+may be an environment variable, read when the container builds what web push changes: naming one or taking it
+away asks for a restart and not for a new build of the container. Without one, its channel is not in the lane of
+notifications, no push leaves the deployment, the tenant draws no application server key, and the page where a
+browser would subscribe says that the provider does not tell browsers. A key drawn before the subject was taken
+away is read by nothing until a subject is named again.
 
 ## The application server key
 
@@ -75,7 +78,7 @@ endpoint, which carries the unique constraint with the person.
 
 When a client makes a backchannel authentication request that names a person, the provider answers the
 client and puts the message that tells the person on the lane of notifications. The lane hands it to every
-channel the deployment wires; web push is the one the bundle ships, wired when a subject is named. A person
+channel the deployment wires; web push is the one the bundle ships, in the lane while a subject is named. A person
 who has subscribed no browser is told nothing, and finds the request where requests are answered.
 
 Every browser the person subscribed is pushed to, and each push carries three strings and nothing else, in
