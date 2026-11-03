@@ -37,7 +37,8 @@ code and configuration, in its own directories.
 
 ## On your machine
 
-The development stack runs the application in Docker beside PostgreSQL. It is driven from the
+The development stack runs the application in Docker beside PostgreSQL, whose table `messenger_messages`
+holds the queues of the lanes as well. It is driven from the
 root of the monorepo by Castor, 0.23 or later, and asks the machine for Docker Compose and Composer besides.
 The two `composer install` below run on the machine and not in a container, so it also needs PHP 8.4 or later
 with the extensions the locked packages require, `intl`, `dom` and `zip` among them.
@@ -50,7 +51,7 @@ castor provision
 ```
 
 `castor start` brings up the provider on `https://op.localhost`, the host that asks for a client certificate
-on `https://mtls.op.localhost`, and PostgreSQL. On a machine with an mkcert authority, the stack
+on `https://mtls.op.localhost` and PostgreSQL. On a machine with an mkcert authority, the stack
 serves a certificate mkcert issues there for its names, which a browser that trusts mkcert accepts; on any
 other, Caddy issues one from its internal authority. On a stack that names no key management service yet, the
 worker is created and left stopped, because it refuses to start without one.
@@ -87,15 +88,52 @@ expects:
 docker build --file apps/op/Dockerfile --target frankenphp_prod .
 ```
 
-The build copies `apps/op/` of the working copy as it stands, installs the application without its
-development dependencies, compiles `.env` for production with `composer dump-env prod`, builds the stylesheet
-and compiles the assets. `composer dump-env` compiles a `.env.local` too when one is there, and the one the
-development stack writes holds its key management service, the secrets of its clients and the password of its
-user: the image is built from a checkout that holds no `.env.local`. What changes from one machine to the next
-is then read from the environment when the container starts: the issuer, the database, the key management
-service.
+The build copies `apps/op/` without what a working copy holds beside the repository, such as the `.env.local`
+the development stack writes, installs the application without its development dependencies, compiles
+the `.env` of the repository for production with `composer dump-env prod`, builds the stylesheet and compiles
+the assets. What a deployment chooses is then read from the environment when the container starts: the
+issuer, the database, the key management service, the lanes, and every other setting of the provider.
 
-[:beffroi-arrow-right: The environment the application reads](../application/configuration.md)
+[:beffroi-arrow-right: The environment the application reads](../application/configuration.md) and
+[whole deployments written with it](../application/examples.md)
+
+### The Compose file of the image
+
+The monorepo carries a deployment of the published image, `ghcr.io/beffroi-auth/op`, in one file at its root,
+[`compose.prod.yaml`](https://github.com/beffroi-auth/beffroi/blob/0.0.x/compose.prod.yaml). It stands alone,
+so it is downloaded without the rest of the monorepo, and runs three services: the server, the worker and
+PostgreSQL, whose table `messenger_messages` holds the queues of the lanes. No broker runs beside them.
+
+``` bash
+docker compose -f compose.prod.yaml up -d --wait op
+```
+
+- **It reads its environment from a `.env` beside it**, and refuses to start without five variables, none of
+  which it gives a value: `SERVER_NAME`, the host Caddy serves and obtains a certificate for, which makes the
+  issuer `https://<host>`; `APP_SECRET`; `POSTGRES_PASSWORD`, written into a URL as it stands; and
+  `BEFFROI_KMS_DSN` with `BEFFROI_KMS_KEY_ID`.
+- **The two processes mount the same five volumes**, for `var/keys`, `var/kms`, `var/geoip`, `var/webauthn`
+  and `var/share`. Under the file backend, the master key of the tenant is drawn once into the volume of
+  `var/kms`, before anything is sealed, by the command the header of the file gives.
+- **The processes run as `www-data`, uid 33.** The volumes are theirs from their first mount, and what a
+  deployment mounts in their place, a directory of its own or the key of the file backend given as a secret,
+  is readable by that uid, and writable where it stands for one of these volumes.
+- **The two processes read the six variables the file names**, the issuer, `DEFAULT_URI`, `APP_SECRET`, the
+  database and the key management service, written once for both. Compose hands a container nothing else of
+  its `.env`, so any other variable is added to the environment of both processes:
+  [one host](../application/examples.md#one-host).
+- **Only the server publishes ports**, 80 and 443 over TCP and 443 over UDP. PostgreSQL is reached by the two
+  processes alone.
+- **The worker has a health check of its own**, that the consumer is the first process of its container: the
+  one of the image asks Caddy, which the worker does not run.
+- **The host that asks for a client certificate is off**, and three commented variables of the server turn it
+  on: `CADDY_EXTRA_CONFIG`, `MTLS_SERVER_NAME` and `BEFFROI_MTLS_ORIGIN`.
+- **Caddy terminates TLS**, and two commented variables of the server hand it to a proxy in front of the
+  image: `TLS_TERMINATION`, which serves the site of `SERVER_NAME` on plain HTTP, on port 80, to the proxy
+  that asks for that host, and `SYMFONY_TRUSTED_PROXIES`, which names the proxy to Symfony:
+  [behind a proxy](../application/deployment.md#behind-a-proxy).
+
+Its header gives the first start in the order below, the worker started last.
 
 ### The first start, in order
 
@@ -146,5 +184,5 @@ has a row before it has a key, and its first key is the one messages are sealed 
 ## Then
 
 1. [The tenant and its keys](tenant-and-keys.md), for what each of those commands does.
-2. [Your first client](your-first-client.md): outside development the application declares none.
+2. [Your first client](your-first-client.md): the image declares none, and a client registers itself.
 3. [A Symfony relying party](a-symfony-relying-party.md), to see a sign-in end to end.

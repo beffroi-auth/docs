@@ -226,6 +226,7 @@ nav:
       - application/index.md
       - application/deployment.md
       - application/configuration.md
+      - application/examples.md
       - application/configuration-tree.md
       - application/routes-and-planes.md
       - application/persistence.md

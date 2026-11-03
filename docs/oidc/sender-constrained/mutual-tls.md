@@ -151,9 +151,12 @@ for nothing.
 | `CADDY_EXTRA_CONFIG` | Caddy | `import mtls.Caddyfile`, which adds that site block |
 | `BEFFROI_MTLS_ORIGIN` | The application | The origin of that host, which becomes `mutual_tls.origin` |
 
-The `.env` of the application names the host of its development stack, `https://mtls.op.localhost`, so a
-deployment sets `BEFFROI_MTLS_ORIGIN` to its own host, or to nothing when it serves no such host and
-announces no alias.
+`.env` leaves `BEFFROI_MTLS_ORIGIN` empty, so the image announces no alias until a deployment names the origin
+of its own host. The development stack names `https://mtls.op.localhost` in its `.env.local`.
+
+Caddy terminates the TLS of that host in every deployment, including one whose proxy terminates the TLS of the
+host of `SERVER_NAME`: the certificate is presented in the handshake, so a proxy in front of that host passes
+its connections through without terminating them.
 
 The site block asks for a certificate without requiring one (`client_auth` in `mode request`), so a client
 that authenticates another way completes its handshake on that host too. A certificate is only accepted with
