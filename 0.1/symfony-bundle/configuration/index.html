@@ -4579,10 +4579,12 @@ lists every option with its type, its default and its bounds.</p>
 finds no compiled container. The tree is checked there: an unknown key at any level, a value of the wrong
 type, a number written outside its bounds, a required option missing, a value outside its list. So are the
 rules the tree reads between options, a sliding refresh lifetime longer than the absolute one, a SAML
-<code>cache_duration</code> that is not shorter than the SAML staging delay, a SAML peer declared for a role that is off;
+<code>cache_duration</code> that is not shorter than the SAML staging delay, a SAML peer declared for a role written off;
 the name of the key management client; and every SAML declaration, the claims it names included. A deployment
 pipeline that warms its cache stops there. A SAML declaration that holds an environment variable is checked at
-its first use instead.</p>
+its first use instead. So is a value read from the environment wherever the tree holds a value to bounds: it
+is held to the same bounds, and to the same rules between options, when the service it reaches is built, so
+the first request or command that needs it refuses a value out of bounds.</p>
 <p><strong>When the provider first reads a declaration.</strong> What only the wiring can answer is checked against the
 wiring, the first time the provider builds the object: the tenant, each declared client, each trusted issuer,
 each authority of software statements, the default scope of registrations. A refusal names the option and,
@@ -4742,7 +4744,8 @@ registering its grant and a delivery mode.</p>
 <h2 id="web_push"><code>web_push</code><a class="headerlink" href="#web_push" title="Link to this section">&para;</a></h2>
 <p>Whether the provider reaches people through the push services of their browsers (RFC 8030). Naming a
 <code>subject</code> turns it on: a <code>mailto:</code> or <code>https:</code> URI at which a push service can reach the operator (RFC 8292
-§2.1). Left out, nothing of it is wired, no push leaves the deployment, and the page where a browser would
+§2.1). Its services and routes are always wired, and the subject may be an environment variable.
+Without a subject, web push serves nothing, no push leaves the deployment, and the page where a browser would
 subscribe says so.</p>
 <div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">beffroi</span><span class="p">:</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">web_push</span><span class="p">:</span>
@@ -4852,9 +4855,10 @@ its confidential clients from PKCE, never a public one.</p>
 <p><a href="../../oidc/dynamic-registration/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Dynamic registration</a></p>
 <h2 id="saml"><code>saml</code><a class="headerlink" href="#saml" title="Link to this section">&para;</a></h2>
-<p>The SAML roles of the tenant, each off unless the section turns it on, and the peers of each. A role that is off
-wires nothing and answers <code>404</code> where its metadata would be, and the peers of a role are refused while it is
-off.</p>
+<p>The SAML roles of the tenant, each off unless the section turns it on, and the peers of each. Whether a role is
+on may be an environment variable. A role that is off serves nothing and answers <code>404</code> where its metadata would
+be. The peers of a role written off are refused, and those of a role an environment variable turns off are
+served by nothing.</p>
 <table>
 <thead>
 <tr>
@@ -4911,7 +4915,7 @@ off.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 14:00:31 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 11:24:49 UTC">November 2, 2026</span>
   </span>
 
     

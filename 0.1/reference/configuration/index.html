@@ -5644,10 +5644,13 @@ authenticating otherwise names none of them.</p>
 </tbody>
 </table>
 <h2 id="saml"><code>saml</code><a class="headerlink" href="#saml" title="Link to this section">&para;</a></h2>
-<p>The SAML roles of the tenant and its peers. A role that is off wires nothing. Service providers are declared
-only while the identity provider is on, and upstream identity providers only while the service provider is
-on: the configuration is refused otherwise. A declaration of a peer that does not hold together fails the
-build of the container, and one that holds an environment variable fails at its first use.</p>
+<p>The SAML roles of the tenant and its peers. The routes and services of both roles are always wired,
+and a role that is off serves nothing. Whether a role is on may be an environment variable, read when the
+container builds what the role changes. Service providers are declared only while the identity provider is not
+written off, and upstream identity providers only while the service provider is not: the configuration is
+refused otherwise. A peer kept while an environment variable turns its role off is served by nothing. A
+declaration of a peer that does not hold together fails the build of the container, and one that holds an
+environment variable fails at its first use.</p>
 <h3 id="samlidentity_provider"><code>saml.identity_provider</code><a class="headerlink" href="#samlidentity_provider" title="Link to this section">&para;</a></h3>
 <p><a href="../../saml/identity-provider/">The identity provider</a> is the role.</p>
 <table>
@@ -5664,7 +5667,7 @@ build of the container, and one that holds an environment variable fails at its 
 <td><code>enabled</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>Whether the tenant is a SAML identity provider. Writing the block turns it on unless it says <code>enabled: false</code>, and <code>identity_provider: true</code> is the short form. Off, the tenant serves no metadata and declares no service provider</td>
+<td>Whether the tenant is a SAML identity provider. Writing the block turns it on unless it says <code>enabled: false</code>, and <code>identity_provider: true</code> is the short form. Off, the tenant serves no metadata and none of the service providers declared; written off, it declares none</td>
 </tr>
 <tr>
 <td><code>want_authn_requests_signed</code></td>
@@ -5711,7 +5714,7 @@ of both roles.</p>
 <td><code>enabled</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>Whether the tenant is a SAML service provider to identity providers upstream of it, with the same short form. Off, nothing of it is wired</td>
+<td>Whether the tenant is a SAML service provider to identity providers upstream of it, with the same short form. Off, it serves nothing, and its routes answer <code>404</code></td>
 </tr>
 <tr>
 <td><code>entity_id</code></td>
@@ -5891,7 +5894,7 @@ is how one is declared.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 14:16:21 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 11:24:49 UTC">November 2, 2026</span>
   </span>
 
     

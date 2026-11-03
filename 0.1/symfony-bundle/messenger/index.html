@@ -4189,7 +4189,7 @@ wrong would break the asynchronous half of the provider, and nothing in a browse
 </tr>
 <tr>
 <td><code>async_priority_high</code>, <code>async_priority_medium</code>, <code>async_priority_low</code></td>
-<td><code>%env(BEFFROI_MESSENGER_DSN)%</code>, <code>doctrine://default</code> when the variable is not set</td>
+<td><code>BEFFROI_MESSENGER_DSN</code>, <code>{lane}</code> in it replaced by the name of the lane; <code>doctrine://default?queue_name={lane}</code> when the variable is not set</td>
 <td>Four times, one second before the first, each wait four times the one before, thirty seconds at most</td>
 </tr>
 <tr>
@@ -4210,42 +4210,24 @@ failed being one nobody reads. The contract routes no message to <code>async_pri
 transport included: what it writes is the subject of <a href="#what-leaves-the-process-is-sealed">the last section</a>.</p>
 <h2 id="what-the-application-writes">What the application writes<a class="headerlink" href="#what-the-application-writes" title="Link to this section">&para;</a></h2>
 <p><strong>Nothing, to start.</strong> Every lane is the database, through the default connection, and a provider runs with
-no broker. <code>BEFFROI_MESSENGER_DSN</code> moves every lane to one DSN at once.</p>
-<p><strong>Its transports, to put lanes on a broker.</strong> A transport the application declares under the name of a lane
-keeps the application's settings, the prepended configuration being merged first. The standalone application
-runs RabbitMQ and binds each lane to a queue of its own on one exchange, which is the part of a transport only
-a deployment knows:</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/messenger.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">messenger</span><span class="p">:</span>
+no broker, each lane a queue of its own. <code>BEFFROI_MESSENGER_DSN</code> moves every lane to one DSN at once, and keeps
+them four: <code>{lane}</code> in it is where the name of each lane goes, and a DSN that names no <code>{lane}</code> is refused
+when the transport of a lane is built.</p>
+<p><strong>Its transports, for a lane apart.</strong> A transport the application declares under the name of a lane keeps
+the application's settings, the prepended configuration being merged first. The standalone application declares
+none outside its tests, so its lanes are queues of the database. Its test environment plays every lane inside
+the request that sent it:</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/test/messenger.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">messenger</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">transports</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">async_priority_high</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MESSENGER_TRANSPORT_DSN)%'</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">options</span><span class="p">:</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">                </span><span class="nt">exchange</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">beffroi_messages</span><span class="p p-Indicator">,</span><span class="nt"> type</span><span class="p">:</span><span class="w"> </span><span class="nv">direct</span><span class="p p-Indicator">,</span><span class="nt"> default_publish_routing_key</span><span class="p">:</span><span class="w"> </span><span class="nv">high</span><span class="w"> </span><span class="p p-Indicator">}</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">                </span><span class="nt">queues</span><span class="p">:</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">                    </span><span class="nt">beffroi_messages_high</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> binding_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">high</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nt">async_priority_medium</span><span class="p">:</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">            </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MESSENGER_TRANSPORT_DSN)%'</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">            </span><span class="nt">options</span><span class="p">:</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">                </span><span class="nt">exchange</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">beffroi_messages</span><span class="p p-Indicator">,</span><span class="nt"> type</span><span class="p">:</span><span class="w"> </span><span class="nv">direct</span><span class="p p-Indicator">,</span><span class="nt"> default_publish_routing_key</span><span class="p">:</span><span class="w"> </span><span class="nv">medium</span><span class="w"> </span><span class="p p-Indicator">}</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">                </span><span class="nt">queues</span><span class="p">:</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">                    </span><span class="nt">beffroi_messages_medium</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> binding_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">medium</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="nt">async_priority_low</span><span class="p">:</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">            </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MESSENGER_TRANSPORT_DSN)%'</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">            </span><span class="nt">options</span><span class="p">:</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">                </span><span class="nt">exchange</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">beffroi_messages</span><span class="p p-Indicator">,</span><span class="nt"> type</span><span class="p">:</span><span class="w"> </span><span class="nv">direct</span><span class="p p-Indicator">,</span><span class="nt"> default_publish_routing_key</span><span class="p">:</span><span class="w"> </span><span class="nv">low</span><span class="w"> </span><span class="p p-Indicator">}</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">                </span><span class="nt">queues</span><span class="p">:</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">                    </span><span class="nt">beffroi_messages_low</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> binding_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">low</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">        </span><span class="nt">async_notifications</span><span class="p">:</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">            </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(MESSENGER_TRANSPORT_DSN)%'</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">            </span><span class="nt">options</span><span class="p">:</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">                </span><span class="nt">exchange</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> name</span><span class="p">:</span><span class="w"> </span><span class="nv">beffroi_messages</span><span class="p p-Indicator">,</span><span class="nt"> type</span><span class="p">:</span><span class="w"> </span><span class="nv">direct</span><span class="p p-Indicator">,</span><span class="nt"> default_publish_routing_key</span><span class="p">:</span><span class="w"> </span><span class="nv">notifications</span><span class="w"> </span><span class="p p-Indicator">}</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">                </span><span class="nt">queues</span><span class="p">:</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">                    </span><span class="nt">beffroi_messages_notifications</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> binding_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">notifications</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">async_priority_high</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">async_priority_medium</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">async_priority_low</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">async_notifications</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">failed</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
 </span></code></pre></div>
 <p>The block is under <code>messenger</code> and not <code>framework.messenger</code>: in Symfony 8.2 the component has an extension
 of its own, and a block written under <code>framework</code> does not override what the bundle prepends to
-<code>messenger</code>. The standalone application sets every lane to <code>sync://</code> in its test environment, where the
-writes are played inside the request.</p>
+<code>messenger</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">The notifications keep the retry policy of the bundle</p>
 <p>The schedule of the lane is the one <code>beffroi.back_channel_logout</code> sets: <code>retries</code>, six by default,
@@ -4381,7 +4363,7 @@ into a failed message nobody would replay.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 13:24:43 UTC">November 2, 2026</span>
   </span>
 
     

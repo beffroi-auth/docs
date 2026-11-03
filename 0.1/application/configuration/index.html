@@ -3473,10 +3473,87 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#symfony-the-database-and-the-broker" class="md-nav__link">
+  <a href="#the-tenant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symfony, the database and the broker
+        The tenant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys-and-lifetimes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys and lifetimes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clients-and-their-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clients and their requests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#saml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SAML
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-journal-and-the-load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The journal and the load
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symfony-and-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Symfony and the database
       
     </span>
   </a>
@@ -3989,10 +4066,87 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#symfony-the-database-and-the-broker" class="md-nav__link">
+  <a href="#the-tenant" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Symfony, the database and the broker
+        The tenant
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys-and-lifetimes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys and lifetimes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clients-and-their-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clients and their requests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#saml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SAML
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-journal-and-the-load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The journal and the load
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#symfony-and-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Symfony and the database
       
     </span>
   </a>
@@ -4069,15 +4223,19 @@
 
 
 <h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Link to this section">&para;</a></h1>
-<p>What changes from one machine to the next is an environment variable: the issuer, the key management service,
-the database, the broker, the lifetimes, the host that asks for a client certificate. What the deployment is,
-its clients, its look, the protocols it turns on, is written in its configuration files.</p>
-<p><code>apps/op/.env</code> holds the values of the development stack, and the production image compiles it with
-<code>composer dump-env prod</code>, together with a <code>.env.local</code> when the checkout it is built from holds one. A real
-environment variable wins over both, which is how a deployment says its own. <code>.env</code> carries no secret of a
-deployment: the key management service, the key it seals under and the secrets of the clients are empty there,
-and the database and the broker are those of the development stack. That stack writes its own secrets into
-<code>.env.local</code>, which is never committed and which an image is built without.</p>
+<p>Everything a deployment chooses is an environment variable: the issuer, the key management service, the
+database, the lifetimes, the look of the tenant, the roles it plays and the lists of its policy. The
+configuration files hold what stays the same from one deployment to the next, and the clients.</p>
+<p><code>apps/op/.env</code> holds the value an image takes when the deployment names none, and the production image
+compiles it with <code>composer dump-env prod</code>. A real environment variable wins over it, which is how a deployment
+says its own. <code>.env</code> carries no secret of a deployment: the key management service, the key it seals under and
+the secret of the kernel are empty there, and the database is the one of the development stack. That stack
+writes its own secrets into <code>.env.local</code>, which is never committed and never reaches an image.</p>
+<p>Each variable the bundle reads is read when the container builds the service it reaches, not when the container is compiled,
+so changing one asks for a restart of the processes and not for a new image. A value is held there to the
+bounds the <a href="../../reference/configuration/">configuration tree</a> sets for the option it fills, and to the rules
+between options: a value out of bounds is refused by the first request or command that needs it, not when the
+image is built.</p>
 <h2 id="the-provider">The provider<a class="headerlink" href="#the-provider" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4092,6 +4250,11 @@ and the database and the broker are those of the development stack. That stack w
 <td><code>BEFFROI_ISSUER</code></td>
 <td><code>https://op.localhost</code></td>
 <td>The issuer of the tenant (OIDC Discovery 1.0 §3), which every token names and every client compares byte for byte: an absolute <code>https</code> URL with no query, no fragment and no trailing slash, plain HTTP on a loopback host only. The application imports the routes of the bundle at the root, so its issuer is an origin with no path. A tenant keeps the issuer its row was written with: <code>beffroi:tenant:synchronize</code> refuses another</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_SLUG</code></td>
+<td><code>default</code></td>
+<td>The stable name of the tenant, from which its identifier is derived. Renaming it is creating another tenant, with other keys and other rows, so a deployment names it once</td>
 </tr>
 <tr>
 <td><code>BEFFROI_KMS_DSN</code></td>
@@ -4109,29 +4272,24 @@ and the database and the broker are those of the development stack. That stack w
 <td>A second client, <code>second</code>, holding a key under the same identifier, for a run that moves the data keys from one to the other. Empty, the client is declared and never built</td>
 </tr>
 <tr>
+<td><code>BEFFROI_DATA_KEY_SECRETS</code></td>
+<td>not set</td>
+<td>The secrets every data key of personal data is bound to its row under, as a JSON list, the one that binds a new row first. Not set, <code>APP_SECRET</code> alone binds them. <a href="../operating/#data-keys">Operating it</a> says how a rotation of <code>APP_SECRET</code> uses it</td>
+</tr>
+<tr>
 <td><code>BEFFROI_PLANE</code></td>
 <td><code>all</code></td>
 <td>The plane this process serves: <code>all</code>, <code>interaction</code> or <code>protocol</code>. A route of a plane the process does not serve answers <code>404</code></td>
 </tr>
 <tr>
+<td><code>BEFFROI_MESSENGER_DSN</code></td>
+<td><code>doctrine://default?queue_name={lane}</code></td>
+<td>Where the four lanes go: one DSN for the four, <code>{lane}</code> in it standing for the name of each lane, so that each is a queue of its own. A DSN that names no <code>{lane}</code> is refused when the transport of a lane is built. The value of <code>.env</code> is a queue of the table <code>messenger_messages</code> per lane, which the transport creates the first time it reaches it. The image carries the transport of no broker, so a deployment of it keeps its lanes in the database. A message that fails stays in the database whatever this names</td>
+</tr>
+<tr>
 <td><code>BEFFROI_MTLS_ORIGIN</code></td>
-<td><code>https://mtls.op.localhost</code></td>
-<td>The origin of the host that asks for a client certificate, announced in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, the discovery document announces no alias, which is what a deployment serving one host sets</td>
-</tr>
-<tr>
-<td><code>BEFFROI_JWKS_MAX_AGE</code></td>
-<td><code>300</code></td>
-<td>How long, in seconds, a relying party may cache the JWK Set (RFC 7517 §5). A key staged by a rotation, the SAML signing key aside, is published for this long plus sixty seconds before it takes over, 360 seconds with this value</td>
-</tr>
-<tr>
-<td><code>BEFFROI_ACCESS_TOKEN_TTL</code></td>
-<td><code>600</code></td>
-<td>The lifetime of an access token in seconds, whether it is an <code>at+jwt</code> or an opaque reference</td>
-</tr>
-<tr>
-<td><code>BEFFROI_ID_TOKEN_TTL</code></td>
-<td><code>600</code></td>
-<td>The lifetime of an ID token in seconds</td>
+<td>empty</td>
+<td>The origin of the host that asks for a client certificate, announced in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, the discovery document announces no alias, which is what a deployment serving one host leaves</td>
 </tr>
 <tr>
 <td><code>GEOIP_LICENSE_KEY</code></td>
@@ -4143,11 +4301,461 @@ and the database and the broker are those of the development stack. That stack w
 <td>empty</td>
 <td>The range endpoint a password is compared against before it is written (NIST SP 800-63B §3.1.1.2): <code>https://api.pwnedpasswords.com/range/</code>, where the first five hexadecimal characters of the SHA-1 of a password leave and the rest is compared locally. Empty, nobody is asked, and passwords are posed on the rules of the core alone</td>
 </tr>
+<tr>
+<td><code>BEFFROI_BREACHED_PASSWORDS_TIMEOUT</code></td>
+<td><code>2</code></td>
+<td>The seconds one lookup in that list is given, a tenth of a second at least. A lookup still unanswered by then refuses the password</td>
+</tr>
 </tbody>
 </table>
-<p>Each of these is read when the kernel needs it and not when its container is compiled, so changing one asks
-for a restart of the processes and not for a new image.</p>
-<h2 id="symfony-the-database-and-the-broker">Symfony, the database and the broker<a class="headerlink" href="#symfony-the-database-and-the-broker" title="Link to this section">&para;</a></h2>
+<h2 id="the-tenant">The tenant<a class="headerlink" href="#the-tenant" title="Link to this section">&para;</a></h2>
+<p>Eight variables are lists of the configuration, three of them here. Each is a JSON document of the shape the
+list has in the <a href="../../reference/configuration/">configuration tree</a>, <code>[]</code> or <code>{}</code> for none. An empty variable
+is no JSON document, and is refused.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_TENANT_NAME</code></td>
+<td>empty</td>
+<td>What the pages and the consent call the tenant. Empty, the host of the issuer</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_LOGO_URI</code></td>
+<td>empty</td>
+<td>The logo every page shows, an absolute <code>https</code> URL. Empty, the placeholder mark the image serves at <code>/tenant-logo.svg</code> under the issuer. A logo served from another host needs that origin in the <code>img-src</code> of <code>config/packages/nelmio_security.yaml</code>, and the host to answer <code>Cross-Origin-Resource-Policy: cross-origin</code>, the pages of the account requiring it</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
+<td><code>#1f6feb</code></td>
+<td>The colour the buttons and the links of the pages are drawn in: <code>#</code> and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code></td>
+<td><code>#ffffff</code></td>
+<td>The colour of what is written on it, in the same notation</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_SELF_SERVED_CLAIMS</code></td>
+<td>the fourteen claims of OIDC Core §5.1 the bundle lets a person change, from <code>name</code> to <code>phone_number</code></td>
+<td>What a person may change of themselves on the page of their account. A tenant whose directory owns the data names <code>[]</code></td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_AUTHENTICATION_CLASSES</code></td>
+<td><code>{}</code></td>
+<td>The <code>acr</code> vocabulary of the tenant, class name to predicate, in order. <code>{}</code> is the default policy of the core</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_SCOPES</code></td>
+<td><code>[]</code></td>
+<td>The scopes of the APIs the tenant protects, as <code>["invoices.read","invoices.pay"]</code>. The tenant hands out tokens for them beside <code>openid</code>, the scopes of its claims and <code>offline_access</code>, announces them, and a client that registers itself may register them</td>
+</tr>
+</tbody>
+</table>
+<h2 id="keys-and-lifetimes">Keys and lifetimes<a class="headerlink" href="#keys-and-lifetimes" title="Link to this section">&para;</a></h2>
+<p>In seconds. <a href="../../reference/configuration/#keys"><code>keys</code></a> and <a href="../../reference/configuration/#tokens"><code>tokens</code></a>
+say what each one decides.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_JWKS_MAX_AGE</code></td>
+<td><code>300</code></td>
+<td>How long a relying party may cache the JWK Set (RFC 7517 §5)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_KEY_STAGING_DELAY</code></td>
+<td>empty</td>
+<td>How long a new key is published before it signs. Empty, <code>BEFFROI_JWKS_MAX_AGE</code> plus sixty seconds, 360 with the values of <code>.env</code>. The SAML signing key has <a href="#saml">its own</a></td>
+</tr>
+<tr>
+<td><code>BEFFROI_KEY_AGE</code></td>
+<td><code>7776000</code>, ninety days</td>
+<td>How long a key signs before a successor is staged behind it</td>
+</tr>
+<tr>
+<td><code>BEFFROI_ACCESS_TOKEN_TTL</code></td>
+<td><code>600</code></td>
+<td>The lifetime of an access token, whether it is an <code>at+jwt</code> or an opaque reference</td>
+</tr>
+<tr>
+<td><code>BEFFROI_ID_TOKEN_TTL</code></td>
+<td><code>600</code></td>
+<td>The lifetime of an ID token</td>
+</tr>
+<tr>
+<td><code>BEFFROI_AUTHORIZATION_CODE_TTL</code></td>
+<td><code>60</code></td>
+<td>How long an authorization code can be spent, 600 at most (RFC 6749 §4.1.2)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REFRESH_TOKEN_TTL</code></td>
+<td><code>2592000</code>, thirty days</td>
+<td>The sliding lifetime of a refresh token, renewed at each rotation, and never longer than the absolute one</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL</code></td>
+<td><code>7776000</code>, ninety days</td>
+<td>The lifetime of a family of refresh tokens, counted from the authorization that started it</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REQUEST_URI_TTL</code></td>
+<td><code>60</code></td>
+<td>The lifetime of the <code>request_uri</code> of a pushed request, 600 at most (RFC 9126 §2.2)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_DEVICE_CODE_TTL</code></td>
+<td><code>600</code></td>
+<td>The lifetime of a device code and its user code, 1800 at most (RFC 8628 §3.2)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_TTL</code></td>
+<td><code>300</code></td>
+<td>The lifetime of a backchannel request whose client asks for none, 3600 at most (CIBA Core §7.1)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_DEVICE_CODE_INTERVAL</code></td>
+<td><code>5</code></td>
+<td>The seconds a device waits between two polls, 30 at most (RFC 8628 §3.5)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_INTERVAL</code></td>
+<td><code>5</code></td>
+<td>The seconds a client of the backchannel flow waits between two polls, 30 at most (CIBA Core §11)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_MAX_REQUESTED_EXPIRY</code></td>
+<td><code>1800</code></td>
+<td>The longest lifetime a client may ask for with <code>requested_expiry</code>, 3600 at most (CIBA Core §7.1)</td>
+</tr>
+</tbody>
+</table>
+<p>Every lifetime is a second at least.</p>
+<h2 id="clients-and-their-requests">Clients and their requests<a class="headerlink" href="#clients-and-their-requests" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_DPOP_NONCE_REQUIRED</code></td>
+<td><code>false</code></td>
+<td>Whether a DPoP proof carries a nonce this provider issued (RFC 9449 §8), <code>true</code> or <code>false</code></td>
+</tr>
+<tr>
+<td><code>BEFFROI_DPOP_PROOF_MAX_AGE</code></td>
+<td><code>60</code></td>
+<td>How long a proof stands from its <code>iat</code>, a second at least (RFC 9449 §11.1)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_DPOP_LEEWAY</code></td>
+<td><code>30</code></td>
+<td>What is allowed of the clock of its client, both ways, none at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_DPOP_NONCE_TTL</code></td>
+<td><code>300</code></td>
+<td>How long a nonce this provider issued is accepted, a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_INTERACTION_LOGIN_HINT</code></td>
+<td><code>sub</code></td>
+<td>What a <code>login_hint</code> names on the login page (OIDC Core §3.1.2.1): <code>sub</code>, the subject this provider issued to the client, <code>username</code>, the name a person signs in with, or <code>none</code></td>
+</tr>
+<tr>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT</code></td>
+<td><code>sub</code></td>
+<td>What a <code>login_hint</code> names in a backchannel request (CIBA Core §7.1), among the same three</td>
+</tr>
+<tr>
+<td><code>BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME</code></td>
+<td><code>300</code></td>
+<td>How long an assertion a client signs to authenticate may stand ahead of the request, a second at least (RFC 7523 §3). The trusted issuers are held to it too</td>
+</tr>
+<tr>
+<td><code>BEFFROI_CLIENT_ASSERTION_LEEWAY</code></td>
+<td><code>30</code></td>
+<td>What is allowed of the clock of its signer, none at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_JWKS_URI_TIMEOUT</code></td>
+<td><code>3</code></td>
+<td>The seconds one read of the <code>jwks_uri</code> of a client or of a trusted issuer is given, a tenth of a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_JWKS_URI_MAX_SIZE</code></td>
+<td><code>65536</code></td>
+<td>The bytes that read may answer, one at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_JWKS_URI_TTL</code></td>
+<td><code>86400</code></td>
+<td>How long the keys read back are kept, a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code></td>
+<td><code>300</code></td>
+<td>How often a <code>kid</code> the kept set does not hold may cost another read, none at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REQUEST_OBJECT_MAX_LIFETIME</code></td>
+<td><code>3600</code></td>
+<td>How long a request object may stand from its <code>nbf</code>, a second at least (RFC 9101 §4)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REQUEST_OBJECT_LEEWAY</code></td>
+<td><code>30</code></td>
+<td>What is allowed of the clock of its client, none at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REQUEST_OBJECT_TIMEOUT</code></td>
+<td><code>3</code></td>
+<td>The seconds one read of a <code>request_uri</code> a client hosts is given, a tenth of a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REQUEST_OBJECT_MAX_SIZE</code></td>
+<td><code>65536</code></td>
+<td>The bytes that read may answer, one at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TRUSTED_ISSUERS</code></td>
+<td><code>{}</code></td>
+<td>The issuers whose assertions the tenant accepts as an authorization (RFC 7523 §2.1), keyed by the <code>iss</code> they sign with</td>
+</tr>
+</tbody>
+</table>
+<h2 id="registration">Registration<a class="headerlink" href="#registration" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_REGISTRATION_MODE</code></td>
+<td>empty</td>
+<td>What authorises a client that registers itself (RFC 7591): <code>initial_access_token</code>, a credential <code>beffroi:client:token:issue</code> issues; <code>software_statement</code>, a statement of an authority the tenant pins (RFC 7591 §2.3); or <code>open</code>, whoever asks, which only a tenant with no real user writes. Empty, the tenant has no registration endpoint at all, in its discovery document as on the wire</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REGISTRATION_DEFAULT_SCOPE</code></td>
+<td>empty</td>
+<td>The scopes a client that names none is registered with, space-delimited (RFC 7591 §2). Empty, <code>openid</code> alone</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR</code></td>
+<td><code>7776000</code>, ninety days</td>
+<td>How long a client that registered itself is kept unused once it was used, a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR</code></td>
+<td><code>604800</code>, seven days</td>
+<td>How long it is kept when it never was, a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT</code></td>
+<td><code>3</code></td>
+<td>The seconds one read of its <code>sector_identifier_uri</code> is given, a tenth of a second at least (OIDC Registration §5)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE</code></td>
+<td><code>65536</code></td>
+<td>The bytes that read may answer, one at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME</code></td>
+<td><code>300</code></td>
+<td>How long a software statement may stand ahead of the request, a second at least (RFC 7591 §2.3)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REGISTRATION_STATEMENT_LEEWAY</code></td>
+<td><code>30</code></td>
+<td>What is allowed of the clock of its authority, none at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_REGISTRATION_STATEMENT_ISSUERS</code></td>
+<td><code>{}</code></td>
+<td>The authorities whose software statements the tenant accepts, keyed by the <code>iss</code> they sign with, which the mode <code>software_statement</code> reads</td>
+</tr>
+</tbody>
+</table>
+<h2 id="notifications">Notifications<a class="headerlink" href="#notifications" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_WEB_PUSH_SUBJECT</code></td>
+<td><code>mailto:operator@op.localhost</code></td>
+<td>The contact a push service is given (RFC 8292 §2.1), a <code>mailto:</code> or <code>https:</code> URI at which the operator of the deployment can be reached. Naming one turns <a href="../../symfony-bundle/web-push/">web push</a> on, and empty turns it off: the tenant then hands out no key and reaches nobody by push. The one of <code>.env</code> is the development stack's, so a deployment names its own</td>
+</tr>
+<tr>
+<td><code>BEFFROI_WEB_PUSH_TIMEOUT</code></td>
+<td><code>3</code></td>
+<td>The seconds one push is given, a tenth of a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT</code></td>
+<td><code>5</code></td>
+<td>The seconds one attempt to send a logout token to a client is given, a tenth of a second at least (Back-Channel Logout 1.0 §2.5)</td>
+</tr>
+<tr>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES</code></td>
+<td><code>6</code></td>
+<td>How many times a send that did not reach its client comes back, none at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY</code></td>
+<td><code>2</code></td>
+<td>The wait before the first return, a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER</code></td>
+<td><code>3</code></td>
+<td>What each wait is multiplied by to give the next, once at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY</code></td>
+<td><code>60</code></td>
+<td>The longest wait, a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_CLIENT_NOTIFICATION_TIMEOUT</code></td>
+<td><code>3</code></td>
+<td>The seconds the call that tells a client its backchannel request was answered is given, a tenth of a second at least (CIBA Core §10.2)</td>
+</tr>
+</tbody>
+</table>
+<p>The four figures of the returns are the schedule of the whole lane of notifications, which carries the pushes
+and the notifications of the backchannel flow as well as the logout tokens.</p>
+<h2 id="saml">SAML<a class="headerlink" href="#saml" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_SAML_IDENTITY_PROVIDER</code></td>
+<td><code>true</code></td>
+<td>Whether the tenant is a <a href="../../saml/identity-provider/">SAML identity provider</a>, <code>true</code> or <code>false</code>: its metadata at <code>/saml/metadata</code>, and the service providers below</td>
+</tr>
+<tr>
+<td><code>BEFFROI_SAML_SERVICE_PROVIDER</code></td>
+<td><code>false</code></td>
+<td>Whether the tenant is a <a href="../../saml/upstream-identity-providers/">SAML service provider</a> to the upstream identity providers below</td>
+</tr>
+<tr>
+<td><code>BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID</code></td>
+<td>empty</td>
+<td>The entity ID of that service provider, absolute, and never the one of the identity provider. Empty, the URL of its metadata</td>
+</tr>
+<tr>
+<td><code>BEFFROI_SAML_KEY_STAGING_DELAY</code></td>
+<td><code>604800</code>, seven days</td>
+<td>How long a new SAML key is published before it signs, none at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_SAML_KEY_AGE</code></td>
+<td><code>31536000</code>, a year</td>
+<td>How long a SAML key works before a successor is staged behind it, a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_SAML_METADATA_CACHE_DURATION</code></td>
+<td><code>86400</code>, a day</td>
+<td>How long a service provider keeps the metadata, a second at least and shorter than the staging delay</td>
+</tr>
+<tr>
+<td><code>BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED</code></td>
+<td><code>true</code></td>
+<td>Whether the metadata ask a service provider to sign its requests</td>
+</tr>
+<tr>
+<td><code>BEFFROI_SAML_SERVICE_PROVIDERS</code></td>
+<td><code>{}</code></td>
+<td>The <a href="../../saml/service-providers/">service providers</a> the identity provider serves, keyed by entity ID</td>
+</tr>
+<tr>
+<td><code>BEFFROI_SAML_IDENTITY_PROVIDERS</code></td>
+<td><code>{}</code></td>
+<td>The <a href="../../saml/upstream-identity-providers/">upstream identity providers</a> the service provider receives assertions of, keyed by entity ID</td>
+</tr>
+</tbody>
+</table>
+<p>The routes and services of both roles are in every image. A role turned off serves nothing, and the peers
+declared for it are served by nothing until it is turned on again. With both off, the tenant draws no SAML key.
+The SAML key is the key of both roles, rotated by the three figures above whichever role is on.</p>
+<h2 id="the-journal-and-the-load">The journal and the load<a class="headerlink" href="#the-journal-and-the-load" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_JOURNAL_RETENTION</code></td>
+<td><code>180</code></td>
+<td>How long an act of the journal is kept, in days</td>
+</tr>
+<tr>
+<td><code>BEFFROI_HISTORY_RETENTION</code></td>
+<td><code>180</code></td>
+<td>How long a change of a claim is kept, in days</td>
+</tr>
+<tr>
+<td><code>BEFFROI_LOAD_ORIGIN_LIMIT</code></td>
+<td><code>2400</code></td>
+<td>The requests one client address may send in a window</td>
+</tr>
+<tr>
+<td><code>BEFFROI_LOAD_ORIGIN_INTERVAL</code></td>
+<td><code>60</code></td>
+<td>That window, in seconds</td>
+</tr>
+<tr>
+<td><code>BEFFROI_LOAD_CLIENT_LIMIT</code></td>
+<td><code>1200</code></td>
+<td>The requests one authenticated client may send in a window</td>
+</tr>
+<tr>
+<td><code>BEFFROI_LOAD_CLIENT_INTERVAL</code></td>
+<td><code>60</code></td>
+<td>That window, in seconds</td>
+</tr>
+</tbody>
+</table>
+<p>A budget too low on <code>/token</code> or on <code>/jwks</code> is an outage a deployment inflicts on itself, so both are measured
+on what its own clients send.</p>
+<h2 id="symfony-and-the-database">Symfony and the database<a class="headerlink" href="#symfony-and-the-database" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -4165,7 +4773,7 @@ for a restart of the processes and not for a new image.</p>
 <tr>
 <td><code>APP_SECRET</code></td>
 <td>empty</td>
-<td>The secret of the kernel, <code>framework.secret</code>. <code>.env.dev</code> and <code>.env.test</code> give one each, for their own environment, so a production environment names its own. It is also the secret every data key of personal data is bound to its row under, <code>beffroi.keys.data_key_secrets</code> naming no other: the store of the data keys refuses an empty one the first time it is used, and changing it alone leaves the personal data unreadable: <a href="../operating/#data-keys">operating it</a> says how it is replaced</td>
+<td>The secret of the kernel, <code>framework.secret</code>. <code>.env.dev</code> and <code>.env.test</code> give one each, for their own environment, so a production environment names its own. While <code>BEFFROI_DATA_KEY_SECRETS</code> is not set, it is also the secret every data key of personal data is bound to its row under: the store of the data keys refuses an empty one the first time it is used, and changing it alone leaves the personal data unreadable: <a href="../operating/#data-keys">operating it</a> says how it is replaced</td>
 </tr>
 <tr>
 <td><code>APP_SHARE_DIR</code></td>
@@ -4188,19 +4796,12 @@ for a restart of the processes and not for a new image.</p>
 <td>The PostgreSQL database. The entrypoint of the image waits for it, and the migrations refuse any other platform</td>
 </tr>
 <tr>
-<td><code>MESSENGER_TRANSPORT_DSN</code></td>
-<td><code>amqp://beffroi:beffroi@localhost:5672/%2f/messages</code></td>
-<td>The broker of the four lanes. Each lane names an exchange and a queue, which only an AMQP transport takes, so this is an <code>amqp://</code> DSN. The failure transport stays in the database</td>
-</tr>
-<tr>
 <td><code>SYMFONY_TRUSTED_PROXIES</code></td>
 <td>not set</td>
-<td>The proxies whose forwarded address Symfony reads, <code>framework.trusted_proxies</code>. The application names none</td>
+<td>The proxies whose forwarded address and scheme Symfony reads, <code>framework.trusted_proxies</code>. The application names none. Behind a proxy that terminates TLS, a deployment names it: without it, every request reads as plain HTTP from the address of the proxy</td>
 </tr>
 </tbody>
 </table>
-<p>The bundle reads its own default for the lanes, <code>BEFFROI_MESSENGER_DSN</code>, only where an application declares no
-transport of the same name. This one declares all four, so that variable is not read here.</p>
 <h2 id="the-web-server">The web server<a class="headerlink" href="#the-web-server" title="Link to this section">&para;</a></h2>
 <p>These are read by Caddy and FrankenPHP, not by the kernel.</p>
 <table>
@@ -4214,6 +4815,10 @@ transport of the same name. This one declares all four, so that variable is not 
 <tr>
 <td><code>SERVER_NAME</code></td>
 <td>The host Caddy serves the provider on, <code>localhost</code> when it is not set</td>
+</tr>
+<tr>
+<td><code>TLS_TERMINATION</code></td>
+<td>Who terminates the TLS of the site of <code>SERVER_NAME</code>. <code>caddy</code>, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. <code>proxy</code>: a proxy in front of the image, which sends the site plain HTTP, <code>SERVER_NAME</code> then naming the one host the proxy asks for, or <code>:&lt;port&gt;</code> for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way</td>
 </tr>
 <tr>
 <td><code>MTLS_SERVER_NAME</code></td>
@@ -4307,8 +4912,8 @@ nothing in the configuration.</p>
 </div>
 <h2 id="what-the-files-say">What the files say<a class="headerlink" href="#what-the-files-say" title="Link to this section">&para;</a></h2>
 <p>The configuration files are compiled into the container of the kernel when the image is built, so a change to
-them reaches a deployment with a new image. Outside the development environment,
-<code>config/packages/beffroi.yaml</code> says this:</p>
+them reaches a deployment with a new image. <code>config/packages/beffroi.yaml</code> names a variable for every option a
+deployment chooses, and compiles only what is the same for every deployment of the image:</p>
 <table>
 <thead>
 <tr>
@@ -4319,29 +4924,14 @@ them reaches a deployment with a new image. Outside the development environment,
 </thead>
 <tbody>
 <tr>
-<td><code>tenant.look</code></td>
-<td>The logo at <code>/tenant-logo.svg</code>, a placeholder served from the issuer, and the colours <code>#1f6feb</code> on <code>#ffffff</code></td>
-<td>The mark and the colours of the tenant, on every page. A logo served from another host needs that origin in the <code>img-src</code> of <code>config/packages/nelmio_security.yaml</code>, and the host to answer <code>Cross-Origin-Resource-Policy: cross-origin</code>, the pages of the account requiring it</td>
+<td><code>keys.kms</code></td>
+<td><code>op</code></td>
+<td>The client of <code>config/packages/key_management.yaml</code> the keys are sealed with, built from <code>BEFFROI_KMS_DSN</code></td>
 </tr>
 <tr>
-<td><code>tenant.self_served_claims</code></td>
-<td>Fourteen claims of OIDC Core §5.1, from <code>name</code> to <code>phone_number</code></td>
-<td>What a person may change of themselves on the page of their account. A tenant whose directory owns the data names none</td>
-</tr>
-<tr>
-<td><code>web_push.subject</code></td>
-<td><code>mailto:operator@op.localhost</code></td>
-<td>Naming a subject turns web push on (RFC 8292 §2.1): a <code>mailto:</code> or <code>https:</code> URI at which a push service reaches the operator. Without the section, no push leaves the deployment</td>
-</tr>
-<tr>
-<td><code>saml.identity_provider</code></td>
-<td>Requests signed, a key staged for seven days and working for a year, metadata cached for a day</td>
-<td>The tenant is a SAML identity provider and serves its metadata at <code>/saml/metadata</code>. Without the section, it draws no SAML key and serves no metadata</td>
-</tr>
-<tr>
-<td><code>tokens</code></td>
-<td>Codes for 60 seconds; refresh tokens for thirty days and ninety days at most from the authorization, the thirty days renewed at each rotation of the tokens that rotate, those of a public client bound to no key or certificate</td>
-<td>The lifetimes the environment does not carry</td>
+<td><code>keys.storage</code>, <code>webauthn.metadata_storage</code>, <code>geoip.storage</code></td>
+<td><code>var/keys</code>, <code>var/webauthn</code> and <code>var/geoip</code> under the application</td>
+<td>The directories of the sealed keys, of the FIDO metadata and of the GeoLite2 databases</td>
 </tr>
 <tr>
 <td><code>clients</code></td>
@@ -4350,21 +4940,23 @@ them reaches a deployment with a new image. Outside the development environment,
 </tr>
 </tbody>
 </table>
-<p>The application writes no <code>client_registration</code> outside development, so its tenant has no registration
-endpoint. Everything else keeps the defaults of the bundle: an act of the journal and a change of a record are
-kept 180 days, an origin may send 2400 requests a minute and an authenticated client 1200.</p>
 <p><a href="../../reference/configuration/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The whole configuration tree</a></p>
 <h2 id="what-only-development-reads">What only development reads<a class="headerlink" href="#what-only-development-reads" title="Link to this section">&para;</a></h2>
-<p>The blocks under <code>when@dev</code> declare what the development stack needs and nothing a deployment does: the clients
-of the OpenID conformance suite and of the demonstrations, an open registration endpoint for the Dynamic OP
-plan, a SAML service provider with the peers it is judged by, and an issuer of assertions it trusts. Their
-variables are read in the development environment: <code>BEFFROI_REGISTRATION_MODE</code>, the <code>CONFORMANCE_*</code>,
-<code>OIDC_DEMO_*</code> and <code>DEMO_*</code> secrets and key sets, <code>BEFFROI_DEV_USER_SUBJECT</code>, <code>BEFFROI_DEMO_HOST_IP</code>,
-<code>APP_PROFILER</code> and <code>VAR_DUMPER_SERVER</code>. The demonstration of the flows is wired in the test environment of the
-application's own suite as well, so three of them are read there too, <code>DEMO_SERVICE_SECRET</code>,
-<code>DEMO_CIBA_POLL_SECRET</code> and <code>BEFFROI_DEV_USER_SUBJECT</code>, which <code>.env.test</code> gives as fixtures. A production
-kernel reads none of them.</p>
+<p>The image leaves out what only the development stack, the suite of the application and its lab read:
+<code>config/packages/dev/</code>, the debug bundle and the profiler, the demonstration of the flows and the lab. The
+configuration of the bundle under <code>config/packages/dev/</code> declares what the development stack needs and nothing
+a deployment does: the clients of the OpenID conformance suite and of the demonstrations, the registration
+policy of the Dynamic OP plan, a SAML service provider with the peers it is judged by, an authority whose
+software statements it accepts and an issuer of assertions it trusts. Its lists replace the JSON documents the
+environment carries for them.</p>
+<p>Their variables are read in the development environment: the <code>CONFORMANCE_*</code>, <code>OIDC_DEMO_*</code> and <code>DEMO_*</code>
+secrets and key sets, <code>BEFFROI_DEV_USER_SUBJECT</code>, <code>BEFFROI_DEMO_HOST_IP</code>, <code>APP_PROFILER</code> and
+<code>VAR_DUMPER_SERVER</code>. The development stack writes the secrets and the key sets into <code>.env.local</code>, and <code>open</code>
+there for <code>BEFFROI_REGISTRATION_MODE</code>, which it reads as every deployment does. The demonstration of the flows is wired in
+the test environment of the application's own suite as well, so three of them are read there too,
+<code>DEMO_SERVICE_SECRET</code>, <code>DEMO_CIBA_POLL_SECRET</code> and <code>BEFFROI_DEV_USER_SUBJECT</code>, which <code>.env.test</code> gives as
+fixtures. A production kernel reads none of them.</p>
 
 
 
@@ -4385,7 +4977,7 @@ kernel reads none of them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 14:16:21 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 11:24:49 UTC">November 2, 2026</span>
   </span>
 
     

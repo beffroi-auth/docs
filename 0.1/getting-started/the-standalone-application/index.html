@@ -4061,7 +4061,7 @@
 <h1 id="the-standalone-application">The standalone application<a class="headerlink" href="#the-standalone-application" title="Link to this section">&para;</a></h1>
 <p><code>beffroi/op</code> is a provider you deploy rather than a provider you assemble: a Symfony skeleton on
 <a href="../../symfony-bundle/">the bundle</a>, served by FrankenPHP in worker mode, with PostgreSQL for the model
-and RabbitMQ for the writes the protocol does not wait on. It is the deployment the project supports, and the
+and for the writes the protocol does not wait on, each lane of Messenger a queue of the database. It is the deployment the project supports, and the
 development stack the conformance plans run against is this application.</p>
 <p>It is the <code>apps/op</code> directory of the monorepo, <a href="https://github.com/beffroi-auth/beffroi">beffroi-auth/beffroi</a>.
 Its <code>composer.json</code> resolves the <code>beffroi/*</code> packages through path repositories to <code>../../src/*</code>, so the
@@ -4103,8 +4103,8 @@ commands. The application brings what a deployment decides, and nothing else.</p
 <td><code>config/packages/nelmio_security.yaml</code>, <code>nelmio_cors.yaml</code>, <code>framework.yaml</code></td>
 </tr>
 <tr>
-<td>The transports of Messenger, on RabbitMQ</td>
-<td><code>config/packages/messenger.yaml</code></td>
+<td>Where the lanes of Messenger go, a queue of the database each, through <code>BEFFROI_MESSENGER_DSN</code></td>
+<td><code>.env</code></td>
 </tr>
 <tr>
 <td>FrankenPHP and Caddy, with the host that asks for a client certificate</td>
@@ -4117,17 +4117,17 @@ commands. The application brings what a deployment decides, and nothing else.</p
 </tbody>
 </table>
 <h2 id="on-your-machine">On your machine<a class="headerlink" href="#on-your-machine" title="Link to this section">&para;</a></h2>
-<p>The development stack runs the application in Docker beside PostgreSQL and RabbitMQ. It is driven from the
+<p>The development stack runs the application in Docker beside PostgreSQL. It is driven from the
 root of the monorepo by Castor, 0.23 or later, and asks the machine for Docker Compose and Composer besides.
 The two <code>composer install</code> below run on the machine and not in a container, so it also needs PHP 8.4 or later
-with the extensions the locked packages require, <code>intl</code>, <code>dom</code>, <code>zip</code> and <code>amqp</code> among them.</p>
+with the extensions the locked packages require, <code>intl</code>, <code>dom</code> and <code>zip</code> among them.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:beffroi-auth/beffroi.git<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>beffroi
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>composer<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span><span class="nb">cd</span><span class="w"> </span>apps/op<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>composer<span class="w"> </span>install<span class="o">)</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>castor<span class="w"> </span>start
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>castor<span class="w"> </span>provision
 </span></code></pre></div>
 <p><code>castor start</code> brings up the provider on <code>https://op.localhost</code>, the host that asks for a client certificate
-on <code>https://mtls.op.localhost</code>, PostgreSQL and RabbitMQ. On a machine with an mkcert authority, the stack
+on <code>https://mtls.op.localhost</code>, and PostgreSQL. On a machine with an mkcert authority, the stack
 serves a certificate mkcert issues there for its names, which a browser that trusts mkcert accepts; on any
 other, Caddy issues one from its internal authority. On a stack that names no key management service yet, the
 worker is created and left stopped, because it refuses to start without one.</p>
@@ -4162,8 +4162,8 @@ development dependencies, compiles <code>.env</code> for production with <code>c
 and compiles the assets. <code>composer dump-env</code> compiles a <code>.env.local</code> too when one is there, and the one the
 development stack writes holds its key management service, the secrets of its clients and the password of its
 user: the image is built from a checkout that holds no <code>.env.local</code>. What changes from one machine to the next
-is then read from the environment when the container starts: the issuer, the database, the broker, the key
-management service.</p>
+is then read from the environment when the container starts: the issuer, the database, the key management
+service.</p>
 <p><a href="../../application/configuration/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The environment the application reads</a></p>
 <h3 id="the-first-start-in-order">The first start, in order<a class="headerlink" href="#the-first-start-in-order" title="Link to this section">&para;</a></h3>
@@ -4234,7 +4234,7 @@ development stack draws both.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 11:14:31 UTC">November 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 13:24:43 UTC">November 2, 2026</span>
   </span>
 
     

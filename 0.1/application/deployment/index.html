@@ -4149,10 +4149,10 @@
 <h1 id="deployment">Deployment<a class="headerlink" href="#deployment" title="Link to this section">&para;</a></h1>
 <p>One image runs two kinds of process: the HTTP server, FrankenPHP in worker mode inside the Caddy server it is
 built on, and the worker, which consumes the lanes of Messenger and the schedule of the timed steps. Beside them the provider
-needs PostgreSQL, RabbitMQ and a key management service.</p>
+needs PostgreSQL, which holds the lanes of Messenger as well as the model, and a key management service.</p>
 <h2 id="the-image">The image<a class="headerlink" href="#the-image" title="Link to this section">&para;</a></h2>
 <p><code>apps/op/Dockerfile</code> builds on <code>dunglas/frankenphp:1-php8.5</code> and adds the extensions the provider needs:
-<code>apcu</code>, <code>intl</code>, <code>opcache</code>, <code>zip</code>, <code>pdo_pgsql</code>, <code>amqp</code>, <code>gmp</code>, <code>sodium</code> and <code>uuid</code>. Its build context is the
+<code>apcu</code>, <code>intl</code>, <code>opcache</code>, <code>zip</code>, <code>pdo_pgsql</code>, <code>gmp</code>, <code>sodium</code> and <code>uuid</code>. Its build context is the
 root of the monorepo, because the application installs the packages beside it through path repositories.</p>
 <table>
 <thead>
@@ -4267,11 +4267,11 @@ starts it again.</p>
 </tbody>
 </table>
 <p>The worker is therefore the one process that calls a client back, and the one that writes the
-<a href="../observability/">journal</a>. A provider whose worker stops goes on answering requests, and the broker keeps
+<a href="../observability/">journal</a>. A provider whose worker stops goes on answering requests, and the database keeps
 the messages until a worker consumes them.</p>
-<p>The lanes are transports of RabbitMQ: each of them names the exchange <code>beffroi_messages</code> and a queue bound to
-its routing key, options an AMQP transport takes and the Doctrine transport refuses. What fails for good lands
-in the failure transport, <code>failed</code>, which is a table of the database whatever the broker.</p>
+<p>Each lane is a queue of its own in the table <code>messenger_messages</code>: <code>.env</code> names
+<code>doctrine://default?queue_name={lane}</code> in <code>BEFFROI_MESSENGER_DSN</code>, and the image carries the transport of no
+broker. What fails for good lands in the failure transport, <code>failed</code>, a queue of the same table.</p>
 <h2 id="what-the-processes-share">What the processes share<a class="headerlink" href="#what-the-processes-share" title="Link to this section">&para;</a></h2>
 <p>The server signs with keys the worker rotates, and the worker enriches with databases the console downloads,
 so some state has to be the same for all of them.</p>
@@ -4509,7 +4509,7 @@ not sent in the development environment, where it would pin every <code>.localho
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:18 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 13:24:43 UTC">November 2, 2026</span>
   </span>
 
     
