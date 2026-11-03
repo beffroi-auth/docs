@@ -20,9 +20,9 @@ beffroi:
             subject_type: pairwise
 ```
 
-`subject_type` is `public` or `pairwise`, the two kinds the bundle wires, which the discovery document lists
-in `subject_types_supported` in that order. A client that registers none takes the first, `public`. A client
-that registers itself may send the member too. A kind nothing wires is refused when the client is read,
+`subject_type` is `public` or `pairwise`, the two kinds the application wires, which the discovery document
+lists in `subject_types_supported` in that order. A client that registers none takes the first, `public`. A
+client that registers itself may send the member too. A kind nothing wires is refused when the client is read,
 rather than served an identifier of another kind.
 
 ## The identifier

@@ -7,8 +7,8 @@ description: What a deployment runs, what time runs on its own, rotations, data 
 
 A provider is operated, not installed once: keys rotate, data keys are rewrapped, migrations run, backups are
 taken and restored. Each of those has a command, and each command says what it did. The commands are
-[the console commands of the bundle](../reference/console-commands.md), run with `bin/console` in a container
-of the image, or with `castor console` on the development stack.
+[the console commands of the application](../reference/console-commands.md), run with `bin/console` in a
+container of the image, or with `castor console` on the development stack.
 
 ## At every deployment
 
@@ -16,16 +16,28 @@ of the image, or with `castor console` on the development stack.
    that booted before a migration changing the type of a column reads that column with the type it booted
    with, and a worker runs for an hour, so a migration played by hand is followed by a restart of the server
    and of the workers. `castor console` does that on the development stack whenever the command it runs is
-   the migration.
-2. **The row of the tenant** follows the configuration: `beffroi:tenant:synchronize` creates it, or writes on
-   it the name, the `acr` policy, the look and the claims its people may change of themselves that the
-   configuration says, then prints the row. The provider serves nothing while the row and the configuration
-   disagree. A changed issuer is refused: the issuer of a tenant does not change, every token issued so far
-   names it.
+   the migration. A migration that turns columns into sealed ones names the tables it changes and says what to
+   restart, and refuses to run while one of those tables holds rows, naming it and how many: a sealed column
+   has nothing to take from a value in the clear.
+2. **The row of the tenant** follows the environment: `beffroi:tenant:synchronize` creates it, or writes on it
+   the name, the `acr` policy, the look and the claims its people may change of themselves that the
+   environment says, then prints the row. The provider serves nothing while the row and the environment of a
+   process disagree, and a request then fails with an exception naming the field that differs. A change of
+   `BEFFROI_TENANT_NAME`, `BEFFROI_TENANT_LOGO_URI`, `BEFFROI_TENANT_PRIMARY_COLOR`,
+   `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR`, `BEFFROI_TENANT_SELF_SERVED_CLAIMS` or
+   `BEFFROI_TENANT_AUTHENTICATION_CLASSES` is therefore a restart of every process with the new value and the
+   command run in one of them. A changed `BEFFROI_ISSUER` is refused: the issuer of a tenant does not change,
+   every token issued so far names it, and another issuer is another tenant, under another
+   `BEFFROI_TENANT_SLUG`.
 3. **Two questions for the pipeline**, both of which write nothing and fail when the answer is no:
    `beffroi:keys:list --check` opens the keys in use and the ones about to be with the key management
    service, and fails on one it cannot open or that has worked past its age with nothing staged behind it;
    `beffroi:doctor` says whether the deployment holds together, one line per point it looks at.
+4. **The discovery document**, last: `<issuer>/.well-known/openid-configuration` answers once the routes are
+   where the issuer says they are. The application serves them at the root, so with an issuer that has a path
+   the first request that needs the endpoints fails with an exception naming where the document is served and
+   where the issuer makes clients look for it (OIDC Discovery 1.0 §4.1). `bin/console debug:router` lists the
+   routes, those of the provider under names that carry their plane.
 
 ## What time does on its own
 
@@ -87,10 +99,10 @@ The clients of this application are `op`, which every key of the tenant is seale
 built from `BEFFROI_KMS_DSN_SECOND` when that variable names one. Nothing schedules a rewrap: a person asks
 for it.
 
-The data keys are bound under `APP_SECRET`, which `beffroi.keys.data_key_secrets` takes as long as
-`config/packages/beffroi.yaml` names no secret of its own. A new value replaces it in the three steps of
-[personal data](../core/personal-data.md#rotating-the-secret-that-binds-them): `%kernel.secret%` first and the
-previous value second in `beffroi.keys.data_key_secrets`, given to every process; `beffroi:data-keys:rewrap`
+The data keys are bound under `APP_SECRET` as long as `BEFFROI_DATA_KEY_SECRETS` is not set. A new value
+replaces it in the three steps of
+[personal data](../core/personal-data.md#rotating-the-secret-that-binds-them): the new value first and the
+previous one second in `BEFFROI_DATA_KEY_SECRETS`, given to every process; `beffroi:data-keys:rewrap`
 towards the client that wraps the keys, `op` unless they were moved; then the previous value dropped. Changed
 alone, it leaves the personal data sealed in the database unreadable, and the lookups by a blind index with
 them.
@@ -112,8 +124,8 @@ of its own, retried on another schedule, keeps a provider that works and logout 
 when they arrive late, after a rotation or after the client restarts, which nothing else shows.
 
 **A message that fails is tried again, then kept.** The three lanes of the provider's own writes retry it on
-the numbers the bundle prepends; the lane of the notifications retries it on the schedule of the back-channel
-logout, which is also how long a logout token stays verifiable.
+the numbers the application prepends to Messenger; the lane of the notifications retries it on the schedule of
+the back-channel logout, which is also how long a logout token stays verifiable.
 
 | Lanes | Retries | First wait | Multiplier | Longest wait |
 |---|---|---|---|---|

@@ -1,13 +1,14 @@
 ---
 title: Endpoints
-description: Every route the bundle serves, its method, the plane it belongs to and the specification it answers.
+description: Every route of the provider, its method, the plane it belongs to and the specification it answers.
 ---
 
 # Endpoints
 
-Paths are relative to the issuer, which is where the application imports the routes of the bundle. A
+Paths are relative to the issuer, at whose root the application imports the routes of the provider. A
 deployment whose issuer is `https://op.example.com` serves the token endpoint at
-`https://op.example.com/token`.
+`https://op.example.com/token`. The root itself, `/`, is `beffroi_interaction_home`, a route of the application
+that sends a browser to the home of its account.
 
 Every route name carries its plane. `beffroi_protocol_*` is server to server, called by a client or a
 resource server; `beffroi_interaction_*` is a browser, where a person reads a page and answers. The
@@ -33,8 +34,10 @@ machine that only serves the protocol, and the other way round.
 | `PUT` | `/register/{client_id}` | `beffroi_protocol_client_configuration_update` | RFC 7592 §2.2 |
 | `DELETE` | `/register/{client_id}` | `beffroi_protocol_client_configuration_delete` | RFC 7592 §2.3 |
 
-The endpoints a deployment actually announces are the ones it has wired. The discovery document is built
-from what is wired, never from a list kept beside it, so a grant you did not enable is not advertised.
+The endpoints a deployment announces are the ones the application wires and its configuration turns on. The
+discovery document is built from what is wired, never from a list kept beside it, so an endpoint the
+configuration does not turn on, the registration endpoint without a registration `mode` for one, is not
+advertised.
 
 ## The interaction plane
 
@@ -108,11 +111,12 @@ the archive wrapped under a passphrase, which is the file.
 | `POST` | `/account/archive/file` | `beffroi_interaction_account_archive_wrapped_file` |
 | `POST` | `/account/archive/drop` | `beffroi_interaction_account_archive_drop` |
 
-[:beffroi-arrow-right: The account pages](../symfony-bundle/account.md)
+[:beffroi-arrow-right: The account pages](../application/account.md)
 
 ### The scripts the pages load
 
-Served by the bundle so a deployment has no build step to run for them.
+Served by the application from its `scripts/` directory, outside the asset pipeline, so no build step
+produces them.
 
 | Method | Path | Route |
 |---|---|---|

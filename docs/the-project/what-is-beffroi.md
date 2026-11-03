@@ -1,6 +1,6 @@
 ---
 title: What is Beffroi?
-description: An OAuth 2.0 authorization server, an OpenID Provider and a SAML 2.0 identity provider written in PHP, installed in a Symfony application or deployed as a standalone one.
+description: An OAuth 2.0 authorization server, an OpenID Provider and a SAML 2.0 identity provider written in PHP, deployed as an application of its own beside the applications it signs people in to.
 ---
 
 # What is Beffroi?
@@ -10,11 +10,13 @@ written in PHP. It is the box that signs your users in, issues the tokens your A
 applications you trust who is at the door. Where an organisation already runs an identity provider of its
 own, it can send that organisation's people there to sign in, as a SAML service provider.
 
-It comes in three shapes, and you choose one:
+It comes in two shapes, and you choose one:
 
-- **a Symfony bundle** you install in an application you already run;
-- **a standalone application**, a Symfony skeleton on that bundle, which is the recommended deployment;
-- **pure-PHP libraries** underneath, usable without Symfony, which is where the protocols actually live.
+- **an application**, `beffroi/op`, a Symfony application you deploy on its own beside the applications it
+  signs people in to, which talk to it through the protocols it serves and never install it;
+- **pure-PHP components** underneath, usable without the Symfony framework, which is where the protocols
+  actually live. A team that wants the provider inside code of its own starts from them, and what it writes
+  around them is its own integration.
 
 ## What it is for
 
@@ -25,9 +27,10 @@ installs it: you should be able to read what applies, replace it, and leave with
 ## What it owns
 
 Beffroi owns its identity model. It has its own user, its own credentials, its own linked identities, its
-own groups, and its own tenant, and it never hooks onto the `User` entity of the application that hosts
-it. A provider that borrows the host's user model cannot hold a stable subject identifier, cannot hold
-several kinds of credential per person, and cannot be moved out of the application later.
+own groups, and its own tenant, and it never hooks onto the `User` entity of an application it signs people
+in to. A provider that borrows the user model of another application cannot hold a stable subject
+identifier, cannot hold several kinds of credential per person, and cannot be moved out of that application
+later.
 
 A person in Beffroi can hold a password, a passkey, a TOTP secret and backup codes at the same time, each
 one a credential of its own kind, each one revocable on its own. And a person is one person whichever
@@ -60,7 +63,7 @@ not its own. [Conformance](conformance.md) says which plans run and what they co
 
 ## Where to go next
 
-- [Packages](packages.md), if you want to know which of the eight you need.
+- [Packages](packages.md), if you want to know which of the seven you need.
 - [Getting started](../getting-started/installation.md), if you want a provider answering on your machine.
 - [OAuth 2.0 and OpenID Connect](../oidc/index.md), or [SAML 2.0](../saml/index.md), if you came for a
   protocol.

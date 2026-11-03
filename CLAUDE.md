@@ -4,10 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-The public documentation of Beffroi, an identity provider for the Symfony ecosystem. It documents four
-packages: `beffroi/core` (identity), `beffroi/oidc` (OAuth 2.0 and OpenID Connect), `beffroi/symfony-bundle`
-(the Symfony integration) and `beffroi/op` (the standalone application). SCIM and SAML 2.0 have a section
-each, and both say they are not implemented.
+The public documentation of Beffroi, an identity provider for the Symfony ecosystem. It documents the
+application `beffroi/op`, which is the provider and alone carries the Symfony integration, and the pure-PHP
+packages it is built on: `beffroi/core` (identity), `beffroi/oidc` (OAuth 2.0 and OpenID Connect),
+`beffroi/saml` (SAML 2.0) and the three packages under it. There is no bundle: nothing installs the provider
+inside another application. SCIM has a section, which says it is not implemented.
 
 The code lives in `beffroi-auth/beffroi`, cloned at `~/Projects/idp/code`. Its design, its decisions and its
 spikes live in `beffroi-auth/design`, cloned at `~/Projects/idp`. **Neither of those is this repository, and
@@ -53,7 +54,7 @@ description: One sentence, used by search engines and by the social card.
 - Internal links are relative paths to the `.md` file (`../core/keys.md`), never to the built URL.
 - Hints are Material admonitions, not GitBook `{% hint %}` blocks, and there are three: `!!! note` (or
   `info`, `tip`), `!!! warning` and `!!! danger`. Each one shows its word above its title.
-- Tabs for alternatives the reader chooses between (`=== "In a Symfony application"`), a table for facts.
+- Tabs for alternatives the reader chooses between (`=== "On your machine"`), a table for facts.
 - A code block carries its filename when the reader has to put it somewhere:
   ` ```yaml title="config/packages/beffroi.yaml" `.
 

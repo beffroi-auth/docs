@@ -116,8 +116,8 @@ They are served as `application/samlmetadata+xml`, with `Cache-Control: public` 
 JWK Set, five minutes unless `beffroi.keys.jwks_max_age` says otherwise, so a cache on the way never holds a
 copy older than that.
 
-The routes have to be mounted under the issuer, as the discovery document's are: the bundle refuses to
-write metadata whose endpoints would not be.
+The routes are served under the issuer, as the discovery document's are: the application refuses to write
+metadata whose endpoints would not be.
 
 ## A rotation without an outage
 

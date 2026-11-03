@@ -13,8 +13,8 @@ header of the request.
 
 ## Authenticating with a certificate
 
-Two methods recognise a client by its certificate, and both are wired in the bundle. Either way the request
-names the client in `client_id` and presents the certificate at the handshake: a request without a
+Two methods recognise a client by its certificate, and both are wired in the application. Either way the
+request names the client in `client_id` and presents the certificate at the handshake: a request without a
 certificate presents neither method.
 
 | `token_endpoint_auth_method` | The certificate | What makes it the client's |
@@ -125,11 +125,11 @@ other origin, for six endpoints.
 The issuer does not change, and neither does anything else the document says: an alias is another way to
 the same provider. The backchannel authentication endpoint reads a certificate as well, and is not among the
 aliases. Independently of the origin, the document announces `tls_client_certificate_bound_access_tokens`
-as `true` whenever a method that authenticates by certificate is wired, which the bundle does.
+as `true` whenever a method that authenticates by certificate is wired, which the application does.
 
 ## How the certificate reaches the application
 
-The bundle reads the certificate in one place, the server variable `SSL_CLIENT_CERT`, named after the one
+The application reads the certificate in one place, the server variable `SSL_CLIENT_CERT`, named after the one
 mod_ssl sets: the leaf certificate in its PEM envelope, set by the TLS listener from the handshake it carried
 out. An empty envelope, or no variable, is a request made without a certificate. A client controls every
 header of its request and no variable of the process that serves it, so no header is ever read in its place.
@@ -141,39 +141,31 @@ The refusal is `invalid_request`, status `400`, at the seven endpoints that read
 `/par`, `/introspect`, `/revoke`, `/userinfo`, `/device_authorization` and `/backchannel_authentication`. So
 is a variable that does not hold a PEM certificate, the listener being misconfigured then.
 
-=== "In the standalone application"
+The image carries a second site block, `/etc/frankenphp/mtls.Caddyfile`, for the host whose listener asks
+for a certificate. A deployment turns it on with three variables, and the host of `SERVER_NAME` keeps asking
+for nothing.
 
-    The image carries a second site block, `/etc/frankenphp/mtls.Caddyfile`, for the host whose listener
-    asks for a certificate. A deployment turns it on with three variables, and the host of `SERVER_NAME`
-    keeps asking for nothing.
+| Variable | Read by | Value |
+|---|---|---|
+| `MTLS_SERVER_NAME` | Caddy | The name of the host that asks for a certificate |
+| `CADDY_EXTRA_CONFIG` | Caddy | `import mtls.Caddyfile`, which adds that site block |
+| `BEFFROI_MTLS_ORIGIN` | The application | The origin of that host, which becomes `mutual_tls.origin` |
 
-    | Variable | Read by | Value |
-    |---|---|---|
-    | `MTLS_SERVER_NAME` | Caddy | The name of the host that asks for a certificate |
-    | `CADDY_EXTRA_CONFIG` | Caddy | `import mtls.Caddyfile`, which adds that site block |
-    | `BEFFROI_MTLS_ORIGIN` | The application | The origin of that host, which becomes `mutual_tls.origin` |
+The `.env` of the application names the host of its development stack, `https://mtls.op.localhost`, so a
+deployment sets `BEFFROI_MTLS_ORIGIN` to its own host, or to nothing when it serves no such host and
+announces no alias.
 
-    The `.env` of the application names the host of its development stack, `https://mtls.op.localhost`, so a
-    deployment sets `BEFFROI_MTLS_ORIGIN` to its own host, or to nothing when it serves no such host and
-    announces no alias.
+The site block asks for a certificate without requiring one (`client_auth` in `mode request`), so a client
+that authenticates another way completes its handshake on that host too. A certificate is only accepted with
+the signature of the handshake that proves its holder has the private key (RFC 8446 §4.4.3), and the leaf is
+handed to PHP as `SSL_CLIENT_CERT`, empty when the client presented none.
 
-    The site block asks for a certificate without requiring one (`client_auth` in `mode request`), so a
-    client that authenticates another way completes its handshake on that host too. A certificate is only
-    accepted with the signature of the handshake that proves its holder has the private key (RFC 8446
-    §4.4.3), and the leaf is handed to PHP as `SSL_CLIENT_CERT`, empty when the client presented none.
+The block verifies no chain, so it accepts a certificate whatever authority issued it, which is what
+`self_signed_tls_client_auth` needs. A deployment that authenticates clients with `tls_client_auth` has that
+block verify a presented certificate against the authorities it accepts: that is where the chain is judged,
+and nowhere else.
 
-    The block verifies no chain, so it accepts a certificate whatever authority issued it, which is what
-    `self_signed_tls_client_auth` needs. A deployment that authenticates clients with `tls_client_auth` has
-    that block verify a presented certificate against the authorities it accepts: that is where the chain
-    is judged, and nowhere else.
-
-=== "In a Symfony application"
-
-    The web server that terminates TLS sets `SSL_CLIENT_CERT` to the PEM of the leaf certificate it
-    verified, and leaves it empty when the client presented none. It asks for a certificate on the host the
-    aliases point at, and judges there the chain of a certificate that `tls_client_auth` will rely on.
-
-    A deployment whose edge hands the certificate over some other way implements
-    `Beffroi\Bundle\Http\Tls\ClientCertificateResolverInterface`, which returns the certificate of a
-    request or none, and aliases it in place of the resolver of the bundle, rather than teaching the bundle
-    a header to trust.
+What reads `SSL_CLIENT_CERT` is `App\Http\Tls\EdgeClientCertificateResolver`, the implementation of
+`App\Http\Tls\ClientCertificateResolverInterface` the application is delivered with, which returns the
+certificate of a request or none. A deployment whose edge hands the certificate over some other way brings
+another implementation of that interface, rather than teaching the application a header to trust.

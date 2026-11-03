@@ -10,7 +10,7 @@ ORM: no class in it has ever heard of OAuth, of a `Request` or of Doctrine. What
 it asks for through a port.
 
 That is what makes it testable without a kernel, and what makes the provider's identity model its own
-rather than borrowed from whatever application hosts it.
+rather than borrowed from the applications it signs people in to.
 
 ## What it holds
 

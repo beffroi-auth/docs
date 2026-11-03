@@ -112,7 +112,7 @@ user either.
 
 ### What a person says of themselves
 
-A person changes, on [the page of their account](../symfony-bundle/account.md#what-a-person-may-change-of-themselves),
+A person changes, on [the page of their account](../application/account.md#what-a-person-may-change-of-themselves),
 the claims their tenant opens in `tenant.self_served_claims`, and no other: a tenant that opens none serves a
 page that only reads. Fourteen claims can be opened: `name`, `given_name`, `family_name`, `middle_name`,
 `nickname`, `preferred_username`, `birthdate`, `gender`, `locale`, `zoneinfo`, `profile`, `picture`, `website`
@@ -183,4 +183,4 @@ An account carries the date it was disabled, and a disabled person is refused at
 
 Nothing else reads the state of the account: a session already open goes on serving the browser that holds it,
 and a refresh token goes on being exchanged at the token endpoint. `beffroi:user:show` says `disabled since` and
-the date. No command or page of the bundle disables or enables an account.
+the date. No command or page of the application disables or enables an account.

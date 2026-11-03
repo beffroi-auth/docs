@@ -89,9 +89,9 @@ rule. [Passwords](../core/credentials/passwords.md) says what each of them refus
 
 | Specification | What it brings | Page |
 |---|---|---|
-| RFC 8030 | Web push, the message a push service carries | [Web push](../symfony-bundle/web-push.md) |
-| RFC 8291 | The encryption of that message, which only the browser can open | [Web push](../symfony-bundle/web-push.md) |
-| RFC 8292 | VAPID, the application server key a tenant draws and signs with | [Web push](../symfony-bundle/web-push.md) |
+| RFC 8030 | Web push, the message a push service carries | [Web push](../application/web-push.md) |
+| RFC 8291 | The encryption of that message, which only the browser can open | [Web push](../application/web-push.md) |
+| RFC 8292 | VAPID, the application server key a tenant draws and signs with | [Web push](../application/web-push.md) |
 
 ## What is deliberately not implemented
 

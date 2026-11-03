@@ -85,15 +85,15 @@ that file and whoever took it is the length of what was typed.
 
 ## What a deployment answers with
 
-Two layers write the headers, and where they meet, one gives way. The bundle gives every page of the
-interaction plane `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `Cache-Control: no-store` and the
-floor of a content policy; the application writes the headers of a deployment on every answer. Where both
-name a header, the value is the same or the bundle's floor is dropped before the deployment's policy is
-written, so one policy is sent: a header written twice is not replaced, it collides, two content policies
-intersect, two `Access-Control-Allow-Origin` are invalid and the response is rejected.
+Two layers write the headers, and where they meet, one gives way. The code that renders a page of the
+interaction plane gives it `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `Cache-Control: no-store`
+and the floor of a content policy; the configuration of the application writes the headers of the deployment
+on every answer. Where both name a header, the value is the same or the floor of the page is dropped before the
+deployment's policy is written, so one policy is sent: a header written twice is not replaced, it collides, two
+content policies intersect, two `Access-Control-Allow-Origin` are invalid and the response is rejected.
 
-What [the standalone application](../application/index.md) answers with is therefore named where that
-application is configured and nowhere else:
+What [the application](../application/index.md) answers with is therefore named in its configuration and
+nowhere else:
 `nosniff` and `DENY` everywhere, `Referrer-Policy: no-referrer`, HSTS for a year with the subdomains and
 the preload list, a permissions policy whose whole set is written down with two entries open to this
 origin alone, the two a passkey ceremony needs, and a content policy that starts at `default-src 'none'`

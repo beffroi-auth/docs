@@ -6,21 +6,20 @@ description: The Doctrine mapping of the model, the tables, the migrations, the 
 # Persistence
 
 The provider keeps its model with Doctrine ORM. The classes of the core, of OpenID Connect and of SAML know
-nothing of Doctrine: the bundle maps them from XML files of its own, declares their types and their
-migrations to Doctrine itself, and the application writes none of it. The schema is therefore the same
-whether the bundle is installed in an existing application or deployed in the standalone one.
+nothing of Doctrine: the application maps them from XML files of its own, and the tree under `beffroi`
+declares the mappings, the DBAL types and the directory of the migrations to Doctrine when the container is
+built, as [the configuration tree](configuration-tree.md#what-the-tree-writes-for-the-other-bundles) details.
 
-## What the bundle maps
+## What the application maps
 
-| Mapping | Directory of the bundle | Namespace |
+| Mapping | Directory of the application | Namespace |
 |---|---|---|
-| `BeffroiCore` | `config/doctrine/core` | `Beffroi\Core\Domain` |
-| `BeffroiOidc` | `config/doctrine/oidc` | `Beffroi\Oidc\Domain` |
-| `BeffroiSaml` | `config/doctrine/saml` | `Beffroi\Saml\Domain` |
+| `BeffroiCore` | `config/beffroi/doctrine/core` | `Beffroi\Core\Domain` |
+| `BeffroiOidc` | `config/beffroi/doctrine/oidc` | `Beffroi\Oidc\Domain` |
+| `BeffroiSaml` | `config/beffroi/doctrine/saml` | `Beffroi\Saml\Domain` |
 
-One XML file per class, named after it, as `Identity.User.orm.xml`. The application maps its own entities
-beside them and none of them is ever a user of the provider: a person of the provider is a row of
-`beffroi_user`, whatever the host application calls its own users.
+One XML file per class, named after it, as `Identity.User.orm.xml`. A person of the provider is a row of
+`beffroi_user`.
 
 ## The tables
 
@@ -76,15 +75,15 @@ it belongs to, by a foreign key on `tenant_id`.
 
     | Table | What a row is |
     |---|---|
-    | `beffroi_data_key` | A data key of a tenant, wrapped by its master key, with the client and the master key that wrapped it. No mapping describes it: it is the table of the data key store, created by a migration of the bundle and declared to the schema the ORM assembles, so that a comparison of the schema does not offer to drop it |
+    | `beffroi_data_key` | A data key of a tenant, wrapped by its master key, with the client and the master key that wrapped it. No mapping describes it: it is the table of the data key store, created by a migration of the application and declared to the schema the ORM assembles, so that a comparison of the schema does not offer to drop it |
 
 The keys of the tenant are not in the database. Each one is a file of `beffroi.keys.storage`, its private
 half sealed by the [key management service](key-management.md).
 
 ## The migrations
 
-The bundle ships its migrations in its own directory, under the namespace `Beffroi\Bundle\Migrations`, and
-declares them to Doctrine Migrations. They are played with those of the application:
+The application keeps its migrations in `migrations/`, under the namespace `DoctrineMigrations`, and declares
+them to Doctrine Migrations. They are played with:
 
 ``` bash
 bin/console doctrine:migrations:migrate
@@ -101,8 +100,8 @@ before it reads those columns with the type they had.
 
 ## A value object in one column
 
-**A value object a column holds whole goes in one column**, with a DBAL type of the bundle: the bundle
-declares thirty-three of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
+**A value object a column holds whole goes in one column**, with a DBAL type of the application: the tree
+declares thirty-four of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
 `beffroi_password_hash` among them. What the column holds is written by the object itself, in the package
 that owns it, and read back through its constructor, so a row edited by hand into something the object
 refuses fails when it is loaded, as a conversion error naming the type, and never further down.
@@ -167,7 +166,7 @@ lists, moves to another client and erases.
   `beffroi_linked_identity` in `provider_index` and `subject_index`. The unique constraints are held on those
   columns, a constraint on a sealed column refusing nothing. The key of the tags is one per tenant, a data key
   of its own that never rotates.
-- **The tag is written by the bundle, on the flush of the entity manager**, in the same statement as the
+- **The tag is written by the application, on the flush of the entity manager**, in the same statement as the
   value. A row written through DBAL, or changed by a bulk `UPDATE`, keeps whatever tag it had, and a search
   then finds the row by what it used to hold. `beffroi:user:reindex` derives the tags of every person of the
   tenant again.

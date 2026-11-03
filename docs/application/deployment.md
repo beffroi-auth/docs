@@ -42,16 +42,17 @@ entrypoint does two things when `.env` names a `DATABASE_URL`, which the one of 
 1. it waits for the database, sixty attempts one second apart, and stops at once on an error it cannot
    recover from;
 2. it plays the migrations, `doctrine:migrations:migrate --no-interaction --all-or-nothing`, every time the
-   server starts. The migrations of the bundle are written for PostgreSQL and refuse any other platform.
+   server starts. The migrations of the application, in `migrations/`, are written for PostgreSQL and refuse
+   any other platform.
 
 The health check of the image asks the metrics endpoint of the Caddy admin API inside the container,
 `curl -f http://localhost:2019/metrics`, after a start period of sixty seconds.
 
 ### The two planes
 
-Every route of the bundle carries its plane in its name, `beffroi_protocol_*` for what a client or a resource
-server calls and `beffroi_interaction_*` for what a browser reads. `BEFFROI_PLANE` restricts a process to one
-of them:
+Every route of the provider, the ones `config/beffroi/routes.php` imports, carries its plane in its name,
+`beffroi_protocol_*` for what a client or a resource server calls and `beffroi_interaction_*` for what a browser
+reads. `BEFFROI_PLANE` restricts a process to one of them:
 
 | `BEFFROI_PLANE` | What the process serves |
 |---|---|
@@ -83,7 +84,7 @@ starts it again.
 |---|---|
 | `scheduler_beffroi` | The clock of the timed steps. One process consumes it: the steps are idempotent, and are not written to run twice at once |
 | `async_notifications` | What the provider carries to somebody it does not own: logout tokens (Back-Channel Logout 1.0 §2.5), the notification that a backchannel request was answered (CIBA Core §10.2), and web push to the browsers of a person (RFC 8030) |
-| `async_priority_high` | Nothing the bundle routes |
+| `async_priority_high` | Nothing the application routes |
 | `async_priority_medium` | The writes a request does not wait for, and the timed steps the schedule hands over |
 | `async_priority_low` | The events of the core and of the protocol, which the journal writes down and the enrichment of a provenance reads |
 
@@ -111,8 +112,8 @@ The development stack gives `var/keys`, `var/kms` and `var/geoip` a volume each,
 the worker alike: a rotation done by one process changes nothing for another that does not see the same
 directory.
 
-The bundle keeps eight caches in pools of their own, so that a deployment can point them at a shared store
-without touching the rest of its cache:
+The application keeps eight caches in pools of their own, so that a deployment can point them at a shared
+store without touching the rest of its cache:
 
 | Pool | What it holds |
 |---|---|
@@ -129,8 +130,11 @@ Each of them is on `cache.app`, which the application leaves on the filesystem a
 `%kernel.share_dir%/pools/app`. The share directory carries the environment, so with the `APP_SHARE_DIR` of
 `.env` the pools of a production kernel are in `var/share/prod/pools/app`. Two containers share these pools
 when they share that directory, or once a deployment points the pools at a store they both reach, and each
-holds its own otherwise. The application names no session handler either, so the session of a browser lives
-where the native handler of PHP keeps it, in the container that served it.
+holds its own otherwise. The attempts at a password and at a code are counted per person, five in a sliding
+window of one minute, by two limiters, `beffroi_password_attempts` and `beffroi_code_attempts`, whose counts
+Symfony keeps in `cache.rate_limiter`, a pool on `cache.app` as well: they are shared as these pools are. The
+application names no session handler either, so the session of a browser lives where the native handler of PHP
+keeps it, in the container that served it.
 
 ## TLS and the two hosts
 
@@ -168,11 +172,11 @@ address of the proxy.
 
 ## The headers
 
-**Two layers write the security headers, and where they meet, one gives way.** The bundle gives every page of
-the interaction plane `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `Cache-Control: no-store` and
-the floor of a content policy, `frame-ancestors 'none'`. The application writes the headers of a deployment on
-every answer, from two files of its configuration, `config/packages/nelmio_security.yaml` and
-`config/packages/nelmio_cors.yaml`:
+**Two layers write the security headers, and where they meet, one gives way.** `App\Http\InteractionPages`
+gives every page of the interaction plane `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`,
+`Cache-Control: no-store` and the floor of a content policy, `frame-ancestors 'none'`. The application writes
+the headers of a deployment on every answer, from two files of its configuration,
+`config/packages/nelmio_security.yaml` and `config/packages/nelmio_cors.yaml`:
 
 - `X-Frame-Options` is left as a page already carries it, and `Referrer-Policy` is written again with the
   value the pages carry, `no-referrer`;
@@ -185,9 +189,9 @@ is their intersection. Nothing the application writes is therefore written again
 edge. The assets compiled into `public/assets/` are answered by FrankenPHP without asking PHP, and carry none
 of these headers.
 
-The session cookie is the one header of the provider no bundle sets, so the application names it:
-`__Host-beffroi_session`, `Secure`, `HttpOnly`, `SameSite=Lax`, on the path `/` and with no `Domain`. HSTS is
-not sent in the development environment, where it would pin every `.localhost` name of the machine to HTTPS.
+The application names the session cookie in `config/packages/framework.yaml`: `__Host-beffroi_session`,
+`Secure`, `HttpOnly`, `SameSite=Lax`, on the path `/` and with no `Domain`. HSTS is not sent in the
+development environment, where it would pin every `.localhost` name of the machine to HTTPS.
 
 [:beffroi-arrow-right: The headers](../the-project/secure-by-default.md#what-a-deployment-answers-with)
 

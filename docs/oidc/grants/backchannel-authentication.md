@@ -123,13 +123,13 @@ since it has to present both when it pings.
 |---|---|
 | `login_hint` | As `backchannel_authentication.login_hint` says, below |
 | `id_token_hint` | An ID token this provider issued to this very client, whose `sub` names the person; its `exp` is not looked at, a hint describing a past sign-in being the ordinary case. A token of another issuer, or issued to another client, is `invalid_request` |
-| `login_hint_token` | Read by nothing the bundle wires, so `invalid_request` |
+| `login_hint_token` | Read by nothing the application wires, so `invalid_request` |
 
 | `login_hint` | What the hint is |
 |---|---|
 | `sub`, the default | The subject this provider gives the person for this client, public or pairwise |
 | `username` | The name the person signs in with |
-| `none` | Nothing the bundle reads: the deployment tags a reader of its own, and without one a `login_hint` is `invalid_request` |
+| `none` | Nothing the application reads: the deployment tags a reader of its own, and without one a `login_hint` is `invalid_request` |
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
@@ -152,21 +152,21 @@ after every other parameter, so that a request refused for anything else has loo
 ## Reaching the person
 
 When the hint named somebody, the provider puts the word on the [notifications
-lane](../../symfony-bundle/messenger.md) and answers the client without waiting for it. What travels is the
+lane](../../application/messenger.md) and answers the client without waiting for it. What travels is the
 name of the provider, the name of the client, the binding message when there is one, the expiry, and the
 address of the page where requests are answered. It carries no identifier of the request and no link that
 answers one, so that nothing reaching the person from outside can carry them to an approval.
 
 What carries it to the person is a channel the deployment wires: a class implementing
-`Beffroi\Bundle\Ciba\PendingApprovalChannelInterface`, tagged `beffroi.pending_approval_channel`. The bundle
-ships one, [web push](../../symfony-bundle/web-push.md) to the browsers the person subscribed on the
-notifications page of their account, in the lane while `web_push.subject` names a subject. A deployment that wires no channel
+`App\Ciba\PendingApprovalChannelInterface`, tagged `beffroi.pending_approval_channel`. The application ships
+one, [web push](../../application/web-push.md) to the browsers the person subscribed on the notifications page
+of their account, in the lane while `web_push.subject` names a subject. A deployment that wires no channel
 still serves this flow: the person finds the request on the page where requests are answered, which is where
 any channel sends them anyway.
 
 ## Answering: `/account/approvals`
 
-The page is "Requests waiting for you", the first card of the [account pages](../../symfony-bundle/account.md).
+The page is "Requests waiting for you", the first card of the [account pages](../../application/account.md).
 The person signs in first, then sees the requests made for them that are still waiting, oldest first, and
 nothing else: there is no code to type and no link that carries a request, the requests being found by who
 is signed in. Each one shows the provider that is asking, the client, its binding message, where the request

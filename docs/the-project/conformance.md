@@ -53,7 +53,7 @@ packages, and every invariant of their specifications has its tests.
 
 Certification qualifies the software. It says nothing about the organisation that operates a deployment,
 which is what ISO 27001 and the national cloud qualifications are for. Those apply to a hosted service,
-never to a bundle you install yourself.
+never to an application you deploy yourself.
 
 ## Running the suite yourself
 

@@ -28,7 +28,7 @@ passkey bound to its authenticator ([the classes it answers with](../tenants.md#
 
 ## Enrolling one
 
-On [the page of their passkeys](../../symfony-bundle/account.md#the-pages), `/account/passkeys`, a person adds
+On [the page of their passkeys](../../application/account.md#the-pages), `/account/passkeys`, a person adds
 one in a click: the page asks for creation options, the browser creates the passkey, and the page posts it back,
 named `New passkey` in the language of the page, a name they correct in its line afterwards. The options are
 kept in the session of that browser until the passkey comes back, and the page asks for a proof made in the last
@@ -144,7 +144,7 @@ bin/console beffroi:webauthn:mds-import vendor-statement.json
 
 | Command | What it stores |
 |---|---|
-| `beffroi:webauthn:mds-refresh` | The Metadata BLOB of `https://mds.fidoalliance.org/`, or of each `--url` given, verified before anything is kept: one signature, made by the first certificate of its chain, the chain leading to the root it pins, `GlobalSign Root CA - R3` shipped with the bundle unless `--root` names another, as a PEM or DER file or an `https` URL. No redirect is followed, and a refused blob keeps nothing |
+| `beffroi:webauthn:mds-refresh` | The Metadata BLOB of `https://mds.fidoalliance.org/`, or of each `--url` given, verified before anything is kept: one signature, made by the first certificate of its chain, the chain leading to the root it pins, `GlobalSign Root R46` shipped with the application unless `--root` names another, as a PEM or DER file or an `https` URL. No redirect is followed, and a refused blob keeps nothing |
 | `beffroi:webauthn:mds-import` | Metadata statements a manufacturer publishes for keys the service does not list, or that the FIDO conformance tools ship, one authenticator per file, unsigned and trusted as the file is |
 
 What reads them is a ceremony whose options ask for an attestation: an authenticator its status reports name as

@@ -75,7 +75,7 @@ beffroi:
 | `staging_delay` | `jwks_max_age` plus sixty seconds | How long a new key is published before it is used, in seconds |
 | `age` | `7776000`, ninety days | How long a key works before a successor is staged behind it, in seconds, counted from its activation |
 
-[Key management](../symfony-bundle/key-management.md) says how the clients are declared. A process opens a key
+[Key management](../application/key-management.md) says how the clients are declared. A process opens a key
 once and keeps it open for as long as it is the key that answers, so a worker that serves many requests asks the
 service once per key, where a process rebuilt at each request asks at each request. A key another has replaced,
 or that has retired, is let go.

@@ -10,8 +10,9 @@ asking an administrator. The same facts are available to an operator through
 [the console](console-commands.md), and the two read the same code.
 
 None of these pages belongs to a client or to an authorization request. They are reached by typing the
-issuer in a browser, and the home of the account is where they hang from: every other page carries the
-link back to it, and nothing else.
+issuer in a browser, and the home of the account is where they hang from: a column beside every page lists
+the home and the other pages under the headings they are read under, and every other page says above its
+title where the reader is, from the home down.
 
 ## The pages
 
@@ -119,7 +120,7 @@ form submission walks around.
 ### Enrolling a second factor
 
 The enrolment is the two steps it is, handing the secret to an authenticator application and then
-confirming the code that application shows. The provisioning URI is drawn as an SVG QR code by the bundle
+confirming the code that application shows. The provisioning URI is drawn as an SVG QR code by the provider
 itself and embedded in the page, with no image loaded from anywhere: that URI carries the secret, and a QR
 code service would read it. The same key is printed in base32 in groups of four for a person who types it,
 and taken in one click.
@@ -210,8 +211,12 @@ check.
 
 ## Adding a page
 
-A page of the account is a class implementing `Beffroi\Bundle\Http\Account\AccountSectionInterface`,
-tagged `beffroi.account_section`: it names the route it opens, the key of its title and what this account
-holds there. The home reads the tagged sections in the order they are wired, so a page added is a class
-and a line in the wiring, and neither the home nor its template is edited. Two sections naming one route
-are a fault of the wiring, and they are refused as such.
+A page of the account is a class implementing `App\Http\Account\AccountSectionInterface`, tagged
+`beffroi.account_section` in `config/beffroi/services.php`: it names the route it opens, the key of its title
+and what this account holds there. The home reads the tagged sections in the order they are wired, so a page
+added is a class and a line in the wiring, and neither the home nor its template is edited. Two sections
+naming one route are a fault of the wiring, and they are refused as such.
+
+`App\Account\AccountNavigation` arranges the pages it names in the column, under their headings, each with its
+icon and the line that says on its card what the page is for. A page it does not name comes last in the
+column, under no heading, and its card carries its title and its state.

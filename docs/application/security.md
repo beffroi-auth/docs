@@ -1,26 +1,26 @@
 ---
 title: Security
-description: The firewalls an application declares, the four logins of the bundle, what a login opens, the attempts and budgets that bound it, and what a post from another site gets.
+description: The firewalls of the application, its four logins, what a login opens and the cookie of its session, the attempts and budgets that bound a login, and what a post from another site gets.
 ---
 
 # Security
 
-The bundle brings everything a firewall of Symfony is assembled from, the user provider, the user checker
-and four authenticators, and the application declares the firewall itself. What the firewall authenticates
-is a person of the provider, never the user of the host application, and what a login opens is the session
-of the provider: it records what was proven, and it is not the login session of the host application.
+The application assembles its firewalls in `config/packages/security.yaml`, the one of its pages,
+`beffroi_interaction`, from a user provider, a user checker and four authenticators of its own, under
+`App\Security\`. What that firewall authenticates is a person of the provider, and what a login opens is the
+session of the provider, which records what was proven.
 
 ## The firewalls
 
-Besides the one of its development tools, the standalone application declares two firewalls: the protocol
-endpoints, which authenticate their clients themselves and open no session, and the interaction pages, where
-the logins of the provider live.
+Besides the one of its development tools, the application declares two firewalls: the protocol endpoints,
+which authenticate their clients themselves and open no session, and the interaction pages, where the logins
+of the provider live.
 
 ``` yaml title="config/packages/security.yaml"
 security:
     providers:
         beffroi:
-            id: Beffroi\Bundle\Security\IdentityUserProvider
+            id: App\Security\IdentityUserProvider
 
     firewalls:
         dev:
@@ -32,13 +32,13 @@ security:
         beffroi_interaction:
             lazy: true
             provider: beffroi
-            user_checker: Beffroi\Bundle\Security\UserChecker
-            entry_point: Beffroi\Bundle\Security\PasswordLoginAuthenticator
+            user_checker: App\Security\UserChecker
+            entry_point: App\Security\PasswordLoginAuthenticator
             custom_authenticators:
-                - Beffroi\Bundle\Security\PasswordLoginAuthenticator
-                - Beffroi\Bundle\Security\PasskeyLoginAuthenticator
-                - Beffroi\Bundle\Security\TotpLoginAuthenticator
-                - Beffroi\Bundle\Security\UpstreamAssertionAuthenticator
+                - App\Security\PasswordLoginAuthenticator
+                - App\Security\PasskeyLoginAuthenticator
+                - App\Security\TotpLoginAuthenticator
+                - App\Security\UpstreamAssertionAuthenticator
 
     access_control: []
 ```
@@ -51,12 +51,11 @@ security:
 
 There is no `access_control`. The pages decide for themselves whether a session is needed: the login page
 shows its form, the consent page sends a browser without a session to the login, and a page of the account
-other than its home refuses one with `login_required`. A provider whose routes are mounted under a path
-carries that path in the pattern of `beffroi_protocol`.
+other than its home refuses one with `login_required`.
 
-The password hasher of the users of the bundle is not the application's to declare: the bundle prepends
-`Beffroi\Bundle\Security\CorePasswordHasher` for them, the hasher of the core, so that a password is hashed
-and verified by one policy wherever it is read.
+`security.yaml` declares no password hasher: the extension of the `beffroi:` tree,
+`App\DependencyInjection\BeffroiExtension`, prepends the hasher of the core, `App\Security\CorePasswordHasher`,
+for `App\Security\SecurityUser`, so that a password is hashed and verified by one policy wherever it is read.
 
 ## The user the firewall sees
 
@@ -135,12 +134,32 @@ the interactions this browser began under `_beffroi_interactions`, eight at most
 first. Only the browser that began an interaction may resume it. The proofs are also copied into the token of
 the firewall, one timestamp per method.
 
+**The HTTP session travels on one cookie**, which the application names and bounds:
+
+``` yaml title="config/packages/framework.yaml"
+framework:
+    session:
+        name: '__Host-beffroi_session'
+        cookie_secure: true
+        cookie_httponly: true
+        cookie_samesite: lax
+        cookie_path: '/'
+        cookie_domain: ~
+```
+
+The `__Host-` prefix has the browser refuse the cookie unless it is `Secure`, its path `/` and its domain
+unnamed, which the issuer of the application, an origin alone, allows. `lax` is the one value that cannot be
+tightened: a client sends the browser to the authorization endpoint by a top-level navigation from its own
+site, and `strict` would leave the cookie behind on it, so every authorization request would meet a provider
+that does not know the visitor. What `lax` does to a post from another site is answered
+[below](#a-post-from-another-site).
+
 [:beffroi-arrow-right: Authentication sessions](../core/authentication-sessions.md)
 
 ## Attempts and budgets
 
-Two limits bound a guess, and they are rules of the provider rather than settings: the bundle declares their
-limiters itself and an application does not tune them.
+Two limits bound a guess, and they are rules of the provider rather than settings: the extension of the
+`beffroi:` tree declares their limiters itself, and nothing a deployment sets tunes them.
 
 | Limiter | What it counts | Bound |
 |---|---|---|
@@ -150,8 +169,9 @@ limiters itself and an application does not tune them.
 The count is kept by person and by nothing else, never by address. The device page counts only the codes it
 refuses, and answers `429` once the window is full.
 
-Two budgets bound the load a deployment takes. Their existence is not configurable; their numbers are, under
-`beffroi.load`, since they follow the size of a deployment.
+Two budgets bound the load a deployment takes. Their existence is not configurable; their numbers are, since
+they follow the size of a deployment: the application fills `beffroi.load` from `BEFFROI_LOAD_ORIGIN_LIMIT`,
+`BEFFROI_LOAD_ORIGIN_INTERVAL`, `BEFFROI_LOAD_CLIENT_LIMIT` and `BEFFROI_LOAD_CLIENT_INTERVAL`.
 
 | Budget | What it counts | Default |
 |---|---|---|
@@ -162,8 +182,8 @@ A request refused for load answers `429 Too Many Requests` with a `Retry-After` 
 `Cache-Control: no-store`: on the protocol plane, a JSON body that carries an `error_description` and no
 `error`, since none of the registered values says that a budget is spent; on the interaction plane, the error
 page with the code `too_many_requests`. The address a budget is counted on is the one Symfony reads behind the
-proxies `framework.trusted_proxies` names, so a deployment behind a reverse proxy declares it, or every
-request is counted under the address of the proxy.
+proxies `framework.trusted_proxies` names, which `SYMFONY_TRUSTED_PROXIES` sets, so a deployment behind a
+reverse proxy names them there, or every request is counted under the address of the proxy.
 
 ## A post from another site
 
@@ -202,9 +222,10 @@ the single sign-on, single logout and assertion consumer services.
 
 ## Form tokens
 
-Every form a page of the provider renders carries a token, and a form that comes back without it is refused
-with `403` and the error page `invalid_csrf_token`. At the three logins a missing token is a failed login
-instead, and at the password form it costs no attempt. The names of the fields and the identifiers of the
-tokens are what an overriding template keeps.
+Every form a page of the provider renders carries a token, the choice of a theme excepted, since it changes a
+colour and nothing else, and a form that comes back without its token is refused with `403` and the error page
+`invalid_csrf_token`. At the three logins a missing token is a failed login instead, and at the password form
+it costs no attempt. The names of the fields and the identifiers of the tokens are what a template keeps when
+it is changed.
 
-[:beffroi-arrow-right: What an override keeps](pages.md#what-an-override-keeps)
+[:beffroi-arrow-right: What a template keeps](pages.md#what-a-template-keeps)

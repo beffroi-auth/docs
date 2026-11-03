@@ -63,7 +63,7 @@ federated signs them in no more.
 in `beffroi:user:show` and in the archive of the person, and a revoked passkey on the page of the passkeys too,
 where a revoked TOTP leaves the page of the second factor. The first revocation wins: revoking it again changes
 nothing and announces nothing. A person revokes their own on [the pages of their
-account](../../symfony-bundle/account.md#taking-it-back), and an operator any of them:
+account](../../application/account.md#taking-it-back), and an operator any of them:
 
 ``` bash
 bin/console beffroi:user:revoke-credential alice 0199f1c2-7b3a-7c4d-9e5f-1a2b3c4d5e6f
@@ -91,4 +91,4 @@ A kind is a class that extends `Credential`, or `RevocableCredential` when it ca
 `kind()` and implements the interfaces of what it can do, with a table of its own in the Doctrine mapping: the
 store reads the kinds from the entities mapped under `Credential` and names none of them. For it to sign
 anybody in, the firewall needs a login that proves it, a class tagged `beffroi.login`, which
-[security](../../symfony-bundle/security.md) describes.
+[security](../../application/security.md) describes.

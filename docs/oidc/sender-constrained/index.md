@@ -81,6 +81,6 @@ TLS](mutual-tls.md#tokens-bound-to-the-certificate) say what each one compares.
 
 **What the provider announces.** The discovery document always carries `dpop_signing_alg_values_supported`,
 the signature algorithms the provider is wired with. It carries `tls_client_certificate_bound_access_tokens`
-set to `true` because a client authentication method that proves a certificate is wired, which the bundle
-does. The bare challenge of UserInfo, answered to a request that carries no token at all, is what is read
-from the bindings themselves, both wired in the bundle: `WWW-Authenticate: Bearer, DPoP`.
+set to `true` because a client authentication method that proves a certificate is wired, which the
+application does. The bare challenge of UserInfo, answered to a request that carries no token at all, is what
+is read from the bindings themselves, both wired in the application: `WWW-Authenticate: Bearer, DPoP`.

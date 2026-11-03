@@ -8,28 +8,37 @@ description: Signing people in to a Symfony application with the oidc_login auth
 The client of reference for this provider is Symfony's own `oidc_login` authenticator, which Symfony 8.2 adds
 with an `oidc` user provider: what Beffroi emits is played against it, with no patch of the authenticator.
 That makes a Symfony application the shortest path to a sign-in you can watch end to end, and it takes two
-halves: a client declared on the provider, and a firewall in the application.
+halves: a client registered with the provider, and a firewall in the application.
 
 ## On the provider
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        my-application:
-            client_name: 'My application'
-            secret: '%env(MY_APPLICATION_SECRET)%'
-            redirect_uris: ['https://app.example.com/oidc/callback']
-            post_logout_redirect_uris: ['https://app.example.com/']
-            token_endpoint_auth_method: client_secret_basic
+The application registers itself as a client (RFC 7591), with an initial access token the tenant issued for
+it; [your first client](your-first-client.md) says how a deployment turns registration on and issues one.
+
+``` http
+POST /register HTTP/1.1
+Host: op.example.com
+Content-Type: application/json
+Authorization: Bearer 0NM8Z6ijkVrFDzEaMPwCLWmTvdFxNsRwBCzu8UxS4pQ
+
+{
+    "client_name": "My application",
+    "redirect_uris": ["https://app.example.com/oidc/callback"],
+    "post_logout_redirect_uris": ["https://app.example.com/"],
+    "grant_types": ["authorization_code", "refresh_token"],
+    "token_endpoint_auth_method": "client_secret_basic",
+    "scope": "openid profile email"
+}
 ```
 
 `/oidc/callback` is the path `oidc_login` is called back on unless told otherwise, and `/` the one it sends a
-browser to after a logout; both are compared exactly. What the declaration leaves out takes the defaults this
-application needs: the scopes `openid profile email`, the authorization code grant and its renewal by a refresh
-token, access tokens in the `at+jwt` shape (RFC 9068), and a consent asked of each person the first time. The
-secret is at least 32 visible ASCII characters, generated.
+browser to after a logout; both are compared exactly. A registration takes the authorization code grant alone
+and the scope `openid` unless it names more, which is why it names the refresh token grant and the scopes the
+application asks for. The provider adds what is its own to decide: access tokens in the `at+jwt` shape
+(RFC 9068), and a consent asked of each person the first time. The answer carries the `client_id` and the
+`client_secret` the application is configured with below.
 
-[:beffroi-arrow-right: Your first client](your-first-client.md)
+[:beffroi-arrow-right: Dynamic registration, in full](../oidc/dynamic-registration.md)
 
 ## In the application
 
@@ -74,12 +83,13 @@ _security:
 
 ``` bash title=".env.local"
 OIDC_PROVIDER_URI=https://op.example.com
-OIDC_CLIENT_ID=my-application
+OIDC_CLIENT_ID=
 OIDC_CLIENT_SECRET=
 ```
 
 `OIDC_PROVIDER_URI` is the issuer, exactly as the provider announces it: the authenticator reads everything
-else from its discovery document. A visit to `/profile` without a session sends the browser to the
+else from its discovery document. `OIDC_CLIENT_ID` and `OIDC_CLIENT_SECRET` are the `client_id` and the
+`client_secret` of the answer to the registration. A visit to `/profile` without a session sends the browser to the
 authorization endpoint of the provider, which signs the person in, asks for their consent the first time, and
 sends the browser back to `/oidc/callback` with a code. The user of the firewall is an `OidcUser` built from the
 claims UserInfo answers with, holding `ROLE_USER`.
@@ -116,13 +126,13 @@ session endpoint through another client, from the account of the person, by the 
 logout token to the client (Back-Channel Logout 1.0 §2.5), and the firewall ends the local session it opened
 under it.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        my-application:
-            # ...
-            backchannel_logout_uri: 'https://app.example.com/oidc/backchannel-logout'
-            backchannel_logout_session_required: true
+The registration names where the provider posts the logout token, with the members above:
+
+``` json
+{
+    "backchannel_logout_uri": "https://app.example.com/oidc/backchannel-logout",
+    "backchannel_logout_session_required": true
+}
 ```
 
 ``` yaml title="config/packages/security.yaml"

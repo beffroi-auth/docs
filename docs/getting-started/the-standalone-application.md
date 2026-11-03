@@ -1,36 +1,39 @@
 ---
-title: The standalone application
+title: Running the application
 description: 'beffroi/op on your machine and as a deployment of its own: the development stack, the production image, and the first start in the order it has to happen.'
 ---
 
-# The standalone application
+# Running the application
 
-`beffroi/op` is a provider you deploy rather than a provider you assemble: a Symfony skeleton on
-[the bundle](../symfony-bundle/index.md), served by FrankenPHP in worker mode, with PostgreSQL for the model
-and for the writes the protocol does not wait on, each lane of Messenger a queue of the database. It is the deployment the project supports, and the
-development stack the conformance plans run against is this application.
+`beffroi/op` is the provider: a Symfony application served by FrankenPHP in worker mode, with PostgreSQL for
+the model and for the writes the protocol does not wait on, each lane of Messenger a queue of the database.
+The development stack the conformance plans run against is this application.
 
 It is the `apps/op` directory of the monorepo, [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi).
 Its `composer.json` resolves the `beffroi/*` packages through path repositories to `../../src/*`, so the
 application is built from a working copy of the monorepo: [beffroi-auth/op](https://github.com/beffroi-auth/op)
 is a read-only mirror of that one directory, and installs nothing on its own.
 
-## What it adds to the bundle
+## Where it keeps what
 
-The bundle brings, with the packages under it, the protocols, the identity model, the pages and the
-commands. The application brings what a deployment decides, and nothing else.
+The packages under it bring the protocols and the identity model. Everything else is the application's own
+code and configuration, in its own directories.
 
 | What | Where it lives |
 |---|---|
-| The layout of the pages and their stylesheet, Tailwind and DaisyUI, built by the standalone Tailwind binary it pins | `templates/`, `assets/styles/app.css` |
+| The configuration of the provider, each value a deployment chooses read from the environment | `config/packages/beffroi.yaml` |
+| The routes of both planes, and the root of the issuer, `/`, which sends a browser to the home of the account | `config/beffroi/routes.php`, imported by `config/routes/beffroi.yaml`; `config/routes/home.yaml` |
+| The controllers, the security, the persistence and the console commands | `src/` |
+| The Doctrine mapping of the model of the packages, and the migrations | `config/beffroi/doctrine/`, `migrations/` |
+| The pages, their layout and their stylesheet, Tailwind and DaisyUI, built by the standalone Tailwind binary it pins | `templates/beffroi/`, `templates/layout/`, `assets/styles/app.css` |
+| Every sentence of the pages, in English and in French | `translations/` |
 | The theme a visitor reads the pages in, light, dark or the one of their system, chosen by a form posted to `/theme` | `src/Theme/` |
-| Its own page of what the provider holds of a person, at `/account/profile`, which says under the field that was refused why it was | `src/Controller/`, `src/Form/` |
-| The root of the issuer, `/`, which sends a browser to the home of the account | `config/routes/home.yaml` |
-| The firewall of the interaction pages, with the four logins of the bundle: a password, a passkey, a code, and an upstream SAML identity provider | `config/packages/security.yaml` |
+| The firewall of the interaction pages, with its four logins: a password, a passkey, a code, and an upstream SAML identity provider | `config/packages/security.yaml` |
 | The headers a deployment answers with, and the name and attributes of the session cookie | `config/packages/nelmio_security.yaml`, `nelmio_cors.yaml`, `framework.yaml` |
 | Where the lanes of Messenger go, a queue of the database each, through `BEFFROI_MESSENGER_DSN` | `.env` |
 | FrankenPHP and Caddy, with the host that asks for a client certificate | `frankenphp/` |
-| One type of authorization detail, `invoice_payment` (RFC 9396 §2), the bundle wiring none | `src/AuthorizationDetails/` |
+
+[:beffroi-arrow-right: The application, page by page](../application/index.md)
 
 ## On your machine
 
@@ -123,7 +126,7 @@ has a row before it has a key, and its first key is the one messages are sealed 
     bin/console beffroi:keys:generate --algorithm=SAML-SIGNING
     ```
 
-    The discovery document announces every algorithm the bundle is wired with, and a key is drawn for each
+    The discovery document announces every algorithm the application is wired with, and a key is drawn for each
     one a client uses: a client that registers `ES256` for what the provider signs for it needs the key of
     `ES256`, and one that encrypts to the provider with `ECDH-ES+A256KW` the key of that algorithm. The
     development stack draws both.

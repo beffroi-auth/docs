@@ -40,17 +40,17 @@ Beffroi paints that last box the same colour as the other two.</p>
 
     ---
 
-    The standalone application, a tenant, a signing key, a first client, a user who signs in.
+    The application, a tenant, a signing key, a first client, a user who signs in.
 
     [:beffroi-arrow-right: Getting started](getting-started/installation.md)
 
--   :beffroi-package:{ .lg .middle } **Add it to an application**
+-   :beffroi-package:{ .lg .middle } **Inside the application**
 
     ---
 
-    The bundle in an existing Symfony application: configuration, routes, persistence, pages.
+    The provider page by page: its configuration, routes, persistence, security, pages and console.
 
-    [:beffroi-arrow-right: The Symfony bundle](symfony-bundle/index.md)
+    [:beffroi-arrow-right: The application](application/index.md)
 
 -   :beffroi-token:{ .lg .middle } **Read the protocol**
 
@@ -81,8 +81,7 @@ Beffroi paints that last box the same colour as the other two.</p>
 | [`beffroi/saml2-model`](saml/packages.md#saml2-model) | The SAML 2.0 messages, assertions and metadata, read strictly, validated and written. No HTTP | `beffroi/xml-security` |
 | [`beffroi/saml2-bindings`](saml/packages.md#saml2-bindings) | The HTTP-Redirect and HTTP-POST bindings, on strings and arrays | `beffroi/saml2-model` |
 | [`beffroi/xml-security`](saml/packages.md#xml-security) | A safe DOM, XML Signature and XML Encryption | PHP, with `dom`, `libxml` and `openssl` |
-| [`beffroi/symfony-bundle`](symfony-bundle/index.md) | The Symfony integration: configuration, controllers, security, persistence, login and consent pages | the core and both protocols, plus Symfony |
-| [`beffroi/op`](application/index.md) | The standalone application, on FrankenPHP. The recommended deployment | the bundle |
+| [`beffroi/op`](application/index.md) | The provider: the application that serves the protocols, with its configuration, controllers, security, persistence, pages and console, on FrankenPHP | the core and both protocols, plus Symfony |
 
 ## What it will not do
 

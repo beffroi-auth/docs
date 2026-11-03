@@ -10,8 +10,9 @@ configuration gets its row, and it gets a key.
 
 ## The schema
 
-The bundle ships its Doctrine migrations, and registers their path with `doctrine/doctrine-migrations-bundle`
-when the application has it, which provides the command:
+The Doctrine migrations are the application's own, in its `migrations` directory under the namespace
+`DoctrineMigrations`. The container that serves HTTP plays them every time it starts, and
+`doctrine/doctrine-migrations-bundle` provides the command that plays them by hand:
 
 ``` bash
 bin/console doctrine:migrations:migrate

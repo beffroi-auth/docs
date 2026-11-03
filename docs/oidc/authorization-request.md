@@ -71,8 +71,8 @@ names the destination is what could not be read.
 A required parameter that is missing is `invalid_request`, wherever its line says the refusal goes. What
 `prompt`, `max_age`, `login_hint`, `acr_values` and `id_token_hint` ask of the login is on [the page about
 interactions](interactions.md), and `claims` on [scopes and claims](scopes-and-claims.md). `ui_locales`
-chooses the language of the pages ([translations](../symfony-bundle/translations.md)). `display` is checked and
-kept, and no page of the bundle reads it.
+chooses the language of the pages ([translations](../application/translations.md)). `display` is checked and
+kept, and no page of the provider reads it.
 
 ## The order of the checks
 
@@ -134,9 +134,8 @@ the verifier among them ([authorization code](grants/authorization-code.md)).
 
 **On a page.** A refusal of the first stage, of a pushed request or of a request object is never sent to the
 redirect URI: the person reads a page, with status `400`, that asks them to start again from the application,
-and beneath it the `error` and the `error_description` for whoever develops the application. The page is the
-bundle's `error.html.twig`, which an application overrides like the others
-([pages](../symfony-bundle/pages.md)).
+and beneath it the `error` and the `error_description` for whoever develops the application. The page is
+`error.html.twig`, in `apps/op/templates/beffroi/` with the others ([pages](../application/pages.md)).
 
 **At the redirect URI.** Every other refusal goes back to the client, in the mode of the request, with
 `error`, `error_description`, `state` and `iss`:

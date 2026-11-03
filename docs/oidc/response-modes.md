@@ -21,8 +21,8 @@ request asking for anything else is refused with `unsupported_response_type`.
 
 `response_modes_supported` lists the modes the provider is wired with, the four above in that order, and
 `jwt` after them because a signed mode is wired. What is wired is what a request may ask for and what the
-document announces: a mode is a class the bundle tags, and a deployment that wires fewer announces and serves
-fewer.
+document announces: a mode is a class the application tags, and a deployment that wires fewer announces and
+serves fewer.
 
 ## Choosing one
 
@@ -60,11 +60,11 @@ Content-Security-Policy: default-src 'none'; script-src 'sha256-8lDeP0UDwCO6/Rhb
 ```
 
 `script-src` names the one script by its hash and allows no other script, and `form-action` the origin of the
-redirect URI and nothing else. The page is `form_post.html.twig`, which an application overrides under
-`templates/bundles/BeffroiBundle/`: it extends no layout, since a stylesheet or a script a layout brings would
-be blocked by that policy, and the script stays exactly as the bundle gives it, its hash being the policy. Like
-every page of the interaction plane, it is answered with `Cache-Control: no-store` and `Referrer-Policy:
-no-referrer`.
+redirect URI and nothing else. The page is `form_post.html.twig`, in `apps/op/templates/beffroi/` with the
+other pages of the provider: it extends no layout, since a stylesheet or a script a layout brings would be
+blocked by that policy, and it prints the script exactly as `beffroi/oidc` gives it, its hash being the
+policy. Like every page of the interaction plane, it is answered with `Cache-Control: no-store` and
+`Referrer-Policy: no-referrer`.
 
 The form reaches the redirect URI as a `POST` made from the provider's origin, and a browser does not send a
 cookie of the client set `SameSite=Lax` with a `POST` another site makes it send (RFC 6265bis); what the

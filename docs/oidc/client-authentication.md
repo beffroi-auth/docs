@@ -14,7 +14,7 @@ as a request that presents a wrong secret is.
 
 ## The methods
 
-The bundle wires seven, in this order:
+The application wires seven, in this order:
 
 | Method | What the request carries | What is checked | What the client registers |
 |---|---|---|---|

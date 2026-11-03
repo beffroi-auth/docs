@@ -1,13 +1,13 @@
 ---
 title: Console commands
-description: Every command the bundle adds, what it does, and whether it writes.
+description: Every command the application adds, what it does, and whether it writes.
 ---
 
 # Console commands
 
-Every command of the bundle is prefixed `beffroi:`, and those that act on identity act on the tenant the
-configuration names. A command that reads is never the command that writes: `beffroi:user:show` reads,
-`beffroi:user:profile` writes, and they are two classes.
+Every command the application adds to the console is prefixed `beffroi:`, and those that act on identity act
+on the tenant the configuration names. A command that reads is never the command that writes:
+`beffroi:user:show` reads, `beffroi:user:profile` writes, and they are two classes.
 
 Run `bin/console beffroi:<group>:<command> --help` for the arguments and the options of one of them; the
 table below is the map.

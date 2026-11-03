@@ -29,7 +29,7 @@ another tab of the same browser.
 
 Every page of an interaction belongs to the interaction plane. A process started with
 `BEFFROI_PLANE=protocol` answers `404` to all of them, `/authorize` included, so a machine that serves only
-the protocol never shows a login form ([routes and planes](../symfony-bundle/routes-and-planes.md)).
+the protocol never shows a login form ([routes and planes](../application/routes-and-planes.md)).
 
 ## What decides a login
 
@@ -112,7 +112,7 @@ beffroi:
 |---|---|
 | `sub`, the default | The `sub` this provider issued to that client, read for that client, so a [pairwise](pairwise-subjects.md) identifier names somebody only to a client of its sector |
 | `username` | The name the person signs in with |
-| `none` | Nothing of the bundle: a deployment that names its users some other way tags a `UserHintInterface` of its own `beffroi.oidc.login_hint` |
+| `none` | Nothing of the application: a deployment that names its users some other way tags a `UserHintInterface` of its own `beffroi.oidc.login_hint` |
 
 `backchannel_authentication.login_hint` takes the same three names for the `login_hint` of the backchannel
 flow ([backchannel authentication](grants/backchannel-authentication.md)). Reading a `sub` costs what it
@@ -132,7 +132,7 @@ signed in, then the one this browser asked for, then `ui_locales`, then `Accept-
 of the deployment, each read against the languages the deployment serves. It is kept on the interaction, so
 every page of the same journey is read in it, and it is never written in a URL. A visitor who picks another
 language with the control the pages carry changes the language of the interaction too, for the pages that
-follow ([translations](../symfony-bundle/translations.md)).
+follow ([translations](../application/translations.md)).
 
 ## What a client learns of an interaction that did not finish
 

@@ -1,18 +1,25 @@
 ---
 title: Installation
-description: What Beffroi needs to run, and how to require it in an application or deploy it as one.
+description: What Beffroi needs to run, and where the application that serves it comes from.
 ---
 
 # Installation
+
+Beffroi is deployed as one application, `beffroi/op`, which runs on its own beside the applications it signs
+people in to. They talk to it through the protocols it serves, and none of them installs it. A team that wants
+the provider inside code of its own has [the components](../the-project/packages.md), and what it writes around
+them is its own integration.
 
 ## What it needs
 
 | What | Why |
 |---|---|
-| PHP | 8.4 or later |
 | Database | PostgreSQL, through Doctrine ORM |
 | A key management service | To seal the signing keys and the data keys. For development, a local file-backed client is enough; a deployment uses Vault, AWS KMS or another provider `symfony/key-management` supports |
 | TLS | The provider serves nothing useful over plain HTTP, and the specifications require HTTPS on every endpoint |
+
+The image of the application carries the rest: PHP with the extensions the provider needs, and FrankenPHP to
+serve it.
 
 A message broker is not required to start. The writes the protocol does not need the result of are
 dispatched asynchronously, to transports that default to the database, `doctrine://default`, where they wait
@@ -21,80 +28,30 @@ for a worker that consumes them (`messenger:consume`). A broker takes their plac
 
 !!! info "Nothing is published yet"
 
-    The `beffroi/*` packages are not on Packagist at this point, so the commands below describe the
-    installation of the version this documentation follows rather than one you can run today. The pages are
-    written now so that the first release does not ship undocumented.
+    The `beffroi/*` packages are not on Packagist at this point. The application is built from a working copy
+    of the monorepo, [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi), which is how the pages
+    that follow run it.
 
-## In a Symfony application
+## The application
 
-``` bash
-composer require beffroi/symfony-bundle
-```
+`beffroi/op` is a Symfony application served by FrankenPHP in worker mode. It holds the protocols, the
+identity model, the pages, the console and the persistence, and a deployment chooses what differs from one
+machine to the next through the environment: the issuer, the database, the key management service, and the
+rest the configuration page lists. It runs on your machine as a development stack, and anywhere else from its
+production image.
 
-Without Symfony Flex, register the bundle yourself:
-
-``` php title="config/bundles.php"
-return [
-    // ...
-    Beffroi\Bundle\BeffroiBundle::class => ['all' => true],
-];
-```
-
-Then import the routes of the bundle under the path your issuer uses. A provider whose issuer is
-`https://op.example.com` imports them at the root:
-
-``` yaml title="config/routes/beffroi.yaml"
-beffroi:
-    resource: '@BeffroiBundle/config/routes.php'
-    prefix: /
-```
-
-What the configuration cannot do without is the issuer, and the client of `symfony/key-management` the
-private keys are sealed with, which the application declares and the bundle names:
-
-``` yaml title="config/packages/key_management.yaml"
-key_management:
-    clients:
-        op: 'service://beffroi.kms.op'
-
-services:
-    beffroi.kms.op:
-        class: Symfony\Component\KeyManagement\EncrypterInterface
-        factory: ['@key_management.factory', 'fromString']
-        arguments: ['%env(BEFFROI_KMS_DSN)%']
-```
-
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    tenant:
-        issuer: '%env(BEFFROI_ISSUER)%'
-    keys:
-        kms: op
-        key_id: '%env(BEFFROI_KMS_KEY_ID)%'
-        storage: '%kernel.project_dir%/var/keys'
-    clients: []
-```
-
-A name `key_management.clients` does not hold fails the build of the container. The firewall of the pages,
-the session cookie and the rest an application writes are on [installing the
-bundle](../symfony-bundle/installation.md).
+[:beffroi-arrow-right: The application, on your machine and as a deployment](the-standalone-application.md)
 
 The issuer is the exact string the provider announces as `iss` and the prefix every endpoint is served
 under. It is not a cosmetic setting: a client compares it byte by byte, and it never changes for a tenant.
 Every token the tenant issued names it, so a configuration that names another issuer for the same tenant is
 refused rather than served: another issuer is another tenant, under another slug.
 
-[:beffroi-arrow-right: The whole configuration tree](../symfony-bundle/configuration.md)
-
-## As an application of its own
-
-If you have no application to host it, do not write one. `beffroi/op` is the Symfony skeleton, the bundle
-and FrankenPHP already assembled, and it is the deployment the project supports.
-
-[:beffroi-arrow-right: The standalone application](the-standalone-application.md)
+[:beffroi-arrow-right: The environment the application reads](../application/configuration.md)
 
 ## Then
 
-1. [The tenant and its keys](tenant-and-keys.md), without which nothing can be signed.
-2. [Your first client](your-first-client.md), so something can ask for a token.
-3. [A Symfony relying party](a-symfony-relying-party.md), to see a sign-in end to end.
+1. [The application](the-standalone-application.md), on your machine or as a deployment of its own.
+2. [The tenant and its keys](tenant-and-keys.md), without which nothing can be signed.
+3. [Your first client](your-first-client.md), so something can ask for a token.
+4. [A Symfony relying party](a-symfony-relying-party.md), to see a sign-in end to end.

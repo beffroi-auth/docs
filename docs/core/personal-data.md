@@ -17,7 +17,7 @@ to a transport leaves sealed too.
 
 Every class of the model that a row holds says, field by field, what it holds of a person: a personal datum sealed
 under the data key of its table, a blind index of such a datum, or a field a dump gives away together with the
-sentence that says why that gives nothing away. The suite of the bundle walks the schema against those
+sentence that says why that gives nothing away. The suite of the application walks the schema against those
 declarations, and refuses a column no declaration names, a declaration no column carries, and a field sealed under
 the key of another table than its own.
 
@@ -145,25 +145,24 @@ rewraps them: a key sealed by another service is replaced by a [rotation](keys.m
 
 ## Rotating the secret that binds them
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    keys:
-        data_key_secrets:
-            - '%env(DATA_KEY_SECRET)%'           # the new secret, which binds
-            - '%env(PREVIOUS_DATA_KEY_SECRET)%'  # the one it replaces, still read
+A deployment lists the secrets in `BEFFROI_DATA_KEY_SECRETS`, a JSON list, which the application reads into
+`beffroi.keys.data_key_secrets`:
+
+``` dotenv
+BEFFROI_DATA_KEY_SECRETS='["<the new secret>","<the old secret>"]'
 ```
 
-1. Write the new secret first and keep the one it replaces second, and give that configuration to every
+1. Write the new secret first and keep the one it replaces second, and give that environment to every
    process of the deployment before going on: a process that does not list a secret opens no row bound under
-   it. The two variables are the deployment's own, and the bundle reads none of them by name.
+   it.
 2. Run `beffroi:data-keys:rewrap` with `--to` naming the client that already wraps the keys of the tenant, the
    one `beffroi.keys.kms` names unless a rewrap moved them. Every key is bound again under the first secret as
    it moves, and its value and every ciphertext sealed under it stay as they are.
 3. Drop the old secret once the command has moved every key.
 
-The secret of the kernel is replaced the same way when the configuration names no secret of its own,
-`%kernel.secret%` written first and its previous value second: changed alone, it leaves every value sealed
-under a data key unreadable, and no lookup by a blind index works.
+While `BEFFROI_DATA_KEY_SECRETS` is not set, the secret of the kernel, `APP_SECRET`, binds them alone, and it
+is replaced the same way: its new value first in that variable and its previous value second. Changed alone,
+it leaves every value sealed under a data key unreadable, and no lookup by a blind index works.
 
 ## Destroying them
 
@@ -204,4 +203,4 @@ settings: it is sealed at rest in a family of its own, it expires a week after i
 built or not, and it leaves under a passphrase of the person's choosing when they ask for one, sixteen characters
 at the least.
 
-[:beffroi-arrow-right: Your data, on the account pages](../symfony-bundle/account.md#your-data)
+[:beffroi-arrow-right: Your data, on the account pages](../application/account.md#your-data)

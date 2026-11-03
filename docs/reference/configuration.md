@@ -5,14 +5,16 @@ description: Every option of the tree under `beffroi`, with its type, its defaul
 
 # Configuration reference
 
-Every option the bundle reads under `beffroi`, section by section, in the order the bundle builds the tree.
-[Configuration](../symfony-bundle/configuration.md) says what each section is for and when a deployment
-needs it; this page is the list.
+Every option the application reads under `beffroi`, section by section, in the order the application builds
+the tree. [The configuration tree](../application/configuration-tree.md) says what each section is for and when
+a deployment needs it, and [the configuration](../application/configuration.md) which environment variable
+fills each option a deployment chooses; this page is the list.
 
 !!! note "Your installation is the authority"
 
-    This page is written by hand from the configuration classes of the bundle, and nothing generates it. The
-    tree your version validates is the one your own installation prints, with its defaults:
+    This page is written by hand from the configuration classes of the application, in `src/Configuration/`,
+    and nothing generates it. The tree your version validates is the one your own installation prints, with
+    its defaults:
 
     ``` bash
     bin/console config:dump-reference beffroi
@@ -34,8 +36,8 @@ needs it; this page is the list.
 - **A keyed section**, `clients` for instance, holds one entry per key, and the key is a value, the
   `client_id` there. It is kept exactly as written, never normalised.
 - **A wired name** is checked against what the provider is wired with: an algorithm, a grant, a method of
-  client authentication. The table names what the bundle wires; a deployment that changes the wiring changes
-  the list, and a refusal names the names that are wired.
+  client authentication. The table names what the application wires, and a refusal names the names that are
+  wired.
 
 ## `tenant`
 
@@ -51,8 +53,8 @@ it.
 | `look.logo_uri` | string | none | The logo every page shows: an absolute `https` URL with no fragment and no credentials, plain `http` on a loopback host only. The browser of the visitor loads it, never the provider. The consent page adds its origin to the `img-src` of the `Content-Security-Policy` the application sends; every other page shows it under that policy as the application writes it, so a logo served from another origin is named in its `img-src` |
 | `look.primary_color` | string | none | The colour the buttons and the links of the pages are drawn in: `#` and three or six hexadecimal digits, as `#1b4b8f`. Declared with `primary_content_color` or not at all |
 | `look.primary_content_color` | string | none | The colour of what is written on `primary_color`, in the same notation |
-| `self_served_claims` | list of strings | none | The claims of OIDC Core §5.1 the people of the tenant may change of themselves on the page of their account, among the claims the provider is wired with: `name`, `given_name`, `family_name`, `middle_name`, `nickname`, `preferred_username`, `birthdate`, `gender`, `locale`, `zoneinfo`, `profile`, `picture`, `website` and `phone_number` in the bundle |
-| `authentication_classes` | map of class name to predicate name | the default policy | The `acr` vocabulary of the tenant, in the order a session is answered in, each class on a predicate the provider is wired with: `phishing_resistant_hardware`, `phishing_resistant`, `two_factors` and `single_factor` in the bundle. Left empty, the default policy answers: `phrh`, `phr`, `2` and `1`, on those four in that order. A policy names one class at least on a predicate every login satisfies, `single_factor` among the four, so that every session has an `acr`. It never names `0` (OIDC Core §2), and the names of OpenID Connect EAP ACR Values 1.0 keep their meaning: `phrh` stands on `phishing_resistant_hardware` only, `phr` on it or on `phishing_resistant` |
+| `self_served_claims` | list of strings | none | The claims of OIDC Core §5.1 the people of the tenant may change of themselves on the page of their account, among the claims the provider is wired with: `name`, `given_name`, `family_name`, `middle_name`, `nickname`, `preferred_username`, `birthdate`, `gender`, `locale`, `zoneinfo`, `profile`, `picture`, `website` and `phone_number` in the application |
+| `authentication_classes` | map of class name to predicate name | the default policy | The `acr` vocabulary of the tenant, in the order a session is answered in, each class on a predicate the provider is wired with: `phishing_resistant_hardware`, `phishing_resistant`, `two_factors` and `single_factor` in the application. Left empty, the default policy answers: `phrh`, `phr`, `2` and `1`, on those four in that order. A policy names one class at least on a predicate every login satisfies, `single_factor` among the four, so that every session has an `acr`. It never names `0` (OIDC Core §2), and the names of OpenID Connect EAP ACR Values 1.0 keep their meaning: `phrh` stands on `phishing_resistant_hardware` only, `phr` on it or on `phishing_resistant` |
 
 ## `keys`
 
@@ -107,7 +109,7 @@ The two budgets every request is counted against. A request over a budget is ans
 
 | Option | Type | Default | What it decides |
 |---|---|---|---|
-| `origin.limit` | integer, 1 or more | `2400` | Requests taken from one client address in the window, on every route of the bundle and for every tenant of the deployment, counted before anything is verified |
+| `origin.limit` | integer, 1 or more | `2400` | Requests taken from one client address in the window, on every route of the two planes and for every tenant of the deployment, counted before anything is verified |
 | `origin.interval` | integer, 1 or more | `60`, one minute | The window of that budget |
 | `client.limit` | integer, 1 or more | `1200` | Requests taken from one client of one tenant in the window, counted once the client has authenticated |
 | `client.interval` | integer, 1 or more | `60`, one minute | The window of that budget |
@@ -142,13 +144,13 @@ The two budgets every request is counted against. A request over a budget is ans
 
 | Option | Type | Default | What it decides |
 |---|---|---|---|
-| `login_hint` | `sub`, `username` or `none` | `sub` | What the `login_hint` of an authorization request names, read one way and never searched (OIDC Core §3.1.2.1): `sub`, the subject the provider issued to that client; `username`, the name the person signs in with; `none`, nothing of the bundle, for a deployment that tags a reading of its own `beffroi.oidc.login_hint`. The login page offers the name of the person the hint names, and nothing when it names nobody |
+| `login_hint` | `sub`, `username` or `none` | `sub` | What the `login_hint` of an authorization request names, read one way and never searched (OIDC Core §3.1.2.1): `sub`, the subject the provider issued to that client; `username`, the name the person signs in with; `none`, which leaves the hint to a class tagged `beffroi.oidc.login_hint`, and the application tags none. The login page offers the name of the person the hint names, and nothing when it names nobody |
 
 ## `back_channel_logout`
 
 How a logout token reaches a client that registered a `backchannel_logout_uri`. The four `retry_*` options
 are the schedule of every notification the provider carries to a third party, on the `async_notifications`
-transport the bundle configures: logout tokens, the notifications of the backchannel authentication flow, and
+transport of the application: logout tokens, the notifications of the backchannel authentication flow, and
 the pushes that tell a person something waits for them.
 
 | Option | Type | Default | What it decides |
@@ -168,7 +170,7 @@ verifies.
 
 | Option | Type | Default | What it decides |
 |---|---|---|---|
-| `login_hint` | `sub`, `username` or `none` | `sub` | What the `login_hint` of a backchannel authentication request names (CIBA Core §7.1), under the three readings of `interaction.login_hint`; `none` is for a deployment that tags its own `beffroi.oidc.ciba_user_hint`. CIBA Core §15 asks for an identifier that says nothing outside the provider, which a `sub` is and a username is not |
+| `login_hint` | `sub`, `username` or `none` | `sub` | What the `login_hint` of a backchannel authentication request names (CIBA Core §7.1), under the three readings of `interaction.login_hint`; `none` leaves it to a class tagged `beffroi.oidc.ciba_user_hint`, and the one the application tags reads the `id_token_hint` instead. CIBA Core §15 asks for an identifier that says nothing outside the provider, which a `sub` is and a username is not |
 | `client_notification_timeout` | number, 0.1 or more | `3.0` | Seconds one call to the notification endpoint of a client in `ping` mode is given, connection included (CIBA Core §10.2). It is retried on the schedule of `back_channel_logout` |
 
 ## `web_push`
@@ -221,7 +223,7 @@ refused when the provider first reads the trusted issuers.
 | The key | string | | The `iss` of its assertions, compared byte for byte: an absolute URI without a fragment (RFC 7519 §4.1.1) |
 | `jwks` | JWK Set | none | The public keys of the issuer, inline (RFC 7517 §5), and the only keys an assertion of it is verified against, whatever its header names (RFC 8725 §3.10). One of `jwks` and `jwks_uri`, never both |
 | `jwks_uri` | string | none | Where the issuer publishes its JWK Set instead: `https`, or plain `http` on a loopback host. It is read with one `GET`, no redirect followed, kept, and read again at most once per `client_authentication.jwks_refetch_cooldown` for a `kid` the kept set does not hold |
-| `signing_algorithms` | list of strings | required | The JWS algorithms its assertions may be signed with, one at least, among those the provider verifies: `RS256`, `PS256`, `ES256` and `EdDSA` in the bundle |
+| `signing_algorithms` | list of strings | required | The JWS algorithms its assertions may be signed with, one at least, among those the provider verifies: `RS256`, `PS256`, `ES256` and `EdDSA` in the application |
 | `clients` | list of strings | required | The clients that may present its assertions at the token endpoint, by `client_id`, one at least |
 | `identity_provider` | string | required | The source of the linked identities its subjects name: the `sub` of an assertion is a user of the tenant only when a linked identity of that source says so, and no user is ever created from one |
 | `trusted_scopes` | list of strings | required | What the issuer is trusted for, one scope at least. The scopes of a response are within these, within what the client registered and within what the request asked for; `openid` buys nothing here, the grant refusing it |
@@ -245,19 +247,19 @@ refused when the provider first reads its clients, naming the client, the option
 | `secret` | string | none | The secret of a client authenticating with `client_secret_basic`, `client_secret_post` or `client_secret_jwt`, which need one, and that every other method refuses: 32 visible ASCII characters at least, generated rather than chosen. It is hashed when the client is first read, except for `client_secret_jwt`, which verifies a MAC with the secret itself |
 | `redirect_uris` | list of strings | none | Where the browser may be sent back, each compared byte for byte with the `redirect_uri` of a request (RFC 6749 §3.1.2.3). A public client writes plain `http` on `127.0.0.1` or `[::1]` only, never on a name, and such a URI matches on whatever port the request names (RFC 8252 §7.3). A client registered for `authorization_code` registers one at least, and a client registered for no such grant registers none |
 | `post_logout_redirect_uris` | list of strings | none | Where the browser may be sent after a logout, compared byte for byte with the `post_logout_redirect_uri` of the request (OIDC RP-Initiated Logout 1.0 §3), under the rules of `redirect_uris` |
-| `grant_types` | list of strings | `authorization_code` and `refresh_token` | What the client may ask for at the token endpoint (RFC 7591 §2), among the wired grants: `authorization_code`, `refresh_token`, `client_credentials`, `urn:ietf:params:oauth:grant-type:device_code`, `urn:openid:params:grant-type:ciba`, `urn:ietf:params:oauth:grant-type:token-exchange` and `urn:ietf:params:oauth:grant-type:jwt-bearer` in the bundle. `refresh_token` goes with a grant that issues one, and `client_credentials` with a method that authenticates the client |
+| `grant_types` | list of strings | `authorization_code` and `refresh_token` | What the client may ask for at the token endpoint (RFC 7591 §2), among the wired grants: `authorization_code`, `refresh_token`, `client_credentials`, `urn:ietf:params:oauth:grant-type:device_code`, `urn:openid:params:grant-type:ciba`, `urn:ietf:params:oauth:grant-type:token-exchange` and `urn:ietf:params:oauth:grant-type:jwt-bearer` in the application. `refresh_token` goes with a grant that issues one, and `client_credentials` with a method that authenticates the client |
 | `response_types` | list of strings | none | What the client asks the authorization endpoint to answer with (OIDC Registration §2): `code`, and nothing else. Left out, it is the one its grants answer with; `code` without `authorization_code` is refused |
 | `scope` | string | `openid profile email` | The closed list of scopes the client may ask for, space-delimited (RFC 7591 §2, RFC 6749 §3.3). A scope it did not register is refused with `invalid_scope` |
-| `token_endpoint_auth_method` | string | the first wired method, `client_secret_basic` | How the client authenticates (OIDC Core §9), among the wired methods: `client_secret_basic`, `client_secret_post`, `private_key_jwt`, `client_secret_jwt`, `tls_client_auth`, `self_signed_tls_client_auth` and `none` in the bundle. `none` makes a public client |
+| `token_endpoint_auth_method` | string | the first wired method, `client_secret_basic` | How the client authenticates (OIDC Core §9), among the wired methods: `client_secret_basic`, `client_secret_post`, `private_key_jwt`, `client_secret_jwt`, `tls_client_auth`, `self_signed_tls_client_auth` and `none` in the application. `none` makes a public client |
 | `requires_consent` | boolean | `true` | Whether the person is asked to consent. `false` is for a first-party application, which is never shown the consent page, `prompt=consent` included |
 | `requires_pkce` | boolean | `true` | Whether an authorization request of the client carries a PKCE challenge, `S256` being the only method. `false` is for a confidential client that cannot send one, and is refused for a public client; a challenge the client sends is verified all the same |
 | `require_pushed_authorization_requests` | boolean | `false` | The client starts an authorization request only by pushing it (RFC 9126 §6), and any other request of it is refused on a page before its redirect URI is read. The discovery document announces the requirement when every client of the tenant carries it |
 | `require_sender_constrained_tokens` | boolean | `false` | A token request of the client proves a certificate (RFC 8705 §3) or a key (RFC 9449 §5), or it is refused rather than answered with bearer tokens (FAPI 2.0 Security Profile §5.3.1) |
 | `tls_client_certificate_bound_access_tokens` | boolean | `false` | The tokens of the client are bound to the certificate it presents at the TLS handshake, whichever way it authenticated (RFC 8705 §3.4), and a token request that proves no certificate is refused. A client authenticating by certificate gets bound tokens either way |
 | `require_signed_request_object` | boolean | `false` | A request of the client is read only from a request object it signed, wherever the object arrives: an authorization request in the query, behind a `request_uri` or in a pushed request (RFC 9101 §10.5), and a backchannel authentication request in its body. An unsigned authorization request is refused on a page before its redirect URI is read, an unsigned backchannel one with `invalid_request`. A declaration that names it beside `request_object_signing_alg: none` is refused |
-| `id_token_signed_response_alg` | string | the default algorithm, `RS256` | The JWS algorithm the ID tokens and the logout tokens of the client are signed with (OIDC Registration §2), among the wired ones: `RS256`, `PS256`, `ES256` and `EdDSA` in the bundle, the first being the default |
-| `id_token_encrypted_response_alg` | string | none | The JWE key management algorithm the signed ID token is encrypted to a key of the client with (OIDC Core §3.1.3.7), among the wired ones: `ECDH-ES+A256KW` and `RSA-OAEP-256` in the bundle. Named with `id_token_encrypted_response_enc` or not at all. Left out, the ID token is signed and not encrypted |
-| `id_token_encrypted_response_enc` | string | none | The JWE content encryption algorithm of that ID token, among the wired ones: `A256GCM` in the bundle. OIDC Registration §2 defaults it to an algorithm the bundle does not wire, so it is written whenever `id_token_encrypted_response_alg` is |
+| `id_token_signed_response_alg` | string | the default algorithm, `RS256` | The JWS algorithm the ID tokens and the logout tokens of the client are signed with (OIDC Registration §2), among the wired ones: `RS256`, `PS256`, `ES256` and `EdDSA` in the application, the first being the default |
+| `id_token_encrypted_response_alg` | string | none | The JWE key management algorithm the signed ID token is encrypted to a key of the client with (OIDC Core §3.1.3.7), among the wired ones: `ECDH-ES+A256KW` and `RSA-OAEP-256` in the application. Named with `id_token_encrypted_response_enc` or not at all. Left out, the ID token is signed and not encrypted |
+| `id_token_encrypted_response_enc` | string | none | The JWE content encryption algorithm of that ID token, among the wired ones: `A256GCM` in the application. OIDC Registration §2 defaults it to an algorithm the application does not wire, so it is written whenever `id_token_encrypted_response_alg` is |
 | `userinfo_signed_response_alg` | string | none | The JWS algorithm the UserInfo answer of the client is signed with (OIDC Core §5.3.2), among the wired ones. Named, the answer is a JWT served as `application/jwt`, with an `iss` and an `aud` beside the claims; left out, it is plain JSON |
 | `userinfo_encrypted_response_alg` | string | none | The JWE key management algorithm the UserInfo answer is encrypted to a key of the client with, named with `userinfo_encrypted_response_enc` or not at all. Without `userinfo_signed_response_alg`, what is encrypted is the plain JSON (OIDC Core §5.3.2) |
 | `userinfo_encrypted_response_enc` | string | none | The JWE content encryption algorithm of that answer |
@@ -271,15 +273,15 @@ refused when the provider first reads its clients, naming the client, the option
 | `frontchannel_logout_session_required` | boolean | `false` | The provider adds `iss` and `sid` to the logout URI of the client (Front-Channel Logout 1.0 §2), which then registers a `frontchannel_logout_uri` |
 | `jwks` | JWK Set | none | The public keys of the client, inline (RFC 7591 §2). One of `jwks` and `jwks_uri`, never both, is required of a client that authenticates with `private_key_jwt` or `self_signed_tls_client_auth`, names a `request_object_signing_alg` other than `none`, or asks for an encrypted response |
 | `jwks_uri` | string | none | Where the client publishes its JWK Set instead (RFC 7591 §2), read with no redirect followed, under the bounds of `client_authentication` |
-| `subject_type` | string | the first wired kind, `public` | The kind of `sub` the client sees for a person (OIDC Core §8): `public` or `pairwise` in the bundle. A `pairwise` client has a sector: its `sector_identifier_uri`, redirect URIs on one host, or, with no redirect URI, its `jwks_uri` |
+| `subject_type` | string | the first wired kind, `public` | The kind of `sub` the client sees for a person (OIDC Core §8): `public` or `pairwise` in the application. A `pairwise` client has a sector: its `sector_identifier_uri`, redirect URIs on one host, or, with no redirect URI, its `jwks_uri` |
 | `sector_identifier_uri` | string | none | A URL whose host is the sector of the client's pairwise subjects (OIDC Core §8.1). The document behind it is read when a client registers itself (OIDC Registration §5), and never for a declared client |
 | `initiate_login_uri` | string | none | Where a third party sends a person to have the client begin a login (OIDC Core §4): `https` on every host, a loopback host included (OIDC Registration §2) |
 | `request_object_signing_alg` | string | any wired algorithm | The JWS algorithm the request objects of the client are signed with (OIDC Registration §2), among the wired ones. Left out, any of them verifies an object, and an unsigned object is refused. `none` is the one exception: the objects of the client carry no signature and are read all the same, and a client with `require_signed_request_object` cannot name it |
-| `backchannel_token_delivery_mode` | string | none | How the client learns that a backchannel authentication request was answered (CIBA Core §4): `poll` or `ping` in the bundle. There is no default: a client that names none is not a client of that flow, and the backchannel authentication endpoint refuses it |
+| `backchannel_token_delivery_mode` | string | none | How the client learns that a backchannel authentication request was answered (CIBA Core §4): `poll` or `ping` in the application. There is no default: a client that names none is not a client of that flow, and the backchannel authentication endpoint refuses it |
 | `backchannel_client_notification_endpoint` | string | none | Where the provider posts to a `ping` client once its request is answered (CIBA Core §7.1, §10.2). Required with `ping`, and refused with any other mode or with none |
 | `resources` | list of strings | none | The resources the client may ask an access token for (RFC 8707 §2), each an absolute URI without a fragment; any other is refused with `invalid_target`. A client that registers none asks for none, and its tokens are addressed to itself |
-| `authorization_details_types` | list of strings | none | The types of authorization detail the client may ask for (RFC 9396 §2), among the wired ones; any other is refused with `invalid_authorization_details`. The bundle wires none: a deployment that serves a type tags its class `beffroi.oidc.authorization_detail_type` |
-| `token_exchange.subject_token_types` | list of strings | required in the block | The token types the client may present as a `subject_token` or an `actor_token` (RFC 8693 §3), one at least, among the wired ones: `urn:ietf:params:oauth:token-type:access_token` in the bundle |
+| `authorization_details_types` | list of strings | none | The types of authorization detail the client may ask for (RFC 9396 §2), among the wired ones; any other is refused with `invalid_authorization_details`. The image of the application wires none: a type is served by a class tagged `beffroi.oidc.authorization_detail_type` |
+| `token_exchange.subject_token_types` | list of strings | required in the block | The token types the client may present as a `subject_token` or an `actor_token` (RFC 8693 §3), one at least, among the wired ones: `urn:ietf:params:oauth:token-type:access_token` in the application |
 | `token_exchange.may_act_for_a_user` | boolean | `false` | Whether the client may present a token somebody signed in for. `false` for a service that only exchanges tokens of its own |
 | `may_act` | string | none | Who may act for the subject of a token issued to the client (RFC 8693 §4.4), named as a subject. It is written on every token the client receives, and an exchange asked for by anybody else is refused |
 | `request_uris` | list of strings | none | The URLs a request object of the client is read from (OIDC Registration §2), compared byte for byte with the `request_uri` of a request, fragment included (OIDC Core §6.2). Any other is refused before anything is fetched |

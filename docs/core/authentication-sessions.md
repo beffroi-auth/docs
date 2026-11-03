@@ -93,7 +93,7 @@ Something asks for that login:
   `login_required` instead (OIDC Core §3.1.2.6).
   [Authorization requests](../oidc/authorization-request.md) say how each is read.
 - **A page of the account** that adds or takes away a way in, when the newest proof of the session is more than
-  five minutes old. [The account pages](../symfony-bundle/account.md#what-a-page-asks-before-it-opens) list
+  five minutes old. [The account pages](../application/account.md#what-a-page-asks-before-it-opens) list
   them.
 
 ## The snapshot a grant reads

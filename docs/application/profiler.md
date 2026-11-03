@@ -6,20 +6,20 @@ description: What the provider received, decided and emitted during a request, i
 # The profiler panel
 
 A request that is pushed, signed or bound to a key says nothing to whoever watches it from outside: the
-browser carries a reference, the client posts a JWT, the endpoint answers a document. The panel the bundle
-adds to the Symfony profiler says what the provider received, decided and emitted during the request, read
-where the provider itself reads it.
+browser carries a reference, the client posts a JWT, the endpoint answers a document. The panel the
+application adds to the Symfony profiler says what the provider received, decided and emitted during the
+request, read where the provider itself reads it.
 
 ## When it is there
 
 The panel is wired when the kernel runs in debug, and nothing else turns it on: a deployment that does not run
-in debug has no panel and no option to give it one. It is a page of the Symfony profiler, so the kernel
-registers `WebProfilerBundle` and the profiler of the framework collects, which the standalone application
-does in development.
+in debug has no panel and no option to give it one. It is a page of the Symfony profiler, which the application
+turns on in development: `WebProfilerBundle` is registered there and the profiler of the framework collects.
+The image, built for production, installs no profiler.
 
 It reports on a request that reached a route of the provider, one whose name starts with
-`beffroi_interaction_` or `beffroi_protocol_`, and on no other: on a page of the host application, the toolbar
-carries no entry of the provider. A route the process refuses for its plane is not reported as one it served.
+`beffroi_interaction_` or `beffroi_protocol_`, and on no other. A route the process refuses for its plane is
+not reported as one it served.
 
 What it shows is recorded by observers that decorate services the provider already uses, the reader of an
 authorization request, the repository of the clients, the issuers of the tokens, the providers of the keys,
@@ -75,8 +75,8 @@ endpoint answered, a claim of a JWT.
 
 ## The panel of the key management service
 
-`symfony/key-management` has a panel of its own, and in debug the bundle hands it what the provider seals and
-opens: the envelopes of the keys and secrets of the tenant, and the store of the data keys of its sealed
+`symfony/key-management` has a panel of its own, and in debug the application hands it what the provider seals
+and opens: the envelopes of the keys and secrets of the tenant, and the store of the data keys of its sealed
 columns. That panel then reports a request that read a sealed column, its calls grouped by scope,
 `<slug>.<family>`. A data key is opened once per key and per process, so a request served by a process that
 already holds it reports no call to the service, which is what that panel is there to show.
