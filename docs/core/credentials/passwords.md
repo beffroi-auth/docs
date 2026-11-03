@@ -24,7 +24,7 @@ history, and a command run without a terminal and without `--password-stdin` is 
 password the person already holds, and ends none of their sessions.
 
 A person replaces their own on [the password page of their
-account](../../symfony-bundle/account.md#what-the-password-page-says): they type the one in use, which is
+account](../../application/account.md#what-the-password-page-says): they type the one in use, which is
 verified, then the one they want, twice. A password that is not the one in use is refused, and so is the one they
 already hold; every other browser signed in as them is signed out, and the one they asked from stays. Typing the
 wrong password there costs nothing against the attempts of the login, since only somebody signed in as that
@@ -101,7 +101,7 @@ thirty days. What the lane learns is written on the password: found, with the da
 could not be asked writes nothing: the lane tries again, the password stays due, and the next login asks again.
 
 What the list was found to hold is read on [the password page of the
-account](../../symfony-bundle/account.md#what-the-password-page-says) rather than in the one request that
+account](../../application/account.md#what-the-password-page-says) rather than in the one request that
 noticed it. Every later login that serves no authorization request of OpenID Connect sends the person there
 before the page that was waiting for it, whatever that login used, a password, a code or a passkey, and the
 single sign-on of a SAML service provider included, until the password is replaced; once it is, the browser goes
@@ -114,11 +114,11 @@ A hash is a document of three members: the name of its algorithm, the encoded ha
 imported format keeps apart from the digest. A name nothing wired accounts for makes a row this deployment cannot
 read, refused where the row is read rather than taken for an algorithm nobody chose.
 
-| Algorithm | What the bundle does with it |
+| Algorithm | What the application does with it |
 |---|---|
 | `argon2id` | Makes every new hash, with the parameter set of RFC 9106 §4: 64 MiB of memory and four lanes, and the four passes PHP takes by default, one more than that set asks. The hasher refuses parameters below these |
 | `argon2i`, `bcrypt` | Verifies a hash of them, then stores the password again as `argon2id` at the next successful login |
-| `pbkdf2-sha256`, `pbkdf2-sha512` | Reads the hash back and names it. No hasher the bundle wires verifies one |
+| `pbkdf2-sha256`, `pbkdf2-sha512` | Reads the hash back and names it. No hasher the application wires verifies one |
 
 A hash that is not of the algorithm and the parameters the hasher makes, another algorithm or other parameters,
 is replaced at the next successful login, and the act `password.rehashed` goes to the journal of the person: the

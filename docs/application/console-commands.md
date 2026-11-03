@@ -1,11 +1,11 @@
 ---
 title: Console commands
-description: 'What the commands of the bundle need explained beyond their help: the rotation of a key, the data keys, and the doctor.'
+description: 'What the commands of the application need explained beyond their help: the rotation of a key, the data keys, and the doctor.'
 ---
 
 # Console commands
 
-The bundle adds the commands for the tenant, the people and their journal, groups, clients, keys, data keys,
+The application has commands for the tenant, the people and their journal, groups, clients, keys, data keys,
 the metadata of SAML peers, the databases of addresses and the metadata of FIDO. [The
 reference](../reference/console-commands.md) lists every one of them; `bin/console <command> --help` gives its
 arguments and options. This page explains the ones a help screen does not: the rotation of a key, the data
@@ -164,15 +164,16 @@ bin/console beffroi:doctor
 The doctor reads and writes nothing, so it is safe on a provider serving traffic. It looks at every point
 before it answers, prints one line per point, explains the ones it does not answer for, and fails when one is
 red, so a deployment pipeline can ask the question. A point is a class tagged `beffroi.doctor_check`, so a
-deployment adds one by adding a class; a run with nothing tagged fails rather than answering for nothing.
+point added is a class added; a run with nothing tagged fails rather than answering for nothing.
 
-The bundle tags one point: whether the lane a logout token is sent on is retried on the schedule the token is
-written for, the one `beffroi.back_channel_logout` sets. On a deployment that keeps the lane of notifications
-the bundle declares, with the defaults of that section, the run reads:
+The application tags one point, `App\Doctor\NotificationsLanePatience`: whether the lane a logout token is sent
+on is retried on the schedule the token is written for, the one `beffroi.back_channel_logout` sets. On a
+deployment that keeps the lane of notifications the application declares, `async_notifications`, with the
+defaults of that section, the run reads:
 
 ``` text
  [ok] Back-channel logout: how long a logout token is retried
-      A logout token is retried on "async_notifications" for 3 minutes 20 seconds and stops being verifiable after 3 minutes 55 seconds, both read from the schedule this provider publishes (Beffroi\Bundle\Messenger\NotificationRetryPolicy): a client that is restarting is reached, and nothing arrives after the "exp" of the token has passed or after the key that signed it has left the JWK Set.
+      A logout token is retried on "async_notifications" for 3 minutes 20 seconds and stops being verifiable after 3 minutes 55 seconds, both read from the schedule this provider publishes (App\Messenger\NotificationRetryPolicy): a client that is restarting is reached, and nothing arrives after the "exp" of the token has passed or after the key that signed it has left the JWK Set.
 ```
 
 The two figures are the budget a logout token is written for; [Messenger](messenger.md#what-the-application-writes)

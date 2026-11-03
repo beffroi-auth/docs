@@ -42,7 +42,7 @@ request registers one and no page edits one.
 
 ## What is served
 
-Paths are relative to the issuer, as every route of the bundle.
+Paths are relative to the issuer, as every route of the application.
 
 | Method | Path | Role | What it is |
 |---|---|---|---|

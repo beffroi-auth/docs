@@ -222,27 +222,24 @@ nav:
       - saml/federated-sign-in.md
       - saml/microsoft-entra-id.md
       - saml/packages.md
-  - The Symfony bundle:
-      - symfony-bundle/index.md
-      - symfony-bundle/installation.md
-      - symfony-bundle/configuration.md
-      - symfony-bundle/routes-and-planes.md
-      - symfony-bundle/persistence.md
-      - symfony-bundle/security.md
-      - symfony-bundle/key-management.md
-      - symfony-bundle/pages.md
-      - symfony-bundle/translations.md
-      - symfony-bundle/messenger.md
-      - symfony-bundle/account.md
-      - symfony-bundle/web-push.md
-      - symfony-bundle/console-commands.md
-      - symfony-bundle/profiler.md
-  - The standalone application:
+  - The application:
       - application/index.md
       - application/deployment.md
       - application/configuration.md
+      - application/configuration-tree.md
+      - application/routes-and-planes.md
+      - application/persistence.md
+      - application/security.md
+      - application/key-management.md
+      - application/pages.md
+      - application/translations.md
+      - application/account.md
+      - application/messenger.md
+      - application/web-push.md
+      - application/console-commands.md
       - application/operating.md
       - application/observability.md
+      - application/profiler.md
   - SCIM:
       - scim/index.md
   - Reference:

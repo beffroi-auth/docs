@@ -41,7 +41,7 @@ is the same, what they say of the account is not, a spent code being one the per
 
 ## Drawing another set
 
-On [the page of the second factor](../../symfony-bundle/account.md#enrolling-a-second-factor), a person who
+On [the page of the second factor](../../application/account.md#enrolling-a-second-factor), a person who
 holds a TOTP draws another set with a proof made in the last five minutes. The ten new codes replace the whole
 set at that instant: the ones they had stop working, spent or not, which is what somebody who lost their list
 needs. It is not an enrolment: the application and what it proves are untouched, nothing is scanned again and no

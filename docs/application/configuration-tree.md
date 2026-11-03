@@ -1,25 +1,32 @@
 ---
-title: Configuration
+title: Configuration tree
 description: "The tree under `beffroi`, section by section: what each one decides, when a deployment needs it, and what leaving it out means."
 ---
 
-# Configuration
+# Configuration tree
 
-The bundle reads one tree under `beffroi`, and each key at its root is a section with a class of its own in
-the bundle. Two sections are required, `tenant` and `keys`. Every other one has defaults a provider runs on,
-and a capability whose section names nothing is either served with those defaults or not served at all: a
-tenant that names no registration `mode` has no registration endpoint, in its discovery document as on the
-wire. This page goes through the sections in the order of the tree; [the reference](../reference/configuration.md)
-lists every option with its type, its default and its bounds.
+The application reads one tree under `beffroi`, its own `config/packages/beffroi.yaml`, and each key at its
+root is a section with a class of its own in `src/Configuration/`. The file reads each value a deployment
+chooses from an environment variable, which [the configuration](configuration.md) lists, and writes in itself
+only what is the same for every deployment of the image, as [what the files say](configuration.md#what-the-files-say)
+details.
 
-The smallest configuration names the issuer and the key management client the private keys are sealed with:
+Two sections are required, `tenant` and `keys`. Every other one has defaults a provider runs on, and a
+capability whose section names nothing is either served with those defaults or not served at all: a tenant
+that names no registration `mode` has no registration endpoint, in its discovery document as on the wire. This
+page goes through the sections in the order of the tree, its examples writing a section with values in place
+of the variables of the file; [the reference](../reference/configuration.md) lists every option with its type,
+its default and its bounds.
+
+The two required sections name the issuer and the key management client the private keys are sealed with,
+`op`, and the file reads the issuer and the master key from the environment:
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
     tenant:
         issuer: '%env(BEFFROI_ISSUER)%'
     keys:
-        kms: default
+        kms: op
         key_id: '%env(BEFFROI_KMS_KEY_ID)%'
 ```
 
@@ -73,7 +80,7 @@ that exist. What reads a declaration first is what meets its refusal:
   client declared at least, every trusted issuer as well;
 - the discovery document, `/.well-known/openid-configuration` under the issuer, builds all of it once the tenant
   is synchronized: the tenant, the declared clients, the trusted issuers, and the policy of registration, its
-  authorities of software statements and its default scope included, which no command of the bundle builds.
+  authorities of software statements and its default scope included, which no `beffroi:` command builds.
 
 A deployment that runs `beffroi:tenant:synchronize` and then reads the discovery document has met every one of
 these refusals before a client asks anything. Otherwise the first request that needs the object meets it, and the policy of registration is
@@ -83,18 +90,46 @@ also built by the timed step that removes the clients nobody uses.
 specification admits is named and bounded: `requires_pkce: false` exempts one confidential client, and is
 refused for a public one. [Secure by default](../the-project/secure-by-default.md) is the rule.
 
+## What the tree writes for the other bundles
+
+When the container is built, `App\DependencyInjection\BeffroiExtension` prepends its part to the configuration
+of the extensions the provider works with, and only of those the kernel registers. A prepended configuration
+is merged first, so a key a file of the application writes itself is the one that stands: the suite of the
+application writes the transports again, every lane on `sync://`, and the files the image carries write none
+of these keys but the directory of the migrations, which `config/packages/doctrine_migrations.yaml` names the
+same way.
+
+| Extension | What the tree adds |
+|---|---|
+| `doctrine` | The DBAL types of the application, and three XML mappings, `BeffroiCore`, `BeffroiOidc` and `BeffroiSaml`, for the model of the three packages, read from `config/beffroi/doctrine/core`, `config/beffroi/doctrine/oidc` and `config/beffroi/doctrine/saml`. The types that seal a column are registered when the kernel boots |
+| `doctrine_migrations` | The directory of the migrations, `migrations/`, under the namespace `DoctrineMigrations` |
+| `security` | The password hasher of `App\Security\SecurityUser`, which is `App\Security\CorePasswordHasher`, the hasher of the core |
+| `rate_limiter` | Two limiters, `beffroi_code_attempts` and `beffroi_password_attempts`: five attempts per user in a sliding window of one minute |
+| `framework` | Eight cache pools on `cache.app`: `beffroi.client_keys`, `beffroi.issuer_keys`, `beffroi.client_assertions`, `beffroi.issuer_assertions`, `beffroi.software_statements`, `beffroi.request_objects`, `beffroi.dpop` and `beffroi.load` |
+| `messenger` | The three buses, their middleware, the routing of every message, the serializer that seals a body, and the transports: the four lanes on `BEFFROI_MESSENGER_DSN`, a queue of the database per lane unless it names another, and the failure transport in the database |
+| `scheduler` | `use_messenger_routing: true`, so that the recurring messages of the provider are routed by their class like every other message |
+
+The kernel registers the extension itself: `App\Kernel` uses `App\DependencyInjection\BeffroiKernelTrait`,
+which adds the extension and its compiler passes when the container is built, and, when the kernel boots,
+hands the DBAL types that read the wiring back what the deployment is wired with and registers the types that
+seal a column.
+
+[:beffroi-arrow-right: Persistence](persistence.md) &nbsp; [:beffroi-arrow-right: Messenger](messenger.md)
+
 ## `tenant`
 
 Who the provider is, and required. `issuer` is the identifier every token carries as `iss` and the URL every
-endpoint is served under: the routes of the bundle are imported under its path, which the provider checks at
-the first request. `slug` names the tenant for good: its identifier is derived from it, and renaming it is
-creating another tenant. `name` and `look` are what the pages show of the tenant, `self_served_claims` what its
-people may change of themselves, and `authentication_classes` the `acr` it answers with.
+endpoint is served under: the application imports its routes at the root, so its issuer is an origin with no
+path, which the provider checks at the first request. `slug` names the tenant for good: its identifier is
+derived from it, and renaming it is creating another tenant. `name` and `look` are what the pages show of the
+tenant, `self_served_claims` what its people may change of themselves, and `authentication_classes` the `acr`
+it answers with.
 
 The logo is loaded by the browser of the visitor, under the `Content-Security-Policy` the application sends.
-The consent page adds the origin of the logo to its `img-src`, and no other page does: a logo served from
-another origin than the pages is named in the `img-src` of the application's own policy, as
-[the standalone application](../application/configuration.md) says of its own.
+Every page that shows it adds the origin of the logo to the `img-src` of that policy, so a logo served from
+another origin than the pages is named in no file of the application. Its host answers
+`Cross-Origin-Resource-Policy: cross-origin`, which the pages of the account, served under
+`Cross-Origin-Embedder-Policy: require-corp`, ask of an image from another origin.
 
 The row of the tenant follows the configuration through `bin/console beffroi:tenant:synchronize`, which is
 safe to run at every deployment.
@@ -103,15 +138,17 @@ safe to run at every deployment.
 
 ## `keys`
 
-Where the keys of the tenant are sealed and kept, and required. The bundle builds no key management client:
-`kms` names one declared under `key_management.clients`, a DSN or a composite of several, and `key_id` names
-the key of that client the keys are sealed under, `{tenant}` standing for the slug.
+Where the keys of the tenant are sealed and kept, and required. The tree builds no key management client:
+`kms` names a client of `key_management.clients`, which the application declares in
+`config/packages/key_management.yaml`, and `key_id` names the key of that client the keys are sealed under,
+`{tenant}` standing for the slug. The application names `op`, the client it builds from `BEFFROI_KMS_DSN`, and
+reads the key from `BEFFROI_KMS_KEY_ID`, `beffroi-{tenant}` for instance.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
     keys:
-        kms: default
-        key_id: 'beffroi-{tenant}'
+        kms: op
+        key_id: '%env(BEFFROI_KMS_KEY_ID)%'
         storage: '%kernel.project_dir%/var/keys'
 ```
 
@@ -173,9 +210,9 @@ it, so that a token still in use verifies: ten minutes for a signing key with th
 ## `load`
 
 Every request is counted against two budgets, and the section sets their numbers, never whether they exist.
-The first counts the address of the client, on every route of the bundle and before anything is verified; the
-second counts a client of a tenant once it has authenticated. A request over a budget is answered `429` with a
-`Retry-After` header.
+The first counts the address of the client, on every route of the two planes and before anything is verified;
+the second counts a client of a tenant once it has authenticated. A request over a budget is answered `429`
+with a `Retry-After` header.
 
 The address is the one Symfony reads behind the trusted proxies of the application, so a deployment behind a
 load balancer declares the balancer as a trusted proxy, or every request counts against the address of the
@@ -233,9 +270,9 @@ asynchronous lane.
 ## `interaction`
 
 How the `login_hint` of an authorization request is read (OIDC Core §3.1.2.1): `sub`, the subject the
-provider issued to that client, by default; `username`, the name a person signs in with; or `none`, for a
-deployment that tags a reading of its own `beffroi.oidc.login_hint`. It is read one way and never searched,
-and the login page offers the name of the person it names.
+provider issued to that client, by default; `username`, the name a person signs in with; or `none`, which
+leaves the hint to a class tagged `beffroi.oidc.login_hint`, and the application tags none. It is read one way
+and never searched, and the login page offers the name of the person it names.
 
 [:beffroi-arrow-right: Interactions](../oidc/interactions.md)
 
@@ -244,23 +281,22 @@ and the login page offers the name of the person it names.
 How a logout token is posted to a client that registered a `backchannel_logout_uri` (Back-Channel Logout 1.0
 §2.5): five seconds an attempt, then six retries, two seconds after the first failure and three times longer
 each time, a minute at most. The retry schedule is the one of every notification the provider carries to a
-third party, on the `async_notifications` transport the bundle configures: the logout tokens, the
-notifications of the backchannel authentication flow, and the pushes that tell a person something waits for
-them.
+third party, on the `async_notifications` transport of the application: the logout tokens, the notifications
+of the backchannel authentication flow, and the pushes that tell a person something waits for them.
 
 The schedule is also the `exp` of a logout token, 235 seconds with the defaults, and a retiring signing key
 stays published that long at least, so that the provider stops trying when what it sends stops being
-verifiable. An application that routes the notifications to a transport of its own keeps that agreement only
-if the transport retries with the policy of the bundle; `bin/console beffroi:doctor` says whether it does.
+verifiable. The transport retries with that very schedule, and `bin/console beffroi:doctor` says whether the
+transport a logout token is sent to does.
 
 [:beffroi-arrow-right: Logout](../oidc/logout.md) and [Messenger](messenger.md)
 
 ## `backchannel_authentication`
 
 How the `login_hint` of a backchannel authentication request is read (CIBA Core §7.1), under the three readings
-of `interaction`, `none` being for a deployment that tags its own `beffroi.oidc.ciba_user_hint`, and how long
-one call to a client in `ping` mode may take. Nothing here opens the flow: a client takes part in it by
-registering its grant and a delivery mode.
+of `interaction`, and how long one call to a client in `ping` mode may take. `none` leaves the hint to a class
+tagged `beffroi.oidc.ciba_user_hint`, and the one the application tags reads the `id_token_hint` instead.
+Nothing here opens the flow: a client takes part in it by registering its grant and a delivery mode.
 
 [:beffroi-arrow-right: Backchannel authentication](../oidc/grants/backchannel-authentication.md)
 

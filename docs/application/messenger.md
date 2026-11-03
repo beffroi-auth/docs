@@ -1,6 +1,6 @@
 ---
 title: Messenger
-description: Which writes leave the request, the buses and lanes the bundle prepends, the worker, the timed steps, and the seal on every message.
+description: Which writes leave the request, the buses and lanes of the provider, the worker, the timed steps, and the seal on every message.
 ---
 
 # Messenger
@@ -9,23 +9,25 @@ What the protocol or the page needs in the same request, a code or a token issue
 credential dated by the login that used it, a passkey renamed, is written by the use case in that request. The
 rest travels on a lane and a worker carries it out: the acts of the journal, the enrichment of where a request
 came from, the revocations that follow the end of a session, the calls to clients and push services. No
-message of the bundle travels on the synchronous transport. The buses, their middleware, where each message
-goes and how it is written are a contract the bundle prepends; what an application owns is its transports.
+message of the application travels on the synchronous transport. The buses, their middleware, where each
+message goes and how it is written are a contract, `App\Messenger\MessengerContract`, which the extension of the
+`beffroi:` tree, `App\DependencyInjection\BeffroiExtension`, prepends to the configuration of Messenger; what a
+deployment chooses is where the lanes go.
 
 ## What leaves the request
 
-Every message of the bundle implements one marker, every event of the packages one interface, and that is
+Every message of the application implements one marker, every event of the packages one interface, and that is
 what decides where it goes.
 
 | Marker | Routed to | What it is |
 |---|---|---|
-| `Beffroi\Bundle\Message\Command` | `async_priority_medium` | A write whose result the request does not need |
-| `Beffroi\Bundle\Message\Event`, and every event of the core, of OpenID Connect and of SAML | `async_priority_low` | Something that happened. The events of the packages are routed by the interface they all implement, so an event added to one of them leaves the process without a line of configuration |
-| `Beffroi\Bundle\Message\Notification` | `async_notifications` | Something the provider carries to a third party it does not own |
-| `Beffroi\Bundle\Message\Query` | `sync` | A read |
-| `Beffroi\Bundle\Message\SyncMessage` | `sync` | A write the protocol needs the result of before it answers |
+| `App\Message\Command` | `async_priority_medium` | A write whose result the request does not need |
+| `App\Message\Event`, and every event of the core, of OpenID Connect and of SAML | `async_priority_low` | Something that happened. The events of the packages are routed by the interface they all implement, so an event added to one of them leaves the process without a line of configuration |
+| `App\Message\Notification` | `async_notifications` | Something the provider carries to a third party it does not own |
+| `App\Message\Query` | `sync` | A read |
+| `App\Message\SyncMessage` | `sync` | A write the protocol needs the result of before it answers |
 
-No message of the bundle implements `Query` or `SyncMessage`. A class implements one marker and never two:
+No message of the application implements `Query` or `SyncMessage`. A class implements one marker and never two:
 Messenger sends a message to every transport its class, its parents and its interfaces are routed to, so a
 message with two markers would be handled twice. The core announces its events in PSR-14, and its dispatcher
 puts each one on `event.bus`, once the handler in progress has committed when one is raised inside a handler:
@@ -39,7 +41,7 @@ What the lanes carry out:
 | `async_priority_medium` | A password that just signed somebody in, looked up in a list of compromised passwords; the language a person chose, written on their account; and every step of [the schedule](#what-time-does-on-its-own) |
 | `async_notifications` | A logout token posted to a client (Back-Channel Logout 1.0 §2.5), a backchannel request whose client is told it was answered (CIBA Core §10.2), a person told that a request waits for them, through the channels the deployment wires, [web push](web-push.md) among them |
 
-## The contract the bundle prepends
+## The contract of the provider
 
 **The buses.**
 
@@ -52,9 +54,10 @@ What the lanes carry out:
 `doctrine_transaction` makes a handler one unit of work, and the default middleware, which no bus turns off,
 is what has an event announced from a handler leave once that handler has committed. `router_context` gives
 a worker the context of the request that dispatched the message, so that a URL built there is an absolute URL
-of the issuer, and the two connection middleware are what let a worker run for days. This is why the bundle
-writes the buses and an application does not: one that wired them itself and got either of the first two
-wrong would break the asynchronous half of the provider, and nothing in a browser would show it.
+of the issuer, and the two connection middleware are what let a worker run for days. This is why the buses are
+written in the contract and not in `config/packages/messenger.yaml`: a configuration that wired them itself and
+got either of the first two wrong would break the asynchronous half of the provider, and nothing in a browser
+would show it.
 
 **The transports.**
 
@@ -62,7 +65,7 @@ wrong would break the asynchronous half of the provider, and nothing in a browse
 |---|---|---|
 | `sync` | `sync://` | Not at all |
 | `async_priority_high`, `async_priority_medium`, `async_priority_low` | `BEFFROI_MESSENGER_DSN`, `{lane}` in it replaced by the name of the lane; `doctrine://default?queue_name={lane}` when the variable is not set | Four times, one second before the first, each wait four times the one before, thirty seconds at most |
-| `async_notifications` | The same | On the schedule of `Beffroi\Bundle\Messenger\NotificationRetryPolicy`, which `beffroi.back_channel_logout` sets: by default two seconds before the first, each wait three times the one before, sixty seconds at most, the waits exact |
+| `async_notifications` | The same | On the schedule of `App\Messenger\NotificationRetryPolicy`, which `beffroi.back_channel_logout` sets: by default two seconds before the first, each wait three times the one before, sixty seconds at most, the waits exact |
 | `failed`, the failure transport | `doctrine://default?queue_name=failed` | |
 
 The failure transport is the database whatever the lanes are on, a failure transport kept on the broker that
@@ -73,15 +76,15 @@ transport included: what it writes is the subject of [the last section](#what-le
 
 ## What the application writes
 
-**Nothing, to start.** Every lane is the database, through the default connection, and a provider runs with
-no broker, each lane a queue of its own. `BEFFROI_MESSENGER_DSN` moves every lane to one DSN at once, and keeps
-them four: `{lane}` in it is where the name of each lane goes, and a DSN that names no `{lane}` is refused
-when the transport of a lane is built.
+**Nothing, for a deployment.** `config/packages/messenger.yaml` declares no transport: every lane is the
+database, through the default connection, and a provider runs with no broker, each lane a queue of its own.
+`BEFFROI_MESSENGER_DSN` moves every lane to one DSN at once, and keeps them four: `{lane}` in it is where the
+name of each lane goes, and a DSN that names no `{lane}` is refused when the transport of a lane is built.
 
-**Its transports, for a lane apart.** A transport the application declares under the name of a lane keeps
-the application's settings, the prepended configuration being merged first. The standalone application declares
-none outside its tests, so its lanes are queues of the database. Its test environment plays every lane inside
-the request that sent it:
+**Its transports, for its tests.** A transport the application declares under the name of a lane keeps its
+own settings, the prepended configuration being merged first. It declares them in its test environment alone,
+so the lanes of a deployment are queues of the database, and the tests play every lane inside the request that
+sent it:
 
 ``` yaml title="config/packages/test/messenger.yaml"
 messenger:
@@ -94,10 +97,10 @@ messenger:
 ```
 
 The block is under `messenger` and not `framework.messenger`: in Symfony 8.2 the component has an extension
-of its own, and a block written under `framework` does not override what the bundle prepends to
+of its own, and a block written under `framework` does not override what `BeffroiExtension` prepends to
 `messenger`.
 
-!!! warning "The notifications keep the retry policy of the bundle"
+!!! warning "The notifications keep the retry policy of the provider"
 
     The schedule of the lane is the one `beffroi.back_channel_logout` sets: `retries`, six by default,
     `retry_delay`, two seconds, `retry_multiplier`, three, and `retry_max_delay`, sixty seconds, with the
@@ -111,15 +114,14 @@ of its own, and a block written under `framework` does not override what the bun
     A deployment that routes the notifications to a lane of its own, or names another retry service on
     `async_notifications`, keeps a provider that works and two figures that no longer agree: a client reached
     on a late retry refuses a token it can no longer verify, and the person stays signed in there.
-    `beffroi:doctor` says so. Writing the four numbers of a retry strategy on the lane of the bundle changes
-    nothing: the service the bundle prepends survives the merge, and the component prefers a service to its
-    numbers.
+    `beffroi:doctor` says so. Writing the four numbers of a retry strategy on `async_notifications` changes
+    nothing: the service `BeffroiExtension` prepends survives the merge, and the component prefers a service to
+    its numbers.
 
 ## The worker
 
-The standalone application runs one worker, which consumes the schedule and then the lanes, the
-notifications first so that a relying party learns of a logout without waiting behind a batch of
-enrichments:
+The application runs one worker, which consumes the schedule and then the lanes, the notifications first so
+that a relying party learns of a logout without waiting behind a batch of enrichments:
 
 ``` bash
 bin/console messenger:consume scheduler_beffroi async_notifications async_priority_high async_priority_medium async_priority_low --time-limit=3600 --memory-limit=256M
@@ -132,10 +134,10 @@ message.
 
 ## What time does on its own
 
-The schedule of the bundle, `beffroi`, is one recurring message per step. Its transport is
-`scheduler_beffroi`, and the bundle prepends `use_messenger_routing: true` to the scheduler, so each message is
-routed by its class like every other: the worker that holds the clock only says when, and the step is handled
-on `async_priority_medium`.
+The schedule `beffroi`, which `App\Scheduler\BeffroiSchedule` declares, is one recurring message per step. Its
+transport is `scheduler_beffroi`, and `BeffroiExtension` prepends `use_messenger_routing: true` to the
+scheduler, so each message is routed by its class like every other: the worker that holds the clock only says
+when, and the step is handled on `async_priority_medium`.
 
 | Step | Every | What it does |
 |---|---|---|

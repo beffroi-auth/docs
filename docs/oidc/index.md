@@ -7,7 +7,7 @@ description: 'What beffroi/oidc implements: clients, authorization requests, gra
 
 `beffroi/oidc` is the protocol, in pure PHP, on top of [the identity core](../core/index.md). It knows no
 HTTP: it reads values, applies the rules of the specifications, and returns what the answer must contain.
-Turning that into a request and a response is the job of [the bundle](../symfony-bundle/index.md).
+Turning that into a request and a response is the job of [the application](../application/index.md).
 
 ## The shape of a sign-in
 

@@ -125,7 +125,7 @@ that are wired.
     nothing.
 
     A client nobody vouched for chooses the name and the logo a person reads on the consent page, and a tenant
-    that names this mode for its real users lets anybody write them. The standalone application writes a
+    that names this mode for its real users lets anybody write them. The application writes a
     `client_registration` in its development environment alone, where the mode is `open` unless the
     environment names another, for the conformance suite to register its clients.
 

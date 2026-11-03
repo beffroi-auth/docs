@@ -5,10 +5,10 @@ description: Every event the core, the protocol and the SAML package dispatch, w
 
 # Events
 
-The core, `beffroi/oidc` and `beffroi/saml` dispatch PSR-14 events, and the bundle replays them on Messenger. Every
-event names its act, the date it happened, its tenant and the provenance of the request it came from, as [the
-events of the core](../core/events.md#what-every-event-carries) describe; the tables below say what each one
-carries beyond those four, and who it concerns:
+The core, `beffroi/oidc` and `beffroi/saml` dispatch PSR-14 events, and the application replays them on
+Messenger. Every event names its act, the date it happened, its tenant and the provenance of the request it
+came from, as [the events of the core](../core/events.md#what-every-event-carries) describe; the tables below
+say what each one carries beyond those four, and who it concerns:
 
 - **a person**, when it implements `ConcernsAPersonInterface` and names the subject of their account, never the
   `sub` a client was given;
@@ -30,7 +30,7 @@ writes one row: the act, the date, the provenance, sealed, the subject when the 
 client when it concerns a client, and nothing else. A row is kept `beffroi.journal.retention` days, 180 by default,
 and `beffroi:user:journal` reads it back for a person.
 
-The other listeners of the bundle each hear one event, or an interface a few of them implement:
+The other listeners of the application each hear one event, or an interface a few of them implement:
 
 | Listener | Hears | What it does |
 |---|---|---|

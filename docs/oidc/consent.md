@@ -9,7 +9,7 @@ A consent is what a person agreed to let one client obtain about them: a set of 
 [authorization details](authorization-details.md) the client asked for beyond them. It is recorded once per
 person and client, and a request that asks for no more than it covers is answered without asking again. A
 person reads their consents and takes any of them back from [the pages of their
-account](../symfony-bundle/account.md), and an operator does the same at the console.
+account](../application/account.md), and an operator does the same at the console.
 
 ## When a person is asked
 
@@ -48,8 +48,8 @@ parameter are not listed on the page: they are served whatever the consent holds
 claims](scopes-and-claims.md)). Its Content-Security-Policy is the one of the deployment, completed with
 the origin of the client's logo and the one of the tenant's logo in `img-src`, and the origin of the redirect
 URI in `form-action`, where the answer is carried after an Allow: nothing a client registers makes the page
-load anything else. The template is `consent.html.twig`, which an application overrides like every page of
-the bundle ([pages](../symfony-bundle/pages.md)).
+load anything else. The template is `consent.html.twig`, in `apps/op/templates/beffroi/` with every other page
+of the provider ([pages](../application/pages.md)).
 
 **Allow** records the consent and the interaction goes on, to the code. **Deny** ends the interaction, and
 the client receives `access_denied` at its redirect URI (RFC 6749 §4.1.2.1). A form posted without the token
@@ -102,5 +102,5 @@ Its introspection says it is inactive from the instant the consent is taken back
 
 A `ConsentRevoked` event names the consent, the client, the person, and what went with it, by identifier.
 
-[:beffroi-arrow-right: The account pages](../symfony-bundle/account.md) and
+[:beffroi-arrow-right: The account pages](../application/account.md) and
 [interactions](interactions.md)

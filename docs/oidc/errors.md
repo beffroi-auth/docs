@@ -26,8 +26,8 @@ redirect URI (RFC 6749 §4.1.2.1), in the response mode the request asked for:
 
 A request that asked for a signed response mode gets its refusal signed as it would have got its code (JARM
 §2.1). A request that asked for a response mode the provider does not serve is refused with
-`unsupported_response_mode` in the first mode the provider is wired with, `query` in the bundle, the only one
-it is sure the client reads.
+`unsupported_response_mode` in the first mode the provider is wired with, `query` in the application, the only
+one it is sure the client reads.
 
 **The end session endpoint never redirects an error** (RP-Initiated Logout 1.0 §4): every refusal there is
 a page. **Every other endpoint answers the caller directly**, a client or a resource server, and redirects
@@ -117,14 +117,14 @@ carries one of the codes above or one of its own:
 | `too_many_requests` | `429` | A budget of load is spent, as below |
 
 The sentence of each code tells the person what to do next, which is to start again from the application,
-or to sign in for `login_required`. [Translations](../symfony-bundle/translations.md) says how those
+or to sign in for `login_required`. [Translations](../application/translations.md) says how those
 sentences are replaced.
 
 ## Refused for load
 
 Two budgets bound what the provider takes, and both always exist:
 
-- **the budget of an address**, counted on every route of the bundle, both planes, before any work is done:
+- **the budget of an address**, counted on every route of the provider, both planes, before any work is done:
   before a session is opened, a password hashed, an assertion or a proof verified;
 - **the budget of a client**, counted where its authentication succeeded, at the endpoints that
   authenticate a client. A public client proves nothing and is bounded by the budget of its address.

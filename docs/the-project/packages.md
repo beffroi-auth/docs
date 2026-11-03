@@ -1,12 +1,12 @@
 ---
 title: Packages
-description: The eight packages of Beffroi, what each one depends on, and which one to install.
+description: The seven packages of Beffroi, what each one depends on, and which one you need.
 ---
 
 # Packages
 
 Beffroi is developed as one monorepo, [`beffroi-auth/beffroi`](https://github.com/beffroi-auth/beffroi), and
-published as eight packages. Each package is split read-only into its own repository, so you can read the
+published as seven packages. Each package is split read-only into its own repository, so you can read the
 history of one part without the rest.
 
 | Package | Namespace | What it is | Repository |
@@ -17,29 +17,30 @@ history of one part without the rest.
 | `beffroi/saml2-model` | `Beffroi\Saml2\Model` | The SAML 2.0 messages, assertions and metadata, read strictly and written | [beffroi-auth/saml2-model](https://github.com/beffroi-auth/saml2-model) |
 | `beffroi/saml2-bindings` | `Beffroi\Saml2\Bindings` | The HTTP-Redirect and HTTP-POST bindings | [beffroi-auth/saml2-bindings](https://github.com/beffroi-auth/saml2-bindings) |
 | `beffroi/xml-security` | `Beffroi\Xml` | A safe DOM, XML Signature and XML Encryption | [beffroi-auth/xml-security](https://github.com/beffroi-auth/xml-security) |
-| `beffroi/symfony-bundle` | `Beffroi\Bundle` | The Symfony integration | [beffroi-auth/symfony-bundle](https://github.com/beffroi-auth/symfony-bundle) |
-| `beffroi/op` | `App` | The standalone application | [beffroi-auth/op](https://github.com/beffroi-auth/op) |
+| `beffroi/op` | `App` | The provider, the application that carries the Symfony integration | [beffroi-auth/op](https://github.com/beffroi-auth/op) |
 
-## Which one do I install?
+## Which one do I need?
+
+=== "I want a provider"
+
+    Deploy `beffroi/op`, the application. It holds the protocols, the identity model, the pages, the
+    persistence and the console, on FrankenPHP, and a deployment sets it through its environment.
+
+    [:beffroi-arrow-right: The application](../application/index.md)
 
 === "I run a Symfony application"
 
-    Require `beffroi/symfony-bundle`. It pulls the core and both protocols with it, and brings the
-    controllers, the Doctrine mapping, the console commands and the login and consent pages.
+    Deploy `beffroi/op` beside it, and sign people in to your application through it with the `oidc_login`
+    authenticator of Symfony. Your application is a client of the provider: nothing of the provider is
+    installed in it.
 
-    [:beffroi-arrow-right: Installing the bundle](../symfony-bundle/installation.md)
+    [:beffroi-arrow-right: A Symfony relying party](../getting-started/a-symfony-relying-party.md)
 
-=== "I want a provider of its own"
-
-    Deploy `beffroi/op`, the standalone application. It is the bundle, a Symfony skeleton, FrankenPHP and
-    nothing you have to assemble yourself.
-
-    [:beffroi-arrow-right: The standalone application](../application/index.md)
-
-=== "I am not using Symfony"
+=== "I want it inside code of my own"
 
     Require `beffroi/oidc`, `beffroi/saml`, or both. They are pure PHP: they know no HTTP, no container and
-    no ORM, and they talk to the world through ports you implement.
+    no ORM, and they talk to the world through ports you implement. What you write around them is your own
+    integration.
 
     [:beffroi-arrow-right: The ports of the protocol](../oidc/ports.md)
 
@@ -54,15 +55,14 @@ history of one part without the rest.
 ## What depends on what
 
 The direction never reverses. The core knows nothing of the protocols, the protocols know nothing of each
-other nor of Symfony, and the bundle is the only place where a `Request`, a container or a Doctrine entity
-manager appears.
+other nor of Symfony, and the application is the only place where a `Request`, a container or a Doctrine
+entity manager appears.
 
 ``` mermaid
 graph RL
-  op["beffroi/op<br/><small>the application</small>"] --> bundle["beffroi/symfony-bundle"]
-  bundle --> oidc["beffroi/oidc"]
-  bundle --> saml["beffroi/saml"]
-  bundle --> core["beffroi/core"]
+  op["beffroi/op<br/><small>the application</small>"] --> oidc["beffroi/oidc"]
+  op --> saml["beffroi/saml"]
+  op --> core["beffroi/core"]
   oidc --> core
   saml --> core
   saml --> bindings["beffroi/saml2-bindings"]
@@ -80,10 +80,10 @@ not.
 
 | What | Which |
 |---|---|
-| PHP | 8.4 or later, with `intl`; `zip` for the bundle; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding |
-| Symfony | 8.2, for the bundle and the application |
+| PHP | 8.4 or later, with `intl`; `zip` for the application; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding |
+| Symfony | 8.2, for the application |
 | Database | PostgreSQL, through Doctrine ORM |
-| Licence | MIT, for all eight packages |
+| Licence | MIT, for all seven packages |
 
 The cryptography of the tokens and the credentials is not written here. Signatures and encryption of JOSE
 come from [`web-token/jwt-library`](https://github.com/web-token/jwt-framework), WebAuthn from

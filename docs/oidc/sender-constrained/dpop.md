@@ -22,7 +22,7 @@ the tokens are bound to.
 | Where | Member | What the provider requires |
 |---|---|---|
 | Header | `typ` | `dpop+jwt` (RFC 9449 §4.2) |
-| Header | `alg` | One of `dpop_signing_alg_values_supported`: the signature algorithms the provider is wired with, `RS256`, `PS256`, `ES256` and `EdDSA` in the bundle. No MAC algorithm is among them |
+| Header | `alg` | One of `dpop_signing_alg_values_supported`: the signature algorithms the provider is wired with, `RS256`, `PS256`, `ES256` and `EdDSA` in the application. No MAC algorithm is among them |
 | Header | `jwk` | The public key the proof is signed with. A key that carries a private member (`d`, `p`, `q`, `dp`, `dq`, `qi`, or the `k` of a symmetric key) is refused. `kid`, `jku` and `x5c` are not read, and nothing is looked up anywhere |
 | Claims | `jti` | A non-empty string, accepted once for that key |
 | Claims | `htm` | The method of the request, compared exactly: `POST` is not `post` |
@@ -142,7 +142,7 @@ wired with, which the discovery document announces in `dpop_signing_alg_values_s
 
 !!! warning "The proofs already seen and the nonces live in a cache pool"
 
-    Both are kept in the pool `beffroi.dpop`, which the bundle declares on `cache.app`. A deployment that
+    Both are kept in the pool `beffroi.dpop`, which the application declares on `cache.app`. A deployment that
     runs on several machines points that pool at a store they all reach: otherwise a proof replayed on
     another machine is not recognised as a replay there, and a nonce one machine issued is refused by the
     next. The pool tells a hit from a miss and not an insertion from a replacement, so two presentations of
@@ -177,6 +177,5 @@ The same refusals at the endpoints that issue tokens are answers of RFC 6749 §5
 
 !!! note "A client running in a page"
 
-    The standalone application lets a script of any origin send the `DPoP` header to `/token`, `/par` and
-    `/userinfo`, and read `DPoP-Nonce` and `WWW-Authenticate` in their answers, without credentials. Behind
-    the bundle alone, that CORS policy is the application's to write.
+    The application lets a script of any origin send the `DPoP` header to `/token`, `/par` and
+    `/userinfo`, and read `DPoP-Nonce` and `WWW-Authenticate` in their answers, without credentials.

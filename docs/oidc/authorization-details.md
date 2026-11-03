@@ -12,8 +12,8 @@ to be able to read before agreeing to it, rather than recognise.
 
 ## A type is a class of the deployment
 
-The bundle wires no type. A type says what a client may do to what in the words of one domain, so no type is
-universal, and a deployment that serves rich authorization requests wires the one its domain needs. A
+The application wires no type. A type says what a client may do to what in the words of one domain, so no type
+is universal, and a deployment that serves rich authorization requests wires the one its domain needs. A
 provider wired with none refuses every `authorization_details` of a request that reads one, and announces
 nothing. The requests that read one are an authorization request, a pushed request and a token request of
 the `authorization_code` or `refresh_token` grant; every other request ignores it, as it ignores any
@@ -74,7 +74,7 @@ final readonly class AccountAccessType implements AuthorizationDetailTypeInterfa
 
 The third argument is what the page says of the detail: the parameters of the message
 `authorization_details.<type>` of the `beffroi` domain, which the deployment writes in its own catalogue
-([translations](../symfony-bundle/translations.md)):
+([translations](../application/translations.md)):
 
 ``` xml title="translations/beffroi+intl-icu.en.xlf"
 <trans-unit id="authorization_details.account_access" resname="authorization_details.account_access">
@@ -85,9 +85,10 @@ The third argument is what the page says of the detail: the parameters of the me
 
 What is wired is what a client may register, what a request may name and what the discovery document
 announces in `authorization_details_types_supported` (RFC 9396 §10). Two classes that answer for one `type`
-are a wiring the provider refuses to read. The standalone application wires one type, `invoice_payment`,
-whose detail names an invoice, the actions asked of it among `read` and `pay`, the locations where it is
-used and the most that may be moved.
+are a wiring the provider refuses to read. The development stack wires one type, `invoice_payment`, whose
+detail names an invoice, the actions asked of it among `read` and `pay`, the locations where it is used and
+the most that may be moved. The image of the application leaves it out, so a deployment of the image
+announces no type.
 
 ## Registering the types
 

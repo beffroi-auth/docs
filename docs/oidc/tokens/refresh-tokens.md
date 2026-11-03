@@ -84,7 +84,7 @@ tokens of each refresh are bound to whatever that request binds them to
 | The token expires, or its family does | That token |
 | A token of its family is reused | The whole family |
 | The authorization code it descends from is presented a second time (RFC 6749 §4.1.2) | Every refresh token descending from that code |
-| Its session ends, at the end session endpoint, by a SAML logout, on the [account pages](../../symfony-bundle/account.md), with the console, or by a sign-in that replaced it | Every refresh token of that session |
+| Its session ends, at the end session endpoint, by a SAML logout, on the [account pages](../../application/account.md), with the console, or by a sign-in that replaced it | Every refresh token of that session |
 | The person takes back their consent to that client, on the account pages or with `beffroi:user:revoke-consent` | Every refresh token that client holds for that person |
 | The client revokes it at the revocation endpoint (RFC 7009 §2.1) | That token, and the opaque access tokens of its grant |
 

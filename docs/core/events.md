@@ -44,7 +44,7 @@ the provider, never what the provider said, and an archive is named by its ident
 |---|---|---|---|
 | `user.authenticated` | `UserAuthenticated` | A session is opened, whatever proved it | The session, whose opening gives the event its date and its provenance |
 | `authentication.failed` | `AuthenticationFailed` | A login is refused, whatever was tried | The method the attempt claimed, null when a passkey ceremony failed before naming one; the reason; the identifier as typed, null when nothing was typed; the user, null when no account answers |
-| `session.ended` | `AuthenticationSessionEnded` | A session ends, whatever ended it | The session, which says who ended it: `user` or `relying_party`, the two the bundle writes |
+| `session.ended` | `AuthenticationSessionEnded` | A session ends, whatever ended it | The session, which says who ended it: `user` or `relying_party`, the two the application writes |
 | `password.used` | `PasswordUsed` | A password is accepted, whether or not a code follows | The credential |
 | `passkey.used` | `PasskeyUsed` | A passkey assertion is verified | The credential, and whether its sign count did not grow |
 | `totp.used` | `TotpUsed` | A code of the authenticator application is accepted | The credential |
@@ -101,7 +101,7 @@ The page of the account that reads the journal of a person shows every act of th
 
 ## How they leave
 
-In the bundle, the dispatcher the core is handed is `EventBusDispatcher`, which replays every event on the
+In the application, the dispatcher the core is handed is `EventBusDispatcher`, which replays every event on the
 `event.bus` of Messenger; an event raised by the handler of a message leaves once that handler has committed
 its work. Every event is routed by the
 interface they all implement to the transport `async_priority_low`, the database unless the deployment names a
@@ -109,7 +109,7 @@ broker, and its body is sealed to the message key of the tenant on its way out. 
 that raised it: a worker that consumes the transport is where every listener runs, and an event nothing listens to
 is announced all the same.
 
-What listens is a message handler of `event.bus`. The handlers of the bundle are classes marked
+What listens is a message handler of `event.bus`. The handlers of the application are classes marked
 `#[AsMessageHandler(bus: 'event.bus')]` whose `__invoke()` is typed on an event, or on an interface every event of
 a kind implements, which is how the one that writes the journal hears every event of the three packages.
-[Messenger](../symfony-bundle/messenger.md) describes the buses and the transports.
+[Messenger](../application/messenger.md) describes the buses and the transports.

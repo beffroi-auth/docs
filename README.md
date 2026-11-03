@@ -1,8 +1,8 @@
 # The documentation of Beffroi
 
 The public documentation of [Beffroi](https://github.com/beffroi-auth/beffroi), an identity provider for the
-Symfony ecosystem: the identity core, the OAuth 2.0 and OpenID Connect module, the Symfony bundle and the
-standalone application.
+Symfony ecosystem: the identity core, the OAuth 2.0 and OpenID Connect module, the SAML 2.0 module and the
+application built on them.
 
 Published with [MkDocs](https://www.mkdocs.org/) and
 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) on GitHub Pages:

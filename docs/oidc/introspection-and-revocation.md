@@ -74,7 +74,7 @@ type (RFC 9701 §4, §5), whatever the client registered:
 | Where | Member | Value |
 |---|---|---|
 | Header | `typ` | `token-introspection+jwt` |
-| Header | `alg`, `kid` | The algorithm the provider signs with by default, `RS256` in the bundle, and the key that signed |
+| Header | `alg`, `kid` | The algorithm the provider signs with by default, `RS256` in the application, and the key that signed |
 | Claims | `iss` | The issuer |
 | Claims | `aud` | The client that asked |
 | Claims | `iat` | When the request was received |
@@ -130,7 +130,7 @@ revocation of a token a client held for itself names nobody.
 Revocation ends one token and what depends on it. What takes back everything issued under a session is the
 end of that session, at the [end session endpoint](logout.md) or anywhere else, and what takes back the
 grants, the refresh tokens and the opaque access tokens a client holds for a person is that person taking back
-their consent, on [the page of their account](../symfony-bundle/account.md) or with
+their consent, on [the page of their account](../application/account.md) or with
 `beffroi:user:revoke-consent`. In both cases an `at+jwt` is refused by the provider from that moment, and
 accepted by a resource server that verifies it offline until it expires.
 

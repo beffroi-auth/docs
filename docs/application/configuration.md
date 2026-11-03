@@ -15,7 +15,7 @@ says its own. `.env` carries no secret of a deployment: the key management servi
 the secret of the kernel are empty there, and the database is the one of the development stack. That stack
 writes its own secrets into `.env.local`, which is never committed and never reaches an image.
 
-Each variable the bundle reads is read when the container builds the service it reaches, not when the container is compiled,
+Each variable that fills the `beffroi:` tree is read when the container builds the service it reaches, not when the container is compiled,
 so changing one asks for a restart of the processes and not for a new image. A value is held there to the
 bounds the [configuration tree](../reference/configuration.md) sets for the option it fills, and to the rules
 between options: a value out of bounds is refused by the first request or command that needs it, not when the
@@ -25,7 +25,7 @@ image is built.
 
 | Variable | In `.env` | What it decides |
 |---|---|---|
-| `BEFFROI_ISSUER` | `https://op.localhost` | The issuer of the tenant (OIDC Discovery 1.0 §3), which every token names and every client compares byte for byte: an absolute `https` URL with no query, no fragment and no trailing slash, plain HTTP on a loopback host only. The application imports the routes of the bundle at the root, so its issuer is an origin with no path. A tenant keeps the issuer its row was written with: `beffroi:tenant:synchronize` refuses another |
+| `BEFFROI_ISSUER` | `https://op.localhost` | The issuer of the tenant (OIDC Discovery 1.0 §3), which every token names and every client compares byte for byte: an absolute `https` URL with no query, no fragment and no trailing slash, plain HTTP on a loopback host only. The application imports its routes at the root, so its issuer is an origin with no path. A tenant keeps the issuer its row was written with: `beffroi:tenant:synchronize` refuses another |
 | `BEFFROI_TENANT_SLUG` | `default` | The stable name of the tenant, from which its identifier is derived. Renaming it is creating another tenant, with other keys and other rows, so a deployment names it once |
 | `BEFFROI_KMS_DSN` | empty | The key management service that seals the keys of the tenant, its pairwise salt and its data keys, as the DSN of the client `op` of `config/packages/key_management.yaml`. [The backends](#the-key-management-service) are below |
 | `BEFFROI_KMS_KEY_ID` | empty | The master key of that service the tenant is sealed under. `{tenant}` in it stands for the slug of the tenant, one master key per tenant |
@@ -50,7 +50,7 @@ is no JSON document, and is refused.
 | `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. A logo served from another host needs that origin in the `img-src` of `config/packages/nelmio_security.yaml`, and the host to answer `Cross-Origin-Resource-Policy: cross-origin`, the pages of the account requiring it |
 | `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons and the links of the pages are drawn in: `#` and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour |
 | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | `#ffffff` | The colour of what is written on it, in the same notation |
-| `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the bundle lets a person change, from `name` to `phone_number` | What a person may change of themselves on the page of their account. A tenant whose directory owns the data names `[]` |
+| `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the application lets a person change, from `name` to `phone_number` | What a person may change of themselves on the page of their account. A tenant whose directory owns the data names `[]` |
 | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | `{}` | The `acr` vocabulary of the tenant, class name to predicate, in order. `{}` is the default policy of the core |
 | `BEFFROI_TENANT_SCOPES` | `[]` | The scopes of the APIs the tenant protects, as `["invoices.read","invoices.pay"]`. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them, and a client that registers itself may register them |
 
@@ -118,7 +118,7 @@ Every lifetime is a second at least.
 
 | Variable | In `.env` | What it decides |
 |---|---|---|
-| `BEFFROI_WEB_PUSH_SUBJECT` | `mailto:operator@op.localhost` | The contact a push service is given (RFC 8292 §2.1), a `mailto:` or `https:` URI at which the operator of the deployment can be reached. Naming one turns [web push](../symfony-bundle/web-push.md) on, and empty turns it off: the tenant then hands out no key and reaches nobody by push. The one of `.env` is the development stack's, so a deployment names its own |
+| `BEFFROI_WEB_PUSH_SUBJECT` | `mailto:operator@op.localhost` | The contact a push service is given (RFC 8292 §2.1), a `mailto:` or `https:` URI at which the operator of the deployment can be reached. Naming one turns [web push](web-push.md) on, and empty turns it off: the tenant then hands out no key and reaches nobody by push. The one of `.env` is the development stack's, so a deployment names its own |
 | `BEFFROI_WEB_PUSH_TIMEOUT` | `3` | The seconds one push is given, a tenth of a second at least |
 | `BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT` | `5` | The seconds one attempt to send a logout token to a client is given, a tenth of a second at least (Back-Channel Logout 1.0 §2.5) |
 | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES` | `6` | How many times a send that did not reach its client comes back, none at least |
@@ -168,7 +168,7 @@ on what its own clients send.
 |---|---|---|
 | `APP_ENV` | `dev` | The environment of the kernel. The production image sets `prod` |
 | `APP_SECRET` | empty | The secret of the kernel, `framework.secret`. `.env.dev` and `.env.test` give one each, for their own environment, so a production environment names its own. While `BEFFROI_DATA_KEY_SECRETS` is not set, it is also the secret every data key of personal data is bound to its row under: the store of the data keys refuses an empty one the first time it is used, and changing it alone leaves the personal data unreadable: [operating it](operating.md#data-keys) says how it is replaced |
-| `APP_SHARE_DIR` | `var/share` | The share directory of Symfony, one per environment beneath it, `var/share/prod` for a production kernel. It holds the filesystem pool of `cache.app`, and with it the [caches of the bundle](deployment.md#what-the-processes-share) |
+| `APP_SHARE_DIR` | `var/share` | The share directory of Symfony, one per environment beneath it, `var/share/prod` for a production kernel. It holds the filesystem pool of `cache.app`, and with it the [caches the processes share](deployment.md#what-the-processes-share) |
 | `DEFAULT_URI` | `https://op.localhost` | The URL Symfony generates absolute URLs under outside a request, `framework.router.default_uri` |
 | `DEFAULT_LOCALE` | `en` | The language a page falls back to, among the two the application serves, `en` and `fr` |
 | `DATABASE_URL` | `postgresql://beffroi:beffroi@127.0.0.1:5432/beffroi?serverVersion=16&charset=utf8` | The PostgreSQL database. The entrypoint of the image waits for it, and the migrations refuse any other platform |
@@ -287,12 +287,12 @@ deployment chooses, and compiles only what is the same for every deployment of t
 ## What only development reads
 
 The image leaves out what only the development stack, the suite of the application and its lab read:
-`config/packages/dev/`, the debug bundle and the profiler, the demonstration of the flows and the lab. The
-configuration of the bundle under `config/packages/dev/` declares what the development stack needs and nothing
-a deployment does: the clients of the OpenID conformance suite and of the demonstrations, the registration
-policy of the Dynamic OP plan, a SAML service provider with the peers it is judged by, an authority whose
-software statements it accepts and an issuer of assertions it trusts. Its lists replace the JSON documents the
-environment carries for them.
+`config/packages/dev/`, the debug bundle and the profiler, the demonstration of the flows and the lab.
+`config/packages/dev/beffroi.yaml` declares what the development stack needs and nothing a deployment does:
+the clients of the OpenID conformance suite and of the demonstrations, the registration policy of the Dynamic
+OP plan, a SAML service provider with the peers it is judged by, an authority whose software statements it
+accepts and an issuer of assertions it trusts. Its lists replace the JSON documents the environment carries for
+them.
 
 Their variables are read in the development environment: the `CONFORMANCE_*`, `OIDC_DEMO_*` and `DEMO_*`
 secrets and key sets, `BEFFROI_DEV_USER_SUBJECT`, `BEFFROI_DEMO_HOST_IP`, `APP_PROFILER` and

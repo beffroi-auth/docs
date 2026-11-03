@@ -1,29 +1,40 @@
 ---
 title: Key management
-description: The client of symfony/key-management the bundle seals with, what it seals, the backends it runs against, and what moves when the client changes.
+description: The client of symfony/key-management the application seals with, what it seals, the backends it runs against, and what moves when the client changes.
 ---
 
 # Key management
 
-The bundle seals the private keys of the tenant, its data keys and the secrets it holds for people with a
-client of `symfony/key-management`, which the application declares and the bundle names. Which provider stands
-behind that client, and whether there are several, is a decision of the deployment and not of the bundle.
-The key management service keeps the master keys and never signs: a private key is opened in the process
-that uses it, and what is sealed never reaches the service, only the data key it is sealed with, to be
-wrapped or opened.
+The application seals the private keys of the tenant, its data keys and the secrets it holds for people with a
+client of `symfony/key-management`, which it declares in `config/packages/key_management.yaml` and names in
+`beffroi.keys.kms`. Which provider stands behind that client is the deployment's to say, by the DSN of
+`BEFFROI_KMS_DSN`. The key management service keeps the master keys and never signs: a private key is opened
+in the process that uses it, and what is sealed never reaches the service, only the data key it is sealed
+with, to be wrapped or opened.
 
 ## Naming the client
+
+`config/packages/key_management.yaml` declares two clients, each built from a DSN of the environment: `op`
+from `BEFFROI_KMS_DSN`, and `second` from `BEFFROI_KMS_DSN_SECOND`, for a [move to another
+client](#moving-to-another-client). `config/packages/beffroi.yaml` names `op`, and the provider seals with it
+and never with `second`.
 
 ``` yaml title="config/packages/key_management.yaml"
 key_management:
     clients:
         op: 'service://beffroi.kms.op'
+        second: 'service://beffroi.kms.second'
 
 services:
     beffroi.kms.op:
         class: Symfony\Component\KeyManagement\EncrypterInterface
         factory: ['@key_management.factory', 'fromString']
         arguments: ['%env(BEFFROI_KMS_DSN)%']
+
+    beffroi.kms.second:
+        class: Symfony\Component\KeyManagement\EncrypterInterface
+        factory: ['@key_management.factory', 'fromString']
+        arguments: ['%env(BEFFROI_KMS_DSN_SECOND)%']
 ```
 
 ``` yaml title="config/packages/beffroi.yaml"
@@ -41,13 +52,13 @@ beffroi:
 | `storage` | `%kernel.project_dir%/var/keys` | The directory of the sealed keys and of the pairwise salt |
 
 The rest of `beffroi.keys`, how long the JWK Set is cached, how long a new key is staged and how long a key
-works, is on [the configuration](configuration.md), and what it does to a rotation on [the console
+works, is on [the configuration tree](configuration-tree.md), and what it does to a rotation on [the console
 commands](console-commands.md#rotating-a-key).
 
 **The DSN reaches the client through a service.** The `dsn` of a client is validated when the container is
 built and takes no environment variable, while the DSN of a deployment comes from its environment and may
-carry a credential. So the client is built from the environment by the factory of the component and named
-with `service://`, which is what the standalone application and the suite of the bundle both do.
+carry a credential. So the application builds each client from the environment with the factory of the
+component, `key_management.factory`, and names it with `service://`.
 
 **A name nothing answers to fails the build of the container**, and says which names would have answered:
 
@@ -78,10 +89,10 @@ worker rotates the keys the processes that serve requests open.
 ## The backends
 
 The DSN is the only thing that changes between two backends: the code and the envelope are the same. The
-suite of the bundle runs whole on a sodium key written in its DSN, and its tests of custody, the sealed keys,
-the secrets of an authenticator application and the search of a dump of the database, run again on a key file.
-The custody tests of Vault Transit and of AWS KMS run where the suite is pointed at one, which the development
-stack of the project does, AWS through LocalStack, and are skipped otherwise.
+suites that boot the provider run whole on a sodium key written in their DSN, and the tests of custody, the
+sealed keys, the secrets of an authenticator application and the search of a dump of the database, run again
+on a key file. The custody tests of Vault Transit and of AWS KMS run where a suite is pointed at one, which the
+development stack of the project does, AWS through LocalStack, and are skipped otherwise.
 
 === "Sodium, in the environment"
 
@@ -127,7 +138,7 @@ stack of the project does, AWS through LocalStack, and are skipped otherwise.
 ## Opening a key
 
 A process opens a key once, the first time it needs it, and keeps it open for as long as it lives, by tenant
-and by `kid`; a key that retires is forgotten. Served by FrankenPHP in worker mode, as the standalone
+and by `kid`; a key that retires is forgotten. Served by FrankenPHP in worker mode, as the image of the
 application is, a process pays one opening per key for all the signatures it makes; a process rebuilt at each
 request pays one at each request. The sealed columns follow the same rule with their data keys, one opening
 per data key and per process.
@@ -166,12 +177,13 @@ bin/console beffroi:data-keys:rewrap --to=second
 The master key is the one `beffroi.keys.key_id` gives the tenant, resolved and never typed, so the new client
 holds a key under the same identifier. Every row names the client that wraps it, so the columns read through
 the rewrap and after it. A data key minted later, at the rotation of a family or at the first write of a new
-one, is wrapped by the client `beffroi.keys.kms` names, so the move ends by naming the new client there. The
-standalone application declares its second client for this, `second`, from `BEFFROI_KMS_DSN_SECOND`, which
-stays empty, and its client never built, on a deployment that moves nothing.
+one, is wrapped by the client `beffroi.keys.kms` names, so the move ends once that client is the new one. The
+application declares its second client for this, `second`, from `BEFFROI_KMS_DSN_SECOND`, which stays empty,
+and its client never built, on a deployment that moves nothing.
 
 **The keys of the tenant move by rotation.** An envelope sealed by one client does not open with another, so
-once `beffroi.keys.kms` names the new client, every algorithm the tenant holds gets a new key sealed by it:
+once the client `beffroi.keys.kms` names is the new one, every algorithm the tenant holds gets a new key sealed
+by it:
 
 ``` bash
 bin/console beffroi:keys:rotate --now --algorithm=RS256

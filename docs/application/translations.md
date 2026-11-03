@@ -6,16 +6,16 @@ description: Every string translated, the two lists of languages, and how a page
 # Translations
 
 Every user-facing string goes through the translator, in XLIFF with `intl-icu` for plurals and parameters,
-in the `beffroi` domain. The bundle ships `en` and `fr`:
+in the `beffroi` domain. The application holds one catalogue per language it serves, `en` and `fr`:
 
 ```
 translations/beffroi+intl-icu.en.xlf
 translations/beffroi+intl-icu.fr.xlf
 ```
 
-An application replaces a sentence by putting the same key in its own
-`translations/beffroi+intl-icu.fr.xlf`, which Symfony loads after the catalogues of the bundles. Adding a
-language is one more catalogue of the same domain, and `framework.enabled_locales` naming it.
+The catalogues are code of the application, like its templates: adding a language is one more catalogue of
+the same domain, and `framework.enabled_locales` naming it in `config/packages/translation.yaml`. A deployment
+chooses which of the two a page falls back to with `DEFAULT_LOCALE`.
 
 !!! info "The `error_description` of the protocol is not translated"
 
@@ -64,8 +64,8 @@ the language is a second address for every page.
 
 ## How a person chooses one
 
-A form and no script: `POST /locale`, one button per language the deployment serves, rendered wherever the
-layout of the application includes the switcher. Below two languages there is nothing to offer and the
+A form and no script: `POST /locale`, one button per language the deployment serves, rendered beside the
+choice of a theme on every page that extends the layout. Below two languages there is nothing to offer and the
 control is not rendered at all, and a page whose language was decided by the record of a signed-in person
 says so, so the control offers nothing there either.
 
@@ -106,4 +106,4 @@ its zone is an hour a reader cannot check. The machine readable form stays in th
 the element that carries it, which gives the instant with its offset. The dates the console prints do not
 go through any of this, an administrator reading them beside a server.
 
-The bundle requires `ext-intl`, which its own `+intl-icu` catalogues already needed.
+The application requires `ext-intl`, which its `+intl-icu` catalogues need as well.

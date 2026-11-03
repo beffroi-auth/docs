@@ -1,64 +1,64 @@
 ---
 title: Pages
-description: The pages a person reads, what each one shows, and how an application gives them its look without breaking what they post.
+description: The pages a person reads, what each one shows, what a deployment and a visitor change of their look, and what a template keeps of what they post.
 ---
 
 # Pages
 
-The bundle ships the pages a person reads as Twig templates in the `@Beffroi` namespace, translated, and
-overridable like any template of any bundle. They carry the structure and the words, never a stylesheet: an
-application gives them their look by overriding one file, and any page it wants otherwise by its name. The
-scripts they load are the bundle's own, served by the bundle under the path of its routes, so a deployment has
-nothing to build for them; the pages that post a form carry one line of script of their own, named by its
-hash.
+The pages a person reads are Twig templates of the application, under `templates/beffroi/` in the `@Beffroi`
+namespace, translated. They carry the structure and the words, never a stylesheet: their look is a layout, two
+skeletons and one stylesheet of the application, which a deployment colours through its environment and a
+visitor reads in the theme they pick. The scripts they load are the application's own and served by it, so a
+deployment has nothing to build for them; the pages that post a form carry one line of script of their own,
+named by its hash.
 
 ## Making them yours
 
-A template of the bundle is overridden by a file of the same name under `templates/bundles/BeffroiBundle/` of
-the application. Every page extends `layout.html.twig` but the four that carry a step of the protocol, so
-overriding that one file gives every page its look, and the pages come with it untouched:
+A deployment gives the pages the name, the logo and the two colours of its tenant, through its environment
+like everything else it sets:
 
-``` twig title="templates/bundles/BeffroiBundle/layout.html.twig"
-<!DOCTYPE html>
-<html lang="{{ app.request.locale|replace({'_': '-'}) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
-    {% block head %}{% endblock %}
-</head>
-<body>
-    {% block brand %}{% include '@Beffroi/_brand.html.twig' %}{% endblock %}
-    {% block body %}
-        <main>
-            <h1>{% block heading %}{{ block('title') }}{% endblock %}</h1>
-            {% block action %}{% endblock %}
-            {% block content %}{% endblock %}
-        </main>
-    {% endblock %}
-    {% block locale %}{% include '@Beffroi/_locale_switcher.html.twig' %}{% endblock %}
-</body>
-</html>
-```
+| Variable | What the pages show |
+|---|---|
+| `BEFFROI_TENANT_NAME` | The name of the tenant, the host of the issuer when the variable is empty |
+| `BEFFROI_TENANT_LOGO_URI` | The logo of the tenant, the placeholder mark the application serves at `/tenant-logo.svg` when the variable is empty |
+| `BEFFROI_TENANT_PRIMARY_COLOR` | The colour the buttons and the links are drawn in |
+| `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | The colour of what is written on them, named with the one above or not at all |
+
+A change of one of them is written to [the row of the tenant](../core/tenants.md#its-row) by
+`beffroi:tenant:synchronize`; until it is, a request that needs the tenant fails, naming the field that
+disagrees.
+
+[:beffroi-arrow-right: The variables of the tenant](configuration.md#the-tenant)
+
+A visitor reads the pages in the theme they pick, light, dark or the one their browser asks for, from a
+control beside the choice of a language on every page that extends the layout. The choice is a form and no
+script, posted to `/theme`, which sends the browser back to the page it was made on. It is kept for a year on
+[the cookie of the preferences](translations.md#how-a-person-chooses-one) of that browser and read on the
+server, so a page is rendered in the theme it was asked in.
+
+The templates themselves are code of the application. `templates/beffroi/layout.html.twig`, which every page
+extends but the four that carry a step of the protocol, picks one of the two skeletons of `templates/layout/`
+by the route: `account.html.twig` for a page of the account, which lists the pages of the account in a column
+beside it, and `interaction.html.twig` for every other page, which on a wide screen names the tenant in a
+panel beside the question. The error page sets `beffroi_refusal`, so that a refusal served on a route of the
+account is drawn in `interaction.html.twig` too. Both skeletons extend `document.html.twig`, which carries
+the language of the page, its theme, the two colours of the tenant and the one stylesheet, Tailwind and
+DaisyUI built from `assets/styles/app.css`.
 
 | Block | What the pages put in it |
 |---|---|
 | `title` | The title of the page, which `heading` repeats unless a page says otherwise |
-| `head` | The script of the bundle a page needs: `passkey.js` on the login page, the page of passkeys and the enrolment by ticket, `push.js` on the page of notifications, `copy.js` where a value is handed over to copy, `password-strength.js` on the page of the password |
-| `brand` | The logo of the tenant, from `_brand.html.twig` |
+| `head` | The script a page needs: `passkey.js` on the login page, the page of passkeys and the enrolment by ticket, `push.js` on the page of notifications, `copy.js` where a value is handed over to copy, `password-strength.js` on the page of the password |
 | `heading` | The heading of the page |
-| `action` | The one action a page offers beside its title, when it offers one |
+| `action` | The one action a page of the account offers beside its title, when it offers one |
 | `content` | The page itself |
-| `locale` | The choice of a language, from `_locale_switcher.html.twig` |
 
-A stylesheet goes outside `head`, as above: a page that loads a script fills that block, and its own block
-replaces the layout's. The standalone application draws the pages with Tailwind and DaisyUI this way, from a
-layout that picks one of two skeletons by the route, one for the pages of an interaction and one for the
-pages of the account. The error page sets `beffroi_refusal`, so a layout tells a refusal served on a route of
-the account from a page of the account.
+The stylesheet sits outside `head` in `document.html.twig`, since a page that loads a script fills that block
+and its own block replaces the whole of it. The skeletons include the logo of the tenant, `_brand.html.twig`,
+and the two controls of their bar, the language, `_locale_switcher.html.twig`, and the theme,
+`templates/_theme_switcher.html.twig`.
 
-The functions and filters the templates read are the bundle's, for a page an application rewrites:
+The templates read what they show of the provider through these functions and filters, under `App\Twig\`:
 
 | Twig | What it gives |
 |---|---|
@@ -72,20 +72,21 @@ The functions and filters the templates read are the bundle's, for a page an app
 
 ## What a tenant shows of itself
 
-The logo the tenant declared is on every page that keeps the `brand` block, with the name of the tenant as
-the text that stands in for it, so a reader who does not see the image is told who they came for. It is loaded
-by the browser of the visitor, never by the provider, and with no referrer. A tenant that declares no logo
-renders nothing there.
+The logo of the tenant is on every page that extends the layout, with the name of the tenant as the text that
+stands in for it, so a reader who does not see the image is told who they came for. It is loaded by the
+browser of the visitor, never by the provider, and with no referrer. A deployment that names no logo shows the
+placeholder mark of the application.
 
 The two colours the tenant declares, the one the buttons and the links are drawn in and the one of what is
-written on them, are read by the layout of the application, since the look of the pages is the
-application's: the bundle applies no colour. The standalone application writes them as two custom properties
-of a `style` element carrying the nonce of the response.
+written on them, are written by `document.html.twig` as the two custom properties DaisyUI draws a primary
+surface from, `--color-primary` and `--color-primary-content`, for both themes, in a `style` element that
+carries the nonce of the response and comes after the stylesheet. A tenant that declares no colour leaves the
+element off, and the theme answers.
 
 The consent page shows the logo of the asking client beside the one of the tenant, and adds the origins both
 are served from to the `img-src` of the policy its answer carries. Every other page is served under the
 policy of the deployment alone, so that policy allows the origin the logo of the tenant is served from: the
-standalone application serves it from its own origin, which its `img-src 'self'` allows.
+application serves it from its own origin, which its `img-src 'self'` allows.
 
 [:beffroi-arrow-right: What the configuration says of a tenant](../core/tenants.md#what-the-configuration-says)
 
@@ -109,7 +110,7 @@ standalone application serves it from its own origin, which its `img-src 'self'`
 
 `scopes.html.twig` and `authorization_details.html.twig` write the scopes and the details of a request the
 same way on the consent page and on the pages of the account; `_brand.html.twig` and
-`_locale_switcher.html.twig` are included by the layout.
+`_locale_switcher.html.twig` are included by the skeletons.
 
 ### The login page
 
@@ -164,14 +165,14 @@ naming the frames it opens.
 
 !!! warning "The script of these pages is their policy"
 
-    They can be overridden like any other, as long as the script is kept exactly as it is given: the hash in
-    the `Content-Security-Policy` is the hash of that script, and a script that differs by a character does
-    not run.
+    Their templates can be changed like any other, as long as the script is kept exactly as it is given: the
+    hash in the `Content-Security-Policy` is the hash of that script, and a script that differs by a character
+    does not run.
 
 ## The headers of a page
 
-Every page the bundle renders on the interaction plane carries these, and the pages that post a form carry
-their own policy in place of the floor:
+Every page the application renders on the interaction plane carries these, and the pages that post a form
+carry their own policy in place of the floor:
 
 | Header | Value |
 |---|---|
@@ -180,10 +181,11 @@ their own policy in place of the floor:
 | `Referrer-Policy` | `no-referrer` |
 | `Cache-Control` | `no-store`; `no-cache, no-store`, with `Pragma: no-cache`, on the page that posts a SAML message and on the page that posts a form again |
 
-`frame-ancestors 'none'` is a floor: it restricts framing and nothing else, and a deployment that wants a
-whole policy on these pages writes it, as the standalone application does. A page that has something to say
-about the request it answers never writes a policy of its own: it adds what it needs to whichever policy the
-answer carries, the enforced one and the one that only reports, once that policy is written.
+`frame-ancestors 'none'` is a floor: it restricts framing and nothing else, and the application serves every
+page that carries it the whole policy of its `config/packages/nelmio_security.yaml` in its place, a
+redirection keeping the floor. A page that has something to say about the request it answers never writes a
+policy of its own: it adds what it needs to whichever policy the answer carries, the enforced one and the one
+that only reports, once that policy is written.
 
 - The login page, the code page and the consent page add the origin of the redirection URI of the client to
   `form-action`, since a browser checks that directive over the whole chain of redirections of a submission,
@@ -204,13 +206,13 @@ The scripts are served with `Cache-Control: public` for an hour and an `ETag`:
 | `/copy.js` | The pages that hand over a value to copy, the key of an authenticator application and the backup codes |
 | `/password-strength.js` | The page of the password |
 
-## What an override keeps
+## What a template keeps
 
-A page is free to move, reword or restyle anything, and three things are read by something else. **The
-fields of a form**, which a controller or an authenticator reads by name. **The form tokens**, each rendered
-under its identifier with `csrf_token()`. **The `data-*` attributes the scripts read**, and the `?interaction=`
-the actions carry, or the `interaction` field of the consent form, which is how a post finds its
-interaction.
+A template is free to move, reword or restyle anything, and three things in it are read by something else.
+**The fields of a form**, which a controller or an authenticator reads by name. **The form tokens**, each
+rendered under its identifier with `csrf_token()`, or by the form component of Symfony in the forms of the
+page of the profile. **The `data-*` attributes the scripts read**, and the `?interaction=` the actions carry,
+or the `interaction` field of the consent form, which is how a post finds its interaction.
 
 | Form | Fields | Token |
 |---|---|---|

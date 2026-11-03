@@ -53,7 +53,7 @@ beffroi:
         refresh_token_absolute_ttl: 7776000
 ```
 
-[The standalone application](../../application/index.md) reads `access_token_ttl` and `id_token_ttl` from the
+[The application](../../application/index.md) reads `access_token_ttl` and `id_token_ttl` from the
 environment variables `BEFFROI_ACCESS_TOKEN_TTL` and `BEFFROI_ID_TOKEN_TTL`, both `600` in its `.env`.
 
 **A lifetime is also how long a retired signing key is kept.** The rotation of a signing key dates its

@@ -25,7 +25,7 @@ The table holds one membership per group and person, whatever its source.
 
 | Source | What it is | What writes it |
 |---|---|---|
-| `local` | A membership decided in this provider | No command or page of the bundle writes one |
+| `local` | A membership decided in this provider | No command or page of the application writes one |
 | `upstream_claims` | A membership an upstream identity provider asserted at the last sign-in | The sign-in through that provider, when its declaration maps groups |
 | `scim` | A membership a directory pushed | Nothing: SCIM is [not implemented](../scim/index.md) |
 

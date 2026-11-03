@@ -12,23 +12,19 @@ the person it names without a second application. Nothing in a notification name
 
 ## Turning it on
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    web_push:
-        subject: 'mailto:operator@op.example.com'
-```
+Two variables of the environment fill `beffroi.web_push`:
 
-| Option | Default | What it decides |
+| Variable | In `.env` | What it decides |
 |---|---|---|
-| `subject` | none | The `sub` of the token the provider signs for a push service (RFC 8292 §2.1): a `mailto:` or `https:` URI at which a push service can reach the operator of the deployment. Naming one is what turns web push on |
-| `timeout` | `3.0` | Seconds one push to one push service is given, connection included, so that a push service that hangs does not hold a worker |
+| `BEFFROI_WEB_PUSH_SUBJECT` | `mailto:operator@op.localhost` | The `subject`, the `sub` of the token the provider signs for a push service (RFC 8292 §2.1): a `mailto:` or `https:` URI at which a push service can reach the operator of the deployment. Naming one is what turns web push on, and an empty variable turns it off. The one of `.env` is the development stack's, so a deployment names its own |
+| `BEFFROI_WEB_PUSH_TIMEOUT` | `3` | The `timeout`, the seconds one push to one push service is given, connection included, so that a push service that hangs does not hold a worker |
 
 **Without a subject, web push serves nothing.** Its services and its routes are always wired, and the subject
-may be an environment variable, read when the container builds what web push changes: naming one or taking it
-away asks for a restart and not for a new build of the container. Without one, its channel is not in the lane of
-notifications, no push leaves the deployment, the tenant draws no application server key, and the page where a
-browser would subscribe says that the provider does not tell browsers. A key drawn before the subject was taken
-away is read by nothing until a subject is named again.
+is read when the container builds what web push changes: naming one or taking it away asks for a restart of the
+processes and not for a new image. Without one, its channel is not in the lane of notifications, no push leaves
+the deployment, the tenant draws no application server key, and the page where a browser would subscribe says
+that the provider does not tell browsers. A key drawn before the subject was taken away is read by nothing until
+a subject is named again.
 
 ## The application server key
 
@@ -54,9 +50,9 @@ The page is `/account/notifications`, one of [the account pages](account.md). It
 person that the provider can reach, each with the name its owner gave it, when it was added and when it was
 last pushed to, and it marks the browser reading the page when that browser is one of them.
 
-1. Opening the page registers the service worker of the bundle, `/push-worker.js`, served under the path the
-   routes are mounted at, so that its scope covers the pages it opens. It registers it each time, a browser
-   being able to lose its worker and keep its subscription.
+1. Opening the page registers the service worker of the application, `/push-worker.js`, served at the root so
+   that its scope covers the pages it opens. It registers it each time, a browser being able to lose its worker
+   and keep its subscription.
 2. The button asks the person for permission, subscribes to the push service of their browser under the
    application server key, and posts what the subscription carries to `POST /account/notifications`: the
    endpoint, the `p256dh` key and the `auth` secret of the browser (RFC 8291 §3), and a name.
@@ -78,8 +74,8 @@ endpoint, which carries the unique constraint with the person.
 
 When a client makes a backchannel authentication request that names a person, the provider answers the
 client and puts the message that tells the person on the lane of notifications. The lane hands it to every
-channel the deployment wires; web push is the one the bundle ships, in the lane while a subject is named. A person
-who has subscribed no browser is told nothing, and finds the request where requests are answered.
+channel the application wires; web push is the only one, in the lane while a subject is named. A person who
+has subscribed no browser is told nothing, and finds the request where requests are answered.
 
 Every browser the person subscribed is pushed to, and each push carries three strings and nothing else, in
 the language the person reads:
@@ -115,11 +111,11 @@ which would refuse a request signed by any other key. When no browser of the per
 one push failed, the message goes back to the lane, which sends it again after the waits of its schedule; one
 browser reached is a person told, and the message is done.
 
-[:beffroi-arrow-right: The lane of notifications](messenger.md#the-contract-the-bundle-prepends)
+[:beffroi-arrow-right: The lane of notifications](messenger.md#the-contract-of-the-provider)
 
 ## What the deployment allows
 
-The scripts the page loads are served by the bundle from the origin of the provider, the page posts the
-subscription back to it, and the service worker is a script of that origin too. A deployment that writes its
-own `Content-Security-Policy` for the pages of the account allows them: the standalone application's names
-`'self'` in `script-src`, `connect-src`, `worker-src` and `form-action`.
+The scripts the page loads are served by the application from the origin of the provider, the page posts the
+subscription back to it, and the service worker is a script of that origin too. The `Content-Security-Policy`
+the application serves the pages of the account, from its `config/packages/nelmio_security.yaml`, allows
+them: it names `'self'` in `script-src`, `connect-src`, `worker-src` and `form-action`.

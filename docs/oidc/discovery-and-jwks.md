@@ -24,13 +24,12 @@ Both answer `200`, `application/json`, with `Cache-Control: public, max-age=3600
 document an hour.
 
 **The routes are where the issuer says they are.** OIDC Discovery 1.0 §4.1 appends the well-known path to the
-issuer, so the routes of the bundle are mounted under it: a deployment whose issuer is
-`https://op.example.com` serves `https://op.example.com/.well-known/openid-configuration`. Routes mounted
-anywhere else make every endpoint that locates the others fail at the first request, with an error that names
-both URLs, rather than publish endpoints a client would not find. RFC 8414 §3 inserts its well-known segment
-between the host and the path of the issuer instead: the two locations are the same URL under an issuer that
-is an origin, and under an issuer that carries a path, the route of the bundle answers under that path, which
-is not where RFC 8414 §3 looks.
+issuer, and the application mounts its routes at the root, so its issuer is an origin: a deployment whose
+issuer is `https://op.example.com` serves `https://op.example.com/.well-known/openid-configuration`. An issuer
+that carries a path makes every endpoint that locates the others fail at the first request, with an error that
+names both URLs, rather than publish endpoints a client would not find. RFC 8414 §3 inserts its well-known
+segment between the host and the path of the issuer instead, and under an issuer that is an origin the two
+locations are the same URL.
 
 **Every URL is built from the issuer**, never from the `Host` header of the request that asked.
 
@@ -46,13 +45,13 @@ provider refuses rather than arbitrates.
 | `scopes_supported` | `openid`, the scopes the wired claims stand for, the scopes the clients of the tenant registered, and `offline_access` where a wired grant issues a refresh token and another spends one. [Scopes and claims](scopes-and-claims.md) |
 | `claims_supported`, `claims_parameter_supported` | `sub` and the claims the provider serves; `true` |
 | `response_types_supported` | `["code"]`, and nothing else: no implicit flow and no hybrid |
-| `response_modes_supported` | The response modes wired, `query`, `form_post`, `query.jwt` and `form_post.jwt` in the bundle, plus `jwt` when a signed mode is among them (JARM §2.1). [Response modes](response-modes.md) |
-| `grant_types_supported` | The grants the token endpoint is wired with, all seven in the bundle. [Grants](grants/index.md) |
+| `response_modes_supported` | The response modes wired, `query`, `form_post`, `query.jwt` and `form_post.jwt` in the application, plus `jwt` when a signed mode is among them (JARM §2.1). [Response modes](response-modes.md) |
+| `grant_types_supported` | The grants the token endpoint is wired with, all seven in the application. [Grants](grants/index.md) |
 | `code_challenge_methods_supported` | The PKCE methods wired: `S256`. `plain` is wired nowhere |
 | `acr_values_supported` | The classes of the policy of the tenant that the logins it serves can prove, in the order the policy names them. [Tenants](../core/tenants.md) |
 | `subject_types_supported` | The kinds of `sub` the provider assigns: `public` and `pairwise`. [Pairwise subjects](pairwise-subjects.md) |
 | `token_endpoint_auth_methods_supported`, `token_endpoint_auth_signing_alg_values_supported` | The client authentication methods wired, in the order they are tried, and what their assertions may be signed with. [Client authentication](client-authentication.md) |
-| `id_token_signing_alg_values_supported`, `userinfo_signing_alg_values_supported` | The signature algorithms the provider is wired with: `RS256`, `PS256`, `ES256` and `EdDSA` in the bundle |
+| `id_token_signing_alg_values_supported`, `userinfo_signing_alg_values_supported` | The signature algorithms the provider is wired with: `RS256`, `PS256`, `ES256` and `EdDSA` in the application |
 | `id_token_encryption_*`, `userinfo_encryption_*`, `request_object_encryption_*` (`alg_values_supported`, `enc_values_supported`) | The encryption algorithms wired: `ECDH-ES+A256KW` and `RSA-OAEP-256`, with `A256GCM`. A deployment that wires no key encryption or no content encryption algorithm announces none of these pairs rather than empty lists |
 | `request_parameter_supported`, `request_uri_parameter_supported`, `require_request_uri_registration` | `true` all three: a `request_uri` is read only from a URL its client registered |
 | `request_object_signing_alg_values_supported` | The signature algorithms wired, and `none` beside them only when a client of the tenant registered `request_object_signing_alg: none`. [Request objects](request-objects.md) |
@@ -61,9 +60,9 @@ provider refuses rather than arbitrates.
 | `device_authorization_endpoint` | The endpoint where a device code is asked for (RFC 8628 §4) |
 | `introspection_endpoint`, `introspection_endpoint_auth_methods_supported`, `introspection_endpoint_auth_signing_alg_values_supported`, `introspection_signing_alg_values_supported` | The endpoint, the wired methods that authenticate a client (all but `none`), what their assertions are signed with, and the signature algorithms wired (RFC 9701). [Introspection](introspection-and-revocation.md) |
 | `revocation_endpoint`, `revocation_endpoint_auth_methods_supported`, `revocation_endpoint_auth_signing_alg_values_supported` | The endpoint, and the methods of the token endpoint, `none` included |
-| `end_session_endpoint`, `frontchannel_logout_supported`, `frontchannel_logout_session_supported`, `backchannel_logout_supported`, `backchannel_logout_session_supported` | The endpoint, and `true` for each logout channel wired, both in the bundle. [Logout](logout.md) |
+| `end_session_endpoint`, `frontchannel_logout_supported`, `frontchannel_logout_session_supported`, `backchannel_logout_supported`, `backchannel_logout_session_supported` | The endpoint, and `true` for each logout channel wired, both in the application. [Logout](logout.md) |
 | `dpop_signing_alg_values_supported` | The signature algorithms wired. [DPoP](sender-constrained/dpop.md) |
-| `tls_client_certificate_bound_access_tokens` | `true` when a method that authenticates by certificate is wired, which the bundle does. [Mutual TLS](sender-constrained/mutual-tls.md) |
+| `tls_client_certificate_bound_access_tokens` | `true` when a method that authenticates by certificate is wired, which the application does. [Mutual TLS](sender-constrained/mutual-tls.md) |
 
 Some members are announced only when what they describe exists, and are absent otherwise rather than empty:
 

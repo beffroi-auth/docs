@@ -28,12 +28,12 @@ use only, and the code is computed in memory when one is checked.
 
 ## Setting one up
 
-On [the page of the second factor](../../symfony-bundle/account.md#enrolling-a-second-factor),
+On [the page of the second factor](../../application/account.md#enrolling-a-second-factor),
 `/account/two-factor`, a person who holds none is offered to set one up, where the floor of the tenant admits a
 one-time code. The enrolment is the two steps it is:
 
 1. **The secret is handed to the application.** The page shows the provisioning URI as a QR code, an SVG the
-   bundle draws and embeds, with no image loaded from anywhere, and the same secret in base32, in groups of four,
+   provider draws and embeds, with no image loaded from anywhere, and the same secret in base32, in groups of four,
    for an application in front of no camera. The URI is the Key Uri Format: the name of the tenant as the issuer
    and the username as the account, a colon in either shown as a space.
 2. **The first code confirms it.** A code the application computes for the current step, or one on each side,

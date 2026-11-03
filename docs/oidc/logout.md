@@ -183,7 +183,7 @@ receives a token it can act on; after it, it can only receive an expired one.
 A session ends:
 
 - at the end session endpoint, as above;
-- on [the pages of the account](../symfony-bundle/account.md), when its person ends it, ends every other
+- on [the pages of the account](../application/account.md), when its person ends it, ends every other
   session, or changes their password, which ends every other session;
 - with `beffroi:user:revoke-session`, at the console;
 - by a `LogoutRequest` of a SAML service provider, at the [single logout service](../saml/single-logout.md);

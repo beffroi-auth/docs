@@ -7,7 +7,7 @@ description: How the packages are versioned, and how this documentation follows 
 
 ## The packages
 
-The eight packages share one version number, released together from the monorepo. A minor version has its
+The seven packages share one version number, released together from the monorepo. A minor version has its
 own maintenance branch, named after it: `0.1`, `0.2`, then `1.0`, `1.1`, and so on. A fix goes to the
 oldest branch it applies to and is merged forward; a feature goes to the newest.
 

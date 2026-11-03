@@ -38,7 +38,7 @@ server who a token names, `introspection.answered`, and a UserInfo answer, `user
 introspection that describes nobody, because the token is inactive or held by a client for itself, writes
 nothing.
 
-A person reads the acts of their account on [the page of their acts](../symfony-bundle/account.md#the-pages).
+A person reads the acts of their account on [the page of their acts](account.md#the-pages).
 An operator reads them with `beffroi:user:journal`:
 
 ``` bash
