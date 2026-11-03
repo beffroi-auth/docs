@@ -138,7 +138,8 @@ beffroi:
 | `nonce.ttl` | `300` | Seconds a nonce is accepted once issued, one at least |
 
 What a proof may be signed with is not an option: it is the list of signature algorithms the provider is
-wired with, which the discovery document announces in `dpop_signing_alg_values_supported`.
+wired with, which the discovery document announces in `dpop_signing_alg_values_supported` and every challenge
+of UserInfo under `DPoP` names in `algs`.
 
 !!! warning "The proofs already seen and the nonces live in a cache pool"
 
@@ -154,14 +155,17 @@ wired with, which the discovery document announces in `dpop_signing_alg_values_s
 **UserInfo**, the resource of the provider, honours a token bound to a key only when the request presents it
 under the `DPoP` scheme with a valid proof of that key, and refuses it with a `401` whose challenge names the
 scheme that would have worked. The proof is verified before the token is read, and the binding once the token
-is known to be valid:
+is known to be valid, so a bound token that no longer holds, an expired one for instance, is refused for that
+first, under the scheme it was presented under (RFC 9449 §7.2). Every challenge under `DPoP` names in `algs`
+the algorithms a proof may be signed with (RFC 9449 §7.1):
 
 | The request | Status | `WWW-Authenticate` |
 |---|---|---|
-| Presents the bound token as `Bearer` | `401` | `DPoP error="invalid_token"` |
-| Presents it as `DPoP` with no proof, or with a proof of another key | `401` | `DPoP error="invalid_token"` |
-| Carries a proof that does not verify, or that names another request or another token | `401` | `DPoP error="invalid_dpop_proof"` |
-| Carries no nonce, or a stale one, while the provider asks for one | `401` | `DPoP error="use_dpop_nonce"`, and the fresh nonce in `DPoP-Nonce` |
+| Presents the bound token as `Bearer` | `401` | `DPoP error="invalid_token"`, with `algs` |
+| Presents it as `DPoP` with no proof, or with a proof of another key | `401` | `DPoP error="invalid_token"`, with `algs` |
+| Presents it as `DPoP` with a valid proof once it has expired or is no longer honoured | `401` | `DPoP error="invalid_token"`, with `algs` |
+| Carries a proof that does not verify, or that names another request or another token | `401` | `DPoP error="invalid_dpop_proof"`, with `algs` |
+| Carries no nonce, or a stale one, while the provider asks for one | `401` | `DPoP error="use_dpop_nonce"`, with `algs`, and the fresh nonce in `DPoP-Nonce` |
 
 The body of each refusal carries the same `error` and its `error_description` as JSON.
 [UserInfo](../userinfo.md) gives the rest of its refusals.
