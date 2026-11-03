@@ -6,19 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Importing the routes under the issuer, the two planes their names carry, and restricting a process to one of them.">
+        <meta name="description" content="The pages a person reads, what each one shows, what a deployment and a visitor change of their look, and what a template keeps of what they post.">
       
       
         <meta name="author" content="The Beffroi contributors">
       
       
-        <link rel="canonical" href="https://doc.beffroi.tech/0.1/symfony-bundle/routes-and-planes/">
+        <link rel="canonical" href="https://doc.beffroi.tech/0.1/application/pages/">
       
       
-        <link rel="prev" href="../configuration/">
+        <link rel="prev" href="../key-management/">
       
       
-        <link rel="next" href="../persistence/">
+        <link rel="next" href="../translations/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Routes and planes - Beffroi</title>
+        <title>Pages - Beffroi</title>
       
     
     
@@ -72,8 +72,8 @@
   <meta name="theme-color" content="#0c1016" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
-  <meta property="og:title" content="Routes and planes">
-  <meta property="og:description" content="Importing the routes under the issuer, the two planes their names carry, and restricting a process to one of them.">
+  <meta property="og:title" content="Pages">
+  <meta property="og:description" content="The pages a person reads, what each one shows, what a deployment and a visitor change of their look, and what a template keeps of what they post.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -98,7 +98,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#routes-and-planes" class="md-skip">
+        <a href="#pages" class="md-skip">
           Skip to content
         </a>
       
@@ -136,7 +136,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Routes and planes
+              Pages
             
           </span>
         </div>
@@ -644,7 +644,7 @@
   <span class="md-ellipsis">
     
   
-    The standalone application
+    Running the application
   
 
     
@@ -2875,6 +2875,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -2894,7 +2900,7 @@
   <span class="md-ellipsis">
     
   
-    The Symfony bundle
+    The application
   
 
     
@@ -2916,7 +2922,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    The Symfony bundle
+    The application
   
 
           </label>
@@ -2931,14 +2937,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../deployment/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Installing the bundle
+    Deployment
   
 
     
@@ -2984,26 +2990,17 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
+    <li class="md-nav__item">
+      <a href="../configuration-tree/" class="md-nav__link">
         
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
   
   
   <span class="md-ellipsis">
     
   
-    Routes and planes
+    Configuration tree
   
 
     
@@ -3011,10 +3008,20 @@
   
   
 
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../routes-and-planes/" class="md-nav__link">
         
   
   
@@ -3030,100 +3037,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#importing-the-routes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Importing the routes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Importing the routes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#two-files-for-development-only" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Two files for development only
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-two-planes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The two planes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#restricting-a-process-to-one-plane" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Restricting a process to one plane
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-every-route-of-the-two-planes-carries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What every route of the two planes carries
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#a-second-origin-for-the-clients-that-present-a-certificate" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        A second origin for the clients that present a certificate
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3217,10 +3130,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../pages/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pages
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -3236,6 +3176,144 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#making-them-yours" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Making them yours
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-tenant-shows-of-itself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a tenant shows of itself
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pages
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The pages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-login-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The login page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-consent-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The consent page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-logout-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The logout pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-device-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The device pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-pages-that-post-a-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pages that post a form
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-headers-of-a-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The headers of a page
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-template-keeps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a template keeps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3276,14 +3354,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../messenger/" class="md-nav__link">
+      <a href="../account/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Messenger
+    The account pages
   
 
     
@@ -3304,14 +3382,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../account/" class="md-nav__link">
+      <a href="../messenger/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    The account pages
+    Messenger
   
 
     
@@ -3388,6 +3466,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../operating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating it
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../profiler/" class="md-nav__link">
         
   
@@ -3429,14 +3563,6 @@
           
         
       
-        
-      
-        
-      
-        
-      
-        
-      
     
     
     
@@ -3446,187 +3572,6 @@
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../application/" class="md-nav__link ">
-              
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The standalone application
-  
-
-    
-  </span>
-  
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    The standalone application
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/deployment/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deployment
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/configuration/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Configuration
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/operating/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Operating it
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/observability/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Observability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3657,8 +3602,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3704,10 +3649,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
             
   
   
@@ -3725,8 +3670,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3904,7 +3849,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3935,8 +3880,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_11">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3984,22 +3929,88 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#importing-the-routes" class="md-nav__link">
+  <a href="#making-them-yours" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Importing the routes
+        Making them yours
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Importing the routes">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-tenant-shows-of-itself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a tenant shows of itself
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pages
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The pages">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#two-files-for-development-only" class="md-nav__link">
+  <a href="#the-login-page" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Two files for development only
+        The login page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-consent-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The consent page
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-logout-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The logout pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-device-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The device pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-pages-that-post-a-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pages that post a form
       
     </span>
   </a>
@@ -4012,10 +4023,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-two-planes" class="md-nav__link">
+  <a href="#the-headers-of-a-page" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The two planes
+        The headers of a page
       
     </span>
   </a>
@@ -4023,32 +4034,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#restricting-a-process-to-one-plane" class="md-nav__link">
+  <a href="#what-a-template-keeps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Restricting a process to one plane
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-every-route-of-the-two-planes-carries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What every route of the two planes carries
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#a-second-origin-for-the-clients-that-present-a-certificate" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        A second origin for the clients that present a certificate
+        What a template keeps
       
     </span>
   </a>
@@ -4072,7 +4061,7 @@
 
 
   
-    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/symfony-bundle/routes-and-planes.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/application/pages.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M4 20V16L16 4L20 8L8 20Z"/><path d="M13 7L17 11"/></svg>
     </a>
@@ -4080,142 +4069,399 @@
   
 
 
-<h1 id="routes-and-planes">Routes and planes<a class="headerlink" href="#routes-and-planes" title="Link to this section">&para;</a></h1>
-<p>Every route of the bundle is declared on its controller, one action per class, and its name carries its
-plane: <code>beffroi_protocol_*</code> for what a client or a resource server calls, <code>beffroi_interaction_*</code> for what a
-browser reads. <code>BEFFROI_PLANE</code> restricts a process to one of them, so that a provider can serve the protocol
-on machines a browser never reaches, from the same build.</p>
-<h2 id="importing-the-routes">Importing the routes<a class="headerlink" href="#importing-the-routes" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/routes/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'@BeffroiBundle/config/routes.php'</span>
-</span></code></pre></div>
-<p><strong>The routes are imported under the path of the issuer.</strong> A provider whose issuer is
-<code>https://op.example.com</code> imports them with no prefix, and one whose issuer is <code>https://example.com/idp</code>
-imports them under <code>prefix: /idp</code>. Every endpoint the provider announces is located under the origin of the
-issuer and the path the router gives it, never under the <code>Host</code> of the request. A prefix that disagrees with
-the path of the issuer is refused at the first request that needs the endpoints, the discovery document among
-them. Routes imported at the root for the issuer <code>https://example.com/idp</code> give:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>The discovery document is served at "https://example.com/.well-known/openid-configuration" but the issuer "https://example.com/idp" makes clients look for it at "https://example.com/idp/.well-known/openid-configuration" (OIDC Discovery section 4.1): mount the routes of the bundle under the path of the issuer.
-</span></code></pre></div>
-<p>The metadata of both SAML roles are held to the same rule, and refused the same way.</p>
-<p><strong>The root of the application is not the bundle's.</strong> No route of the bundle is <code>/</code>. The standalone
-application, whose issuer is an origin, sends <code>/</code> to the home of the account, with a route of its own whose
-name carries the interaction plane, so a process that serves the protocol alone answers it <code>404</code> like every
-page meant for a browser.</p>
+<h1 id="pages">Pages<a class="headerlink" href="#pages" title="Link to this section">&para;</a></h1>
+<p>The pages a person reads are Twig templates of the application, under <code>templates/beffroi/</code> in the <code>@Beffroi</code>
+namespace, translated. They carry the structure and the words, never a stylesheet: their look is a layout, two
+skeletons and one stylesheet of the application, which a deployment colours through its environment and a
+visitor reads in the theme they pick. The scripts they load are the application's own and served by it, so a
+deployment has nothing to build for them; the pages that post a form carry one line of script of their own,
+named by its hash.</p>
+<h2 id="making-them-yours">Making them yours<a class="headerlink" href="#making-them-yours" title="Link to this section">&para;</a></h2>
+<p>A deployment gives the pages the name, the logo and the two colours of its tenant, through its environment
+like everything else it sets:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>What the pages show</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_TENANT_NAME</code></td>
+<td>The name of the tenant, the host of the issuer when the variable is empty</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_LOGO_URI</code></td>
+<td>The logo of the tenant, the placeholder mark the application serves at <code>/tenant-logo.svg</code> when the variable is empty</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
+<td>The colour the buttons and the links are drawn in</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code></td>
+<td>The colour of what is written on them, named with the one above or not at all</td>
+</tr>
+</tbody>
+</table>
+<p>A change of one of them is written to <a href="../../core/tenants/#its-row">the row of the tenant</a> by
+<code>beffroi:tenant:synchronize</code>; until it is, a request that needs the tenant fails, naming the field that
+disagrees.</p>
+<p><a href="../configuration/#the-tenant"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The variables of the tenant</a></p>
+<p>A visitor reads the pages in the theme they pick, light, dark or the one their browser asks for, from a
+control beside the choice of a language on every page that extends the layout. The choice is a form and no
+script, posted to <code>/theme</code>, which sends the browser back to the page it was made on. It is kept for a year on
+<a href="../translations/#how-a-person-chooses-one">the cookie of the preferences</a> of that browser and read on the
+server, so a page is rendered in the theme it was asked in.</p>
+<p>The templates themselves are code of the application. <code>templates/beffroi/layout.html.twig</code>, which every page
+extends but the four that carry a step of the protocol, picks one of the two skeletons of <code>templates/layout/</code>
+by the route: <code>account.html.twig</code> for a page of the account, which lists the pages of the account in a column
+beside it, and <code>interaction.html.twig</code> for every other page, which on a wide screen names the tenant in a
+panel beside the question. The error page sets <code>beffroi_refusal</code>, so that a refusal served on a route of the
+account is drawn in <code>interaction.html.twig</code> too. Both skeletons extend <code>document.html.twig</code>, which carries
+the language of the page, its theme, the two colours of the tenant and the one stylesheet, Tailwind and
+DaisyUI built from <code>assets/styles/app.css</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>What the pages put in it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>The title of the page, which <code>heading</code> repeats unless a page says otherwise</td>
+</tr>
+<tr>
+<td><code>head</code></td>
+<td>The script a page needs: <code>passkey.js</code> on the login page, the page of passkeys and the enrolment by ticket, <code>push.js</code> on the page of notifications, <code>copy.js</code> where a value is handed over to copy, <code>password-strength.js</code> on the page of the password</td>
+</tr>
+<tr>
+<td><code>heading</code></td>
+<td>The heading of the page</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>The one action a page of the account offers beside its title, when it offers one</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>The page itself</td>
+</tr>
+</tbody>
+</table>
+<p>The stylesheet sits outside <code>head</code> in <code>document.html.twig</code>, since a page that loads a script fills that block
+and its own block replaces the whole of it. The skeletons include the logo of the tenant, <code>_brand.html.twig</code>,
+and the two controls of their bar, the language, <code>_locale_switcher.html.twig</code>, and the theme,
+<code>templates/_theme_switcher.html.twig</code>.</p>
+<p>The templates read what they show of the provider through these functions and filters, under <code>App\Twig\</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Twig</th>
+<th>What it gives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi_tenant()</code></td>
+<td>What the page shows of its tenant: <code>name</code>, <code>logoUri</code>, <code>primaryColor</code>, <code>primaryContentColor</code>, or nothing when the row of the tenant is missing or disagrees with the configuration</td>
+</tr>
+<tr>
+<td><code>beffroi_locales()</code></td>
+<td>The languages the deployment serves, the default one first</td>
+</tr>
+<tr>
+<td><code>beffroi_locale_choice()</code></td>
+<td>The same list, or none when the record of a signed-in person decided the language of the page</td>
+</tr>
+<tr>
+<td><code>beffroi_moment</code></td>
+<td>A date, on the clock of the person, in the words of the language of the page, the zone always named</td>
+</tr>
+<tr>
+<td><code>beffroi_place</code>, <code>beffroi_device</code></td>
+<td>Where a request came from, and the browser it named</td>
+</tr>
+</tbody>
+</table>
+<p><a href="../translations/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Translations</a></p>
+<h2 id="what-a-tenant-shows-of-itself">What a tenant shows of itself<a class="headerlink" href="#what-a-tenant-shows-of-itself" title="Link to this section">&para;</a></h2>
+<p>The logo of the tenant is on every page that extends the layout, with the name of the tenant as the text that
+stands in for it, so a reader who does not see the image is told who they came for. It is loaded by the
+browser of the visitor, never by the provider, and with no referrer. A deployment that names no logo shows the
+placeholder mark of the application.</p>
+<p>The two colours the tenant declares, the one the buttons and the links are drawn in and the one of what is
+written on them, are written by <code>document.html.twig</code> as the two custom properties DaisyUI draws a primary
+surface from, <code>--color-primary</code> and <code>--color-primary-content</code>, for both themes, in a <code>style</code> element that
+carries the nonce of the response and comes after the stylesheet. A tenant that declares no colour leaves the
+element off, and the theme answers.</p>
+<p>The consent page shows the logo of the asking client beside the one of the tenant, and adds the origins both
+are served from to the <code>img-src</code> of the policy its answer carries. Every other page is served under the
+policy of the deployment alone, so that policy allows the origin the logo of the tenant is served from: the
+application serves it from its own origin, which its <code>img-src 'self'</code> allows.</p>
+<p><a href="../../core/tenants/#what-the-configuration-says"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> What the configuration says of a tenant</a></p>
+<h2 id="the-pages">The pages<a class="headerlink" href="#the-pages" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Template</th>
+<th>Served at</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>login.html.twig</code></td>
+<td><code>/login</code></td>
+<td>Where a person proves who they are</td>
+</tr>
+<tr>
+<td><code>login_address.html.twig</code></td>
+<td><code>/login</code></td>
+<td>The address asked first, on a tenant that federates domains</td>
+</tr>
+<tr>
+<td><code>code.html.twig</code></td>
+<td><code>/login/code</code></td>
+<td>The second step: a code of the authenticator application, or a backup code</td>
+</tr>
+<tr>
+<td><code>consent.html.twig</code></td>
+<td><code>/consent</code></td>
+<td>What a client asks for, and the answer</td>
+</tr>
+<tr>
+<td><code>logout.html.twig</code></td>
+<td><code>/logout</code></td>
+<td>The confirmation of a logout the request did not prove it may make</td>
+</tr>
+<tr>
+<td><code>logged_out.html.twig</code></td>
+<td><code>/logout</code>, and after the end of a session</td>
+<td>Signed out, or still signed in after choosing to stay</td>
+</tr>
+<tr>
+<td><code>device.html.twig</code>, <code>device_approval.html.twig</code>, <code>device_answered.html.twig</code></td>
+<td><code>/device</code></td>
+<td>The code a device shows, what it asks for, and the answer given</td>
+</tr>
+<tr>
+<td><code>approvals.html.twig</code>, <code>approval_answered.html.twig</code></td>
+<td><code>/account/approvals</code></td>
+<td>What somebody waits on an answer for, and the answer given</td>
+</tr>
+<tr>
+<td><code>enrolment_ticket.html.twig</code></td>
+<td><code>/enrol/{ticket}/{value}</code></td>
+<td>The first passkey of a person, posed without a session</td>
+</tr>
+<tr>
+<td><code>error.html.twig</code></td>
+<td>Wherever a request stops</td>
+<td>The refusal, when nothing may be sent back to a client</td>
+</tr>
+<tr>
+<td><code>account/*.html.twig</code></td>
+<td><code>/account</code> and below</td>
+<td><a href="../account/">The account pages</a></td>
+</tr>
+<tr>
+<td><code>form_post.html.twig</code>, <code>saml_post.html.twig</code>, <code>post_again.html.twig</code></td>
+<td>Wherever an answer goes back in a form: an authorization response, a SAML message, a post from another site</td>
+<td>A form the browser posts on its own</td>
+</tr>
+<tr>
+<td><code>front_channel_logout.html.twig</code></td>
+<td>The end of a session whose clients registered a front-channel logout URI</td>
+<td>The frames of Front-Channel Logout 1.0 §3</td>
+</tr>
+</tbody>
+</table>
+<p><code>scopes.html.twig</code> and <code>authorization_details.html.twig</code> write the scopes and the details of a request the
+same way on the consent page and on the pages of the account; <code>_brand.html.twig</code> and
+<code>_locale_switcher.html.twig</code> are included by the skeletons.</p>
+<h3 id="the-login-page">The login page<a class="headerlink" href="#the-login-page" title="Link to this section">&para;</a></h3>
+<p><strong>It offers what the tenant admits.</strong> It shows the logins the firewall wires that the <a href="../../core/tenants/#the-floor-of-its-logins">floor of the
+tenant</a> accepts: a tenant that signs its people in by passkey
+shows no password field and no username, the passkey naming its own user. A tenant that federates domains to
+<a href="../../saml/federated-sign-in/#the-login-page-asks-for-the-address-first">upstream identity providers</a> asks for
+the address first, one field and nothing else, and sends an address of those domains to its provider.</p>
+<p>The password form comes first. The passkey form is hidden until the script finds a browser that can hold a
+passkey, then shows a button, and the username field offers the passkeys the browser holds when it can
+(<code>autocomplete="username webauthn"</code>). A refused login shows one message, whatever the reason. On a step-up
+the page names the classes the client accepts and says which kinds of credential the person holds would
+reach one. A login asked for by a page of the provider names no client.</p>
+<h3 id="the-consent-page">The consent page<a class="headerlink" href="#the-consent-page" title="Link to this section">&para;</a></h3>
+<p>Who is asking is what the client registered of itself: its name, its logo, and the pages a person may read
+before deciding, <code>policy_uri</code>, <code>tos_uri</code> and <code>client_uri</code> in that order, each opened with no referrer. Then
+the person signed in, every scope of the request, the standard scopes of OIDC Core §5.4 in words and any
+other by its value, and what the request asks for beyond its scopes (RFC 9396 §2) in the words of its type.
+Allowing ends with the code carried to the client, so the page adds the origin of its redirection URI to the
+<code>form-action</code> of its policy.</p>
+<h3 id="the-logout-pages">The logout pages<a class="headerlink" href="#the-logout-pages" title="Link to this section">&para;</a></h3>
+<p>The logout asks for a confirmation when the request did not prove it is about the session the browser holds
+(OIDC RP-Initiated Logout 1.0 §2), and the form posts the same parameters back with the answer. After it, the
+page says the person is signed out, or still signed in when they chose to stay. When clients of the session
+registered a front-channel logout URI, the page that loads them in frames is served once the session has
+ended, and goes on to where the logout was going.</p>
+<p><a href="../../oidc/logout/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Logout</a></p>
+<h3 id="the-device-pages">The device pages<a class="headerlink" href="#the-device-pages" title="Link to this section">&para;</a></h3>
+<p>The first page asks for the code a device shows, one field and nothing else, and one message when the code
+names no request awaiting an answer, whatever the reason. The second says what the code names: the provider
+that is asking, the person signed in, the client that asked and the code, where the device asked from, every
+scope of the request, and a warning that somebody who started nothing refuses. Nothing is approved on a
+<code>GET</code>: the answer is a post of that page.</p>
+<h3 id="the-pages-that-post-a-form">The pages that post a form<a class="headerlink" href="#the-pages-that-post-a-form" title="Link to this section">&para;</a></h3>
+<p>Three pages carry a message of the protocol rather than a page of the product: the answer of the
+authorization endpoint in <code>response_mode=form_post</code> (OAuth 2.0 Form Post Response Mode §2), a SAML message to a
+peer, and a form another site posted without the session cookie, posted again from the provider's own origin.
+None of them extends the layout. Each carries the policy <code>default-src 'none'</code> and submits itself with the one
+script that policy names by its hash, and keeps a button for a browser that runs no script; their words are
+translated like every other page's. The page of the front-channel logout is built the same way, its policy
+naming the frames it opens.</p>
 <div class="admonition warning">
-<p class="admonition-title">Import the routes by name, never through <code>routing.controllers</code></p>
-<p>The <code>routing.controllers</code> resource Symfony 8.2 offers routes every service that carries a <code>#[Route]</code>
-attribute, whatever file imports it and with no prefix. It would put the routes of the bundle at the root
-of an issuer that has a path, and the endpoints of the conformance tools below in every environment. The
-standalone application imports its own controllers one file at a time, for the same reason.</p>
+<p class="admonition-title">The script of these pages is their policy</p>
+<p>Their templates can be changed like any other, as long as the script is kept exactly as it is given: the
+hash in the <code>Content-Security-Policy</code> is the hash of that script, and a script that differs by a character
+does not run.</p>
 </div>
-<h3 id="two-files-for-development-only">Two files for development only<a class="headerlink" href="#two-files-for-development-only" title="Link to this section">&para;</a></h3>
-<p>The bundle ships two more files of routes, which its own <code>routes.php</code> does not import: the endpoints the
-FIDO Conformance Tools drive, and the endpoint the OpenID conformance suite answers a backchannel request
-with when nobody is there to answer it. They are not an API of the product. An application imports them in
-development, under a prefix of its own:</p>
-<div class="language-yaml highlight"><span class="filename">config/routes/conformance.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">when@dev</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">beffroi_fido_conformance</span><span class="p">:</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'@BeffroiBundle/config/routes/fido-conformance.php'</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/fido/conformance</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">beffroi_ciba_conformance</span><span class="p">:</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'@BeffroiBundle/config/routes/ciba-conformance.php'</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/ciba/conformance</span>
-</span></code></pre></div>
-<p>Their names, <code>beffroi_fido_conformance_*</code> and <code>beffroi_ciba_conformance_approval</code>, carry no plane.</p>
-<h2 id="the-two-planes">The two planes<a class="headerlink" href="#the-two-planes" title="Link to this section">&para;</a></h2>
+<h2 id="the-headers-of-a-page">The headers of a page<a class="headerlink" href="#the-headers-of-a-page" title="Link to this section">&para;</a></h2>
+<p>Every page the application renders on the interaction plane carries these, and the pages that post a form
+carry their own policy in place of the floor:</p>
 <table>
 <thead>
 <tr>
-<th>Plane</th>
-<th>Route names</th>
-<th>Who calls it</th>
-<th>What is on it</th>
+<th>Header</th>
+<th>Value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Protocol</td>
-<td><code>beffroi_protocol_*</code></td>
-<td>A client or a resource server, server to server</td>
-<td>The discovery document and the RFC 8414 metadata, the JWK Set, the token, UserInfo, introspection, revocation, pushed authorization, device authorization, backchannel authentication and registration endpoints, and the metadata of both SAML roles</td>
+<td><code>X-Frame-Options</code></td>
+<td><code>DENY</code></td>
 </tr>
 <tr>
-<td>Interaction</td>
-<td><code>beffroi_interaction_*</code></td>
-<td>A browser, with a person in front of it</td>
-<td>The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the enrolment of a first passkey, the choice of a language, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to</td>
+<td><code>Content-Security-Policy</code></td>
+<td><code>frame-ancestors 'none'</code></td>
+</tr>
+<tr>
+<td><code>Referrer-Policy</code></td>
+<td><code>no-referrer</code></td>
+</tr>
+<tr>
+<td><code>Cache-Control</code></td>
+<td><code>no-store</code>; <code>no-cache, no-store</code>, with <code>Pragma: no-cache</code>, on the page that posts a SAML message and on the page that posts a form again</td>
 </tr>
 </tbody>
 </table>
-<p><a href="../../reference/endpoints/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
-</span> Every route, with its method and path</a></p>
-<p>What tells the planes apart is the name and nothing else. A route is of the protocol plane because its name
-starts <code>beffroi_protocol_</code>, so a route the bundle gains is in its plane by being routed, and a route of the
-host application, whose name starts with neither, belongs to no plane.</p>
-<h2 id="restricting-a-process-to-one-plane">Restricting a process to one plane<a class="headerlink" href="#restricting-a-process-to-one-plane" title="Link to this section">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th><code>BEFFROI_PLANE</code></th>
-<th>What the process serves</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>all</code></td>
-<td>Both planes. The default when the variable is not set</td>
-</tr>
-<tr>
-<td><code>interaction</code></td>
-<td>The routes of the interaction plane, and the routes of no plane</td>
-</tr>
-<tr>
-<td><code>protocol</code></td>
-<td>The routes of the protocol plane, and the routes of no plane</td>
-</tr>
-</tbody>
-</table>
-<p>The variable is read by the process and not compiled into the container, so one build serves the three.
-Every process imports the same routes and declares the same firewalls; what differs between the process that
-serves the browsers and the one that serves the clients is that one line of its environment.</p>
-<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>BEFFROI_PLANE=protocol
-</span></code></pre></div>
-<p><strong>A route of the other plane answers <code>404</code></strong>, the answer an unknown path gets, and the exception says why:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>The route "beffroi_interaction_login" belongs to a plane this process does not serve (BEFFROI_PLANE=protocol).
-</span></code></pre></div>
-<p>The refusal is made once the router has named the route and before the firewall reads anything, so a
-request refused for its plane opens no session and is not counted against the load budget of its origin. A
-route of the host application, and an endpoint of the conformance tools, is never refused.</p>
-<p><strong>A value that is none of the three refuses every request of the process</strong>, the routes of the host
-application included. A plane nobody spelled right is not <code>all</code>.</p>
-<h2 id="what-every-route-of-the-two-planes-carries">What every route of the two planes carries<a class="headerlink" href="#what-every-route-of-the-two-planes-carries" title="Link to this section">&para;</a></h2>
-<p>Being of a plane is also what decides what the provider puts around a route.</p>
+<p><code>frame-ancestors 'none'</code> is a floor: it restricts framing and nothing else, and the application serves every
+page that carries it the whole policy of its <code>config/packages/nelmio_security.yaml</code> in its place, a
+redirection keeping the floor. A page that has something to say about the request it answers never writes a
+policy of its own: it adds what it needs to whichever policy the answer carries, the enforced one and the one
+that only reports, once that policy is written.</p>
 <ul>
-<li><strong>The budget of its origin.</strong> Every request to a route of either plane is counted against the address it
-  comes from, before the firewall, and refused with <code>429</code> once the budget is spent.
-  <a href="../security/#attempts-and-budgets">Attempts and budgets</a> says how much and in which shape.</li>
-<li><strong>The headers of a page.</strong> Every page the bundle renders on the interaction plane carries
-  <code>X-Frame-Options: DENY</code>, <code>Content-Security-Policy: frame-ancestors 'none'</code>, <code>Referrer-Policy: no-referrer</code>
-  and a <code>Cache-Control</code> that says <code>no-store</code>. The policy is a floor a deployment replaces with its own, and
-  <a href="../pages/#the-headers-of-a-page">the pages</a> say what a page adds to it.</li>
-<li><strong>The rule of a post from another site</strong>, which is read on the interaction plane alone.
-  <a href="../security/#a-post-from-another-site">Security</a> says which posts it reaches.</li>
+<li>The login page, the code page and the consent page add the origin of the redirection URI of the client to
+  <code>form-action</code>, since a browser checks that directive over the whole chain of redirections of a submission,
+  the last of which carries the code to the client. The logout confirmation adds the origin of the
+  post-logout redirection URI, and the origin of the single logout service of each SAML service provider the
+  logout goes through.</li>
+<li>The consent page adds the origins of the two logos it shows to <code>img-src</code>.</li>
 </ul>
-<p>The bundle writes no CORS header on any route. Which origins may read the answer of an endpoint is the
-deployment's to declare.</p>
-<h2 id="a-second-origin-for-the-clients-that-present-a-certificate">A second origin for the clients that present a certificate<a class="headerlink" href="#a-second-origin-for-the-clients-that-present-a-certificate" title="Link to this section">&para;</a></h2>
-<p>A deployment whose TLS listener asks for a client certificate on a host of its own names that host, and the
-endpoints are located a second time under it, with the same paths (RFC 8705 §5):</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">mutual_tls</span><span class="p">:</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">        </span><span class="nt">origin</span><span class="p">:</span><span class="w"> </span><span class="s">'https://mtls.op.example.com'</span>
-</span></code></pre></div>
-<p>The discovery document announces them in <code>mtls_endpoint_aliases</code>. The issuer does not change: an alias is
-another way to the same provider, not another provider. With no origin named, the document announces no
-alias, and a client that authenticates by mutual TLS reaches the ordinary endpoints.</p>
-<p><a href="../../oidc/sender-constrained/mutual-tls/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
-</span> Mutual TLS</a></p>
+<p>A policy that names no <code>form-action</code> is left alone, that directive falling back to no other; a policy that
+names <code>default-src</code> and no <code>img-src</code> gets an <code>img-src</code> written out of it, with the origins added.</p>
+<p>The scripts are served with <code>Cache-Control: public</code> for an hour and an <code>ETag</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Read by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/passkey.js</code></td>
+<td>The login page, the enrolment of a passkey on the account and by ticket</td>
+</tr>
+<tr>
+<td><code>/push.js</code>, <code>/push-worker.js</code></td>
+<td>The page of notifications, and the service worker it registers</td>
+</tr>
+<tr>
+<td><code>/copy.js</code></td>
+<td>The pages that hand over a value to copy, the key of an authenticator application and the backup codes</td>
+</tr>
+<tr>
+<td><code>/password-strength.js</code></td>
+<td>The page of the password</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-a-template-keeps">What a template keeps<a class="headerlink" href="#what-a-template-keeps" title="Link to this section">&para;</a></h2>
+<p>A template is free to move, reword or restyle anything, and three things in it are read by something else.
+<strong>The fields of a form</strong>, which a controller or an authenticator reads by name. <strong>The form tokens</strong>, each
+rendered under its identifier with <code>csrf_token()</code>, or by the form component of Symfony in the forms of the
+page of the profile. <strong>The <code>data-*</code> attributes the scripts read</strong>, and the <code>?interaction=</code> the actions carry,
+or the <code>interaction</code> field of the consent form, which is how a post finds its interaction.</p>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Fields</th>
+<th>Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Password login</td>
+<td><code>_username</code>, <code>_password</code></td>
+<td><code>_csrf_token</code>, <code>authenticate</code></td>
+</tr>
+<tr>
+<td>Passkey login</td>
+<td><code>_passkey</code>, in a form marked <code>data-passkey="login"</code> naming its options in <code>data-options-url</code>, with a <code>data-passkey-button</code> and a <code>data-passkey-error</code></td>
+<td><code>_csrf_token</code>, <code>authenticate</code></td>
+</tr>
+<tr>
+<td>Second step</td>
+<td><code>_code</code></td>
+<td><code>_csrf_token</code>, <code>authenticate</code></td>
+</tr>
+<tr>
+<td>Address first</td>
+<td><code>_address</code></td>
+<td><code>_token</code>, <code>beffroi_login_address</code></td>
+</tr>
+<tr>
+<td>Consent</td>
+<td><code>interaction</code>, <code>answer</code> with <code>allow</code> or <code>deny</code></td>
+<td><code>_token</code>, <code>beffroi_consent</code></td>
+</tr>
+<tr>
+<td>Logout</td>
+<td>The parameters of the request, <code>confirm</code> with <code>yes</code> or <code>no</code></td>
+<td><code>_token</code>, <code>beffroi_logout</code></td>
+</tr>
+<tr>
+<td>Device</td>
+<td><code>user_code</code>, and <code>answer</code> with <code>allow</code> or <code>deny</code> on the second page</td>
+<td><code>_token</code>, <code>beffroi_device</code></td>
+</tr>
+<tr>
+<td>Language</td>
+<td><code>locale</code>, <code>target</code>, and <code>interaction</code> when there is one</td>
+<td><code>_token</code>, <code>beffroi_locale</code></td>
+</tr>
+</tbody>
+</table>
+<p><a href="../security/#form-tokens"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Security</a></p>
 
 
 
@@ -4274,7 +4520,7 @@ alias, and a client that authenticates by mutual TLS reaches the ordinary endpoi
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../configuration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Configuration">
+          <a href="../key-management/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Key management">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -4284,20 +4530,20 @@ alias, and a client that authenticates by mutual TLS reaches the ordinary endpoi
                 Previous
               </span>
               <div class="md-ellipsis">
-                Configuration
+                Key management
               </div>
             </div>
           </a>
         
         
           
-          <a href="../persistence/" class="md-footer__link md-footer__link--next" aria-label="Next: Persistence">
+          <a href="../translations/" class="md-footer__link md-footer__link--next" aria-label="Next: Translations">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Persistence
+                Translations
               </div>
             </div>
             <div class="md-footer__button md-icon">

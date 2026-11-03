@@ -6,19 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Which writes leave the request, the buses and lanes the bundle prepends, the worker, the timed steps, and the seal on every message.">
+        <meta name="description" content="The client of symfony/key-management the application seals with, what it seals, the backends it runs against, and what moves when the client changes.">
       
       
         <meta name="author" content="The Beffroi contributors">
       
       
-        <link rel="canonical" href="https://doc.beffroi.tech/0.1/symfony-bundle/messenger/">
+        <link rel="canonical" href="https://doc.beffroi.tech/0.1/application/key-management/">
       
       
-        <link rel="prev" href="../translations/">
+        <link rel="prev" href="../security/">
       
       
-        <link rel="next" href="../account/">
+        <link rel="next" href="../pages/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Messenger - Beffroi</title>
+        <title>Key management - Beffroi</title>
       
     
     
@@ -72,8 +72,8 @@
   <meta name="theme-color" content="#0c1016" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
-  <meta property="og:title" content="Messenger">
-  <meta property="og:description" content="Which writes leave the request, the buses and lanes the bundle prepends, the worker, the timed steps, and the seal on every message.">
+  <meta property="og:title" content="Key management">
+  <meta property="og:description" content="The client of symfony/key-management the application seals with, what it seals, the backends it runs against, and what moves when the client changes.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -98,7 +98,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#messenger" class="md-skip">
+        <a href="#key-management" class="md-skip">
           Skip to content
         </a>
       
@@ -136,7 +136,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Messenger
+              Key management
             
           </span>
         </div>
@@ -644,7 +644,7 @@
   <span class="md-ellipsis">
     
   
-    The standalone application
+    Running the application
   
 
     
@@ -2875,6 +2875,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -2894,7 +2900,7 @@
   <span class="md-ellipsis">
     
   
-    The Symfony bundle
+    The application
   
 
     
@@ -2916,7 +2922,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    The Symfony bundle
+    The application
   
 
           </label>
@@ -2931,14 +2937,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../deployment/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Installing the bundle
+    Deployment
   
 
     
@@ -2967,6 +2973,34 @@
     
   
     Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration tree
   
 
     
@@ -3068,10 +3102,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../key-management/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key management
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -3087,6 +3148,94 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#naming-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naming the client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-seals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it seals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-backends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The backends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opening-a-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opening a key
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-the-service-does-not-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When the service does not answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moving-to-another-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Moving to another client
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3152,44 +3301,17 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Messenger
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../account/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Messenger
+    The account pages
   
 
     
@@ -3198,94 +3320,6 @@
   
 
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-leaves-the-request" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What leaves the request
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-contract-the-bundle-prepends" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The contract the bundle prepends
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-the-application-writes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What the application writes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-worker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The worker
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-time-does-on-its-own" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What time does on its own
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-leaves-the-process-is-sealed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What leaves the process is sealed
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3298,14 +3332,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../account/" class="md-nav__link">
+      <a href="../messenger/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    The account pages
+    Messenger
   
 
     
@@ -3382,6 +3416,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../operating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating it
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../profiler/" class="md-nav__link">
         
   
@@ -3423,14 +3513,6 @@
           
         
       
-        
-      
-        
-      
-        
-      
-        
-      
     
     
     
@@ -3440,187 +3522,6 @@
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../application/" class="md-nav__link ">
-              
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The standalone application
-  
-
-    
-  </span>
-  
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    The standalone application
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/deployment/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deployment
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/configuration/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Configuration
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/operating/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Operating it
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/observability/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Observability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3651,8 +3552,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3698,10 +3599,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
             
   
   
@@ -3719,8 +3620,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3898,7 +3799,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3929,8 +3830,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_11">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3978,10 +3879,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-leaves-the-request" class="md-nav__link">
+  <a href="#naming-the-client" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What leaves the request
+        Naming the client
       
     </span>
   </a>
@@ -3989,10 +3890,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-contract-the-bundle-prepends" class="md-nav__link">
+  <a href="#what-it-seals" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The contract the bundle prepends
+        What it seals
       
     </span>
   </a>
@@ -4000,10 +3901,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-the-application-writes" class="md-nav__link">
+  <a href="#the-backends" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What the application writes
+        The backends
       
     </span>
   </a>
@@ -4011,10 +3912,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-worker" class="md-nav__link">
+  <a href="#opening-a-key" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The worker
+        Opening a key
       
     </span>
   </a>
@@ -4022,10 +3923,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-time-does-on-its-own" class="md-nav__link">
+  <a href="#when-the-service-does-not-answer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What time does on its own
+        When the service does not answer
       
     </span>
   </a>
@@ -4033,10 +3934,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-leaves-the-process-is-sealed" class="md-nav__link">
+  <a href="#moving-to-another-client" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What leaves the process is sealed
+        Moving to another client
       
     </span>
   </a>
@@ -4060,7 +3961,7 @@
 
 
   
-    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/symfony-bundle/messenger.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/application/key-management.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M4 20V16L16 4L20 8L8 20Z"/><path d="M13 7L17 11"/></svg>
     </a>
@@ -4068,281 +3969,197 @@
   
 
 
-<h1 id="messenger">Messenger<a class="headerlink" href="#messenger" title="Link to this section">&para;</a></h1>
-<p>What the protocol or the page needs in the same request, a code or a token issued, a session opened, a
-credential dated by the login that used it, a passkey renamed, is written by the use case in that request. The
-rest travels on a lane and a worker carries it out: the acts of the journal, the enrichment of where a request
-came from, the revocations that follow the end of a session, the calls to clients and push services. No
-message of the bundle travels on the synchronous transport. The buses, their middleware, where each message
-goes and how it is written are a contract the bundle prepends; what an application owns is its transports.</p>
-<h2 id="what-leaves-the-request">What leaves the request<a class="headerlink" href="#what-leaves-the-request" title="Link to this section">&para;</a></h2>
-<p>Every message of the bundle implements one marker, every event of the packages one interface, and that is
-what decides where it goes.</p>
-<table>
-<thead>
-<tr>
-<th>Marker</th>
-<th>Routed to</th>
-<th>What it is</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Beffroi\Bundle\Message\Command</code></td>
-<td><code>async_priority_medium</code></td>
-<td>A write whose result the request does not need</td>
-</tr>
-<tr>
-<td><code>Beffroi\Bundle\Message\Event</code>, and every event of the core, of OpenID Connect and of SAML</td>
-<td><code>async_priority_low</code></td>
-<td>Something that happened. The events of the packages are routed by the interface they all implement, so an event added to one of them leaves the process without a line of configuration</td>
-</tr>
-<tr>
-<td><code>Beffroi\Bundle\Message\Notification</code></td>
-<td><code>async_notifications</code></td>
-<td>Something the provider carries to a third party it does not own</td>
-</tr>
-<tr>
-<td><code>Beffroi\Bundle\Message\Query</code></td>
-<td><code>sync</code></td>
-<td>A read</td>
-</tr>
-<tr>
-<td><code>Beffroi\Bundle\Message\SyncMessage</code></td>
-<td><code>sync</code></td>
-<td>A write the protocol needs the result of before it answers</td>
-</tr>
-</tbody>
-</table>
-<p>No message of the bundle implements <code>Query</code> or <code>SyncMessage</code>. A class implements one marker and never two:
-Messenger sends a message to every transport its class, its parents and its interfaces are routed to, so a
-message with two markers would be handled twice. The core announces its events in PSR-14, and its dispatcher
-puts each one on <code>event.bus</code>, once the handler in progress has committed when one is raised inside a handler:
-the lane carries it to a worker, and nothing listens to an event in the process that raised it.</p>
-<p>What the lanes carry out:</p>
-<table>
-<thead>
-<tr>
-<th>On</th>
-<th>What is done there</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>async_priority_low</code></td>
-<td>Every act written to the journal; where a session was seen from, enriched; the tokens of an ended session revoked, and again for a refresh that was in flight; the clients of an ended session handed a logout token to carry; the date a client was last used; what a client was given of a person; the archive a person asked for, built; the part of a SAML service provider in a session, recorded; the client of an answered backchannel request handed its notification to carry</td>
-</tr>
-<tr>
-<td><code>async_priority_medium</code></td>
-<td>A password that just signed somebody in, looked up in a list of compromised passwords; the language a person chose, written on their account; and every step of <a href="#what-time-does-on-its-own">the schedule</a></td>
-</tr>
-<tr>
-<td><code>async_notifications</code></td>
-<td>A logout token posted to a client (Back-Channel Logout 1.0 §2.5), a backchannel request whose client is told it was answered (CIBA Core §10.2), a person told that a request waits for them, through the channels the deployment wires, <a href="../web-push/">web push</a> among them</td>
-</tr>
-</tbody>
-</table>
-<h2 id="the-contract-the-bundle-prepends">The contract the bundle prepends<a class="headerlink" href="#the-contract-the-bundle-prepends" title="Link to this section">&para;</a></h2>
-<p><strong>The buses.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Bus</th>
-<th>Middleware</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>command.bus</code>, the default bus</td>
-<td>The default middleware of Messenger, then <code>router_context</code>, <code>doctrine_ping_connection</code>, <code>doctrine_close_connection</code> and <code>doctrine_transaction</code></td>
-</tr>
-<tr>
-<td><code>event.bus</code></td>
-<td>The default middleware, with <code>allow_no_handlers</code>: an event nothing listens to is announced all the same</td>
-</tr>
-<tr>
-<td><code>query.bus</code></td>
-<td>The default middleware</td>
-</tr>
-</tbody>
-</table>
-<p><code>doctrine_transaction</code> makes a handler one unit of work, and the default middleware, which no bus turns off,
-is what has an event announced from a handler leave once that handler has committed. <code>router_context</code> gives
-a worker the context of the request that dispatched the message, so that a URL built there is an absolute URL
-of the issuer, and the two connection middleware are what let a worker run for days. This is why the bundle
-writes the buses and an application does not: one that wired them itself and got either of the first two
-wrong would break the asynchronous half of the provider, and nothing in a browser would show it.</p>
-<p><strong>The transports.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Transport</th>
-<th>DSN</th>
-<th>Tried again</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>sync</code></td>
-<td><code>sync://</code></td>
-<td>Not at all</td>
-</tr>
-<tr>
-<td><code>async_priority_high</code>, <code>async_priority_medium</code>, <code>async_priority_low</code></td>
-<td><code>BEFFROI_MESSENGER_DSN</code>, <code>{lane}</code> in it replaced by the name of the lane; <code>doctrine://default?queue_name={lane}</code> when the variable is not set</td>
-<td>Four times, one second before the first, each wait four times the one before, thirty seconds at most</td>
-</tr>
-<tr>
-<td><code>async_notifications</code></td>
-<td>The same</td>
-<td>On the schedule of <code>Beffroi\Bundle\Messenger\NotificationRetryPolicy</code>, which <code>beffroi.back_channel_logout</code> sets: by default two seconds before the first, each wait three times the one before, sixty seconds at most, the waits exact</td>
-</tr>
-<tr>
-<td><code>failed</code>, the failure transport</td>
-<td><code>doctrine://default?queue_name=failed</code></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>The failure transport is the database whatever the lanes are on, a failure transport kept on the broker that
-failed being one nobody reads. The contract routes no message to <code>async_priority_high</code>.</p>
-<p><strong>The serializer.</strong> <code>beffroi.messenger.serializer</code> is the default serializer of every transport, the failure
-transport included: what it writes is the subject of <a href="#what-leaves-the-process-is-sealed">the last section</a>.</p>
-<h2 id="what-the-application-writes">What the application writes<a class="headerlink" href="#what-the-application-writes" title="Link to this section">&para;</a></h2>
-<p><strong>Nothing, to start.</strong> Every lane is the database, through the default connection, and a provider runs with
-no broker, each lane a queue of its own. <code>BEFFROI_MESSENGER_DSN</code> moves every lane to one DSN at once, and keeps
-them four: <code>{lane}</code> in it is where the name of each lane goes, and a DSN that names no <code>{lane}</code> is refused
-when the transport of a lane is built.</p>
-<p><strong>Its transports, for a lane apart.</strong> A transport the application declares under the name of a lane keeps
-the application's settings, the prepended configuration being merged first. The standalone application declares
-none outside its tests, so its lanes are queues of the database. Its test environment plays every lane inside
-the request that sent it:</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/test/messenger.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">messenger</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">transports</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">async_priority_high</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">async_priority_medium</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">async_priority_low</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">async_notifications</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">failed</span><span class="p">:</span><span class="w"> </span><span class="s">'sync://'</span>
+<h1 id="key-management">Key management<a class="headerlink" href="#key-management" title="Link to this section">&para;</a></h1>
+<p>The application seals the private keys of the tenant, its data keys and the secrets it holds for people with a
+client of <code>symfony/key-management</code>, which it declares in <code>config/packages/key_management.yaml</code> and names in
+<code>beffroi.keys.kms</code>. Which provider stands behind that client is the deployment's to say, by the DSN of
+<code>BEFFROI_KMS_DSN</code>. The key management service keeps the master keys and never signs: a private key is opened
+in the process that uses it, and what is sealed never reaches the service, only the data key it is sealed
+with, to be wrapped or opened.</p>
+<h2 id="naming-the-client">Naming the client<a class="headerlink" href="#naming-the-client" title="Link to this section">&para;</a></h2>
+<p><code>config/packages/key_management.yaml</code> declares two clients, each built from a DSN of the environment: <code>op</code>
+from <code>BEFFROI_KMS_DSN</code>, and <code>second</code> from <code>BEFFROI_KMS_DSN_SECOND</code>, for a <a href="#moving-to-another-client">move to another
+client</a>. <code>config/packages/beffroi.yaml</code> names <code>op</code>, and the provider seals with it
+and never with <code>second</code>.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/key_management.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">key_management</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">op</span><span class="p">:</span><span class="w"> </span><span class="s">'service://beffroi.kms.op'</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">second</span><span class="p">:</span><span class="w"> </span><span class="s">'service://beffroi.kms.second'</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nt">services</span><span class="p">:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">beffroi.kms.op</span><span class="p">:</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Symfony\Component\KeyManagement\EncrypterInterface</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nt">factory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'@key_management.factory'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'fromString'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="nt">arguments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(BEFFROI_KMS_DSN)%'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="nt">beffroi.kms.second</span><span class="p">:</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Symfony\Component\KeyManagement\EncrypterInterface</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">        </span><span class="nt">factory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'@key_management.factory'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'fromString'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="nt">arguments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(BEFFROI_KMS_DSN_SECOND)%'</span><span class="p p-Indicator">]</span>
 </span></code></pre></div>
-<p>The block is under <code>messenger</code> and not <code>framework.messenger</code>: in Symfony 8.2 the component has an extension
-of its own, and a block written under <code>framework</code> does not override what the bundle prepends to
-<code>messenger</code>.</p>
-<div class="admonition warning">
-<p class="admonition-title">The notifications keep the retry policy of the bundle</p>
-<p>The schedule of the lane is the one <code>beffroi.back_channel_logout</code> sets: <code>retries</code>, six by default,
-<code>retry_delay</code>, two seconds, <code>retry_multiplier</code>, three, and <code>retry_max_delay</code>, sixty seconds, with the
-<code>timeout</code> of one send, five seconds. These numbers make the budget a logout token is written for: with the
-defaults, waits of 2, 6, 18, 54, 60 and 60 seconds before the six retries, two hundred seconds in all, and
-five seconds for each of the seven sends they count. That budget is the <code>exp</code> of the token, and the key
-that signed it stays in the JWK Set at least that long once it retires. It bounds the token and not the
-sending: a client still out of reach when the budget has run out may be sent the token again,
-<code>retry_max_delay</code> seconds apart, and what it receives then is past its <code>exp</code>.</p>
-<p>A deployment that routes the notifications to a lane of its own, or names another retry service on
-<code>async_notifications</code>, keeps a provider that works and two figures that no longer agree: a client reached
-on a late retry refuses a token it can no longer verify, and the person stays signed in there.
-<code>beffroi:doctor</code> says so. Writing the four numbers of a retry strategy on the lane of the bundle changes
-nothing: the service the bundle prepends survives the merge, and the component prefers a service to its
-numbers.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">op</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KMS_KEY_ID)%'</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/var/keys'</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kms</code></td>
+<td>required</td>
+<td>The name of the client under <code>key_management.clients</code></td>
+</tr>
+<tr>
+<td><code>key_id</code></td>
+<td>required</td>
+<td>The master key of that client the keys of the tenant are sealed under, in the terms of the backend: the name of a sodium key, a Transit key of Vault, an alias or an ARN of AWS. <code>{tenant}</code> stands for the slug of the tenant, which gives every tenant a master key of its own</td>
+</tr>
+<tr>
+<td><code>storage</code></td>
+<td><code>%kernel.project_dir%/var/keys</code></td>
+<td>The directory of the sealed keys and of the pairwise salt</td>
+</tr>
+</tbody>
+</table>
+<p>The rest of <code>beffroi.keys</code>, how long the JWK Set is cached, how long a new key is staged and how long a key
+works, is on <a href="../configuration-tree/">the configuration tree</a>, and what it does to a rotation on <a href="../console-commands/#rotating-a-key">the console
+commands</a>.</p>
+<p><strong>The DSN reaches the client through a service.</strong> The <code>dsn</code> of a client is validated when the container is
+built and takes no environment variable, while the DSN of a deployment comes from its environment and may
+carry a credential. So the application builds each client from the environment with the factory of the
+component, <code>key_management.factory</code>, and names it with <code>service://</code>.</p>
+<p><strong>A name nothing answers to fails the build of the container</strong>, and says which names would have answered:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>The KMS client "vault" named by the "beffroi.keys.kms" configuration is not registered in "key_management.clients": the registered ones are "op", "second".
+</span></code></pre></div>
+<p><strong>A client may be made of several providers.</strong> Declared under <code>key_management.clients</code> with its <code>members</code>,
+each with the master key it wraps under or <code>~</code> for the one each call names, a composite client wraps what it
+seals under every member and reads it back through the first that answers, so losing one provider loses
+nothing. A member listed under <code>retired</code> is read and never written to.</p>
+<h2 id="what-it-seals">What it seals<a class="headerlink" href="#what-it-seals" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where it lives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The keys of the tenant, the ones that sign, the ones clients encrypt to, and the ones it keeps rather than publishing: the key messages are sealed to, the application server key of web push and the SAML keys</td>
+<td>One file per key, <code>&lt;storage&gt;/&lt;slug&gt;/&lt;kid&gt;.json</code>: the public half in the clear, the private half sealed. The directory is created <code>0700</code> and every file <code>0600</code></td>
+</tr>
+<tr>
+<td>The pairwise salt of the tenant (OIDC Core §8.1), drawn at its first use and never again</td>
+<td><code>&lt;storage&gt;/&lt;slug&gt;/pairwise.salt</code>, sealed</td>
+</tr>
+<tr>
+<td>The data keys of the sealed columns, one per tenant and per family of columns</td>
+<td>Rows of <code>beffroi_data_key</code>, wrapped by the master key of the tenant; each row names the client and the master key that wrapped it, and is bound to its reference and its scope under a secret of <code>beffroi.keys.data_key_secrets</code>, which the database does not hold</td>
+</tr>
+<tr>
+<td>The secrets held for people: the secret of an authenticator application, the identifier and token of a backchannel request whose client is called back, the person a self-contained access token is about, an enrolment of an authenticator application in progress</td>
+<td>Envelopes, in their column, in the token, or in the HTTP session of the browser</td>
+</tr>
+</tbody>
+</table>
+<p>Every envelope is bound to its tenant and to its use: sealed for one tenant it does not open for another, and a
+sealed key does not open as a secret. Every process of a deployment reads the same storage directory: the
+worker rotates the keys the processes that serve requests open.</p>
+<p><a href="../../core/keys/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Keys</a> &nbsp; <a href="../../core/personal-data/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Personal data</a></p>
+<h2 id="the-backends">The backends<a class="headerlink" href="#the-backends" title="Link to this section">&para;</a></h2>
+<p>The DSN is the only thing that changes between two backends: the code and the envelope are the same. The
+suites that boot the provider run whole on a sodium key written in their DSN, and the tests of custody, the
+sealed keys, the secrets of an authenticator application and the search of a dump of the database, run again
+on a key file. The custody tests of Vault Transit and of AWS KMS run where a suite is pointed at one, which the
+development stack of the project does, AWS through LocalStack, and are skipped otherwise.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="sodium-in-the-environment" name="__tabbed_1" type="radio" /><input id="sodium-in-a-file" name="__tabbed_1" type="radio" /><input id="hashicorp-vault-transit" name="__tabbed_1" type="radio" /><input id="aws-kms" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="sodium-in-the-environment">Sodium, in the environment</label><label for="sodium-in-a-file">Sodium, in a file</label><label for="hashicorp-vault-transit">HashiCorp Vault Transit</label><label for="aws-kms">AWS KMS</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>A sodium key written in the DSN itself, which is the default of a development machine.</p>
+<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>BEFFROI_KMS_DSN="sodium://?keys[signing]=&lt;32 bytes, base64url&gt;"
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>BEFFROI_KMS_KEY_ID="signing"
+</span></code></pre></div>
 </div>
-<h2 id="the-worker">The worker<a class="headerlink" href="#the-worker" title="Link to this section">&para;</a></h2>
-<p>The standalone application runs one worker, which consumes the schedule and then the lanes, the
-notifications first so that a relying party learns of a logout without waiting behind a batch of
-enrichments:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>messenger:consume<span class="w"> </span>scheduler_beffroi<span class="w"> </span>async_notifications<span class="w"> </span>async_priority_high<span class="w"> </span>async_priority_medium<span class="w"> </span>async_priority_low<span class="w"> </span>--time-limit<span class="o">=</span><span class="m">3600</span><span class="w"> </span>--memory-limit<span class="o">=</span>256M
+<div class="tabbed-block">
+<p>The same sodium key read from a file of its own, mode <code>0600</code>, outside the web root and outside the
+storage of the sealed keys: what a self-hosted deployment without a key management service uses. It holds
+against a copy of the sealed keys, not against a compromise of the host.</p>
+<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>BEFFROI_KMS_DSN="sodium+dir:///app/var/kms?ext=.key"
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
 </span></code></pre></div>
-<p>One process at a time consumes <code>scheduler_beffroi</code>: the steps of the schedule are idempotent, not
-concurrent. The lanes may have more consumers than one. A worker asks the key management service once per key
-it opens and keeps the key for as long as it lives, which is what keeps the service off the path of every
-message.</p>
-<h2 id="what-time-does-on-its-own">What time does on its own<a class="headerlink" href="#what-time-does-on-its-own" title="Link to this section">&para;</a></h2>
-<p>The schedule of the bundle, <code>beffroi</code>, is one recurring message per step. Its transport is
-<code>scheduler_beffroi</code>, and the bundle prepends <code>use_messenger_routing: true</code> to the scheduler, so each message is
-routed by its class like every other: the worker that holds the clock only says when, and the step is handled
-on <code>async_priority_medium</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Step</th>
-<th>Every</th>
-<th>What it does</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>AdvanceKeyLifecycle</code></td>
-<td>Minute</td>
-<td>Stages a successor for every key past its age, activates every staged key whose delay has elapsed, retires every key past its retirement date</td>
-</tr>
-<tr>
-<td><code>ForgetTheRecordsThatAreDead</code></td>
-<td>Hour</td>
-<td>Drops the rows of the protocol that nothing alive needs any more</td>
-</tr>
-<tr>
-<td><code>ForgetTheExpiredArchives</code></td>
-<td>Hour</td>
-<td>Forgets the archives of persons past their week</td>
-</tr>
-<tr>
-<td><code>RemoveUnusedClients</code></td>
-<td>Hour</td>
-<td>Deletes the clients that registered themselves and nobody uses</td>
-</tr>
-<tr>
-<td><code>RefreshTheSamlMetadata</code></td>
-<td>Hour</td>
-<td>Reads again the metadata of the SAML peers of both roles</td>
-</tr>
-<tr>
-<td><code>ForgetTheActsPastTheirRetention</code></td>
-<td>Day</td>
-<td>Forgets the acts of the journal past its retention, and the disclosures with them</td>
-</tr>
-<tr>
-<td><code>ForgetTheChangesPastTheirRetention</code></td>
-<td>Day</td>
-<td>Forgets the changes of claims past their retention</td>
-</tr>
-<tr>
-<td><code>RefreshTheAddressDatabases</code></td>
-<td>Week</td>
-<td>Downloads the databases of addresses again, for a deployment that names a licence key</td>
-</tr>
-</tbody>
-</table>
-<p>A deployment whose worker does not consume the schedule rotates nothing on its own, and <code>beffroi:keys:list
---check</code> fails on the first key that works past its age with nothing staged behind it, naming the transport
-to consume.</p>
-<p><a href="../console-commands/#rotating-a-key"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
-</span> The rotation of a key</a></p>
-<h2 id="what-leaves-the-process-is-sealed">What leaves the process is sealed<a class="headerlink" href="#what-leaves-the-process-is-sealed" title="Link to this section">&para;</a></h2>
-<p>What a column seals, a queue does not carry in the clear. <strong>The body of every message is a compact JWE</strong>,
-sealed to the key the tenant keeps for it, <code>MESSAGE-SEAL</code>, under <code>ECDH-ES+A256KW</code> and <code>A256GCM</code>: what a broker
-keeps on its disk, what the table of a transport holds and what waits in the failure transport is worth
-nothing without the key management service.</p>
-<ul>
-<li><strong>The sender asks the key management service for nothing.</strong> It seals to the public half of the newest key
-  of that algorithm in service, a staged one included, so the event that announces the first key of a tenant
-  is sealed to that key.</li>
-<li><strong>The consumer opens the key the body names</strong>, by its <code>kid</code>, once per process. A body sealed to a key that
-  has retired since does not open, which bounds how long a message may wait in a queue.</li>
-<li><strong>The key is never published in the JWK Set</strong>: a key published there would let any reader of the discovery
-  document seal a body the provider opens. It rotates like every other key of the tenant.</li>
-<li><strong>A tenant that holds no such key writes no message at all</strong>, rather than one in the clear, which is why it
-  is the first key a tenant is given.</li>
-</ul>
-<p><strong>The headers of the transport say what the message is without opening it</strong>: <code>type</code>, the class of the
-message, and one <code>X-Message-Stamp-</code> header per class of stamp, among them the slug of the tenant the message
-was written for. So <code>messenger:failed:show</code> names, dates and explains a failed message without its body
-being opened, and nothing of a person is in any of them. What decides is not a header: the protected header
-of the JWE names the tenant as well, and being the authenticated data of the body, a header swapped on a
-transport makes the opening fail rather than succeed somewhere else.</p>
-<p><strong>A body that does not open is a failure of that message</strong>, which goes to the failure transport with the
-headers it arrived with: a body that is not a JWE, a message written for another tenant than the one the
-process serves, a key that has retired, a body that opens as another class than its header names. A key
-management service that does not answer is a failure of the process and not of the message, and is not turned
-into a failed message nobody would replay.</p>
+</div>
+<div class="tabbed-block">
+<p>A Transit key per tenant, and a token minted under a policy that allows data keys and decryption under
+those keys, their configuration and nothing else. The client is <code>symfony/hashicorp-vault-key-management</code>.
+The DSN below is the one of the Vault of the development stack, which answers in plain HTTP.</p>
+<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>BEFFROI_KMS_DSN="hashicorp-vault-transit://&lt;token&gt;@vault:8200?scheme=http"
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>An alias per tenant, and the credentials of the provider chain of the SDK. The client is
+<code>symfony/aws-key-management</code>.</p>
+<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>BEFFROI_KMS_DSN="aws-kms://default?region=&lt;region&gt;"
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>BEFFROI_KMS_KEY_ID="alias/beffroi-{tenant}"
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="opening-a-key">Opening a key<a class="headerlink" href="#opening-a-key" title="Link to this section">&para;</a></h2>
+<p>A process opens a key once, the first time it needs it, and keeps it open for as long as it lives, by tenant
+and by <code>kid</code>; a key that retires is forgotten. Served by FrankenPHP in worker mode, as the image of the
+application is, a process pays one opening per key for all the signatures it makes; a process rebuilt at each
+request pays one at each request. The sealed columns follow the same rule with their data keys, one opening
+per data key and per process.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bin/console<span class="w"> </span>beffroi:keys:list<span class="w"> </span>--check
+</span></code></pre></div>
+<p>Opens the keys in use and the ones about to be, and fails on a key the service cannot open: a key the provider
+cannot open is an outage at the first token request, so this is worth a run in a deployment pipeline.</p>
+<h2 id="when-the-service-does-not-answer">When the service does not answer<a class="headerlink" href="#when-the-service-does-not-answer" title="Link to this section">&para;</a></h2>
+<p>A key management service that does not answer, or whose backend refuses, is an outage and not an error of the
+request. Wherever it stands on the path of a request, the first opening of a signing key on a process that has
+not signed yet, the secret of an authenticator application at the code page, the enrolment of one, the request
+is answered <code>503 Service Unavailable</code> with <code>Retry-After: 10</code>, the same request being served once the service is
+back. Nothing was refused to the person and nothing was counted: a pending login keeps waiting for the same
+code. The outage is announced to the journal with the words of the service, and nothing of what was being
+opened.</p>
+<p>An envelope the service refuses to open, tampered with, sealed for another tenant or another use, or wrapped
+under a master key the service does not know when it opens it, is not an outage: it is an error, and no
+retry changes it.</p>
+<h2 id="moving-to-another-client">Moving to another client<a class="headerlink" href="#moving-to-another-client" title="Link to this section">&para;</a></h2>
+<p><strong>The data keys move without a single sealed value being read.</strong> Both clients are declared at once, and the
+data keys of the tenant are wrapped again by the new one:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second<span class="w"> </span>--dry-run
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second
+</span></code></pre></div>
+<p>The master key is the one <code>beffroi.keys.key_id</code> gives the tenant, resolved and never typed, so the new client
+holds a key under the same identifier. Every row names the client that wraps it, so the columns read through
+the rewrap and after it. A data key minted later, at the rotation of a family or at the first write of a new
+one, is wrapped by the client <code>beffroi.keys.kms</code> names, so the move ends once that client is the new one. The
+application declares its second client for this, <code>second</code>, from <code>BEFFROI_KMS_DSN_SECOND</code>, which stays empty,
+and its client never built, on a deployment that moves nothing.</p>
+<p><strong>The keys of the tenant move by rotation.</strong> An envelope sealed by one client does not open with another, so
+once the client <code>beffroi.keys.kms</code> names is the new one, every algorithm the tenant holds gets a new key sealed
+by it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate<span class="w"> </span>--now<span class="w"> </span>--algorithm<span class="o">=</span>RS256
+</span></code></pre></div>
+<p>The key it replaces retires with its window, its public half still verifying what it signed; nothing is
+deleted. <code>beffroi:keys:list --check</code> names the algorithms whose keys the client cannot open.</p>
+<p><strong>The pairwise salt and the secrets held for people have no command that moves them.</strong> They are opened
+through the client <code>beffroi.keys.kms</code> names, so they open only for as long as that client is the one that
+sealed them.</p>
+<p><a href="../console-commands/#data-keys"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The commands, in full</a></p>
 
 
 
@@ -4363,7 +4180,7 @@ into a failed message nobody would replay.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 13:24:43 UTC">November 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 14:00:31 UTC">October 26, 2026</span>
   </span>
 
     
@@ -4401,7 +4218,7 @@ into a failed message nobody would replay.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../translations/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Translations">
+          <a href="../security/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Security">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -4411,20 +4228,20 @@ into a failed message nobody would replay.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Translations
+                Security
               </div>
             </div>
           </a>
         
         
           
-          <a href="../account/" class="md-footer__link md-footer__link--next" aria-label="Next: The account pages">
+          <a href="../pages/" class="md-footer__link md-footer__link--next" aria-label="Next: Pages">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                The account pages
+                Pages
               </div>
             </div>
             <div class="md-footer__button md-icon">

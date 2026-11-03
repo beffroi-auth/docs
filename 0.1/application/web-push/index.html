@@ -6,19 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Every string translated, the two lists of languages, and how a page decides which one it speaks.">
+        <meta name="description" content="Reaching a person through the push service of a browser they signed in with (RFC 8030), what a notification carries, and what becomes of it.">
       
       
         <meta name="author" content="The Beffroi contributors">
       
       
-        <link rel="canonical" href="https://doc.beffroi.tech/0.1/symfony-bundle/translations/">
+        <link rel="canonical" href="https://doc.beffroi.tech/0.1/application/web-push/">
       
       
-        <link rel="prev" href="../pages/">
+        <link rel="prev" href="../messenger/">
       
       
-        <link rel="next" href="../messenger/">
+        <link rel="next" href="../console-commands/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Translations - Beffroi</title>
+        <title>Web push - Beffroi</title>
       
     
     
@@ -72,8 +72,8 @@
   <meta name="theme-color" content="#0c1016" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
-  <meta property="og:title" content="Translations">
-  <meta property="og:description" content="Every string translated, the two lists of languages, and how a page decides which one it speaks.">
+  <meta property="og:title" content="Web push">
+  <meta property="og:description" content="Reaching a person through the push service of a browser they signed in with (RFC 8030), what a notification carries, and what becomes of it.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -98,7 +98,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#translations" class="md-skip">
+        <a href="#web-push" class="md-skip">
           Skip to content
         </a>
       
@@ -136,7 +136,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Translations
+              Web push
             
           </span>
         </div>
@@ -644,7 +644,7 @@
   <span class="md-ellipsis">
     
   
-    The standalone application
+    Running the application
   
 
     
@@ -2875,6 +2875,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -2894,7 +2900,7 @@
   <span class="md-ellipsis">
     
   
-    The Symfony bundle
+    The application
   
 
     
@@ -2916,7 +2922,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    The Symfony bundle
+    The application
   
 
           </label>
@@ -2931,14 +2937,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../deployment/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Installing the bundle
+    Deployment
   
 
     
@@ -2967,6 +2973,34 @@
     
   
     Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration tree
   
 
     
@@ -3124,138 +3158,17 @@
                 
   
   
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Translations
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Translations
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#two-lists-of-languages-two-questions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Two lists of languages, two questions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#which-language-a-page-speaks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Which language a page speaks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-a-person-chooses-one" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How a person chooses one
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dates" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dates
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
   
   
     <li class="md-nav__item">
-      <a href="../messenger/" class="md-nav__link">
+      <a href="../translations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Messenger
+    Translations
   
 
     
@@ -3304,7 +3217,62 @@
   
   
     <li class="md-nav__item">
-      <a href="../web-push/" class="md-nav__link">
+      <a href="../messenger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messenger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web push
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -3320,6 +3288,94 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#turning-it-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Turning it on
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-application-server-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The application server key
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-subscription" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The subscription
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-notification-carries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a notification carries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-comes-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What comes back
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-deployment-allows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the deployment allows
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -3340,6 +3396,62 @@
     
   
     Console commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating it
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
   
 
     
@@ -3401,14 +3513,6 @@
           
         
       
-        
-      
-        
-      
-        
-      
-        
-      
     
     
     
@@ -3418,187 +3522,6 @@
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../application/" class="md-nav__link ">
-              
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The standalone application
-  
-
-    
-  </span>
-  
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    The standalone application
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/deployment/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deployment
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/configuration/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Configuration
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/operating/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Operating it
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/observability/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Observability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3629,8 +3552,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3676,10 +3599,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
             
   
   
@@ -3697,8 +3620,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3876,7 +3799,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3907,8 +3830,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_11">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3956,10 +3879,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#two-lists-of-languages-two-questions" class="md-nav__link">
+  <a href="#turning-it-on" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Two lists of languages, two questions
+        Turning it on
       
     </span>
   </a>
@@ -3967,10 +3890,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#which-language-a-page-speaks" class="md-nav__link">
+  <a href="#the-application-server-key" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Which language a page speaks
+        The application server key
       
     </span>
   </a>
@@ -3978,10 +3901,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-a-person-chooses-one" class="md-nav__link">
+  <a href="#the-subscription" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How a person chooses one
+        The subscription
       
     </span>
   </a>
@@ -3989,10 +3912,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dates" class="md-nav__link">
+  <a href="#what-a-notification-carries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dates
+        What a notification carries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-comes-back" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What comes back
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-deployment-allows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the deployment allows
       
     </span>
   </a>
@@ -4016,7 +3961,7 @@
 
 
   
-    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/symfony-bundle/translations.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/application/web-push.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M4 20V16L16 4L20 8L8 20Z"/><path d="M13 7L17 11"/></svg>
     </a>
@@ -4024,123 +3969,148 @@
   
 
 
-<h1 id="translations">Translations<a class="headerlink" href="#translations" title="Link to this section">&para;</a></h1>
-<p>Every user-facing string goes through the translator, in XLIFF with <code>intl-icu</code> for plurals and parameters,
-in the <code>beffroi</code> domain. The bundle ships <code>en</code> and <code>fr</code>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>translations/beffroi+intl-icu.en.xlf
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>translations/beffroi+intl-icu.fr.xlf
+<h1 id="web-push">Web push<a class="headerlink" href="#web-push" title="Link to this section">&para;</a></h1>
+<p>A deployment that names a push subject reaches a person through the push service of a browser they signed in
+with (RFC 8030): the person subscribes that browser on a page of their account, and the provider pushes to it
+when a request waits for their answer. It is how a backchannel authentication request (CIBA Core §7) reaches
+the person it names without a second application. Nothing in a notification names the request it is about.</p>
+<h2 id="turning-it-on">Turning it on<a class="headerlink" href="#turning-it-on" title="Link to this section">&para;</a></h2>
+<p>Two variables of the environment fill <code>beffroi.web_push</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>In <code>.env</code></th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEFFROI_WEB_PUSH_SUBJECT</code></td>
+<td><code>mailto:operator@op.localhost</code></td>
+<td>The <code>subject</code>, the <code>sub</code> of the token the provider signs for a push service (RFC 8292 §2.1): a <code>mailto:</code> or <code>https:</code> URI at which a push service can reach the operator of the deployment. Naming one is what turns web push on, and an empty variable turns it off. The one of <code>.env</code> is the development stack's, so a deployment names its own</td>
+</tr>
+<tr>
+<td><code>BEFFROI_WEB_PUSH_TIMEOUT</code></td>
+<td><code>3</code></td>
+<td>The <code>timeout</code>, the seconds one push to one push service is given, connection included, so that a push service that hangs does not hold a worker</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Without a subject, web push serves nothing.</strong> Its services and its routes are always wired, and the subject
+is read when the container builds what web push changes: naming one or taking it away asks for a restart of the
+processes and not for a new image. Without one, its channel is not in the lane of notifications, no push leaves
+the deployment, the tenant draws no application server key, and the page where a browser would subscribe says
+that the provider does not tell browsers. A key drawn before the subject was taken away is read by nothing until
+a subject is named again.</p>
+<h2 id="the-application-server-key">The application server key<a class="headerlink" href="#the-application-server-key" title="Link to this section">&para;</a></h2>
+<p>A browser subscribes under the public half of a key pair of the tenant, and its push service then takes only
+pushes signed by that key (RFC 8292 §4.2). The pair is drawn like every key of the tenant, under the name
+<code>VAPID</code>, ECDSA over P-256, and sealed by the <a href="../key-management/">key management service</a>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>VAPID
 </span></code></pre></div>
-<p>An application replaces a sentence by putting the same key in its own
-<code>translations/beffroi+intl-icu.fr.xlf</code>, which Symfony loads after the catalogues of the bundles. Adding a
-language is one more catalogue of the same domain, and <code>framework.enabled_locales</code> naming it.</p>
-<div class="admonition info">
-<p class="admonition-title">The <code>error_description</code> of the protocol is not translated</p>
-<p>It is addressed to the developer of the client, in ASCII, as RFC 6749 §4.1.2.1 asks. What a person
-reads on the error page is the translated sentence of the error code, and the description sits under
-it, in the language of the specification.</p>
-</div>
-<h2 id="two-lists-of-languages-two-questions">Two lists of languages, two questions<a class="headerlink" href="#two-lists-of-languages-two-questions" title="Link to this section">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>List</th>
-<th>What it answers</th>
-<th>Where it comes from</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>The languages this deployment serves</td>
-<td>What a page can be written in</td>
-<td><code>framework.enabled_locales</code>, with <code>framework.default_locale</code> in front</td>
-</tr>
-<tr>
-<td>The languages a person can say they read</td>
-<td>What the <code>locale</code> claim of a person may name</td>
-<td>Every locale ICU has data for, each under its own name in itself</td>
-</tr>
-</tbody>
-</table>
-<p>They are two lists because they answer two questions: <code>locale</code> is a claim of OIDC Core §5.1 and not a
-setting of this provider, so a provider whose pages speak two languages still holds the claim of somebody
-who reads a third. What that claim names is read against the first list wherever it is the language of a
-page or of a message.</p>
-<p>A tag is matched as Symfony matches an <code>Accept-Language</code>: <code>fr-CA</code> gives <code>fr_CA</code> when that locale is
-served and <code>fr</code> otherwise, a script subtag is kept, and a tag no served locale matches is ignored rather
-than refused.</p>
-<h2 id="which-language-a-page-speaks">Which language a page speaks<a class="headerlink" href="#which-language-a-page-speaks" title="Link to this section">&para;</a></h2>
-<p><strong>A signed-in person reads the pages in the language of their record</strong>, and changes it where that record
-is changed. That is the first answer tried, before anything the browser asked for. A record that names
-nothing, or names a language this deployment does not serve, leaves the rest of the chain untouched.</p>
-<p>For a visitor who is not known yet, the language of an interaction is chosen once, on arrival at
-<code>/authorize</code>, and kept on the interaction so the next page of the same journey reads in it:</p>
+<p>It is a key the tenant hands out rather than publishes: it is in no JWK Set, and the page of notifications
+hands its public half to the browser, as the uncompressed point of RFC 8292 §3.2 in base64url. A deployment
+that turns web push on and draws no key has no key to hand out, and the page says so in the same words.</p>
+<p><strong>A subscription is bound to the key it was made under</strong>, by its <code>kid</code>. A rotation moves the key a new
+browser subscribes under and never the key an old one is bound to: a subscription goes on being pushed to
+until its key retires, and is then worth nothing, a push service refusing what any other key signs.</p>
+<h2 id="the-subscription">The subscription<a class="headerlink" href="#the-subscription" title="Link to this section">&para;</a></h2>
+<p>The page is <code>/account/notifications</code>, one of <a href="../account/">the account pages</a>. It lists the browsers of the
+person that the provider can reach, each with the name its owner gave it, when it was added and when it was
+last pushed to, and it marks the browser reading the page when that browser is one of them.</p>
 <ol>
-<li>the language this browser asked for;</li>
-<li><code>ui_locales</code> of the request, read against the served languages;</li>
-<li><code>Accept-Language</code>, read the same way;</li>
-<li>the default locale of the deployment.</li>
+<li>Opening the page registers the service worker of the application, <code>/push-worker.js</code>, served at the root so
+   that its scope covers the pages it opens. It registers it each time, a browser being able to lose its worker
+   and keep its subscription.</li>
+<li>The button asks the person for permission, subscribes to the push service of their browser under the
+   application server key, and posts what the subscription carries to <code>POST /account/notifications</code>: the
+   endpoint, the <code>p256dh</code> key and the <code>auth</code> secret of the browser (RFC 8291 §3), and a name.</li>
+<li>The provider keeps it against the key the browser was handed. A browser that subscribes again hands back
+   the endpoint it already had, and that is the same browser: its row is what changes, and a row its owner had
+   taken out is in use again.</li>
 </ol>
-<p>What the visitor asked for comes before <code>ui_locales</code> because <code>ui_locales</code> is an end-user preference the
-client passes on (OIDC Core §3.1.2.1), which is a second hand, and somebody who has just named their
-language on the page is the first. Pages with no interaction behind them, an error before the first step
-of an authorization, an unknown page, the logout confirmation and the page after it, speak the language of
-the browser; the logout reads the <code>ui_locales</code> of its own request first, as RP-Initiated Logout §2 allows.</p>
-<p>The language is never in the URL. The relying party does not know it, and a login URL that changes with
-the language is a second address for every page.</p>
-<h2 id="how-a-person-chooses-one">How a person chooses one<a class="headerlink" href="#how-a-person-chooses-one" title="Link to this section">&para;</a></h2>
-<p>A form and no script: <code>POST /locale</code>, one button per language the deployment serves, rendered wherever the
-layout of the application includes the switcher. Below two languages there is nothing to offer and the
-control is not rendered at all, and a page whose language was decided by the record of a signed-in person
-says so, so the control offers nothing there either.</p>
-<p>What is asked for is read against the served languages, and a tag nobody serves changes nothing. The
-choice is then written in three places, because they answer three questions:</p>
+<p>The endpoint is taken as the browser gave it, and refused unless it is <code>https</code>; the two keys are refused
+unless they are base64url; a name longer than 255 characters is dropped. A browser is renamed at
+<code>POST /account/notifications/{id}/name</code> and taken out at <code>POST /account/notifications/{id}/revoke</code>, which keeps
+the row, marked revoked.</p>
+<p>The endpoint and the name are sealed in their columns, and a browser is recognised by the SHA-256 of its
+endpoint, which carries the unique constraint with the person.</p>
+<p><a href="../persistence/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Persistence</a></p>
+<h2 id="what-a-notification-carries">What a notification carries<a class="headerlink" href="#what-a-notification-carries" title="Link to this section">&para;</a></h2>
+<p>When a client makes a backchannel authentication request that names a person, the provider answers the
+client and puts the message that tells the person on the lane of notifications. The lane hands it to every
+channel the application wires; web push is the only one, in the lane while a subject is named. A person who
+has subscribed no browser is told nothing, and finds the request where requests are answered.</p>
+<p>Every browser the person subscribed is pushed to, and each push carries three strings and nothing else, in
+the language the person reads:</p>
 <table>
 <thead>
 <tr>
-<th>Where</th>
-<th>What it answers</th>
+<th>Member</th>
+<th>What it says</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>The <code>locale</code> slot of the preferences of this browser</td>
-<td>The language the next journey from this browser starts in</td>
+<td><code>title</code></td>
+<td>The name of the tenant</td>
 </tr>
 <tr>
-<td>The interaction in progress</td>
-<td>The language its next page is read in</td>
+<td><code>body</code></td>
+<td>The name of the client and what it asks the person to approve, a sign-in or the binding message the client wrote when it wrote one, and that the answer is given in their account</td>
 </tr>
 <tr>
-<td>The <code>locale</code> claim of the account, when somebody is signed in</td>
-<td>The language this provider writes to that person in, outside any request of theirs</td>
+<td><code>url</code></td>
+<td>The page of the account where waiting requests are answered, <code>/account/approvals</code></td>
 </tr>
 </tbody>
 </table>
-<p>The claim is written on a lane, nothing in the request waiting on the result, and it replaces that claim
-and nothing else: describing a whole profile is what provisioning does, and it clears what it is not told.</p>
-<p><strong>The preferences of a browser travel on one cookie</strong>, <code>__Host-beffroi_preferences</code>, with a slot per
-preference: the language this visitor asked for, the theme they read the pages in, and whatever a
-preference wired beside them declares. It is read by no script, never leaves the requests of that browser,
-goes out over TLS only and is worth a year, so somebody who said it once is not asked again. It is not the
-HTTP session, deliberately: the protocol plane opens no session, a language in one would open a session
-for every visitor who never signed in, and signing out invalidates a session whole, which would lose a
-choice made for a year.</p>
-<h2 id="dates">Dates<a class="headerlink" href="#dates" title="Link to this section">&para;</a></h2>
-<p>A date a person reads says which clock it is on, and neither of the two things that decide it belongs to
-the provider.</p>
-<ul>
-<li><strong>The clock is the one that person holds.</strong> <code>zoneinfo</code> is a claim of OIDC Core §5.1, so it is read as a
-  zone rather than taken for one: it may be absent, and it may name a zone this process cannot resolve, in
-  which case the clock of the deployment answers.</li>
-<li><strong>The words and the order are ICU's</strong>, in the language the page is written in. A date is not a string to
-  translate but a convention of a locale, so a deployment that serves a language gets the dates of that
-  language without writing a catalogue entry for them.</li>
-</ul>
-<p>The zone is always named, by its abbreviation when it has one and by its offset otherwise: an hour without
-its zone is an hour a reader cannot check. The machine readable form stays in the <code>datetime</code> attribute of
-the element that carries it, which gives the instant with its offset. The dates the console prints do not
-go through any of this, an administrator reading them beside a server.</p>
-<p>The bundle requires <code>ext-intl</code>, which its own <code>+intl-icu</code> catalogues already needed.</p>
+<p>No identifier of the request and no link that answers it: the notification says that something waits, and
+the person goes to a page of the provider they already know, where the request is found by who they are. The
+service worker shows the notification until it is dismissed, and a tap opens that page, or brings forward a
+window already on it.</p>
+<p>The payload is encrypted to the two keys the browser gave in <code>aes128gcm</code> (RFC 8291 §4), padded to 1024 octets
+before it is encrypted, so that a push service learns nothing of it, not even how long the binding message
+was. The request is signed by the application server key the subscription is bound to, with the subject as
+its <code>sub</code> (RFC 8292 §2.1). It is sent with <code>Urgency: high</code> (RFC 8030 §5.3), and a <code>TTL</code> that is the time left
+before the backchannel request expires (RFC 8030 §5.2), and never less than zero. The provider follows no
+redirection a push service answers with.</p>
+<h2 id="what-comes-back">What comes back<a class="headerlink" href="#what-comes-back" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>The push service answers</th>
+<th>What the provider does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>2xx</code></td>
+<td>The push was taken. The row records when this browser was last pushed to. What the push service does with it afterwards, the provider never learns</td>
+</tr>
+<tr>
+<td><code>404</code> or <code>410</code></td>
+<td>The subscription is gone (RFC 8030 §7.3). The row is taken out of use, revoked, and nothing is pushed to it again</td>
+</tr>
+<tr>
+<td>Anything else, or no answer within the timeout</td>
+<td>This attempt failed, the subscription is left as it is</td>
+</tr>
+</tbody>
+</table>
+<p>A subscription whose application server key has retired is treated as gone without asking the push service,
+which would refuse a request signed by any other key. When no browser of the person was reached and at least
+one push failed, the message goes back to the lane, which sends it again after the waits of its schedule; one
+browser reached is a person told, and the message is done.</p>
+<p><a href="../messenger/#the-contract-of-the-provider"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The lane of notifications</a></p>
+<h2 id="what-the-deployment-allows">What the deployment allows<a class="headerlink" href="#what-the-deployment-allows" title="Link to this section">&para;</a></h2>
+<p>The scripts the page loads are served by the application from the origin of the provider, the page posts the
+subscription back to it, and the service worker is a script of that origin too. The <code>Content-Security-Policy</code>
+the application serves the pages of the account, from its <code>config/packages/nelmio_security.yaml</code>, allows
+them: it names <code>'self'</code> in <code>script-src</code>, <code>connect-src</code>, <code>worker-src</code> and <code>form-action</code>.</p>
 
 
 
@@ -4161,7 +4131,7 @@ go through any of this, an administrator reading them beside a server.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 08:02:24 UTC">October 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 11:24:49 UTC">November 2, 2026</span>
   </span>
 
     
@@ -4199,7 +4169,7 @@ go through any of this, an administrator reading them beside a server.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../pages/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Pages">
+          <a href="../messenger/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Messenger">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -4209,20 +4179,20 @@ go through any of this, an administrator reading them beside a server.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Pages
+                Messenger
               </div>
             </div>
           </a>
         
         
           
-          <a href="../messenger/" class="md-footer__link md-footer__link--next" aria-label="Next: Messenger">
+          <a href="../console-commands/" class="md-footer__link md-footer__link--next" aria-label="Next: Console commands">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Messenger
+                Console commands
               </div>
             </div>
             <div class="md-footer__button md-icon">

@@ -12,10 +12,10 @@
         <meta name="author" content="The Beffroi contributors">
       
       
-        <link rel="canonical" href="https://doc.beffroi.tech/0.1/symfony-bundle/configuration/">
+        <link rel="canonical" href="https://doc.beffroi.tech/0.1/application/configuration-tree/">
       
       
-        <link rel="prev" href="../installation/">
+        <link rel="prev" href="../configuration/">
       
       
         <link rel="next" href="../routes-and-planes/">
@@ -29,7 +29,7 @@
     
     
       
-        <title>Configuration - Beffroi</title>
+        <title>Configuration tree - Beffroi</title>
       
     
     
@@ -72,7 +72,7 @@
   <meta name="theme-color" content="#0c1016" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
-  <meta property="og:title" content="Configuration">
+  <meta property="og:title" content="Configuration tree">
   <meta property="og:description" content="The tree under `beffroi`, section by section: what each one decides, when a deployment needs it, and what leaving it out means.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
@@ -98,7 +98,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#configuration" class="md-skip">
+        <a href="#configuration-tree" class="md-skip">
           Skip to content
         </a>
       
@@ -136,7 +136,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Configuration
+              Configuration tree
             
           </span>
         </div>
@@ -644,7 +644,7 @@
   <span class="md-ellipsis">
     
   
-    The standalone application
+    Running the application
   
 
     
@@ -2875,6 +2875,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -2894,7 +2900,7 @@
   <span class="md-ellipsis">
     
   
-    The Symfony bundle
+    The application
   
 
     
@@ -2916,7 +2922,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    The Symfony bundle
+    The application
   
 
           </label>
@@ -2931,14 +2937,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../deployment/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Installing the bundle
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
   
 
     
@@ -2975,7 +3009,7 @@
   <span class="md-ellipsis">
     
   
-    Configuration
+    Configuration tree
   
 
     
@@ -2993,7 +3027,7 @@
   <span class="md-ellipsis">
     
   
-    Configuration
+    Configuration tree
   
 
     
@@ -3036,6 +3070,17 @@
     <span class="md-ellipsis">
       
         When a mistake is caught
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-tree-writes-for-the-other-bundles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the tree writes for the other bundles
       
     </span>
   </a>
@@ -3457,14 +3502,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../messenger/" class="md-nav__link">
+      <a href="../account/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Messenger
+    The account pages
   
 
     
@@ -3485,14 +3530,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../account/" class="md-nav__link">
+      <a href="../messenger/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    The account pages
+    Messenger
   
 
     
@@ -3569,6 +3614,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../operating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating it
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../profiler/" class="md-nav__link">
         
   
@@ -3610,14 +3711,6 @@
           
         
       
-        
-      
-        
-      
-        
-      
-        
-      
     
     
     
@@ -3627,187 +3720,6 @@
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../application/" class="md-nav__link ">
-              
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The standalone application
-  
-
-    
-  </span>
-  
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    The standalone application
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/deployment/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deployment
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/configuration/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Configuration
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/operating/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Operating it
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../application/observability/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Observability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -3838,8 +3750,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3885,10 +3797,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
             
   
   
@@ -3906,8 +3818,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -4085,7 +3997,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -4116,8 +4028,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_11">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -4180,6 +4092,17 @@
     <span class="md-ellipsis">
       
         When a mistake is caught
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-tree-writes-for-the-other-bundles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the tree writes for the other bundles
       
     </span>
   </a>
@@ -4434,7 +4357,7 @@
 
 
   
-    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/symfony-bundle/configuration.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/application/configuration-tree.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M4 20V16L16 4L20 8L8 20Z"/><path d="M13 7L17 11"/></svg>
     </a>
@@ -4442,19 +4365,25 @@
   
 
 
-<h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Link to this section">&para;</a></h1>
-<p>The bundle reads one tree under <code>beffroi</code>, and each key at its root is a section with a class of its own in
-the bundle. Two sections are required, <code>tenant</code> and <code>keys</code>. Every other one has defaults a provider runs on,
-and a capability whose section names nothing is either served with those defaults or not served at all: a
-tenant that names no registration <code>mode</code> has no registration endpoint, in its discovery document as on the
-wire. This page goes through the sections in the order of the tree; <a href="../../reference/configuration/">the reference</a>
-lists every option with its type, its default and its bounds.</p>
-<p>The smallest configuration names the issuer and the key management client the private keys are sealed with:</p>
+<h1 id="configuration-tree">Configuration tree<a class="headerlink" href="#configuration-tree" title="Link to this section">&para;</a></h1>
+<p>The application reads one tree under <code>beffroi</code>, its own <code>config/packages/beffroi.yaml</code>, and each key at its
+root is a section with a class of its own in <code>src/Configuration/</code>. The file reads each value a deployment
+chooses from an environment variable, which <a href="../configuration/">the configuration</a> lists, and writes in itself
+only what is the same for every deployment of the image, as <a href="../configuration/#what-the-files-say">what the files say</a>
+details.</p>
+<p>Two sections are required, <code>tenant</code> and <code>keys</code>. Every other one has defaults a provider runs on, and a
+capability whose section names nothing is either served with those defaults or not served at all: a tenant
+that names no registration <code>mode</code> has no registration endpoint, in its discovery document as on the wire. This
+page goes through the sections in the order of the tree, its examples writing a section with values in place
+of the variables of the file; <a href="../../reference/configuration/">the reference</a> lists every option with its type,
+its default and its bounds.</p>
+<p>The two required sections name the issuer and the key management client the private keys are sealed with,
+<code>op</code>, and the file reads the issuer and the master key from the environment:</p>
 <div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tenant</span><span class="p">:</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">issuer</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_ISSUER)%'</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">op</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KMS_KEY_ID)%'</span>
 </span></code></pre></div>
 <h2 id="the-sections">The sections<a class="headerlink" href="#the-sections" title="Link to this section">&para;</a></h2>
@@ -4596,7 +4525,7 @@ that exist. What reads a declaration first is what meets its refusal:</p>
   client declared at least, every trusted issuer as well;</li>
 <li>the discovery document, <code>/.well-known/openid-configuration</code> under the issuer, builds all of it once the tenant
   is synchronized: the tenant, the declared clients, the trusted issuers, and the policy of registration, its
-  authorities of software statements and its default scope included, which no command of the bundle builds.</li>
+  authorities of software statements and its default scope included, which no <code>beffroi:</code> command builds.</li>
 </ul>
 <p>A deployment that runs <code>beffroi:tenant:synchronize</code> and then reads the discovery document has met every one of
 these refusals before a client asks anything. Otherwise the first request that needs the object meets it, and the policy of registration is
@@ -4604,28 +4533,84 @@ also built by the timed step that removes the clients nobody uses.</p>
 <p><strong>No option does it wrong.</strong> The tree holds no <code>insecure_*</code> key and no compatibility switch. An exception a
 specification admits is named and bounded: <code>requires_pkce: false</code> exempts one confidential client, and is
 refused for a public one. <a href="../../the-project/secure-by-default/">Secure by default</a> is the rule.</p>
+<h2 id="what-the-tree-writes-for-the-other-bundles">What the tree writes for the other bundles<a class="headerlink" href="#what-the-tree-writes-for-the-other-bundles" title="Link to this section">&para;</a></h2>
+<p>When the container is built, <code>App\DependencyInjection\BeffroiExtension</code> prepends its part to the configuration
+of the extensions the provider works with, and only of those the kernel registers. A prepended configuration
+is merged first, so a key a file of the application writes itself is the one that stands: the suite of the
+application writes the transports again, every lane on <code>sync://</code>, and the files the image carries write none
+of these keys but the directory of the migrations, which <code>config/packages/doctrine_migrations.yaml</code> names the
+same way.</p>
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>What the tree adds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>doctrine</code></td>
+<td>The DBAL types of the application, and three XML mappings, <code>BeffroiCore</code>, <code>BeffroiOidc</code> and <code>BeffroiSaml</code>, for the model of the three packages, read from <code>config/beffroi/doctrine/core</code>, <code>config/beffroi/doctrine/oidc</code> and <code>config/beffroi/doctrine/saml</code>. The types that seal a column are registered when the kernel boots</td>
+</tr>
+<tr>
+<td><code>doctrine_migrations</code></td>
+<td>The directory of the migrations, <code>migrations/</code>, under the namespace <code>DoctrineMigrations</code></td>
+</tr>
+<tr>
+<td><code>security</code></td>
+<td>The password hasher of <code>App\Security\SecurityUser</code>, which is <code>App\Security\CorePasswordHasher</code>, the hasher of the core</td>
+</tr>
+<tr>
+<td><code>rate_limiter</code></td>
+<td>Two limiters, <code>beffroi_code_attempts</code> and <code>beffroi_password_attempts</code>: five attempts per user in a sliding window of one minute</td>
+</tr>
+<tr>
+<td><code>framework</code></td>
+<td>Eight cache pools on <code>cache.app</code>: <code>beffroi.client_keys</code>, <code>beffroi.issuer_keys</code>, <code>beffroi.client_assertions</code>, <code>beffroi.issuer_assertions</code>, <code>beffroi.software_statements</code>, <code>beffroi.request_objects</code>, <code>beffroi.dpop</code> and <code>beffroi.load</code></td>
+</tr>
+<tr>
+<td><code>messenger</code></td>
+<td>The three buses, their middleware, the routing of every message, the serializer that seals a body, and the transports: the four lanes on <code>BEFFROI_MESSENGER_DSN</code>, a queue of the database per lane unless it names another, and the failure transport in the database</td>
+</tr>
+<tr>
+<td><code>scheduler</code></td>
+<td><code>use_messenger_routing: true</code>, so that the recurring messages of the provider are routed by their class like every other message</td>
+</tr>
+</tbody>
+</table>
+<p>The kernel registers the extension itself: <code>App\Kernel</code> uses <code>App\DependencyInjection\BeffroiKernelTrait</code>,
+which adds the extension and its compiler passes when the container is built, and, when the kernel boots,
+hands the DBAL types that read the wiring back what the deployment is wired with and registers the types that
+seal a column.</p>
+<p><a href="../persistence/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Persistence</a> &nbsp; <a href="../messenger/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Messenger</a></p>
 <h2 id="tenant"><code>tenant</code><a class="headerlink" href="#tenant" title="Link to this section">&para;</a></h2>
 <p>Who the provider is, and required. <code>issuer</code> is the identifier every token carries as <code>iss</code> and the URL every
-endpoint is served under: the routes of the bundle are imported under its path, which the provider checks at
-the first request. <code>slug</code> names the tenant for good: its identifier is derived from it, and renaming it is
-creating another tenant. <code>name</code> and <code>look</code> are what the pages show of the tenant, <code>self_served_claims</code> what its
-people may change of themselves, and <code>authentication_classes</code> the <code>acr</code> it answers with.</p>
+endpoint is served under: the application imports its routes at the root, so its issuer is an origin with no
+path, which the provider checks at the first request. <code>slug</code> names the tenant for good: its identifier is
+derived from it, and renaming it is creating another tenant. <code>name</code> and <code>look</code> are what the pages show of the
+tenant, <code>self_served_claims</code> what its people may change of themselves, and <code>authentication_classes</code> the <code>acr</code>
+it answers with.</p>
 <p>The logo is loaded by the browser of the visitor, under the <code>Content-Security-Policy</code> the application sends.
-The consent page adds the origin of the logo to its <code>img-src</code>, and no other page does: a logo served from
-another origin than the pages is named in the <code>img-src</code> of the application's own policy, as
-<a href="../../application/configuration/">the standalone application</a> says of its own.</p>
+Every page that shows it adds the origin of the logo to the <code>img-src</code> of that policy, so a logo served from
+another origin than the pages is named in no file of the application. Its host answers
+<code>Cross-Origin-Resource-Policy: cross-origin</code>, which the pages of the account, served under
+<code>Cross-Origin-Embedder-Policy: require-corp</code>, ask of an image from another origin.</p>
 <p>The row of the tenant follows the configuration through <code>bin/console beffroi:tenant:synchronize</code>, which is
 safe to run at every deployment.</p>
 <p><a href="../../core/tenants/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Tenants</a></p>
 <h2 id="keys"><code>keys</code><a class="headerlink" href="#keys" title="Link to this section">&para;</a></h2>
-<p>Where the keys of the tenant are sealed and kept, and required. The bundle builds no key management client:
-<code>kms</code> names one declared under <code>key_management.clients</code>, a DSN or a composite of several, and <code>key_id</code> names
-the key of that client the keys are sealed under, <code>{tenant}</code> standing for the slug.</p>
+<p>Where the keys of the tenant are sealed and kept, and required. The tree builds no key management client:
+<code>kms</code> names a client of <code>key_management.clients</code>, which the application declares in
+<code>config/packages/key_management.yaml</code>, and <code>key_id</code> names the key of that client the keys are sealed under,
+<code>{tenant}</code> standing for the slug. The application names <code>op</code>, the client it builds from <code>BEFFROI_KMS_DSN</code>, and
+reads the key from <code>BEFFROI_KMS_KEY_ID</code>, <code>beffroi-{tenant}</code> for instance.</p>
 <div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'beffroi-{tenant}'</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">op</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KMS_KEY_ID)%'</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/var/keys'</span>
 </span></code></pre></div>
 <p><code>storage</code> is the directory of the sealed key files and of the pairwise salt of the tenant, sealed the same
@@ -4673,9 +4658,9 @@ it, so that a token still in use verifies: ten minutes for a signing key with th
 </span> Tokens</a></p>
 <h2 id="load"><code>load</code><a class="headerlink" href="#load" title="Link to this section">&para;</a></h2>
 <p>Every request is counted against two budgets, and the section sets their numbers, never whether they exist.
-The first counts the address of the client, on every route of the bundle and before anything is verified; the
-second counts a client of a tenant once it has authenticated. A request over a budget is answered <code>429</code> with a
-<code>Retry-After</code> header.</p>
+The first counts the address of the client, on every route of the two planes and before anything is verified;
+the second counts a client of a tenant once it has authenticated. A request over a budget is answered <code>429</code>
+with a <code>Retry-After</code> header.</p>
 <p>The address is the one Symfony reads behind the trusted proxies of the application, so a deployment behind a
 load balancer declares the balancer as a trusted proxy, or every request counts against the address of the
 balancer. The counts live in the <code>beffroi.load</code> cache pool, on <code>cache.app</code> unless the deployment points the
@@ -4716,29 +4701,28 @@ asynchronous lane.</p>
 </span> Passwords</a></p>
 <h2 id="interaction"><code>interaction</code><a class="headerlink" href="#interaction" title="Link to this section">&para;</a></h2>
 <p>How the <code>login_hint</code> of an authorization request is read (OIDC Core §3.1.2.1): <code>sub</code>, the subject the
-provider issued to that client, by default; <code>username</code>, the name a person signs in with; or <code>none</code>, for a
-deployment that tags a reading of its own <code>beffroi.oidc.login_hint</code>. It is read one way and never searched,
-and the login page offers the name of the person it names.</p>
+provider issued to that client, by default; <code>username</code>, the name a person signs in with; or <code>none</code>, which
+leaves the hint to a class tagged <code>beffroi.oidc.login_hint</code>, and the application tags none. It is read one way
+and never searched, and the login page offers the name of the person it names.</p>
 <p><a href="../../oidc/interactions/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Interactions</a></p>
 <h2 id="back_channel_logout"><code>back_channel_logout</code><a class="headerlink" href="#back_channel_logout" title="Link to this section">&para;</a></h2>
 <p>How a logout token is posted to a client that registered a <code>backchannel_logout_uri</code> (Back-Channel Logout 1.0
 §2.5): five seconds an attempt, then six retries, two seconds after the first failure and three times longer
 each time, a minute at most. The retry schedule is the one of every notification the provider carries to a
-third party, on the <code>async_notifications</code> transport the bundle configures: the logout tokens, the
-notifications of the backchannel authentication flow, and the pushes that tell a person something waits for
-them.</p>
+third party, on the <code>async_notifications</code> transport of the application: the logout tokens, the notifications
+of the backchannel authentication flow, and the pushes that tell a person something waits for them.</p>
 <p>The schedule is also the <code>exp</code> of a logout token, 235 seconds with the defaults, and a retiring signing key
 stays published that long at least, so that the provider stops trying when what it sends stops being
-verifiable. An application that routes the notifications to a transport of its own keeps that agreement only
-if the transport retries with the policy of the bundle; <code>bin/console beffroi:doctor</code> says whether it does.</p>
+verifiable. The transport retries with that very schedule, and <code>bin/console beffroi:doctor</code> says whether the
+transport a logout token is sent to does.</p>
 <p><a href="../../oidc/logout/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Logout</a> and <a href="../messenger/">Messenger</a></p>
 <h2 id="backchannel_authentication"><code>backchannel_authentication</code><a class="headerlink" href="#backchannel_authentication" title="Link to this section">&para;</a></h2>
 <p>How the <code>login_hint</code> of a backchannel authentication request is read (CIBA Core §7.1), under the three readings
-of <code>interaction</code>, <code>none</code> being for a deployment that tags its own <code>beffroi.oidc.ciba_user_hint</code>, and how long
-one call to a client in <code>ping</code> mode may take. Nothing here opens the flow: a client takes part in it by
-registering its grant and a delivery mode.</p>
+of <code>interaction</code>, and how long one call to a client in <code>ping</code> mode may take. <code>none</code> leaves the hint to a class
+tagged <code>beffroi.oidc.ciba_user_hint</code>, and the one the application tags reads the <code>id_token_hint</code> instead.
+Nothing here opens the flow: a client takes part in it by registering its grant and a delivery mode.</p>
 <p><a href="../../oidc/grants/backchannel-authentication/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Backchannel authentication</a></p>
 <h2 id="web_push"><code>web_push</code><a class="headerlink" href="#web_push" title="Link to this section">&para;</a></h2>
@@ -4953,7 +4937,7 @@ served by nothing.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../installation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installing the bundle">
+          <a href="../configuration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Configuration">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -4963,7 +4947,7 @@ served by nothing.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Installing the bundle
+                Configuration
               </div>
             </div>
           </a>

@@ -6,37 +6,37 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="What beffroi/symfony-bundle adds to an application: configuration, routes, persistence, security, pages and commands.">
+        <meta name="description" content="Where the routes are imported, the two planes their names carry, and restricting a process to one of them.">
       
       
         <meta name="author" content="The Beffroi contributors">
       
       
-        <link rel="canonical" href="https://doc.beffroi.tech/0.1/symfony-bundle/">
+        <link rel="canonical" href="https://doc.beffroi.tech/0.1/application/routes-and-planes/">
       
       
-        <link rel="prev" href="../saml/packages/">
+        <link rel="prev" href="../configuration-tree/">
       
       
-        <link rel="next" href="installation/">
+        <link rel="next" href="../persistence/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.svg">
+      <link rel="icon" href="../../assets/images/favicon.svg">
       <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.8.0">
     
     
       
-        <title>The Symfony bundle - Beffroi</title>
+        <title>Routes and planes - Beffroi</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -55,9 +55,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/beffroi.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/beffroi.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
   <script async src="https://plausible.coolify.kloude.fr/js/pa-jebRWwFHmq2R7pgJHl5Dm.js"></script>
   <script>
@@ -66,14 +66,14 @@
   </script>
 
     
-  <link rel="icon" href="../assets/images/favicon.ico" sizes="32x32">
-  <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png">
+  <link rel="icon" href="../../assets/images/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="../../assets/images/apple-touch-icon.png">
   <meta name="theme-color" content="#f2f4f6" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0c1016" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
-  <meta property="og:title" content="The Symfony bundle">
-  <meta property="og:description" content="What beffroi/symfony-bundle adds to an application: configuration, routes, persistence, security, pages and commands.">
+  <meta property="og:title" content="Routes and planes">
+  <meta property="og:description" content="Where the routes are imported, the two planes their names carry, and restricting a process to one of them.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -98,7 +98,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#the-symfony-bundle" class="md-skip">
+        <a href="#routes-and-planes" class="md-skip">
           Skip to content
         </a>
       
@@ -118,9 +118,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Beffroi" class="md-header__button md-logo" aria-label="Beffroi" data-md-component="logo">
-      <img class="bf-logo bf-logo--paper" src="../assets/images/beffroi-lockup-S-bichrome.svg" alt="">
-<img class="bf-logo bf-logo--ink" src="../assets/images/beffroi-lockup-S-bichrome-dark.svg" alt="">
+    <a href="../.." title="Beffroi" class="md-header__button md-logo" aria-label="Beffroi" data-md-component="logo">
+      <img class="bf-logo bf-logo--paper" src="../../assets/images/beffroi-lockup-S-bichrome.svg" alt="">
+<img class="bf-logo bf-logo--ink" src="../../assets/images/beffroi-lockup-S-bichrome-dark.svg" alt="">
     </a>
     <label class="md-header__button md-icon" for="__drawer">
       
@@ -136,7 +136,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              The Symfony bundle
+              Routes and planes
             
           </span>
         </div>
@@ -259,9 +259,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Beffroi" class="md-nav__button md-logo" aria-label="Beffroi" data-md-component="logo">
-      <img class="bf-logo bf-logo--paper" src="../assets/images/beffroi-lockup-S-bichrome.svg" alt="">
-<img class="bf-logo bf-logo--ink" src="../assets/images/beffroi-lockup-S-bichrome-dark.svg" alt="">
+    <a href="../.." title="Beffroi" class="md-nav__button md-logo" aria-label="Beffroi" data-md-component="logo">
+      <img class="bf-logo bf-logo--paper" src="../../assets/images/beffroi-lockup-S-bichrome.svg" alt="">
+<img class="bf-logo bf-logo--ink" src="../../assets/images/beffroi-lockup-S-bichrome-dark.svg" alt="">
     </a>
     Beffroi
   </label>
@@ -287,7 +287,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -375,7 +375,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../the-project/what-is-beffroi/" class="md-nav__link">
+      <a href="../../the-project/what-is-beffroi/" class="md-nav__link">
         
   
   
@@ -403,7 +403,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../the-project/packages/" class="md-nav__link">
+      <a href="../../the-project/packages/" class="md-nav__link">
         
   
   
@@ -431,7 +431,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../the-project/secure-by-default/" class="md-nav__link">
+      <a href="../../the-project/secure-by-default/" class="md-nav__link">
         
   
   
@@ -459,7 +459,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../the-project/conformance/" class="md-nav__link">
+      <a href="../../the-project/conformance/" class="md-nav__link">
         
   
   
@@ -487,7 +487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../the-project/versions/" class="md-nav__link">
+      <a href="../../the-project/versions/" class="md-nav__link">
         
   
   
@@ -515,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../the-project/contributing/" class="md-nav__link">
+      <a href="../../the-project/contributing/" class="md-nav__link">
         
   
   
@@ -609,7 +609,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/installation/" class="md-nav__link">
+      <a href="../../getting-started/installation/" class="md-nav__link">
         
   
   
@@ -637,14 +637,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/the-standalone-application/" class="md-nav__link">
+      <a href="../../getting-started/the-standalone-application/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    The standalone application
+    Running the application
   
 
     
@@ -665,7 +665,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/tenant-and-keys/" class="md-nav__link">
+      <a href="../../getting-started/tenant-and-keys/" class="md-nav__link">
         
   
   
@@ -693,7 +693,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/your-first-client/" class="md-nav__link">
+      <a href="../../getting-started/your-first-client/" class="md-nav__link">
         
   
   
@@ -721,7 +721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/a-symfony-relying-party/" class="md-nav__link">
+      <a href="../../getting-started/a-symfony-relying-party/" class="md-nav__link">
         
   
   
@@ -794,7 +794,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../core/" class="md-nav__link ">
+            <a href="../../core/" class="md-nav__link ">
               
   
   
@@ -838,7 +838,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/tenants/" class="md-nav__link">
+      <a href="../../core/tenants/" class="md-nav__link">
         
   
   
@@ -866,7 +866,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/users/" class="md-nav__link">
+      <a href="../../core/users/" class="md-nav__link">
         
   
   
@@ -920,7 +920,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../core/credentials/" class="md-nav__link ">
+            <a href="../../core/credentials/" class="md-nav__link ">
               
   
   
@@ -964,7 +964,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/credentials/passwords/" class="md-nav__link">
+      <a href="../../core/credentials/passwords/" class="md-nav__link">
         
   
   
@@ -992,7 +992,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/credentials/passkeys/" class="md-nav__link">
+      <a href="../../core/credentials/passkeys/" class="md-nav__link">
         
   
   
@@ -1020,7 +1020,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/credentials/totp/" class="md-nav__link">
+      <a href="../../core/credentials/totp/" class="md-nav__link">
         
   
   
@@ -1048,7 +1048,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/credentials/backup-codes/" class="md-nav__link">
+      <a href="../../core/credentials/backup-codes/" class="md-nav__link">
         
   
   
@@ -1084,7 +1084,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/authentication-sessions/" class="md-nav__link">
+      <a href="../../core/authentication-sessions/" class="md-nav__link">
         
   
   
@@ -1112,7 +1112,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/groups/" class="md-nav__link">
+      <a href="../../core/groups/" class="md-nav__link">
         
   
   
@@ -1140,7 +1140,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/linked-identities/" class="md-nav__link">
+      <a href="../../core/linked-identities/" class="md-nav__link">
         
   
   
@@ -1168,7 +1168,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/keys/" class="md-nav__link">
+      <a href="../../core/keys/" class="md-nav__link">
         
   
   
@@ -1196,7 +1196,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/personal-data/" class="md-nav__link">
+      <a href="../../core/personal-data/" class="md-nav__link">
         
   
   
@@ -1224,7 +1224,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/ports/" class="md-nav__link">
+      <a href="../../core/ports/" class="md-nav__link">
         
   
   
@@ -1252,7 +1252,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/events/" class="md-nav__link">
+      <a href="../../core/events/" class="md-nav__link">
         
   
   
@@ -1349,7 +1349,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../oidc/" class="md-nav__link ">
+            <a href="../../oidc/" class="md-nav__link ">
               
   
   
@@ -1393,7 +1393,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/clients/" class="md-nav__link">
+      <a href="../../oidc/clients/" class="md-nav__link">
         
   
   
@@ -1421,7 +1421,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/client-authentication/" class="md-nav__link">
+      <a href="../../oidc/client-authentication/" class="md-nav__link">
         
   
   
@@ -1449,7 +1449,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/authorization-request/" class="md-nav__link">
+      <a href="../../oidc/authorization-request/" class="md-nav__link">
         
   
   
@@ -1477,7 +1477,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/interactions/" class="md-nav__link">
+      <a href="../../oidc/interactions/" class="md-nav__link">
         
   
   
@@ -1505,7 +1505,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/consent/" class="md-nav__link">
+      <a href="../../oidc/consent/" class="md-nav__link">
         
   
   
@@ -1565,7 +1565,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../oidc/grants/" class="md-nav__link ">
+            <a href="../../oidc/grants/" class="md-nav__link ">
               
   
   
@@ -1609,7 +1609,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/grants/authorization-code/" class="md-nav__link">
+      <a href="../../oidc/grants/authorization-code/" class="md-nav__link">
         
   
   
@@ -1637,7 +1637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/grants/refresh-token/" class="md-nav__link">
+      <a href="../../oidc/grants/refresh-token/" class="md-nav__link">
         
   
   
@@ -1665,7 +1665,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/grants/client-credentials/" class="md-nav__link">
+      <a href="../../oidc/grants/client-credentials/" class="md-nav__link">
         
   
   
@@ -1693,7 +1693,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/grants/device-code/" class="md-nav__link">
+      <a href="../../oidc/grants/device-code/" class="md-nav__link">
         
   
   
@@ -1721,7 +1721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/grants/backchannel-authentication/" class="md-nav__link">
+      <a href="../../oidc/grants/backchannel-authentication/" class="md-nav__link">
         
   
   
@@ -1749,7 +1749,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/grants/token-exchange/" class="md-nav__link">
+      <a href="../../oidc/grants/token-exchange/" class="md-nav__link">
         
   
   
@@ -1777,7 +1777,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/grants/jwt-bearer/" class="md-nav__link">
+      <a href="../../oidc/grants/jwt-bearer/" class="md-nav__link">
         
   
   
@@ -1839,7 +1839,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../oidc/tokens/" class="md-nav__link ">
+            <a href="../../oidc/tokens/" class="md-nav__link ">
               
   
   
@@ -1883,7 +1883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/tokens/access-tokens/" class="md-nav__link">
+      <a href="../../oidc/tokens/access-tokens/" class="md-nav__link">
         
   
   
@@ -1911,7 +1911,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/tokens/id-tokens/" class="md-nav__link">
+      <a href="../../oidc/tokens/id-tokens/" class="md-nav__link">
         
   
   
@@ -1939,7 +1939,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/tokens/refresh-tokens/" class="md-nav__link">
+      <a href="../../oidc/tokens/refresh-tokens/" class="md-nav__link">
         
   
   
@@ -1967,7 +1967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/tokens/encryption/" class="md-nav__link">
+      <a href="../../oidc/tokens/encryption/" class="md-nav__link">
         
   
   
@@ -2003,7 +2003,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/scopes-and-claims/" class="md-nav__link">
+      <a href="../../oidc/scopes-and-claims/" class="md-nav__link">
         
   
   
@@ -2031,7 +2031,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/resources/" class="md-nav__link">
+      <a href="../../oidc/resources/" class="md-nav__link">
         
   
   
@@ -2059,7 +2059,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/authorization-details/" class="md-nav__link">
+      <a href="../../oidc/authorization-details/" class="md-nav__link">
         
   
   
@@ -2087,7 +2087,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/pushed-authorization-requests/" class="md-nav__link">
+      <a href="../../oidc/pushed-authorization-requests/" class="md-nav__link">
         
   
   
@@ -2115,7 +2115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/request-objects/" class="md-nav__link">
+      <a href="../../oidc/request-objects/" class="md-nav__link">
         
   
   
@@ -2143,7 +2143,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/response-modes/" class="md-nav__link">
+      <a href="../../oidc/response-modes/" class="md-nav__link">
         
   
   
@@ -2193,7 +2193,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../oidc/sender-constrained/" class="md-nav__link ">
+            <a href="../../oidc/sender-constrained/" class="md-nav__link ">
               
   
   
@@ -2237,7 +2237,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/sender-constrained/dpop/" class="md-nav__link">
+      <a href="../../oidc/sender-constrained/dpop/" class="md-nav__link">
         
   
   
@@ -2265,7 +2265,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/sender-constrained/mutual-tls/" class="md-nav__link">
+      <a href="../../oidc/sender-constrained/mutual-tls/" class="md-nav__link">
         
   
   
@@ -2301,7 +2301,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/userinfo/" class="md-nav__link">
+      <a href="../../oidc/userinfo/" class="md-nav__link">
         
   
   
@@ -2329,7 +2329,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/introspection-and-revocation/" class="md-nav__link">
+      <a href="../../oidc/introspection-and-revocation/" class="md-nav__link">
         
   
   
@@ -2357,7 +2357,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/discovery-and-jwks/" class="md-nav__link">
+      <a href="../../oidc/discovery-and-jwks/" class="md-nav__link">
         
   
   
@@ -2385,7 +2385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/logout/" class="md-nav__link">
+      <a href="../../oidc/logout/" class="md-nav__link">
         
   
   
@@ -2413,7 +2413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/dynamic-registration/" class="md-nav__link">
+      <a href="../../oidc/dynamic-registration/" class="md-nav__link">
         
   
   
@@ -2441,7 +2441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/pairwise-subjects/" class="md-nav__link">
+      <a href="../../oidc/pairwise-subjects/" class="md-nav__link">
         
   
   
@@ -2469,7 +2469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/errors/" class="md-nav__link">
+      <a href="../../oidc/errors/" class="md-nav__link">
         
   
   
@@ -2497,7 +2497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../oidc/ports/" class="md-nav__link">
+      <a href="../../oidc/ports/" class="md-nav__link">
         
   
   
@@ -2566,7 +2566,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../saml/" class="md-nav__link ">
+            <a href="../../saml/" class="md-nav__link ">
               
   
   
@@ -2610,7 +2610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../saml/identity-provider/" class="md-nav__link">
+      <a href="../../saml/identity-provider/" class="md-nav__link">
         
   
   
@@ -2638,7 +2638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../saml/service-providers/" class="md-nav__link">
+      <a href="../../saml/service-providers/" class="md-nav__link">
         
   
   
@@ -2666,7 +2666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../saml/single-sign-on/" class="md-nav__link">
+      <a href="../../saml/single-sign-on/" class="md-nav__link">
         
   
   
@@ -2694,7 +2694,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../saml/single-logout/" class="md-nav__link">
+      <a href="../../saml/single-logout/" class="md-nav__link">
         
   
   
@@ -2722,7 +2722,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../saml/upstream-identity-providers/" class="md-nav__link">
+      <a href="../../saml/upstream-identity-providers/" class="md-nav__link">
         
   
   
@@ -2750,7 +2750,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../saml/federated-sign-in/" class="md-nav__link">
+      <a href="../../saml/federated-sign-in/" class="md-nav__link">
         
   
   
@@ -2778,7 +2778,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../saml/microsoft-entra-id/" class="md-nav__link">
+      <a href="../../saml/microsoft-entra-id/" class="md-nav__link">
         
   
   
@@ -2806,7 +2806,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../saml/packages/" class="md-nav__link">
+      <a href="../../saml/packages/" class="md-nav__link">
         
   
   
@@ -2875,6 +2875,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -2887,14 +2893,14 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../" class="md-nav__link ">
               
   
   
   <span class="md-ellipsis">
     
   
-    The Symfony bundle
+    The application
   
 
     
@@ -2905,7 +2911,7 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_7" id="__nav_7_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
@@ -2916,7 +2922,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    The Symfony bundle
+    The application
   
 
           </label>
@@ -2931,14 +2937,14 @@
   
   
     <li class="md-nav__item">
-      <a href="installation/" class="md-nav__link">
+      <a href="../deployment/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Installing the bundle
+    Deployment
   
 
     
@@ -2959,7 +2965,7 @@
   
   
     <li class="md-nav__item">
-      <a href="configuration/" class="md-nav__link">
+      <a href="../configuration/" class="md-nav__link">
         
   
   
@@ -2987,14 +2993,14 @@
   
   
     <li class="md-nav__item">
-      <a href="routes-and-planes/" class="md-nav__link">
+      <a href="../configuration-tree/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Routes and planes
+    Configuration tree
   
 
     
@@ -3012,10 +3018,159 @@
                 
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Routes and planes
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Routes and planes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#importing-the-routes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Importing the routes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Importing the routes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-files-for-development-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two files for development only
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-two-planes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The two planes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restricting-a-process-to-one-plane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restricting a process to one plane
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-every-route-of-the-two-planes-carries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What every route of the two planes carries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-second-origin-for-the-clients-that-present-a-certificate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A second origin for the clients that present a certificate
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
-      <a href="persistence/" class="md-nav__link">
+      <a href="../persistence/" class="md-nav__link">
         
   
   
@@ -3043,7 +3198,7 @@
   
   
     <li class="md-nav__item">
-      <a href="security/" class="md-nav__link">
+      <a href="../security/" class="md-nav__link">
         
   
   
@@ -3071,7 +3226,7 @@
   
   
     <li class="md-nav__item">
-      <a href="key-management/" class="md-nav__link">
+      <a href="../key-management/" class="md-nav__link">
         
   
   
@@ -3099,7 +3254,7 @@
   
   
     <li class="md-nav__item">
-      <a href="pages/" class="md-nav__link">
+      <a href="../pages/" class="md-nav__link">
         
   
   
@@ -3127,7 +3282,7 @@
   
   
     <li class="md-nav__item">
-      <a href="translations/" class="md-nav__link">
+      <a href="../translations/" class="md-nav__link">
         
   
   
@@ -3155,35 +3310,7 @@
   
   
     <li class="md-nav__item">
-      <a href="messenger/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Messenger
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="account/" class="md-nav__link">
+      <a href="../account/" class="md-nav__link">
         
   
   
@@ -3211,7 +3338,35 @@
   
   
     <li class="md-nav__item">
-      <a href="web-push/" class="md-nav__link">
+      <a href="../messenger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messenger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../web-push/" class="md-nav__link">
         
   
   
@@ -3239,7 +3394,7 @@
   
   
     <li class="md-nav__item">
-      <a href="console-commands/" class="md-nav__link">
+      <a href="../console-commands/" class="md-nav__link">
         
   
   
@@ -3267,7 +3422,63 @@
   
   
     <li class="md-nav__item">
-      <a href="profiler/" class="md-nav__link">
+      <a href="../operating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating it
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiler/" class="md-nav__link">
         
   
   
@@ -3308,14 +3519,6 @@
           
         
       
-        
-      
-        
-      
-        
-      
-        
-      
     
     
     
@@ -3328,188 +3531,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../application/" class="md-nav__link ">
-              
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    The standalone application
-  
-
-    
-  </span>
-  
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    The standalone application
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../application/deployment/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Deployment
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../application/configuration/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Configuration
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../application/operating/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Operating it
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../application/observability/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Observability
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../scim/" class="md-nav__link ">
+            <a href="../../scim/" class="md-nav__link ">
               
   
   
@@ -3536,8 +3558,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3583,10 +3605,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
             
   
   
@@ -3604,8 +3626,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3622,7 +3644,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/endpoints/" class="md-nav__link">
+      <a href="../../reference/endpoints/" class="md-nav__link">
         
   
   
@@ -3650,7 +3672,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/configuration/" class="md-nav__link">
+      <a href="../../reference/configuration/" class="md-nav__link">
         
   
   
@@ -3678,7 +3700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/console-commands/" class="md-nav__link">
+      <a href="../../reference/console-commands/" class="md-nav__link">
         
   
   
@@ -3706,7 +3728,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/events/" class="md-nav__link">
+      <a href="../../reference/events/" class="md-nav__link">
         
   
   
@@ -3734,7 +3756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/specifications/" class="md-nav__link">
+      <a href="../../reference/specifications/" class="md-nav__link">
         
   
   
@@ -3783,11 +3805,11 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../migration/" class="md-nav__link ">
+            <a href="../../migration/" class="md-nav__link ">
               
   
   
@@ -3814,8 +3836,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_11">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3863,10 +3885,38 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-it-brings" class="md-nav__link">
+  <a href="#importing-the-routes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What it brings
+        Importing the routes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Importing the routes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-files-for-development-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two files for development only
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-two-planes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The two planes
       
     </span>
   </a>
@@ -3874,10 +3924,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#installing-it" class="md-nav__link">
+  <a href="#restricting-a-process-to-one-plane" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Installing it
+        Restricting a process to one plane
       
     </span>
   </a>
@@ -3885,10 +3935,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#conventions-it-follows" class="md-nav__link">
+  <a href="#what-every-route-of-the-two-planes-carries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conventions it follows
+        What every route of the two planes carries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-second-origin-for-the-clients-that-present-a-certificate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A second origin for the clients that present a certificate
       
     </span>
   </a>
@@ -3912,7 +3973,7 @@
 
 
   
-    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/symfony-bundle/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/beffroi-auth/docs/edit/0.1/docs/application/routes-and-planes.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M4 20V16L16 4L20 8L8 20Z"/><path d="M13 7L17 11"/></svg>
     </a>
@@ -3920,92 +3981,146 @@
   
 
 
-<h1 id="the-symfony-bundle">The Symfony bundle<a class="headerlink" href="#the-symfony-bundle" title="Link to this section">&para;</a></h1>
-<p><code>beffroi/symfony-bundle</code> is the only place in Beffroi where the Symfony framework appears. A <code>Request</code>, the
-container, the entity manager, a Twig template and a console command live here and nowhere else, which is what
-keeps the packages underneath usable without a framework: they use a few standalone components,
-<code>symfony/uid</code> for identifiers and <code>symfony/key-management</code> for the key management service, and nothing of
-the framework.</p>
-<h2 id="what-it-brings">What it brings<a class="headerlink" href="#what-it-brings" title="Link to this section">&para;</a></h2>
+<h1 id="routes-and-planes">Routes and planes<a class="headerlink" href="#routes-and-planes" title="Link to this section">&para;</a></h1>
+<p>Every route of the provider is declared on its controller, in <code>src/Controller/</code>, one action per class, and
+its name carries its plane: <code>beffroi_protocol_*</code> for what a client or a resource server calls,
+<code>beffroi_interaction_*</code> for what a browser reads. <code>BEFFROI_PLANE</code> restricts a process to one of them, so that a
+provider can serve the protocol on machines a browser never reaches, from the same build.</p>
+<h2 id="importing-the-routes">Importing the routes<a class="headerlink" href="#importing-the-routes" title="Link to this section">&para;</a></h2>
+<div class="language-yaml highlight"><span class="filename">config/routes/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'../beffroi/routes.php'</span>
+</span></code></pre></div>
+<p><code>config/beffroi/routes.php</code> routes the controllers of <code>src/Controller/</code> by their attributes, and the
+application imports it with no prefix.</p>
+<p><strong>The routes are served under the path of the issuer.</strong> Every endpoint the provider announces is located
+under the origin of the issuer and the path the router gives it, never under the <code>Host</code> of the request. The
+application imports its routes at the root, so its issuer is an origin with no path: an issuer with a path,
+which makes clients look for the endpoints under it, is refused at the first request that needs the
+endpoints, the discovery document among them. The issuer <code>https://example.com/idp</code> gives:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>The discovery document is served at "https://example.com/.well-known/openid-configuration" but the issuer "https://example.com/idp" makes clients look for it at "https://example.com/idp/.well-known/openid-configuration" (OIDC Discovery section 4.1): mount the routes of the provider under the path of the issuer.
+</span></code></pre></div>
+<p>The metadata of both SAML roles are held to the same rule, and refused the same way.</p>
+<p><strong>The root is not a route of the provider.</strong> No route of <code>config/beffroi/routes.php</code> is <code>/</code>. The application,
+whose issuer is an origin, sends <code>/</code> to the home of the account with a route of its own,
+<code>beffroi_interaction_home</code> in <code>config/routes/home.yaml</code>, whose name carries the interaction plane, so a process
+that serves the protocol alone answers it <code>404</code> like every page meant for a browser.</p>
+<div class="admonition warning">
+<p class="admonition-title">The routes are imported by name, never through <code>routing.controllers</code></p>
+<p>The <code>routing.controllers</code> resource Symfony 8.2 offers routes every service that carries a <code>#[Route]</code>
+attribute, whatever file imports it and with no prefix. It would put the routes of the provider at the
+root of an issuer that has a path, and the endpoints of the conformance tools below in every environment.
+The application does not use it: each file of <code>config/routes/</code> names the resource it imports.</p>
+</div>
+<h3 id="two-files-for-development-only">Two files for development only<a class="headerlink" href="#two-files-for-development-only" title="Link to this section">&para;</a></h3>
+<p>The application holds two more files of routes, which <code>config/beffroi/routes.php</code> does not import: the
+endpoints the FIDO Conformance Tools drive, and the endpoint the OpenID conformance suite answers a backchannel
+request with when nobody is there to answer it. They are not an API of the product. The application imports
+them in development only, each under a prefix of its own, and its image carries neither:</p>
+<div class="language-yaml highlight"><span class="filename">config/routes/fido_conformance.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">when@dev</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">beffroi_fido_conformance</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'../beffroi/routes/fido-conformance.php'</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/fido/conformance</span>
+</span></code></pre></div>
+<div class="language-yaml highlight"><span class="filename">config/routes/ciba_conformance.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">when@dev</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">beffroi_ciba_conformance</span><span class="p">:</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'../beffroi/routes/ciba-conformance.php'</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/ciba/conformance</span>
+</span></code></pre></div>
+<p>Their names, <code>beffroi_fido_conformance_*</code> and <code>beffroi_ciba_conformance_approval</code>, carry no plane.</p>
+<h2 id="the-two-planes">The two planes<a class="headerlink" href="#the-two-planes" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Page</th>
-<th>What it covers</th>
+<th>Plane</th>
+<th>Route names</th>
+<th>Who calls it</th>
+<th>What is on it</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="configuration/">Configuration</a></td>
-<td>One tree under <code>beffroi</code>, section by section: its shape checked when the container is built, the values of the tenant, the clients and the trusted issuers when the provider first builds them</td>
+<td>Protocol</td>
+<td><code>beffroi_protocol_*</code></td>
+<td>A client or a resource server, server to server</td>
+<td>The discovery document and the RFC 8414 metadata, the JWK Set, the token, UserInfo, introspection, revocation, pushed authorization, device authorization, backchannel authentication and registration endpoints, and the metadata of both SAML roles</td>
 </tr>
 <tr>
-<td><a href="routes-and-planes/">Routes and planes</a></td>
-<td>The controllers of both planes, and <code>BEFFROI_PLANE</code> to restrict a process to one</td>
-</tr>
-<tr>
-<td><a href="persistence/">Persistence</a></td>
-<td>The Doctrine mapping, the migrations, and the DBAL types that read value objects back</td>
-</tr>
-<tr>
-<td><a href="security/">Security</a></td>
-<td>The firewalls, the authenticators, and what a session carries</td>
-</tr>
-<tr>
-<td><a href="key-management/">Key management</a></td>
-<td>The key management client the private keys are sealed with</td>
-</tr>
-<tr>
-<td><a href="pages/">Pages</a></td>
-<td>Login, consent, logout, device, and how to make them yours</td>
-</tr>
-<tr>
-<td><a href="translations/">Translations</a></td>
-<td>Every user-facing string, in XLIFF, and how a page decides which language it speaks</td>
-</tr>
-<tr>
-<td><a href="messenger/">Messenger</a></td>
-<td>Which writes are asynchronous, and which ones the protocol waits for</td>
-</tr>
-<tr>
-<td><a href="account/">The account pages</a></td>
-<td>What a person sees of themselves, and what they can take back</td>
-</tr>
-<tr>
-<td><a href="console-commands/">Console commands</a></td>
-<td>Tenant, users, groups, clients, keys, data keys, SAML metadata, FIDO metadata</td>
-</tr>
-<tr>
-<td><a href="profiler/">The profiler panel</a></td>
-<td>What the provider did during a request, in the Symfony profiler</td>
+<td>Interaction</td>
+<td><code>beffroi_interaction_*</code></td>
+<td>A browser, with a person in front of it</td>
+<td>The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the enrolment of a first passkey, the choice of a language, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to</td>
 </tr>
 </tbody>
 </table>
-<h2 id="installing-it">Installing it<a class="headerlink" href="#installing-it" title="Link to this section">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>composer<span class="w"> </span>require<span class="w"> </span>beffroi/symfony-bundle
+<p><a href="../../reference/endpoints/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Every route, with its method and path</a></p>
+<p>What tells the planes apart is the name and nothing else. A route is of the protocol plane because its name
+starts <code>beffroi_protocol_</code>, so a route the provider gains is in its plane by being routed, and a route whose
+name starts with neither, as <code>app_theme</code>, where a visitor chooses the theme of the pages, belongs to no plane.</p>
+<h2 id="restricting-a-process-to-one-plane">Restricting a process to one plane<a class="headerlink" href="#restricting-a-process-to-one-plane" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th><code>BEFFROI_PLANE</code></th>
+<th>What the process serves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>all</code></td>
+<td>Both planes. The default when the variable is not set</td>
+</tr>
+<tr>
+<td><code>interaction</code></td>
+<td>The routes of the interaction plane, and the routes of no plane</td>
+</tr>
+<tr>
+<td><code>protocol</code></td>
+<td>The routes of the protocol plane, and the routes of no plane</td>
+</tr>
+</tbody>
+</table>
+<p>The variable is read by the process and not compiled into the container, so one build serves the three.
+Every process imports the same routes and declares the same firewalls; what differs between the process that
+serves the browsers and the one that serves the clients is that one line of its environment.</p>
+<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>BEFFROI_PLANE=protocol
 </span></code></pre></div>
-<p><a href="installation/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
-</span> Installation, in full</a></p>
-<h2 id="conventions-it-follows">Conventions it follows<a class="headerlink" href="#conventions-it-follows" title="Link to this section">&para;</a></h2>
-<p>Knowing these makes the rest of this section predictable.</p>
+<p><strong>A route of the other plane answers <code>404</code></strong>, the answer an unknown path gets, and the exception says why:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>The route "beffroi_interaction_login" belongs to a plane this process does not serve (BEFFROI_PLANE=protocol).
+</span></code></pre></div>
+<p>The refusal is made once the router has named the route and before the firewall reads anything, so a
+request refused for its plane opens no session and is not counted against the load budget of its origin. A
+route of no plane, the choice of a theme or an endpoint of the conformance tools, is never refused.</p>
+<p><strong>A value that is none of the three refuses every request of the process</strong>, the routes of no plane included.
+A plane nobody spelled right is not <code>all</code>.</p>
+<h2 id="what-every-route-of-the-two-planes-carries">What every route of the two planes carries<a class="headerlink" href="#what-every-route-of-the-two-planes-carries" title="Link to this section">&para;</a></h2>
+<p>Being of a plane is also what decides what the provider puts around a route.</p>
 <ul>
-<li><strong>A controller is <code>final readonly</code>, one action per class</strong>, with the route on <code>__invoke()</code>. There is no
-  controller with six methods.</li>
-<li><strong>A route name carries its plane</strong>: <code>beffroi_protocol_*</code> is server to server, <code>beffroi_interaction_*</code> is a
-  browser. Nothing is ambiguous, and a process can be restricted to one of the two.</li>
-<li><strong>A value object a column holds whole goes in one column</strong>, with a DBAL type of the bundle that reads it
-  back through the object's own constructor, rather than a Doctrine embeddable fixing one type per field
-  for the whole model. One embeddable is left in the mapping, embedded by one entity, and it is named where
-  the mapping is described.</li>
-<li><strong>What a request does not need the result of leaves as a message.</strong> What the protocol or the page needs in
-  the same request, a session opened or a passkey renamed, is written by the use case in that request; the
-  rest, the acts of the journal, the enrichment of a provenance, the notifications, travels on a lane, and no
-  message of the bundle travels on the synchronous transport.</li>
-<li><strong>Every user-facing string is translated.</strong> A signed-in person reads the pages in the language of their
-  record; for anybody else the language comes from what the browser asked for, then <code>ui_locales</code>, then
-  <code>Accept-Language</code>, and never from the URL.</li>
-<li><strong>A test never sleeps.</strong> Time moves with a mocked clock, which survives a kernel reboot.</li>
+<li><strong>The budget of its origin.</strong> Every request to a route of either plane is counted against the address it
+  comes from, before the firewall, and refused with <code>429</code> once the budget is spent.
+  <a href="../security/#attempts-and-budgets">Attempts and budgets</a> says how much and in which shape.</li>
+<li><strong>The headers of a page.</strong> Every page the provider renders on the interaction plane carries
+  <code>X-Frame-Options: DENY</code>, <code>Content-Security-Policy: frame-ancestors 'none'</code>, <code>Referrer-Policy: no-referrer</code>
+  and a <code>Cache-Control</code> that says <code>no-store</code>. The policy is a floor, which the application replaces with the
+  one <code>config/packages/nelmio_security.yaml</code> writes, and <a href="../pages/#the-headers-of-a-page">the pages</a> say what a
+  page adds to it.</li>
+<li><strong>The rule of a post from another site</strong>, which is read on the interaction plane alone.
+  <a href="../security/#a-post-from-another-site">Security</a> says which posts it reaches.</li>
 </ul>
+<p>The application answers CORS on six endpoints, from <code>config/packages/nelmio_cors.yaml</code>: the discovery
+documents, the JWK Set, the token endpoint, UserInfo, revocation and the pushed authorization request, to any
+origin and never with credentials. No other route carries a CORS header.</p>
+<h2 id="a-second-origin-for-the-clients-that-present-a-certificate">A second origin for the clients that present a certificate<a class="headerlink" href="#a-second-origin-for-the-clients-that-present-a-certificate" title="Link to this section">&para;</a></h2>
+<p>A deployment whose TLS listener asks for a client certificate on a host of its own names that host in
+<code>BEFFROI_MTLS_ORIGIN</code>, which the application reads into <code>mutual_tls.origin</code>, and the endpoints are located a
+second time under it, with the same paths (RFC 8705 §5):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>BEFFROI_MTLS_ORIGIN=https://mtls.op.example.com
+</span></code></pre></div>
+<p>The discovery document announces them in <code>mtls_endpoint_aliases</code>. The issuer does not change: an alias is
+another way to the same provider, not another provider. With no origin named, the document announces no
+alias, and a client that authenticates by mutual TLS reaches the ordinary endpoints.</p>
+<p><a href="../../oidc/sender-constrained/mutual-tls/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Mutual TLS</a></p>
 
 
 
@@ -4026,7 +4141,7 @@ the framework.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 11:14:31 UTC">November 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
   </span>
 
     
@@ -4064,7 +4179,7 @@ the framework.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../saml/packages/" class="md-footer__link md-footer__link--prev" aria-label="Previous: The SAML packages">
+          <a href="../configuration-tree/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Configuration tree">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -4074,20 +4189,20 @@ the framework.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                The SAML packages
+                Configuration tree
               </div>
             </div>
           </a>
         
         
           
-          <a href="installation/" class="md-footer__link md-footer__link--next" aria-label="Next: Installing the bundle">
+          <a href="../persistence/" class="md-footer__link md-footer__link--next" aria-label="Next: Persistence">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Installing the bundle
+                Persistence
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -4151,10 +4266,10 @@ the framework.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips", "content.action.edit"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "default": "latest", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips", "content.action.edit"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

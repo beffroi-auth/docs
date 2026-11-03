@@ -9,11 +9,31 @@
          <lastmod>2026-11-03</lastmod>
     </url>
     <url>
+         <loc>https://doc.beffroi.tech/0.1/application/account/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/configuration-tree/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
          <loc>https://doc.beffroi.tech/0.1/application/configuration/</loc>
          <lastmod>2026-11-03</lastmod>
     </url>
     <url>
+         <loc>https://doc.beffroi.tech/0.1/application/console-commands/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
          <loc>https://doc.beffroi.tech/0.1/application/deployment/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/key-management/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/messenger/</loc>
          <lastmod>2026-11-03</lastmod>
     </url>
     <url>
@@ -22,6 +42,34 @@
     </url>
     <url>
          <loc>https://doc.beffroi.tech/0.1/application/operating/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/pages/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/persistence/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/profiler/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/routes-and-planes/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/security/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/translations/</loc>
+         <lastmod>2026-11-03</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/application/web-push/</loc>
          <lastmod>2026-11-03</lastmod>
     </url>
     <url>
@@ -310,62 +358,6 @@
     </url>
     <url>
          <loc>https://doc.beffroi.tech/0.1/scim/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/account/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/configuration/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/console-commands/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/installation/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/key-management/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/messenger/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/pages/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/persistence/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/profiler/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/routes-and-planes/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/security/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/translations/</loc>
-         <lastmod>2026-11-03</lastmod>
-    </url>
-    <url>
-         <loc>https://doc.beffroi.tech/0.1/symfony-bundle/web-push/</loc>
          <lastmod>2026-11-03</lastmod>
     </url>
     <url>
