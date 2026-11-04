@@ -26,8 +26,9 @@ document an hour.
 **The routes are where the issuer says they are.** OIDC Discovery 1.0 §4.1 appends the well-known path to the
 issuer, and the application mounts its routes at the root, so its issuer is an origin: a deployment whose
 issuer is `https://op.example.com` serves `https://op.example.com/.well-known/openid-configuration`. An issuer
-that carries a path makes every endpoint that locates the others fail at the first request, with an error that
-names both URLs, rather than publish endpoints a client would not find. RFC 8414 §3 inserts its well-known
+that carries a path is refused, by the synchronisation of the tenant and by every request that reads it, rather
+than publish endpoints a client would not find ([routes and planes](../application/routes-and-planes.md)).
+RFC 8414 §3 inserts its well-known
 segment between the host and the path of the issuer instead, and under an issuer that is an origin the two
 locations are the same URL.
 

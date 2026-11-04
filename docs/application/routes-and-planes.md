@@ -20,14 +20,23 @@ beffroi:
 `config/beffroi/routes.php` routes the controllers of `src/Controller/` by their attributes, and the
 application imports it with no prefix.
 
-**The routes are served under the path of the issuer.** Every endpoint the provider announces is located
-under the origin of the issuer and the path the router gives it, never under the `Host` of the request. The
-application imports its routes at the root, so its issuer is an origin with no path: an issuer with a path,
-which makes clients look for the endpoints under it, is refused at the first request that needs the
-endpoints, the discovery document among them. The issuer `https://example.com/idp` gives:
+**The issuer is an origin.** Every endpoint the provider announces is located under the origin of the issuer
+and the path the router gives it, never under the `Host` of the request. The application imports its routes at
+the root, and the issuer of its tenant is an origin with no path. An issuer with a path is refused where the
+application reads the tenant of its configuration: `beffroi:tenant:synchronize` refuses it, and so does every
+request that reads the tenant. The issuer `https://example.com/idp` gives:
 
 ``` text
-The discovery document is served at "https://example.com/.well-known/openid-configuration" but the issuer "https://example.com/idp" makes clients look for it at "https://example.com/idp/.well-known/openid-configuration" (OIDC Discovery section 4.1): mount the routes of the provider under the path of the issuer.
+The issuer "https://example.com/idp" carries a path: the issuer of a tenant is an origin, the routes of the provider being served at its root.
+```
+
+A proxy that serves the provider under a path does not change that. Symfony reads the prefix a proxy forwards in
+`X-Forwarded-Prefix` only when `SYMFONY_TRUSTED_HEADERS` names it, and the router then writes every path under
+that prefix, where an issuer that is an origin does not make clients look: the first request that needs the
+endpoints is refused. Behind such a proxy, the issuer `https://example.com` gives:
+
+``` text
+The discovery document is served at "https://example.com/idp/.well-known/openid-configuration" but the issuer "https://example.com" makes clients look for it at "https://example.com/.well-known/openid-configuration" (OIDC Discovery section 4.1): mount the routes of the provider under the path of the issuer.
 ```
 
 The metadata of both SAML roles are held to the same rule, and refused the same way.
@@ -40,8 +49,8 @@ that serves the protocol alone answers it `404` like every page meant for a brow
 !!! warning "The routes are imported by name, never through `routing.controllers`"
 
     The `routing.controllers` resource Symfony 8.2 offers routes every service that carries a `#[Route]`
-    attribute, whatever file imports it and with no prefix. It would put the routes of the provider at the
-    root of an issuer that has a path, and the endpoints of the conformance tools below in every environment.
+    attribute, whatever file imports it and with no prefix. It would put the endpoints of the conformance
+    tools below in every environment.
     The application does not use it: each file of `config/routes/` names the resource it imports.
 
 ### Two files for development only
@@ -72,13 +81,14 @@ Their names, `beffroi_fido_conformance_*` and `beffroi_ciba_conformance_approval
 | Plane | Route names | Who calls it | What is on it |
 |---|---|---|---|
 | Protocol | `beffroi_protocol_*` | A client or a resource server, server to server | The discovery document and the RFC 8414 metadata, the JWK Set, the token, UserInfo, introspection, revocation, pushed authorization, device authorization, backchannel authentication and registration endpoints, and the metadata of both SAML roles |
-| Interaction | `beffroi_interaction_*` | A browser, with a person in front of it | The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the enrolment of a first passkey, the choice of a language, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to |
+| Interaction | `beffroi_interaction_*` | A browser, with a person in front of it | The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the enrolment of a first passkey, the choice of a language and of a theme, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to |
 
 [:beffroi-arrow-right: Every route, with its method and path](../reference/endpoints.md)
 
 What tells the planes apart is the name and nothing else. A route is of the protocol plane because its name
 starts `beffroi_protocol_`, so a route the provider gains is in its plane by being routed, and a route whose
-name starts with neither, as `app_theme`, where a visitor chooses the theme of the pages, belongs to no plane.
+name starts with neither belongs to no plane. Every route the image serves carries one; the routes of no plane
+are the ones a development stack adds, the endpoints of the conformance tools above among them.
 
 ## Restricting a process to one plane
 
@@ -105,7 +115,7 @@ The route "beffroi_interaction_login" belongs to a plane this process does not s
 
 The refusal is made once the router has named the route and before the firewall reads anything, so a
 request refused for its plane opens no session and is not counted against the load budget of its origin. A
-route of no plane, the choice of a theme or an endpoint of the conformance tools, is never refused.
+route of no plane, an endpoint of the conformance tools on a development stack, is never refused.
 
 **A value that is none of the three refuses every request of the process**, the routes of no plane included.
 A plane nobody spelled right is not `all`.

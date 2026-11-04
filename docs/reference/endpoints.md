@@ -13,9 +13,9 @@ that sends a browser to the home of its account.
 Every route name of the provider carries its plane. `beffroi_protocol_*` is server to server, called by a
 client or a resource server; `beffroi_interaction_*` is a browser, where a person reads a page and answers. The
 `BEFFROI_PLANE` environment variable restricts a process to one plane, so an interaction never reaches a
-machine that only serves the protocol, and the other way round. One more route of the application,
-`POST /theme`, `app_theme`, where a visitor chooses the theme of the pages, carries no plane, and every
-process serves it.
+machine that only serves the protocol, and the other way round. One more route of the application carries the
+interaction plane, as the root does: `POST /theme`, `beffroi_interaction_theme`, where a visitor chooses the
+theme of the pages.
 
 ## The protocol plane
 
