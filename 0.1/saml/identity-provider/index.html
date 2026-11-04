@@ -3978,62 +3978,68 @@
 
 
 <h1 id="the-identity-provider">The identity provider<a class="headerlink" href="#the-identity-provider" title="Link to this section">&para;</a></h1>
-<p>The tenant is the SAML identity provider of the service providers it declares: they send it an
+<p>The tenant is the SAML identity provider of the service providers its deployment declares: they send it an
 <code>AuthnRequest</code>, and it answers with a signed assertion about the person signed in. This page is the role
 itself, its key and the document that describes it. <a href="../service-providers/">Service providers</a> is how one is
 declared, and <a href="../single-sign-on/">single sign-on</a> what a request gets.</p>
 <h2 id="turning-it-on">Turning it on<a class="headerlink" href="#turning-it-on" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">identity_provider</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<p>The image is an identity provider, and a deployment that does not set <code>BEFFROI_SAML_IDENTITY_PROVIDER</code> keeps
+the role on. Its five variables, with the values of the image:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_SAML_IDENTITY_PROVIDER=true
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED=true
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>BEFFROI_SAML_KEY_STAGING_DELAY=604800
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>BEFFROI_SAML_KEY_AGE=31536000
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>BEFFROI_SAML_METADATA_CACHE_DURATION=86400
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>enabled</code></td>
-<td><code>false</code></td>
-<td>Whether the role is on. Off, its metadata answer <code>404</code>, it serves none of the service providers declared, and every message at its single sign-on and single logout services is refused. Written <code>false</code>, or with the block left out, no service provider may be declared at all. It may be an environment variable, read when the container builds what the role changes, so turning the role on or off asks for a restart and not for a new build of the container</td>
-</tr>
-<tr>
-<td><code>want_authn_requests_signed</code></td>
+<td><code>BEFFROI_SAML_IDENTITY_PROVIDER</code></td>
 <td><code>true</code></td>
-<td>What the metadata say in <code>WantAuthnRequestsSigned</code> (SAML Metadata §2.4.3)</td>
+<td>Whether the role is on, <code>true</code> or <code>false</code>, an empty variable reading <code>false</code>. Off, its metadata answer <code>404</code>, and every message at its single sign-on and single logout services is refused, as one of an issuer nobody declared. It is read when a process builds what the role changes, so turning the role on or off asks for a restart and not for a new image</td>
 </tr>
 <tr>
-<td><code>staging_delay</code></td>
+<td><code>BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED</code></td>
+<td><code>true</code></td>
+<td>What the metadata say in <code>WantAuthnRequestsSigned</code> (SAML Metadata §2.4.3), <code>true</code> or <code>false</code></td>
+</tr>
+<tr>
+<td><code>BEFFROI_SAML_KEY_STAGING_DELAY</code></td>
 <td><code>604800</code>, seven days</td>
-<td>How long a new SAML signing key is published in the metadata before it signs, in seconds</td>
+<td>How long a new SAML signing key is published in the metadata before it signs, in seconds, none at least</td>
 </tr>
 <tr>
-<td><code>age</code></td>
+<td><code>BEFFROI_SAML_KEY_AGE</code></td>
 <td><code>31536000</code>, 365 days</td>
-<td>How long a SAML signing key works before a successor is staged behind it, in seconds, counted from its activation</td>
+<td>How long a SAML signing key works before a successor is staged behind it, in seconds, counted from its activation, one at least</td>
 </tr>
 <tr>
-<td><code>cache_duration</code></td>
+<td><code>BEFFROI_SAML_METADATA_CACHE_DURATION</code></td>
 <td><code>86400</code>, one day</td>
-<td>The <code>cacheDuration</code> of the metadata (SAML Metadata §2.3.2), in seconds: how long a service provider keeps them before it fetches them again. One second at least, and strictly shorter than <code>staging_delay</code>, which the configuration refuses otherwise</td>
+<td>The <code>cacheDuration</code> of the metadata (SAML Metadata §2.3.2), in seconds: how long a service provider keeps them before it fetches them again. One second at least, and strictly shorter than the staging delay</td>
 </tr>
 </tbody>
 </table>
-<p>The three figures belong to the deployment and not to a tenant, as those of <code>beffroi.keys</code> do, and they are
+<p>A role that is off serves no service provider, so <code>BEFFROI_SAML_SERVICE_PROVIDERS</code> declares none then: a list
+that declares one while the role is off is refused whole wherever it is read, single sign-on and the end of a
+session among them, and a deployment that turns the role off empties the list in the same change.</p>
+<p>The three figures belong to the deployment and not to a tenant, as those of the other keys do, and they are
 the figures of the SAML key whichever role draws it: the <a href="../upstream-identity-providers/">service provider</a>
-of the tenant signs with the same key. Each of the four options under <code>enabled</code> may be an environment variable
-too. Its value is then held to the same rules, <code>cache_duration</code> shorter than <code>staging_delay</code> included, when
-the service that reads it is built: the first request or command that needs it refuses a value out of bounds,
-not the build of the container.</p>
-<p><code>want_authn_requests_signed</code> is an announcement, and nothing more. It tells a service provider configured
-from the metadata to sign its requests, which is what a broker such as SimpleSAMLphp does when it reads
-<code>true</code>. Whether a request that arrives needs a signature is decided per service provider, by its declaration
-and its own metadata, and the setting neither adds a signature to that rule nor takes one from it:
+of the tenant signs with the same key, and its metadata carry the same <code>cacheDuration</code>. A figure is read when
+the service that needs it is built, and held there to its bounds and to the others, the cache duration
+shorter than the staging delay included: a value out of bounds is refused by the first request or command
+that needs it, and not when the image is built.</p>
+<p><code>BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED</code> is an announcement, and nothing more. It tells a service provider
+configured from the metadata to sign its requests, which is what SimpleSAMLphp does when it reads <code>true</code>.
+Whether a request that arrives needs a signature is decided per service provider, by its declaration and its
+own metadata, and the variable neither adds a signature to that rule nor takes one from it:
 <a href="../service-providers/#the-signature-a-request-needs">the signature a request needs</a> says how.</p>
 <h2 id="the-key">The key<a class="headerlink" href="#the-key" title="Link to this section">&para;</a></h2>
 <p>The SAML signing key is a key of the tenant like every other one. Its algorithm is <code>SAML-SIGNING</code>, an RSA
@@ -4085,7 +4091,7 @@ half it carries before it is published.</p>
 </table>
 <p>Its bytes are a function of the key and of the tenant, so every process of the deployment publishes the
 same certificate for the same key. The ten years are not how long the key works: the key signs for its
-age, one year by default, and its status is what retires it. A certificate in metadata is how a key is
+age, one year in the image, and its status is what retires it. A certificate in metadata is how a key is
 written down, and a service provider that follows the SAML V2.0 Metadata Interoperability Profile does not
 evaluate its validity period (§2.6.1). Ten years is what hosted identity providers issue theirs for, and
 Microsoft Entra ID refused a certificate valid until the year 9999, written in the <code>GeneralizedTime</code> RFC 5280
@@ -4097,24 +4103,25 @@ the issuer of a deployment is therefore a new identity provider for every servic
 old one.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>https://op.example.com/saml/metadata
 </span></code></pre></div>
-<p>What they hold is read from the configuration of the tenant, never from the request that asked for them:</p>
+<p>What they hold is built from the issuer of the tenant, its keys and the variables above, never from the
+request that asked for them:</p>
 <ul>
 <li>one <code>md:EntityDescriptor</code> holding one <code>md:IDPSSODescriptor</code> of SAML 2.0;</li>
 <li>one <code>KeyDescriptor use="signing"</code> per SAML key in service, staged, active and retiring, in the order they
   were created;</li>
 <li>the single sign-on service at <code>/saml/sso</code> and the single logout service at <code>/saml/slo</code>, each listed with
   HTTP-Redirect and then HTTP-POST at the same URL;</li>
-<li><code>WantAuthnRequestsSigned</code>, as the configuration says;</li>
+<li><code>WantAuthnRequestsSigned</code>, as <code>BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED</code> says;</li>
 <li>one <code>NameIDFormat</code>, <code>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</code>, the only format the identity
   provider writes;</li>
-<li>the <code>cacheDuration</code> of the configuration, and no <code>validUntil</code>.</li>
+<li>the <code>cacheDuration</code> of <code>BEFFROI_SAML_METADATA_CACHE_DURATION</code>, and no <code>validUntil</code>.</li>
 </ul>
 <p>They carry no encryption certificate, since the identity provider decrypts nothing a service provider sends
 it, and they are not signed: the key that would sign them is the key they publish, so a service provider
 trusts them by the channel it read them through, the URL over TLS or the file an administrator gave it.
 They are served as <code>application/samlmetadata+xml</code>, with <code>Cache-Control: public</code> and the <code>max-age</code> of the
-JWK Set, five minutes unless <code>beffroi.keys.jwks_max_age</code> says otherwise, so a cache on the way never holds a
-copy older than that.</p>
+JWK Set, <code>BEFFROI_JWKS_MAX_AGE</code>, five minutes in the image, so a cache on the way never holds a copy older
+than that.</p>
 <p>The routes are served under the issuer, as the discovery document's are: the application refuses to write
 metadata whose endpoints would not be.</p>
 <h2 id="a-rotation-without-an-outage">A rotation without an outage<a class="headerlink" href="#a-rotation-without-an-outage" title="Link to this section">&para;</a></h2>
@@ -4135,8 +4142,8 @@ minute the administrator chooses.</p>
 <p><strong>A year of work.</strong> Every rotation is a step for whoever pinned a certificate, so a successor is staged
 behind the SAML key once it has worked 365 days, and takes over a week later. A year is inside the one to
 three years NIST SP 800-57 Part 1 Rev. 5 §5.3.6 gives a private signature key, where the other keys of the
-tenant work ninety days. Those keep the figures of <code>beffroi.keys</code>, and a rotation of one of them is not slowed
-by the SAML key.</p>
+tenant work ninety days. Those keep their own figures, <code>BEFFROI_KEY_STAGING_DELAY</code> and <code>BEFFROI_KEY_AGE</code>, and
+a rotation of one of them is not slowed by the SAML key.</p>
 <p>The key management service is not asked at every login: a process opens the active key once to sign and
 keeps it open, as it does the keys that sign tokens.</p>
 
@@ -4159,7 +4166,7 @@ keeps it open, as it does the keys that sign tokens.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

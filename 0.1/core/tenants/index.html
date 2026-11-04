@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The unit everything belongs to, what is configuration and what is its row, the acr vocabulary it answers with, and the floor of its logins.">
+        <meta name="description" content="The unit everything belongs to, the variables that declare it and its row in the database, the acr vocabulary it answers with, and the floor of its logins.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -73,7 +73,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Tenants">
-  <meta property="og:description" content="The unit everything belongs to, what is configuration and what is its row, the acr vocabulary it answers with, and the floor of its logins.">
+  <meta property="og:description" content="The unit everything belongs to, the variables that declare it and its row in the database, the acr vocabulary it answers with, and the floor of its logins.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3980,68 +3980,93 @@
 <h1 id="tenants">Tenants<a class="headerlink" href="#tenants" title="Link to this section">&para;</a></h1>
 <p>A tenant is the unit of isolation: it owns an issuer, a set of keys, a population of people, the clients that
 may ask about them and the SAML peers it trusts. Nothing crosses from one tenant to another, and a subject
-identifier is only meaningful inside the one that minted it. A deployment serves one tenant today, the one its
-configuration declares.</p>
+identifier is only meaningful inside the one that minted it. A deployment serves one tenant, the one its
+variables declare.</p>
 <h2 id="what-the-configuration-says">What the configuration says<a class="headerlink" href="#what-the-configuration-says" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tenant</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">issuer</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_ISSUER)%'</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">slug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">'Example'</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">look</span><span class="p">:</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">logo_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://www.example.com/logo.svg'</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">primary_color</span><span class="p">:</span><span class="w"> </span><span class="s">'#1b4b8f'</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="nt">primary_content_color</span><span class="p">:</span><span class="w"> </span><span class="s">'#ffffff'</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="nt">self_served_claims</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">name</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">given_name</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">family_name</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">locale</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">zoneinfo</span><span class="p p-Indicator">]</span>
+<p>The tenant is what the variables of the deployment say it is, and the image names one, <code>default</code>, under the
+issuer of the development stack, so a deployment names at least its own issuer. One that names the rest as
+well writes:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_ISSUER=https://op.example.com
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BEFFROI_TENANT_SLUG=default
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>BEFFROI_TENANT_NAME=Example
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>BEFFROI_TENANT_LOGO_URI=https://www.example.com/logo.svg
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>BEFFROI_TENANT_PRIMARY_COLOR='#1b4b8f'
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR='#ffffff'
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>BEFFROI_TENANT_SELF_SERVED_CLAIMS='["name","given_name","family_name","locale","zoneinfo"]'
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>issuer</code></td>
-<td>required</td>
+<td><code>BEFFROI_ISSUER</code></td>
+<td><code>https://op.localhost</code></td>
 <td>The issuer identifier (OIDC Discovery 1.0 §3): an absolute <code>https</code> URL with no query, no fragment and no trailing slash, plain HTTP on a loopback host only. Every endpoint is served under it, the SAML metadata included</td>
 </tr>
 <tr>
-<td><code>slug</code></td>
+<td><code>BEFFROI_TENANT_SLUG</code></td>
 <td><code>default</code></td>
 <td>The stable name of the tenant, from which its identifier is derived. Renaming it is creating another tenant</td>
 </tr>
 <tr>
-<td><code>name</code></td>
-<td>the host of the issuer</td>
-<td>What the pages call it</td>
+<td><code>BEFFROI_TENANT_NAME</code></td>
+<td>empty</td>
+<td>What the pages call it. Empty, the host of the issuer</td>
 </tr>
 <tr>
-<td><code>look</code></td>
-<td>none</td>
-<td>The logo and the two colours every page shows. The logo is loaded by the browser of the visitor, never by the provider, and the two colours are declared together or not at all</td>
+<td><code>BEFFROI_TENANT_LOGO_URI</code></td>
+<td>empty</td>
+<td>The logo every page shows, an absolute <code>https</code> URL with no fragment and no credentials, plain HTTP on a loopback host only. Empty, the placeholder mark the image serves at <code>/tenant-logo.svg</code> under the issuer. The logo is loaded by the browser of the visitor, never by the provider</td>
 </tr>
 <tr>
-<td><code>self_served_claims</code></td>
-<td>none</td>
-<td>The claims of OIDC Core §5.1 the people of this tenant may change of themselves on the page of their account. A tenant whose directory owns the data opens none</td>
+<td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
+<td><code>#1f6feb</code></td>
+<td>The colour the buttons and the links of the pages are drawn in: <code>#</code> and three or six hexadecimal digits</td>
 </tr>
 <tr>
-<td><code>authentication_classes</code></td>
-<td>the default policy</td>
-<td>The <code>acr</code> vocabulary of the tenant, below</td>
+<td><code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code></td>
+<td><code>#ffffff</code></td>
+<td>The colour of what is written on it, in the same notation. The two colours are named together or not at all, and two empty variables are no colour, the pages keeping their own</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_SELF_SERVED_CLAIMS</code></td>
+<td>the fourteen claims of OIDC Core §5.1 the application lets a person change, from <code>name</code> to <code>phone_number</code></td>
+<td>The claims the people of this tenant may change of themselves on the page of their account, a JSON list. A tenant whose directory owns the data opens none, <code>[]</code></td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_AUTHENTICATION_CLASSES</code></td>
+<td><code>{}</code></td>
+<td>The <code>acr</code> vocabulary of the tenant, below. <code>{}</code> is the default policy</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_SCOPES</code></td>
+<td><code>[]</code></td>
+<td>The <a href="../../oidc/scopes-and-claims/#scopes">scopes</a> of the APIs the tenant protects, a JSON list. The tenant hands out tokens for them beside <code>openid</code>, the scopes of its claims and <code>offline_access</code>, announces them, and a client that registers itself may register them</td>
 </tr>
 </tbody>
 </table>
+<p><a href="../../application/configuration/">Configuration</a> lists the same variables among the others of the image,
+<code>BEFFROI_ISSUER</code> and <code>BEFFROI_TENANT_SLUG</code> under <a href="../../application/configuration/#the-provider">the provider</a>
+and the others under <a href="../../application/configuration/#the-tenant">the tenant</a>.</p>
 <h2 id="its-row">Its row<a class="headerlink" href="#its-row" title="Link to this section">&para;</a></h2>
-<p>The configuration declares the tenant, and a row of the database holds what the rest of the model points at.
-One command makes the row say what the configuration says:</p>
+<p>The variables declare the tenant, and a row of the database holds what the rest of the model points at. Six
+settings are written in that row beside the issuer: the name, the logo, the two colours, the claims a person
+changes of themselves and the <code>acr</code> classes. One command makes the row say what the variables say:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:tenant:synchronize
 </span></code></pre></div>
-<p>It reports what it did, created, renamed or left alone, and is safe to run at every deployment. What a
-command decides with a date, the floor of its logins below, is written on the row and nowhere else.</p>
+<p>It creates the row the first time, afterwards writes those of the six that changed, prints the tenant it
+synchronised, and is safe to run at every deployment. Every request, command and message compares the row with
+the environment of its process: while the two differ, each one that reads the tenant fails, and the log names
+the setting that differs, <code>look</code> for the logo and the colours, while the timed steps wait. Changing one of the
+six is therefore a restart of every process with the new value, and the command run in one of them. The issuer
+is the one thing the command never changes: every token a tenant issued names it, so the command refuses
+another, and another issuer is another tenant, under another slug. What a command decides with a date, the
+floor of its logins below, is written on the row and nowhere else.</p>
 <h2 id="the-classes-it-answers-with">The classes it answers with<a class="headerlink" href="#the-classes-it-answers-with" title="Link to this section">&para;</a></h2>
 <p>A session never stores an <code>acr</code>: it records what was proven, and satisfies every class whose predicate holds
 on those proofs. The predicates are the provider's, one class each, and a tenant names its classes on them.</p>
@@ -4076,19 +4101,17 @@ on those proofs. The predicates are the provider's, one class each, and a tenant
 </tr>
 </tbody>
 </table>
-<p>A tenant that names nothing answers with that default policy, strongest first. One that names its own maps
-each class name to a predicate:</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">tenant</span><span class="p">:</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">authentication_classes</span><span class="p">:</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">            </span><span class="nt">gold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">phishing_resistant</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">            </span><span class="nt">silver</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">two_factors</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">            </span><span class="nt">bronze</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">single_factor</span>
+<p>A tenant that names nothing, <code>{}</code> as in the image, answers with that default policy, strongest first. One that
+names its own maps each class name to a predicate in <code>BEFFROI_TENANT_AUTHENTICATION_CLASSES</code>, in the order a
+session is answered in:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>BEFFROI_TENANT_AUTHENTICATION_CLASSES='{"gold":"phishing_resistant","silver":"two_factors","bronze":"single_factor"}'
 </span></code></pre></div>
-<p>A name no wired predicate carries refuses the start, naming the ones that are wired, and <code>phr</code> or <code>phrh</code> on a
-predicate that is not their meaning is refused too: OIDC Core §2 forbids using a registered name in another
-sense. What the discovery document announces in <code>acr_values_supported</code> is the classes of this policy the
-tenant can actually prove.</p>
+<p>A name no wired predicate carries is refused by the first request or command that reads the tenant, naming the
+ones that are wired, and <code>phr</code> or <code>phrh</code> on a predicate that is not their meaning is refused too: OIDC Core §2
+forbids using a registered name in another sense. So is a policy with no class on <code>single_factor</code>, the one
+predicate every login satisfies, since every session has an <code>acr</code>, and so is the name <code>0</code>. What the discovery
+document announces in <code>acr_values_supported</code> is the classes of this policy the tenant can actually prove. The
+classes are written in <a href="#its-row">the row</a>, so a change of them is followed by <code>beffroi:tenant:synchronize</code>.</p>
 <h2 id="the-floor-of-its-logins">The floor of its logins<a class="headerlink" href="#the-floor-of-its-logins" title="Link to this section">&para;</a></h2>
 <p>A tenant may require more of every login than a single factor, and name the predicate every login of its
 people has to satisfy:</p>
@@ -4145,7 +4168,7 @@ address first.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:41:32 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

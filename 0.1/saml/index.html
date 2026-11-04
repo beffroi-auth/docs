@@ -3891,12 +3891,12 @@ signed in by one is signed in for the other, and a session that ends ends for bo
 <tr>
 <td><a href="identity-provider/">Identity provider</a></td>
 <td>An application that speaks SAML signs its users in against Beffroi: a SimpleSAMLphp or Shibboleth service provider, a product that asks for a SAML identity provider, Microsoft Entra ID federating its guests</td>
-<td><code>beffroi.saml.identity_provider</code></td>
+<td><code>BEFFROI_SAML_IDENTITY_PROVIDER</code>, <code>true</code> in the image</td>
 </tr>
 <tr>
 <td><a href="upstream-identity-providers/">Service provider</a></td>
 <td>Beffroi signs a person in against the SAML identity provider of their organisation, found by the domain of their address, and then answers the OpenID Connect client or the page that was waiting</td>
-<td><code>beffroi.saml.service_provider</code></td>
+<td><code>BEFFROI_SAML_SERVICE_PROVIDER</code>, <code>false</code> in the image</td>
 </tr>
 </tbody>
 </table>
@@ -3904,18 +3904,23 @@ signed in by one is signed in for the other, and a session that ends ends for bo
   sp["An application&lt;br/&gt;&lt;small&gt;SAML service provider&lt;/small&gt;"] -- "AuthnRequest" --&gt; b["Beffroi"]
   rp["A client&lt;br/&gt;&lt;small&gt;OpenID Connect&lt;/small&gt;"] -- "authorization request" --&gt; b
   b -- "AuthnRequest" --&gt; up["The identity provider&lt;br/&gt;of an organisation&lt;br/&gt;&lt;small&gt;upstream&lt;/small&gt;"]</code></pre>
-<p>Both roles are off by default, and each is a switch of its own. A deployment that turns neither on draws no
-SAML key and publishes no metadata, and every message that reaches its single sign-on or single logout service
-is refused, nobody being declared to send one: nothing of this section costs anything to a provider that does
-not use it.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">identity_provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">service_provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<p>Each role is a switch of its own, a variable that reads <code>true</code> or <code>false</code>, an empty one reading <code>false</code>. The
+image is an identity provider and no service provider, and a deployment that plays both roles sets:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_SAML_IDENTITY_PROVIDER=true
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BEFFROI_SAML_SERVICE_PROVIDER=true
 </span></code></pre></div>
-<p>The peers themselves, the service providers on one side and the upstream identity providers on the other,
-are declared in the same section, keyed by their entity ID. They are configuration and nothing else: no
-request registers one and no page edits one.</p>
+<p>A role is read when a process builds what it changes, so turning one on or off is a restart of the processes
+and not a new image. A deployment that turns both off draws no SAML key and publishes no metadata, and every
+message that reaches its single sign-on or single logout service is refused, nobody being declared to send
+one: nothing of this section costs anything to a provider that does not use it. The identity provider the
+image turns on costs as little until it is used: it publishes no metadata until a SAML key is drawn for the
+tenant, and refuses every message until a service provider is declared.
+<a href="../application/configuration/#saml">Configuration</a> lists the variables of both roles.</p>
+<p>The peers themselves are declared by two more variables, each a JSON document keyed by entity ID, <code>{}</code> in the
+image: <code>BEFFROI_SAML_SERVICE_PROVIDERS</code> for the service providers on one side, and
+<code>BEFFROI_SAML_IDENTITY_PROVIDERS</code> for the upstream identity providers on the other. The deployment declares
+them and nothing else does: no request registers one and no page edits one. A list names the peers of a role
+that is on, and one that names a peer while its role is off is refused whole, wherever it is read.</p>
 <h2 id="what-is-served">What is served<a class="headerlink" href="#what-is-served" title="Link to this section">&para;</a></h2>
 <p>Paths are relative to the issuer, as every route of the application.</p>
 <table>
@@ -3950,7 +3955,7 @@ request registers one and no page edits one.</p>
 <td><code>GET</code></td>
 <td><code>/saml/sp/metadata</code></td>
 <td>service provider</td>
-<td>The metadata of the service provider. Its URL is its entity ID unless the deployment names another</td>
+<td>The metadata of the service provider. Its URL is its entity ID unless <code>BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID</code> names another</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
@@ -3966,9 +3971,9 @@ request registers one and no page edits one.</p>
 </tr>
 </tbody>
 </table>
-<p>A role the deployment did not turn on serves nothing. The metadata of that role answer <code>404</code>, and so do the
-sign-on and the assertion consumer service of the service provider; the single sign-on and single logout
-services of the identity provider refuse every message, as one of an issuer nobody declared. <a href="../reference/endpoints/#saml-20">The
+<p>A role turned off serves nothing. The metadata of that role answer <code>404</code>, and so do the sign-on and the
+assertion consumer service of the service provider; the single sign-on and single logout services of the
+identity provider refuse every message, as one of an issuer nobody declared. <a href="../reference/endpoints/#saml-20">The
 endpoints</a> lists the routes behind them, the ones a login sends a browser
 back through included.</p>
 <h2 id="what-is-always-true">What is always true<a class="headerlink" href="#what-is-always-true" title="Link to this section">&para;</a></h2>
@@ -4007,7 +4012,7 @@ needs one of them relaxed is a peer this provider does not serve.</p>
 <td>A message taken off the wire is not a second login, nor a second logout</td>
 </tr>
 <tr>
-<td>A peer is declared by the deployment, and its metadata come from a file of the deployment or an <code>https</code> URL, no redirect followed</td>
+<td>A peer is declared by the deployment, and its metadata are read where its declaration says, an <code>https</code> URL with no redirect followed</td>
 <td>A peer registered by a request, or metadata fetched wherever a redirect points, is a peer an attacker chose</td>
 </tr>
 <tr>
@@ -4030,8 +4035,8 @@ guarantees.</p>
   through the browser that ended the session, never server to server.</li>
 <li>Metadata aggregates of an inter-institution federation: an <code>md:EntitiesDescriptor</code> is refused by name,
   and each peer is declared on its own.</li>
-<li>An administration interface for the peers. They are configuration, and the console reads and refreshes
-  their metadata.</li>
+<li>An administration interface for the peers. The deployment declares them in its variables, and the console
+  reads and refreshes their metadata.</li>
 <li>Single logout with an upstream identity provider, which the metadata of the service provider do not
   announce.</li>
 <li>Sign-on started by an identity provider. Every assertion the identity provider writes answers an
@@ -4102,7 +4107,7 @@ guarantees.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

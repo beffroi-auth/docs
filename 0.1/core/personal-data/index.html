@@ -4212,17 +4212,17 @@ tags of the linked identities are not re-derived by it:</p>
 </tr>
 </tbody>
 </table>
-<p>A data key is 32 bytes, AES-256-GCM, held wrapped in the table <code>beffroi_data_key</code> by the master key the
-configuration names for the tenant, <code>beffroi.keys.key_id</code> resolved for its slug, the one its own keys are sealed
-under. A process opens each data key once and keeps it, so the key management service is asked once per key and not
+<p>A data key is 32 bytes, AES-256-GCM, held wrapped in the table <code>beffroi_data_key</code> by the master key
+<code>BEFFROI_KMS_KEY_ID</code> names for the tenant, resolved for its slug, the one its own keys are sealed under. A
+process opens each data key once and keeps it, so the key management service is asked once per key and not
 once per value. Nothing in the ordinary life of a tenant removes a data key: a new key is minted beside the ones
 there, and a rewrap changes what protects a key and not the key.</p>
 <p>Each row is also bound to its reference and its scope: an HMAC-SHA256 of the two, under a key derived from the
 data key and from a secret the database does not hold. A key that is not the one minted for its reference and
 its scope therefore opens nothing: a row whose key was replaced, a row copied under another reference or
 scope, a row written into the table by whoever can write the database, even when the key it carries is wrapped
-under a master key the provider may use. The secrets are those of <code>beffroi.keys.data_key_secrets</code>, the
-secret of the kernel unless the configuration names others, one list for the whole deployment: the first one
+under a master key the provider may use. The secrets are those of <code>BEFFROI_DATA_KEY_SECRETS</code>, the secret of
+the kernel, <code>APP_SECRET</code>, while that variable is not set, one list for the whole deployment: the first one
 binds a new row, and a row bound under any of them opens. A row bound under a secret that is no longer listed
 opens nothing, and neither does any value sealed under its key.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:list
@@ -4244,7 +4244,7 @@ never opens a key. A tenant that holds none has sealed nothing yet, and the comm
 <tbody>
 <tr>
 <td><code>--to</code></td>
-<td>The key management client that wraps the data keys the tenant holds, a name of <code>key_management.clients</code></td>
+<td>The key management client that wraps the data keys the tenant holds, <code>op</code> or <code>second</code> in the application</td>
 </tr>
 <tr>
 <td><code>--from</code></td>
@@ -4256,12 +4256,12 @@ never opens a key. A tenant that holds none has sealed nothing yet, and the comm
 </tr>
 </tbody>
 </table>
-<p>The master key is not asked for: it is the one the configuration resolves for the slug of the tenant, so an
+<p>The master key is not asked for: it is the one <code>BEFFROI_KMS_KEY_ID</code> resolves for the slug of the tenant, so an
 operator cannot type the master key of another tenant. No sealed value is read and none is rewritten, every
 ciphertext going on referring to the same data key, the index key included. The provider serves while the keys
 move: a read resolves the client and the master key from the row of the data key it names, whatever wrapped it.
 The command moves the keys the tenant holds when it runs; a key minted afterwards, the first of a family or the
-next one after thirty days, is wrapped by the client <code>beffroi.keys.kms</code> names. The act
+next one after thirty days, is wrapped by <code>op</code>, the client the provider seals with. The act
 <code>tenant.data_keys_rewrapped</code> goes to the journal, and its event carries the client the keys were taken from when
 <code>--from</code> named one, the client and the master key that wrap them afterwards, how many keys moved, and how many
 scopes the tenant holds. One tenant at a time, by hand: nothing schedules it.</p>
@@ -4276,8 +4276,8 @@ rewraps them: a key sealed by another service is replaced by a <a href="../keys/
 <li>Write the new secret first and keep the one it replaces second, and give that environment to every
    process of the deployment before going on: a process that does not list a secret opens no row bound under
    it.</li>
-<li>Run <code>beffroi:data-keys:rewrap</code> with <code>--to</code> naming the client that already wraps the keys of the tenant, the
-   one <code>beffroi.keys.kms</code> names unless a rewrap moved them. Every key is bound again under the first secret as
+<li>Run <code>beffroi:data-keys:rewrap</code> with <code>--to</code> naming the client that already wraps the keys of the tenant,
+   <code>op</code> unless a rewrap moved them. Every key is bound again under the first secret as
    it moves, and its value and every ciphertext sealed under it stay as they are.</li>
 <li>Drop the old secret once the command has moved every key.</li>
 </ol>
@@ -4298,7 +4298,7 @@ afterwards. It cannot be undone.</p>
 transport, an event, a command or a notification, is a JWE to the <code>MESSAGE-SEAL</code> key of the tenant, under
 <code>ECDH-ES+A256KW</code> and <code>A256GCM</code>, its protected header naming the tenant, so a body moved to the queue of another
 tenant does not open there. The serializer that seals it is the default one of every transport, the failure
-transport included, so a broker, the table of a transport and a backup of either hold nothing readable. What stays
+transport included, so the table of a transport and a backup of it hold nothing readable. What stays
 in the clear on a message is what makes a failed one readable: the class of the message, its stamps and the slug of
 the tenant it was written under, nothing of a person among them.</p>
 <p>The journal of the acts, what a client was given at each of them, what a record used to say and the archive a person
@@ -4315,12 +4315,12 @@ asks for are sealed where they sit like every other column of a person.</p>
 <tbody>
 <tr>
 <td>An act of the journal, and what a client was given at it</td>
-<td><code>beffroi.journal.retention</code> days, 180 by default</td>
+<td><code>BEFFROI_JOURNAL_RETENTION</code> days, 180 in the image</td>
 <td>A daily step</td>
 </tr>
 <tr>
 <td>A change of a claim</td>
-<td><code>beffroi.history.retention</code> days, 180 by default</td>
+<td><code>BEFFROI_HISTORY_RETENTION</code> days, 180 in the image</td>
 <td>A daily step</td>
 </tr>
 <tr>
@@ -4356,7 +4356,7 @@ at the least.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

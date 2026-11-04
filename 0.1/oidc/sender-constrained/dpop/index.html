@@ -4102,8 +4102,9 @@ host compared without regard to case, and a port that is the default of its sche
 port, so <code>HTTPS://OP.EXAMPLE.COM:443/token</code> names <code>https://op.example.com/token</code>. The path is compared as it
 is, RFC 3986 making it case sensitive.</p>
 <p><strong>A proof stands for the time a request spends on the wire.</strong> It is refused when its <code>iat</code> is more than
-<code>leeway</code> seconds ahead of the clock of the provider, and when the request arrives <code>proof_max_age</code> plus
-<code>leeway</code> seconds or more after its <code>iat</code>: 30 seconds ahead and 90 seconds behind, by default.</p>
+<code>BEFFROI_DPOP_LEEWAY</code> seconds ahead of the clock of the provider, and when the request arrives
+<code>BEFFROI_DPOP_PROOF_MAX_AGE</code> plus <code>BEFFROI_DPOP_LEEWAY</code> seconds or more after its <code>iat</code>: 30 seconds ahead and
+90 seconds behind, in the image.</p>
 <p><strong>A proof is used once.</strong> Its <code>jti</code> is remembered with the thumbprint of the key until the proof stops being
 accepted, so that two clients choosing the same <code>jti</code> do not collide, and a proof presented again inside its
 window is refused (RFC 9449 §11.1).</p>
@@ -4168,55 +4169,52 @@ through the browser is worth nothing to whoever does not hold the key. A code re
 by whichever request the rest of the grant accepts.</p>
 <h2 id="the-nonce">The nonce<a class="headerlink" href="#the-nonce" title="Link to this section">&para;</a></h2>
 <p>The provider may ask that every proof carry a value it handed out (RFC 9449 §8), which says when the proof
-was made in terms the provider knows rather than in the <code>iat</code> its client wrote. It is off by default.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">dpop</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">nonce</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+was made in terms the provider knows rather than in the <code>iat</code> its client wrote. It is off in the image, and a
+deployment turns it on with a variable
+(<a href="../../../application/configuration/#clients-and-their-requests">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_DPOP_NONCE_REQUIRED=true
 </span></code></pre></div>
-<p><strong>With <code>required: true</code></strong>, a proof that carries no <code>nonce</code>, or one the provider did not issue in the last
-<code>ttl</code> seconds, is refused with <code>use_dpop_nonce</code> and a fresh nonce in the <code>DPoP-Nonce</code> header of the answer. The
-client makes its proof again with that nonce and sends the request again. A nonce stands for its whole
-lifetime and is not spent by the first proof that carries it, what makes a proof single-use being its <code>jti</code>;
-the provider hands out a new one only with a refusal, so a client keeps the last nonce it was given until the
-next refusal.</p>
-<p><strong>With <code>required: false</code></strong>, the <code>nonce</code> claim of a proof is compared with nothing, and no answer carries
-<code>DPoP-Nonce</code>.</p>
+<p><strong>With <code>BEFFROI_DPOP_NONCE_REQUIRED=true</code></strong>, a proof that carries no <code>nonce</code>, or one the provider did not issue
+in the last <code>BEFFROI_DPOP_NONCE_TTL</code> seconds, is refused with <code>use_dpop_nonce</code> and a fresh nonce in the
+<code>DPoP-Nonce</code> header of the answer. The client makes its proof again with that nonce and sends the request
+again. A nonce stands for its whole lifetime and is not spent by the first proof that carries it, what makes a
+proof single-use being its <code>jti</code>; the provider hands out a new one only with a refusal, so a client keeps the
+last nonce it was given until the next refusal.</p>
+<p><strong>With <code>BEFFROI_DPOP_NONCE_REQUIRED=false</code></strong>, the <code>nonce</code> claim of a proof is compared with nothing, and no
+answer carries <code>DPoP-Nonce</code>.</p>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">dpop</span><span class="p">:</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">proof_max_age</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">leeway</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nt">nonce</span><span class="p">:</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">            </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">            </span><span class="nt">ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+<p>Four variables decide how a proof is read, here at the values of the image:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>BEFFROI_DPOP_PROOF_MAX_AGE=60
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>BEFFROI_DPOP_LEEWAY=30
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>BEFFROI_DPOP_NONCE_REQUIRED=false
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>BEFFROI_DPOP_NONCE_TTL=300
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>proof_max_age</code></td>
+<td><code>BEFFROI_DPOP_PROOF_MAX_AGE</code></td>
 <td><code>60</code></td>
 <td>Seconds a proof stands from its <code>iat</code>, before the leeway is added, one at least. Every second beyond what a request spends on the wire is a second a proof taken off that wire may be sent again in</td>
 </tr>
 <tr>
-<td><code>leeway</code></td>
+<td><code>BEFFROI_DPOP_LEEWAY</code></td>
 <td><code>30</code></td>
-<td>Seconds allowed of the clock of a client, added on both sides of the window: a proof is taken up to <code>leeway</code> seconds ahead of the provider, and until <code>proof_max_age</code> plus <code>leeway</code> seconds after its <code>iat</code></td>
+<td>Seconds allowed of the clock of a client, added on both sides of the window: a proof is taken up to <code>BEFFROI_DPOP_LEEWAY</code> seconds ahead of the provider, and until <code>BEFFROI_DPOP_PROOF_MAX_AGE</code> plus <code>BEFFROI_DPOP_LEEWAY</code> seconds after its <code>iat</code></td>
 </tr>
 <tr>
-<td><code>nonce.required</code></td>
+<td><code>BEFFROI_DPOP_NONCE_REQUIRED</code></td>
 <td><code>false</code></td>
-<td>Whether every proof carries a nonce the provider issued</td>
+<td>Whether every proof carries a nonce the provider issued, <code>true</code> or <code>false</code></td>
 </tr>
 <tr>
-<td><code>nonce.ttl</code></td>
+<td><code>BEFFROI_DPOP_NONCE_TTL</code></td>
 <td><code>300</code></td>
 <td>Seconds a nonce is accepted once issued, one at least</td>
 </tr>
@@ -4227,12 +4225,14 @@ wired with, which the discovery document announces in <code>dpop_signing_alg_val
 of UserInfo under <code>DPoP</code> names in <code>algs</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">The proofs already seen and the nonces live in a cache pool</p>
-<p>Both are kept in the pool <code>beffroi.dpop</code>, which the application declares on <code>cache.app</code>. A deployment that
-runs on several machines points that pool at a store they all reach: otherwise a proof replayed on
-another machine is not recognised as a replay there, and a nonce one machine issued is refused by the
-next. The pool tells a hit from a miss and not an insertion from a replacement, so two presentations of
-one proof arriving in the same instant may both be taken; what a replay needs is a wider window than
-that.</p>
+<p>Both are kept in the pool <code>beffroi.dpop</code>, which the application declares on <code>cache.app</code>, on the
+filesystem in <code>var/share/prod/pools/app</code> in the image, and no variable moves it elsewhere. The processes
+share it by sharing that directory, which the Compose file of the image mounts on the server and on the
+worker as one volume (<a href="../../../application/deployment/#what-the-processes-share">what the processes share</a>).
+Two servers that do not share it each keep their own: a proof replayed on the other is not recognised as
+a replay there, and a nonce one of them issued is refused by the other. The pool tells a hit from a miss
+and not an insertion from a replacement, so two presentations of one proof arriving in the same instant
+may both be taken; what a replay needs is a wider window than that.</p>
 </div>
 <h2 id="what-a-resource-server-checks">What a resource server checks<a class="headerlink" href="#what-a-resource-server-checks" title="Link to this section">&para;</a></h2>
 <p><strong>UserInfo</strong>, the resource of the provider, honours a token bound to a key only when the request presents it
@@ -4311,7 +4311,7 @@ and compares the thumbprint of the key of the proof with that member (RFC 9449 �
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

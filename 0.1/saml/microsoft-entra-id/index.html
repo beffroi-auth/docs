@@ -4077,9 +4077,11 @@ than left to a setting.</p>
 <p>Here Entra is a service provider of the tenant: a guest of the Microsoft tenant is sent to Beffroi to sign in,
 through the SAML/WS-Fed identity provider federation of Entra External ID.</p>
 <h3 id="the-service-provider-entra-is">The service provider Entra is<a class="headerlink" href="#the-service-provider-entra-is" title="Link to this section">&para;</a></h3>
-<p>Entra publishes no metadata for this federation, so they are written by hand, from what Microsoft documents,
-and declared as a file of the deployment.</p>
-<div class="language-xml highlight"><span class="filename">config/saml/entra-guest-federation-sp.xml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<p>Entra publishes no metadata for this federation, so they are written by hand, from what Microsoft documents.
+A declaration names its metadata by an <code>https</code> URL or by the path of a file, and the image carries no file of
+a peer: the document is published at an <code>https</code> URL of a host the deployment controls, which answers it with
+no redirect, <code>https://www.example.com/saml/entra-guest-federation-sp.xml</code> here.</p>
+<div class="language-xml highlight"><span class="filename">entra-guest-federation-sp.xml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">&lt;md:EntityDescriptor</span><span class="w"> </span><span class="na">xmlns:md=</span><span class="s">"urn:oasis:names:tc:SAML:2.0:metadata"</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="na">entityID=</span><span class="s">"https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/"</span><span class="nt">&gt;</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">&lt;md:SPSSODescriptor</span><span class="w"> </span><span class="na">protocolSupportEnumeration=</span><span class="s">"urn:oasis:names:tc:SAML:2.0:protocol"</span><span class="nt">&gt;</span>
@@ -4115,21 +4117,26 @@ and declared as a file of the deployment.</p>
 </tr>
 </tbody>
 </table>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">identity_provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">service_providers</span><span class="p">:</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">            </span><span class="s">'https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">                </span><span class="nt">metadata</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/config/saml/entra-guest-federation-sp.xml'</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">                </span><span class="nt">signs_authn_requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">                </span><span class="nt">attributes</span><span class="p">:</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">                    </span><span class="s">'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">                        </span><span class="nt">claim</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
+<p>The deployment declares Entra under that URL, beside the variable of the identity provider, which the image
+already turns on:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>BEFFROI_SAML_IDENTITY_PROVIDER=true
 </span></code></pre></div>
-<p><code>signs_authn_requests: false</code> is what lets an unsigned request in, from this service provider and no other.
-The one attribute Entra requires is the e-mail address of the guest, under its claim type. Then read the
-metadata:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:saml:service-provider:refresh
+<div class="language-json highlight"><span class="filename">BEFFROI_SAML_SERVICE_PROVIDERS</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">"https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.example.com/saml/entra-guest-federation-sp.xml"</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nt">"signs_authn_requests"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">        </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">            </span><span class="nt">"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"claim"</span><span class="p">:</span><span class="w"> </span><span class="s2">"email"</span><span class="p">}</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The document is the value of the variable, written on one line or over several as <a href="../../application/examples/#lists-in-json">lists in
+JSON</a> are.</p>
+<p><code>signs_authn_requests</code> set to <code>false</code> is what lets an unsigned request in, from this service provider and no
+other. The one attribute Entra requires is the e-mail address of the guest, under its claim type. Then read
+the metadata:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:saml:service-provider:refresh
 </span></code></pre></div>
 <h3 id="what-the-entra-portal-takes">What the Entra portal takes<a class="headerlink" href="#what-the-entra-portal-takes" title="Link to this section">&para;</a></h3>
 <table>
@@ -4206,37 +4213,48 @@ a person of the organisation's domain types their address on the login page and 
 </tr>
 </tbody>
 </table>
-<p>The Federation Metadata XML of the application is what the tenant reads. Its entity ID is
-<code>https://sts.windows.net/</code> followed by the ID of the Microsoft tenant and a slash. It is signed but carries no
-<code>validUntil</code>, which metadata verified under pinned signers must carry, so it is trusted by the channel it came
-through and <code>metadata_signers</code> stays empty. A certificate rolled over in the portal is a new document to read.</p>
+<p>The Federation Metadata XML of the application is what the tenant reads, at the App Federation Metadata Url
+the portal shows for it under its SAML certificates: <code>https://login.microsoftonline.com/</code> followed by the ID
+of the Microsoft tenant, <code>/federationmetadata/2007-06/federationmetadata.xml?appid=</code> and the application ID.
+An <code>appid</code> that names no application is answered with the document of the Microsoft tenant all the same, so
+the URL is copied from the portal rather than typed. Its entity ID is <code>https://sts.windows.net/</code> followed by
+the ID of the Microsoft tenant and a slash. It is signed but carries no <code>validUntil</code>, which metadata verified
+under pinned signers must carry, so it is trusted by the channel it comes through and <code>metadata_signers</code> stays
+empty. The timed step reads it again every hour, so a certificate rolled over in the portal reaches the tenant
+with the document Microsoft serves then.</p>
 <h3 id="the-declaration">The declaration<a class="headerlink" href="#the-declaration" title="Link to this section">&para;</a></h3>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">service_provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="nt">identity_providers</span><span class="p">:</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">            </span><span class="s">'https://sts.windows.net/00000000-0000-0000-0000-000000000000/'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">                </span><span class="nt">metadata</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/config/saml/entra-idp.xml'</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">                </span><span class="nt">domains</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'example.org'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">                </span><span class="nt">email_attribute</span><span class="p">:</span><span class="w"> </span><span class="s">'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">                </span><span class="nt">subject_attribute</span><span class="p">:</span><span class="w"> </span><span class="s">'http://schemas.microsoft.com/identity/claims/objectidentifier'</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">                </span><span class="nt">profile</span><span class="p">:</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">                    </span><span class="s">'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">given_name</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">                    </span><span class="s">'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">family_name</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">                </span><span class="nt">groups</span><span class="p">:</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">                    </span><span class="nt">attribute</span><span class="p">:</span><span class="w"> </span><span class="s">'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups'</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">                    </span><span class="nt">map</span><span class="p">:</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">                        </span><span class="s">'11111111-1111-1111-1111-111111111111'</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">finance</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">                </span><span class="nt">address_parameter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">login_hint</span>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>BEFFROI_SAML_SERVICE_PROVIDER=true
+</span></code></pre></div>
+<div class="language-json highlight"><span class="filename">BEFFROI_SAML_IDENTITY_PROVIDERS</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">"https://sts.windows.net/00000000-0000-0000-0000-000000000000/"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">        </span><span class="nt">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/federationmetadata/2007-06/federationmetadata.xml?appid=22222222-2222-2222-2222-222222222222"</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">        </span><span class="nt">"domains"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"example.org"</span><span class="p">],</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span><span class="nt">"email_attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"</span><span class="p">,</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">        </span><span class="nt">"subject_attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://schemas.microsoft.com/identity/claims/objectidentifier"</span><span class="p">,</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">        </span><span class="nt">"profile"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">            </span><span class="nt">"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"given_name"</span><span class="p">,</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">            </span><span class="nt">"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"family_name"</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">        </span><span class="p">},</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="nt">"groups"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">            </span><span class="nt">"attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://schemas.microsoft.com/ws/2008/06/identity/claims/groups"</span><span class="p">,</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">            </span><span class="nt">"map"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"11111111-1111-1111-1111-111111111111"</span><span class="p">:</span><span class="w"> </span><span class="s2">"finance"</span><span class="p">}</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">        </span><span class="p">},</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">        </span><span class="nt">"address_parameter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"login_hint"</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="p">}</span>
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
+<th>Member</th>
 <th>Why this value</th>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>metadata</code></td>
+<td>The App Federation Metadata Url of the application, above</td>
+</tr>
 <tr>
 <td><code>domains</code></td>
 <td>The domain of the addresses of the organisation's people</td>
@@ -4260,8 +4278,8 @@ through and <code>metadata_signers</code> stays empty. A certificate rolled over
 </tbody>
 </table>
 <p>Create the groups the map names, then read the metadata:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:group:create<span class="w"> </span>finance
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bin/console<span class="w"> </span>beffroi:saml:identity-provider:refresh
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:group:create<span class="w"> </span>finance
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>bin/console<span class="w"> </span>beffroi:saml:identity-provider:refresh
 </span></code></pre></div>
 
 
@@ -4283,7 +4301,7 @@ through and <code>metadata_signers</code> stays empty. A certificate rolled over
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 25, 2026 22:41:32 UTC">October 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

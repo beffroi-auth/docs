@@ -3963,16 +3963,21 @@ asks for an access token for itself, to call a resource it names. Nobody is aske
 nobody signed in, so there is no ID token; and the answer carries no refresh token (§4.4.3), the client
 asking again when it needs a new one.</p>
 <h2 id="registering-a-service">Registering a service<a class="headerlink" href="#registering-a-service" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">billing-service</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'Billing</span><span class="nv"> </span><span class="s">service'</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BILLING_SERVICE_SECRET)%'</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">client_secret_basic</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">client_credentials</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'invoices.read</span><span class="nv"> </span><span class="s">invoices.write'</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://invoices.example.com'</span><span class="p p-Indicator">]</span>
+<p>A service reaches a deployment of the image by <a href="../../dynamic-registration/">registering itself</a>. The
+deployment opens registration, and names the scopes of the API the service calls, which the tenant then hands
+out (<a href="../../../application/configuration/#the-tenant">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_REGISTRATION_MODE=initial_access_token
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BEFFROI_TENANT_SCOPES='["invoices.read","invoices.write"]'
 </span></code></pre></div>
+<p>The service registers with:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Billing service"</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"token_endpoint_auth_method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"client_secret_basic"</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"grant_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"client_credentials"</span><span class="p">],</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invoices.read invoices.write"</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The answer carries the <code>client_id</code> the provider drew and the <code>client_secret</code>, said once.</p>
 <table>
 <thead>
 <tr>
@@ -3987,7 +3992,7 @@ asking again when it needs a new one.</p>
 </tr>
 <tr>
 <td>The <code>client_id</code></td>
-<td>The <code>sub</code> of every token this grant issues the client, so it is one to 255 visible ASCII characters, and no space</td>
+<td>The <code>sub</code> of every token this grant issues the client, so it is one to 255 visible ASCII characters, and no space, which the identifier the provider draws always is</td>
 </tr>
 <tr>
 <td><code>grant_types</code></td>
@@ -3999,10 +4004,19 @@ asking again when it needs a new one.</p>
 </tr>
 <tr>
 <td><code>resources</code></td>
-<td>The resources it may ask a token for. A client that registered none can obtain nothing with this grant, a request having to name one</td>
+<td><em>Deployment.</em> The resources it may ask a token for. A client that registered none can obtain nothing with this grant, a request having to name one</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="admonition-title">No token for a client of the image</p>
+<p><code>resources</code> is a member of the deployment: a registration that carries it is refused, and no variable
+gives it to a client (<a href="../../clients/#what-the-image-does-not-set">what the image does not set</a>). A client
+of the image therefore registers no resource, and a request it makes with this grant whose scopes hold is
+refused with <code>invalid_target</code>, whether it names a resource or not: on a deployment of the image, the
+client credentials grant issues no token. The rest of this page is what the grant does for a client that
+carries resources.</p>
+</div>
 <h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4091,7 +4105,7 @@ asking again when it needs a new one.</p>
 </tr>
 <tr>
 <td><code>may_act</code></td>
-<td>Who may act for the subject of a token of this client, in the self-contained shape, when it registered <code>may_act</code></td>
+<td>Who may act for the subject of a token of this client, in the self-contained shape, when it carries <code>may_act</code>, a member of the deployment</td>
 </tr>
 </tbody>
 </table>
@@ -4106,8 +4120,8 @@ about nobody. The answer is the access token, its <code>token_type</code>, <code
   token to that client and to nobody else (RFC 7662 §2.2). The answer renders the same members, and the same
   absence of the members of a sign-in.</li>
 <li><strong>No end of a session and no consent taken back reach it</strong>: it descends from neither. The client takes an
-  opaque one back at the revocation endpoint, and a self-contained one lives <code>tokens.access_token_ttl</code>, ten
-  minutes by default.</li>
+  opaque one back at the revocation endpoint, and a self-contained one lives <code>BEFFROI_ACCESS_TOKEN_TTL</code>, ten
+  minutes in the image.</li>
 <li><strong>The UserInfo endpoint does not answer it</strong>: the token names nobody, and it is addressed to a resource
   rather than to the provider.</li>
 </ul>
@@ -4131,7 +4145,7 @@ about nobody. The answer is the access token, its <code>token_type</code>, <code
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

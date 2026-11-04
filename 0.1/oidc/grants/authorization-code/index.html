@@ -3996,7 +3996,7 @@ verifier that only it holds.</p>
 <tbody>
 <tr>
 <td>Lifetime</td>
-<td>60 seconds, <code>tokens.authorization_code_ttl</code>, at most 600 (RFC 6749 §4.1.2)</td>
+<td><code>BEFFROI_AUTHORIZATION_CODE_TTL</code>, 60 seconds in the image, at most 600 (RFC 6749 §4.1.2)</td>
 </tr>
 <tr>
 <td>Value</td>
@@ -4018,9 +4018,9 @@ verifier that only it holds.</p>
 </table>
 <p>What the session had proven is frozen on the code: a step-up or a new login afterwards changes the session,
 and never a code already issued nor a token that descends from one.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tokens</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">authorization_code_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<p>A deployment sets the lifetime in its environment
+(<a href="../../../application/configuration/#keys-and-lifetimes">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_AUTHORIZATION_CODE_TTL=60
 </span></code></pre></div>
 <h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
 <table>
@@ -4049,7 +4049,7 @@ and never a code already issued nor a token that descends from one.</p>
 </tr>
 <tr>
 <td><code>resource</code></td>
-<td>Optional and repeatable: narrows what the access token is addressed to, among the resources of the authorization (RFC 8707 §2.2)</td>
+<td>Optional and repeatable: narrows what the access token is addressed to, among the resources of the authorization (RFC 8707 §2.2). The authorization of a client of the image carries none, so a <code>resource</code> it names is <code>invalid_target</code></td>
 </tr>
 <tr>
 <td><code>authorization_details</code></td>
@@ -4071,8 +4071,9 @@ so that a client guessing learns nothing of which check it failed.</p>
 <li>It has not expired.</li>
 <li><code>redirect_uri</code> is the redirect URI of the authorization request, compared as a string (RFC 6749 §4.1.3).</li>
 <li>PKCE holds (RFC 7636 §4.6): the <code>code_verifier</code>, transformed with <code>S256</code>, is the <code>code_challenge</code> of the
-   request. A code issued without a challenge, which only a confidential client registered with
-   <code>requires_pkce: false</code> obtains, is refused when a <code>code_verifier</code> comes with it (RFC 9700 §4.8.2).</li>
+   request. A code issued without a challenge is refused when a <code>code_verifier</code> comes with it (RFC 9700
+   §4.8.2). Only a confidential client exempted from PKCE obtains such a code, and no client of the image is
+   (<a href="../../clients/#what-the-image-does-not-set">what the image does not set</a>).</li>
 <li>A code the request reserved for a key, with <code>dpop_jkt</code> or by the DPoP proof of its pushed request, is spent
    by a request whose DPoP proof is signed by that key (RFC 9449 §10), and by no other.</li>
 <li>The session the code was issued in is still active: it has not ended, and it has not expired.</li>
@@ -4084,16 +4085,17 @@ carry is <code>invalid_target</code>, and an <code>authorization_details</code> 
 <code>invalid_authorization_details</code>.</p>
 <h2 id="what-the-answer-carries">What the answer carries<a class="headerlink" href="#what-the-answer-carries" title="Link to this section">&para;</a></h2>
 <ul>
-<li><strong>An access token</strong>, in the shape the client registered (<a href="../../tokens/access-tokens/">access tokens</a>). It is
-  addressed to the resources the token request named, or to all those of the authorization when it named
-  none, or to the client itself when the authorization carries none. It is bound to what this request binds
-  it to, the key of its DPoP proof or the certificate of its connection, as
-  <a href="../#what-the-token-endpoint-does">grants</a> says, and is a bearer token otherwise.</li>
+<li><strong>An access token</strong>, an <code>at+jwt</code> for every client of the image (<a href="../../tokens/access-tokens/">access tokens</a>).
+  It is addressed to the resources the token request named, or to all those of the authorization when it
+  named none, or to the client itself when the authorization carries none, which is every authorization of
+  a client of the image. It is bound to what this request binds it to, the key of its DPoP proof or the
+  certificate of its connection, as <a href="../#what-the-token-endpoint-does">grants</a> says, and is a bearer
+  token otherwise.</li>
 <li><strong>An ID token</strong> when <code>openid</code> is among the scopes, carrying the <code>nonce</code> of the authorization request
   (<a href="../../tokens/id-tokens/">ID tokens</a>).</li>
 <li><strong>A refresh token</strong> when one is due: the client is registered for <code>refresh_token</code>, and either
   <code>offline_access</code> was granted or the client is confidential. It starts a family whose absolute lifetime is
-  <code>tokens.refresh_token_absolute_ttl</code>, ninety days by default, and it carries the whole authorization,
+  <code>BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL</code>, ninety days in the image, and it carries the whole authorization,
   whatever subset of its resources and details the access token beside it was narrowed to (<a href="../../tokens/refresh-tokens/">refresh
   tokens</a>).</li>
 </ul>
@@ -4120,11 +4122,11 @@ tell which.</p>
 </tr>
 <tr>
 <td>The opaque access tokens of the grant</td>
-<td>Removed, so that wherever they are presented they are unknown</td>
+<td>Removed, so that wherever they are presented they are unknown. A client of the image has none, its access tokens being self-contained</td>
 </tr>
 <tr>
 <td>A self-contained access token of the grant</td>
-<td>Accepted until it expires by a resource server that verifies it offline against the JWK Set, which nothing the provider does can reach. It lives <code>tokens.access_token_ttl</code>, ten minutes by default</td>
+<td>Accepted until it expires by a resource server that verifies it offline against the JWK Set, which nothing the provider does can reach. It lives <code>BEFFROI_ACCESS_TOKEN_TTL</code>, ten minutes in the image</td>
 </tr>
 </tbody>
 </table>
@@ -4150,7 +4152,7 @@ was issued to, the client that presented it again, and the refresh tokens it rev
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

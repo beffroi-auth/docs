@@ -4269,7 +4269,7 @@ refuses fails when it is loaded, as a conversion error naming the type, and neve
 <p><strong>Some of them read the wiring back.</strong> A stored password hash names its algorithm, a confirmation of
 RFC 8705 or RFC 9449 names its kind, an <code>authorization_details</code> names its type, a PKCE challenge names its
 method, and the <code>acr</code> vocabulary and the floor of a tenant name their predicates. Each is read back as the
-class the deployment wires under that name, so a row naming something the deployment no longer wires fails
+class the application wires under that name, so a row naming something the application no longer wires fails
 at load rather than being read as something else: a password algorithm leaves the wiring once no hash of it
 is left, or every row holding one fails to load.</p>
 <p><strong>One embeddable is left in the mapping</strong>, the authorization request, embedded by <code>beffroi_interaction</code> and
@@ -4278,7 +4278,7 @@ value could not be sealed in one table and readable in another; this one stays b
 client, which no mapping carries, so no DBAL type could hand the object back whole.</p>
 <p><strong>A client is not a row a table joins.</strong> A client declared in the configuration has no row at all, so the
 tables keep <code>client_id</code>, and the client is put back on a row once it is loaded, from the sources of clients
-the deployment wires. A row whose client is no longer registered, removed from the configuration or deleted,
+the application wires. A row whose client is no longer registered, removed from the configuration or deleted,
 is treated as absent: a token or a consent of a client that does not exist is not one.</p>
 <h2 id="sealed-columns">Sealed columns<a class="headerlink" href="#sealed-columns" title="Link to this section">&para;</a></h2>
 <p>Thirty-three columns hold a personal datum, or the secret of a client, sealed under a data key of their
@@ -4450,7 +4450,7 @@ and the logout chains drop their closed rows before each insertion.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

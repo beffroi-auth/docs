@@ -3983,75 +3983,75 @@ credential of its own. For that it is a service provider, to the identity provid
 upstream of it, each one answering for the e-mail domains it names. This page is the role and its peers;
 <a href="../federated-sign-in/">signing in through an organisation</a> is what a person goes through.</p>
 <h2 id="turning-it-on">Turning it on<a class="headerlink" href="#turning-it-on" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">service_provider</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<p>The image is no service provider, and a deployment turns the role on with:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_SAML_SERVICE_PROVIDER=true
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>enabled</code></td>
+<td><code>BEFFROI_SAML_SERVICE_PROVIDER</code></td>
 <td><code>false</code></td>
-<td>Whether the role is on. Its routes and services are always wired; off, it serves nothing, and its metadata, its assertion consumer service and its sign-on answer <code>404</code>. It may be an environment variable, read when the container builds what the role changes, so turning the role on or off asks for a restart and not for a new build of the container</td>
+<td>Whether the role is on, <code>true</code> or <code>false</code>, an empty variable reading <code>false</code>. Its routes and services are always wired; off, it serves nothing, and its metadata, its assertion consumer service and its sign-on answer <code>404</code>. It is read when a process builds what the role changes, so turning the role on or off asks for a restart and not for a new image</td>
 </tr>
 <tr>
-<td><code>entity_id</code></td>
-<td>the URL of its metadata</td>
-<td>The entity ID of the service provider, for one its identity providers already know by a name it keeps: an absolute URI of 1024 characters at most, with no whitespace, control, format or invisible character</td>
+<td><code>BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID</code></td>
+<td>empty</td>
+<td>The entity ID of the service provider, for one its identity providers already know by a name it keeps: an absolute URI of 1024 characters at most, with no whitespace, control, format or invisible character. Empty, the URL of its metadata</td>
 </tr>
 </tbody>
 </table>
 <p>The service provider signs with the SAML signing key of the <a href="../identity-provider/#the-key">identity provider</a>,
-one key for both roles, rotated by the figures of <code>beffroi.saml.identity_provider</code> whichever role is on. A
-deployment that serves only this role draws that key the same way:</p>
+one key for both roles, rotated by <code>BEFFROI_SAML_KEY_STAGING_DELAY</code> and <code>BEFFROI_SAML_KEY_AGE</code> whichever role
+is on. A deployment that serves only this role draws that key the same way:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>SAML-SIGNING
 </span></code></pre></div>
 <p>The two roles are two entities. The entity ID of the service provider is never the one of the identity
-provider of the tenant, which the configuration refuses whether that role is on or not, so turning it on
-later never makes the two one.</p>
+provider of the tenant, which the provider refuses the first time it locates its service provider, whether
+the identity provider is on or not, so turning it on later never makes the two one.</p>
 <h2 id="its-metadata">Its metadata<a class="headerlink" href="#its-metadata" title="Link to this section">&para;</a></h2>
-<p>Served at <code>/saml/sp/metadata</code>, which is also its entity ID unless <code>entity_id</code> names another. They hold:</p>
+<p>Served at <code>/saml/sp/metadata</code>, which is also its entity ID unless <code>BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID</code>
+names another. They hold:</p>
 <ul>
 <li>one <code>md:SPSSODescriptor</code> of SAML 2.0, with <code>AuthnRequestsSigned="true"</code>, since every request it sends is
   signed, and <code>WantAssertionsSigned="true"</code>, so that an identity provider configured from them signs its
   assertion;</li>
 <li>one <code>KeyDescriptor use="signing"</code> per SAML key in service, as the identity provider's metadata list them;</li>
 <li>one assertion consumer service, on HTTP-POST, at <code>/saml/sp/acs</code>;</li>
-<li>the <code>cacheDuration</code> of the identity provider's metadata, and no <code>validUntil</code>.</li>
+<li>the <code>cacheDuration</code> of the identity provider's metadata, <code>BEFFROI_SAML_METADATA_CACHE_DURATION</code>, and no
+  <code>validUntil</code>.</li>
 </ul>
 <p>They list no single logout service, single logout with an upstream identity provider not being served, and
 no key for encryption: the certificate an identity provider encrypts for is published to that provider alone,
-below. Like the identity provider's, they are unsigned, and every URL in them comes from the configuration of
-the tenant.</p>
+below. Like the identity provider's, they are unsigned, and every URL in them comes from the issuer of the
+tenant and the variables above, never from the request that asked for them.</p>
 <h2 id="declaring-an-identity-provider">Declaring an identity provider<a class="headerlink" href="#declaring-an-identity-provider" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">service_provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nt">identity_providers</span><span class="p">:</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">            </span><span class="s">'https://idp.example.org/saml/metadata'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">                </span><span class="nt">metadata</span><span class="p">:</span><span class="w"> </span><span class="s">'https://idp.example.org/saml/metadata'</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">                </span><span class="nt">domains</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'example.org'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">                </span><span class="nt">email_attribute</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mail</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">                </span><span class="nt">profile</span><span class="p">:</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">                    </span><span class="nt">givenName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">given_name</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">                    </span><span class="nt">sn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">family_name</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">                </span><span class="nt">groups</span><span class="p">:</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">                    </span><span class="nt">attribute</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">memberOf</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">                    </span><span class="nt">map</span><span class="p">:</span>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">                        </span><span class="nt">staff</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Staff</span>
+<p>An upstream identity provider is declared in <code>BEFFROI_SAML_IDENTITY_PROVIDERS</code>, a JSON document keyed by
+entity ID, <code>{}</code> in the image, beside the variable that turns the role on:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>BEFFROI_SAML_SERVICE_PROVIDER=true
 </span></code></pre></div>
+<div class="language-json highlight"><span class="filename">BEFFROI_SAML_IDENTITY_PROVIDERS</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">"https://idp.example.org/saml/metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://idp.example.org/saml/metadata"</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="nt">"domains"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"example.org"</span><span class="p">],</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">        </span><span class="nt">"email_attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mail"</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">        </span><span class="nt">"profile"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"givenName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"given_name"</span><span class="p">,</span><span class="w"> </span><span class="nt">"sn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"family_name"</span><span class="p">},</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">        </span><span class="nt">"groups"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"attribute"</span><span class="p">:</span><span class="w"> </span><span class="s2">"memberOf"</span><span class="p">,</span><span class="w"> </span><span class="nt">"map"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"staff"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Staff"</span><span class="p">}}</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The document is the value of the variable, written on one line or over several as <a href="../../application/examples/#lists-in-json">lists in
+JSON</a> are.</p>
 <table>
 <thead>
 <tr>
-<th>Option</th>
+<th>Member</th>
 <th>Default</th>
 <th>What it decides</th>
 </tr>
@@ -4065,7 +4065,7 @@ the tenant.</p>
 <tr>
 <td><code>metadata</code></td>
 <td>required</td>
-<td>Where its metadata are read from: an <code>https</code> URL, no redirect followed, or the absolute path of a file of the deployment</td>
+<td>Where its metadata are read from: an <code>https</code> URL, no redirect followed. The declaration takes the absolute path of a file as well, and the image carries no file of a peer, so a deployment of the image names a URL</td>
 </tr>
 <tr>
 <td><code>metadata_signers</code></td>
@@ -4109,22 +4109,22 @@ the tenant.</p>
 </tr>
 </tbody>
 </table>
-<p>A declaration is refused while the service provider of the tenant is written off, <code>enabled: false</code> or the
-block left out. One kept while an environment variable turns the role off is served by nothing until the
-variable turns it on again. A declaration that does not hold
-together fails the build of the deployment, the claims of <code>profile</code> included, which are checked right after
-the container is compiled. A declaration holding an environment variable is held to the same rules at its
-first use.</p>
+<p>The list is read when a process first needs it, and held there to the rules of its members, those below and
+the claims of <code>profile</code> included: a declaration that does not hold together is refused, naming its identity
+provider. The whole list is refused, wherever it is read, the login page among them, when it declares an
+identity provider while <code>BEFFROI_SAML_SERVICE_PROVIDER</code> turns the role off, so a deployment that turns the
+role off empties the list in the same change. The reading below is a first one, so a declaration that does not
+hold is refused there rather than at a login.</p>
 <p><strong>Domains.</strong> A domain is a name of the DNS, read without regard to case, a name outside ASCII written as its
 A-label. It is the whole part of an address after its <code>@</code> and nothing under it: <code>example.org</code> does not answer
 for <code>eu.example.org</code>, which a provider that answers for it declares too. A domain answers to one identity
 provider of the tenant, and a domain two of them declare is refused, naming it and both providers: which
 provider answers for an address is never a choice.</p>
-<p><strong>The profile.</strong> One attribute per claim, among the claims a person can describe themselves with in this
-deployment: <code>name</code>, <code>given_name</code>, <code>family_name</code>, <code>middle_name</code>, <code>nickname</code>, <code>preferred_username</code>,
-<code>birthdate</code>, <code>gender</code>, <code>locale</code>, <code>zoneinfo</code>, <code>profile</code>, <code>picture</code>, <code>website</code> and <code>phone_number</code>, or whatever
-claims the deployment wires. <code>email</code> is not among them, since <code>email_attribute</code> carries it. A telephone number
-is written unverified: the provider filling it is not a proof that anybody verified it.</p>
+<p><strong>The profile.</strong> One attribute per claim, among the fourteen claims of a profile the application wires,
+whatever the tenant lets its people change of themselves: <code>name</code>, <code>given_name</code>, <code>family_name</code>, <code>middle_name</code>,
+<code>nickname</code>, <code>preferred_username</code>, <code>birthdate</code>, <code>gender</code>, <code>locale</code>, <code>zoneinfo</code>, <code>profile</code>, <code>picture</code>,
+<code>website</code> and <code>phone_number</code>. <code>email</code> is not among them, since <code>email_attribute</code> carries it. A telephone
+number is written unverified: the provider filling it is not a proof that anybody verified it.</p>
 <p><strong>The subject.</strong> A person is named at their identity provider by a persistent <code>NameID</code>, a value it keeps for
 them. For an identity provider that sends another format, <code>subject_attribute</code> names the attribute that does
 the same job: a value that never changes, such as the object identifier Microsoft Entra ID sends, and never an
@@ -4133,7 +4133,7 @@ the person hired under the address of one who left would be signed in to the acc
 <p><strong>Groups.</strong> Each value of the attribute is compared exactly with the keys of <code>map</code>, 256 values at most, and a
 value the map does not name is no group. The groups the map names are groups of the tenant, found by their
 name, and none is ever created from what an identity provider sends: create them first.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:group:create<span class="w"> </span>Staff
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:group:create<span class="w"> </span>Staff
 </span></code></pre></div>
 <h2 id="its-metadata-read-and-kept">Its metadata, read and kept<a class="headerlink" href="#its-metadata-read-and-kept" title="Link to this section">&para;</a></h2>
 <p>Exactly as a <a href="../service-providers/#its-metadata">service provider's</a> are, by the same objects: read from the
@@ -4141,8 +4141,8 @@ declared location, verified under pinned signers or trusted by their channel, re
 older than the document accepted when they are signed, sealed where they sit, and refreshed every hour by the
 timed step. They are refused besides when they hold no <code>md:IDPSSODescriptor</code> of SAML 2.0, no key for signing,
 or a single sign-on service that is not <code>https</code> on a host.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:saml:identity-provider:refresh
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bin/console<span class="w"> </span>beffroi:saml:identity-provider:forget<span class="w"> </span><span class="s1">'https://idp.example.org/saml/metadata'</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bin/console<span class="w"> </span>beffroi:saml:identity-provider:refresh
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>bin/console<span class="w"> </span>beffroi:saml:identity-provider:forget<span class="w"> </span><span class="s1">'https://idp.example.org/saml/metadata'</span>
 </span></code></pre></div>
 <p>An identity provider whose metadata were never accepted cannot be signed in through: read them before
 announcing the domain to anybody.</p>
@@ -4150,15 +4150,15 @@ announcing the domain to anybody.</p>
 <p>An identity provider that encrypts its assertions encrypts them for a key of the tenant, and each identity
 provider has one of its own, never shared with another nor with the signing key. Its algorithm names the
 provider:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span><span class="s1">'SAML-ENCRYPTION:https://idp.example.org/saml/metadata'</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span><span class="s1">'SAML-ENCRYPTION:https://idp.example.org/saml/metadata'</span>
 </span></code></pre></div>
 <p>It is an RSA key of the tenant like the others, sealed by the key management service, absent from the JWK Set
 so that no OpenID Connect client encrypts to it, and rotated with the commands and the timed step of every
-key, by the figures of the SAML signing key: seven days staged, a year of work.</p>
+key, by the figures of the SAML signing key: seven days staged and a year of work in the image.</p>
 <p><strong>Its certificate goes to that provider alone.</strong> The metadata of the service provider for one identity
 provider are served at <code>/saml/sp/metadata/</code> followed by the entity ID of that provider in base64url, without
 padding (RFC 4648 §5):</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">printf</span><span class="w"> </span><span class="s1">'%s'</span><span class="w"> </span><span class="s1">'https://idp.example.org/saml/metadata'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>basenc<span class="w"> </span>--base64url<span class="w"> </span>--wrap<span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'='</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">printf</span><span class="w"> </span><span class="s1">'%s'</span><span class="w"> </span><span class="s1">'https://idp.example.org/saml/metadata'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>basenc<span class="w"> </span>--base64url<span class="w"> </span>--wrap<span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">'='</span>
 </span></code></pre></div>
 <p>They are the metadata above, with one <code>KeyDescriptor use="encryption"</code> per key of that provider staged or
 active, the newest first, and none of another provider. An identity provider takes the first certificate it
@@ -4196,7 +4196,7 @@ is one key per provider.</p>
 <td>Refused by name</td>
 </tr>
 <tr>
-<td>An assertion in clear from a provider declared with <code>require_encrypted_assertions: true</code></td>
+<td>An assertion in clear from a provider declared with <code>require_encrypted_assertions</code> set to <code>true</code></td>
 <td>Refused before anything of it is read</td>
 </tr>
 </tbody>
@@ -4223,7 +4223,7 @@ a padding from a key.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 11:24:49 UTC">November 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

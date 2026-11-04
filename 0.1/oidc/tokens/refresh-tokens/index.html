@@ -4053,35 +4053,35 @@ Core §11) or the client is confidential. A confidential client therefore gets o
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it bounds</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>tokens.refresh_token_ttl</code></td>
+<td><code>BEFFROI_REFRESH_TOKEN_TTL</code></td>
 <td><code>2592000</code> seconds, 30 days</td>
 <td>One token, from the moment it was issued</td>
 </tr>
 <tr>
-<td><code>tokens.refresh_token_absolute_ttl</code></td>
+<td><code>BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL</code></td>
 <td><code>7776000</code> seconds, 90 days</td>
 <td>Its family, from the authorization that started it. No rotation extends it, and no token of the family outlives it</td>
 </tr>
 </tbody>
 </table>
-<p>The first cannot exceed the second, and a configuration where it does fails to load.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tokens</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">refresh_token_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2592000</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">refresh_token_absolute_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7776000</span>
+<p>The first cannot exceed the second, and a value that does is refused by the first request or command that
+needs it. A deployment sets both in its environment
+(<a href="../../../application/configuration/#keys-and-lifetimes">configuration</a>), here at the values of the image:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_REFRESH_TOKEN_TTL=2592000
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL=7776000
 </span></code></pre></div>
 <p><strong>A token that is not replaced keeps the expiry it was issued with.</strong> The refresh token of a confidential
 client, and of a public client whose token is bound, is never replaced, so it stops working
-<code>refresh_token_ttl</code> after it was issued, and the client then obtains a new authorization the way it obtained
-the first. Only a token that rotates starts a new <code>refresh_token_ttl</code> at each rotation, until the family
-ends.</p>
+<code>BEFFROI_REFRESH_TOKEN_TTL</code> after it was issued, and the client then obtains a new authorization the way it
+obtained the first. Only a token that rotates starts a new <code>BEFFROI_REFRESH_TOKEN_TTL</code> at each rotation, until
+the family ends.</p>
 <h2 id="rotation-and-reuse">Rotation and reuse<a class="headerlink" href="#rotation-and-reuse" title="Link to this section">&para;</a></h2>
 <p>A refresh token is told from a copy of itself by the authentication of a confidential client, by the key or
 the certificate it is bound to, or by rotation (RFC 9700 §4.13.2), and one of the three is enough. So the
@@ -4163,7 +4163,7 @@ way whether the token existed or not.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

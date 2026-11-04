@@ -4087,7 +4087,7 @@ the lane carries it to a worker, and nothing listens to an event in the process 
 <tbody>
 <tr>
 <td><code>command.bus</code>, the default bus</td>
-<td>The default middleware of Messenger, then <code>router_context</code>, <code>doctrine_ping_connection</code>, <code>doctrine_close_connection</code> and <code>doctrine_transaction</code></td>
+<td>The default middleware of Messenger, then <code>router_context</code>, <code>beffroi.messenger.ping_connection</code>, <code>beffroi.messenger.close_connection</code> and <code>doctrine_transaction</code></td>
 </tr>
 <tr>
 <td><code>event.bus</code></td>
@@ -4102,10 +4102,14 @@ the lane carries it to a worker, and nothing listens to an event in the process 
 <p><code>doctrine_transaction</code> makes a handler one unit of work, and the default middleware, which no bus turns off,
 is what has an event announced from a handler leave once that handler has committed. <code>router_context</code> gives
 a worker the context of the request that dispatched the message, so that a URL built there is an absolute URL
-of the issuer, and the two connection middleware are what let a worker run for days. This is why the buses are
-written in the contract and not in <code>config/packages/messenger.yaml</code>: a configuration that wired them itself and
-got either of the first two wrong would break the asynchronous half of the provider, and nothing in a browser
-would show it.</p>
+of the issuer, and the two connection middleware are what let a worker run for days: before a message a worker
+consumed is handled, <code>beffroi.messenger.ping_connection</code> reconnects a connection the database closed while the
+worker waited, and once it is handled <code>beffroi.messenger.close_connection</code> closes the connections. Both are
+services of the application on the classes of the Doctrine bridge of Symfony,
+<code>DoctrineDbalPingConnectionMiddleware</code> and <code>DoctrineDbalCloseConnectionMiddleware</code>, and act on every
+connection of the registry. This is why the buses are written in the contract and not in
+<code>config/packages/messenger.yaml</code>: a configuration that wired them itself and got either of the first two wrong
+would break the asynchronous half of the provider, and nothing in a browser would show it.</p>
 <p><strong>The transports.</strong></p>
 <table>
 <thead>
@@ -4172,12 +4176,13 @@ five seconds for each of the seven sends they count. That budget is the <code>ex
 that signed it stays in the JWK Set at least that long once it retires. It bounds the token and not the
 sending: a client still out of reach when the budget has run out may be sent the token again,
 <code>retry_max_delay</code> seconds apart, and what it receives then is past its <code>exp</code>.</p>
-<p>A deployment that routes the notifications to a lane of its own, or names another retry service on
-<code>async_notifications</code>, keeps a provider that works and two figures that no longer agree: a client reached
-on a late retry refuses a token it can no longer verify, and the person stays signed in there.
-<code>beffroi:doctor</code> says so. Writing the four numbers of a retry strategy on <code>async_notifications</code> changes
-nothing: the service <code>BeffroiExtension</code> prepends survives the merge, and the component prefers a service to
-its numbers.</p>
+<p>No variable routes the notifications to another lane or names another retry service on
+<code>async_notifications</code>, so the two figures agree on every deployment of the image. A configuration of the
+application that changed either would keep a provider that works and two figures that disagree: a client
+reached on a retry the budget does not count refuses the token, and the person stays signed in there.
+<code>beffroi:doctor</code> says whether they agree. The four numbers of a retry strategy written on
+<code>async_notifications</code> change nothing: the service <code>BeffroiExtension</code> prepends survives the merge, and the
+component prefers a service to its numbers.</p>
 </div>
 <h2 id="the-worker">The worker<a class="headerlink" href="#the-worker" title="Link to this section">&para;</a></h2>
 <p>The application runs one worker, which consumes the schedule and then the lanes, the notifications first so
@@ -4251,9 +4256,9 @@ to consume.</p>
 </span> The rotation of a key</a></p>
 <h2 id="what-leaves-the-process-is-sealed">What leaves the process is sealed<a class="headerlink" href="#what-leaves-the-process-is-sealed" title="Link to this section">&para;</a></h2>
 <p>What a column seals, a queue does not carry in the clear. <strong>The body of every message is a compact JWE</strong>,
-sealed to the key the tenant keeps for it, <code>MESSAGE-SEAL</code>, under <code>ECDH-ES+A256KW</code> and <code>A256GCM</code>: what a broker
-keeps on its disk, what the table of a transport holds and what waits in the failure transport is worth
-nothing without the key management service.</p>
+sealed to the key the tenant keeps for it, <code>MESSAGE-SEAL</code>, under <code>ECDH-ES+A256KW</code> and <code>A256GCM</code>: what the
+table of a transport holds and what waits in the failure transport is worth nothing without the key management
+service.</p>
 <ul>
 <li><strong>The sender asks the key management service for nothing.</strong> It seals to the public half of the newest key
   of that algorithm in service, a staged one included, so the event that announces the first key of a tenant
@@ -4296,7 +4301,7 @@ into a failed message nobody would replay.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

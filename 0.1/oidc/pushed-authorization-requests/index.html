@@ -3964,7 +3964,7 @@ the authorization endpoint reads one with, before any browser is sent anywhere.<
 <div class="language-http highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">POST</span> <span class="nn">/par</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">op.example.com</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/x-www-form-urlencoded</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Basic YmlsbGluZzpzM2NyM3Q...</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Basic czZCaDNkUmtxdDNIbTl2QmtybmZlUjdfeFUyWnlRNGxKYU4wY1A4VHdZZzo3RmpmcDBa...</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nt">response_type</span><span class="o">=</span><span class="s">code</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">&amp;</span><span class="nt">redirect_uri</span><span class="o">=</span><span class="s">https%3A%2F%2Fbilling.example.com%2Foidc%2Fcallback</span>
@@ -4014,34 +4014,34 @@ A request past a <a href="../errors/#refused-for-load">budget of load</a>, the o
 client, is answered <code>429</code>, with <code>Retry-After</code>, <code>Cache-Control: no-store</code> and an <code>error_description</code> but no
 <code>error</code> member.</p>
 <h2 id="how-long-a-reference-lives">How long a reference lives<a class="headerlink" href="#how-long-a-reference-lives" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">tokens</span><span class="p">:</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">request_uri_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<p>One variable sets it, here at the value of the image
+(<a href="../../application/configuration/#keys-and-lifetimes">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>BEFFROI_REQUEST_URI_TTL=60
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>tokens.request_uri_ttl</code></td>
+<td><code>BEFFROI_REQUEST_URI_TTL</code></td>
 <td><code>60</code></td>
-<td>Seconds a reference lives, at most <code>600</code> (RFC 9126 §2.2)</td>
+<td>Seconds a reference lives, a second at least and <code>600</code> at most (RFC 9126 §2.2)</td>
 </tr>
 </tbody>
 </table>
 <p><code>expires_in</code> is the number of seconds the reference still has, never more than it has.</p>
 <h2 id="using-the-reference">Using the reference<a class="headerlink" href="#using-the-reference" title="Link to this section">&para;</a></h2>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nf">GET</span> <span class="nn">/authorize?client_id=billing&amp;request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3A6esc_11ACC5bwc014ltc14eY22cQ2xpZW50UmVxdWVz</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nf">GET</span> <span class="nn">/authorize?client_id=s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg&amp;request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3A6esc_11ACC5bwc014ltc14eY22cQ2xpZW50UmVxdWVz</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span></code></pre></div>
 <p><code>client_id</code> and <code>request_uri</code> are the whole of the request: the parameters are the ones that were pushed, and
 any other parameter of the query is dropped, so the query never contradicts what was pushed (RFC 9126 §4).</p>
 <p><strong>A reference is read by the client it was issued to</strong>, before it expires, and <strong>spent with the code it
-buys</strong> (FAPI 2.0 Security Profile §5.3.1). Until a code is issued, the reference may be read again: a person
+buys</strong> (FAPI 2.0 Security Profile §5.3.2.2). Until a code is issued, the reference may be read again: a person
 who reloads the page they were sent to is still holding a request nobody has answered. Two interactions
 begun on one reference cannot both finish: the reference is claimed when the code is issued, and the second
 to claim it is refused.</p>
@@ -4067,21 +4067,23 @@ to claim it is refused.</p>
 <a href="../request-objects/">request object by reference</a> instead, and is fetched only from a URL the client
 registered.</p>
 <h2 id="requiring-it">Requiring it<a class="headerlink" href="#requiring-it" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="nt">billing</span><span class="p">:</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">            </span><span class="c1"># ...</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">            </span><span class="nt">require_pushed_authorization_requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<p>A client holds itself to pushed requests when it registers (<a href="../dynamic-registration/">dynamic registration</a>):</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Billing"</span><span class="p">,</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nt">"redirect_uris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://billing.example.com/oidc/callback"</span><span class="p">],</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"openid profile"</span><span class="p">,</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="nt">"require_pushed_authorization_requests"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>A client registered with <code>require_pushed_authorization_requests</code> starts an authorization request in no
 other way (RFC 9126 §6). An ordinary request of that client is refused on a page, with <code>invalid_request</code>,
 before its redirect URI is even read, so that nothing of the request goes back to the browser that carried
-it. It is a member of the client, and nothing of the deployment sets it for every client.</p>
+it. It is a member of the client, and no variable sets it for every client.</p>
 <p>The discovery document announces <code>pushed_authorization_request_endpoint</code>, and
 <code>require_pushed_authorization_requests</code> (RFC 9126 §5) as <code>true</code> exactly when the tenant has clients and every
-one of them carries the requirement, whichever source holds them, and <code>false</code> as soon as one does not. When
-the deployment serves a host that asks for a certificate, the endpoint is announced under that host as well,
-in <code>mtls_endpoint_aliases</code> (<a href="../sender-constrained/mutual-tls/">mutual TLS</a>).</p>
+one of them carries the requirement, and <code>false</code> as soon as one does not. When <code>BEFFROI_MTLS_ORIGIN</code> names
+the host that asks for a certificate, the endpoint is announced under that host as well, in
+<code>mtls_endpoint_aliases</code> (<a href="../sender-constrained/mutual-tls/">mutual TLS</a>).</p>
 <p><a href="../authorization-request/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Authorization request</a> and <a href="../request-objects/">request
 objects</a></p>
@@ -4105,7 +4107,7 @@ objects</a></p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 11:14:31 UTC">November 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

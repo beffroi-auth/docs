@@ -4117,7 +4117,7 @@ token refused because it was not issued here is told so and nothing more.</p>
 <tr>
 <td><code>invalid_target</code></td>
 <td><code>400</code></td>
-<td><code>/authorize</code>, <code>/par</code>, <code>/token</code>, for a resource that is malformed or that the client did not register (RFC 8707 §2)</td>
+<td><code>/authorize</code>, <code>/par</code>, <code>/token</code>, <code>/device_authorization</code>, <code>/backchannel_authentication</code>, for a resource that is malformed or that the client or the authorization does not hold, at <code>/token</code> for none at all under <code>client_credentials</code> and the JWT bearer grant (RFC 8707 §2), and for the targets the <a href="../grants/token-exchange/">token exchange</a> refuses. No client of the image holds a resource: <a href="../resources/">resources</a></td>
 <td>At the authorization endpoint</td>
 </tr>
 <tr>
@@ -4302,31 +4302,29 @@ sentences are replaced.</p>
 has room again, and <code>Cache-Control: no-store</code>. On the protocol plane the body is JSON with an
 <code>error_description</code> and no <code>error</code> member, since none of the registered codes says a budget is spent and a
 client is not meant to act on it but to wait; on the interaction plane it is the page <code>too_many_requests</code>.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">load</span><span class="p">:</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">origin</span><span class="p">:</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">            </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2400</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">            </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="nt">client</span><span class="p">:</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">            </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1200</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">            </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<p>Four variables give the two budgets their numbers, here at the values of the image
+(<a href="../../application/configuration/#the-journal-and-the-load">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>BEFFROI_LOAD_ORIGIN_LIMIT=2400
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>BEFFROI_LOAD_ORIGIN_INTERVAL=60
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>BEFFROI_LOAD_CLIENT_LIMIT=1200
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>BEFFROI_LOAD_CLIENT_INTERVAL=60
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
-<th>What it decides</th>
+<th>Variables</th>
+<th>In the image</th>
+<th>What they decide</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>origin.limit</code>, <code>origin.interval</code></td>
+<td><code>BEFFROI_LOAD_ORIGIN_LIMIT</code>, <code>BEFFROI_LOAD_ORIGIN_INTERVAL</code></td>
 <td><code>2400</code> requests in <code>60</code> seconds</td>
 <td>What one address may send, whatever it asks for. It is not counted per tenant: it bounds the load on the machine</td>
 </tr>
 <tr>
-<td><code>client.limit</code>, <code>client.interval</code></td>
+<td><code>BEFFROI_LOAD_CLIENT_LIMIT</code>, <code>BEFFROI_LOAD_CLIENT_INTERVAL</code></td>
 <td><code>1200</code> requests in <code>60</code> seconds</td>
 <td>What one authenticated client of one tenant may ask</td>
 </tr>
@@ -4405,7 +4403,7 @@ other refusals of the protocol are answered, and leave nothing in the journal.</
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

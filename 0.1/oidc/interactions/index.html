@@ -4172,10 +4172,12 @@ none was asked for or none is satisfied.</p>
   session has.</li>
 </ul>
 <h2 id="what-decides-a-consent">What decides a consent<a class="headerlink" href="#what-decides-a-consent" title="Link to this section">&para;</a></h2>
-<p>Once the login is settled, a client registered with <code>requires_consent: false</code> is answered at once. Any other
-client is sent to the <a href="../consent/">consent page</a> when the person has not agreed yet to every scope and every
-authorization detail of the request, or when the request says <code>prompt=consent</code>. A consent given during the
-interaction answers that, and the code is issued.</p>
+<p>Once the login is settled, the client is sent to the <a href="../consent/">consent page</a> when the person has not agreed
+yet to every scope and every authorization detail of the request, or when the request says <code>prompt=consent</code>.
+A consent given during the interaction answers that, and the code is issued. Every client of the image goes
+through it: <code>requires_consent: false</code>, which has a first-party application answered at once, is a member of
+the deployment that no client of the image holds (<a href="../clients/#what-the-image-does-not-set">what the image does not
+set</a>).</p>
 <h2 id="promptnone"><code>prompt=none</code><a class="headerlink" href="#promptnone" title="Link to this section">&para;</a></h2>
 <p><code>prompt=none</code> asks for an answer without any page (OIDC Core §3.1.2.6). Where a login would have been shown,
 the client is answered <code>login_required</code>, and where a consent would have been, <code>consent_required</code>, both at its
@@ -4191,9 +4193,9 @@ browser has just typed another, and a hint that names nobody leaves the field em
 hint would: the value the client sent appears nowhere on the login form. The step of the address, on a
 tenant that federates domains, below, is the exception: a hint that holds an <code>@</code> fills its field as the
 client wrote it.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">interaction</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">login_hint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sub</span>
+<p>The deployment names the way in a variable, here at the value of the image
+(<a href="../../application/configuration/#clients-and-their-requests">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_INTERACTION_LOGIN_HINT=sub
 </span></code></pre></div>
 <table>
 <thead>
@@ -4204,7 +4206,7 @@ client wrote it.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>sub</code>, the default</td>
+<td><code>sub</code>, the value of the image</td>
 <td>The <code>sub</code> this provider issued to that client, read for that client, so a <a href="../pairwise-subjects/">pairwise</a> identifier names somebody only to a client of its sector</td>
 </tr>
 <tr>
@@ -4213,14 +4215,14 @@ client wrote it.</p>
 </tr>
 <tr>
 <td><code>none</code></td>
-<td>Nothing of the application: a deployment that names its users some other way tags a <code>UserHintInterface</code> of its own <code>beffroi.oidc.login_hint</code></td>
+<td>Nothing: the hint names nobody. Another reading is code of the application, a class implementing <code>Beffroi\Oidc\Application\Hint\UserHintInterface</code> tagged <code>beffroi.oidc.login_hint</code>, which the image carries none of</td>
 </tr>
 </tbody>
 </table>
-<p><code>backchannel_authentication.login_hint</code> takes the same three names for the <code>login_hint</code> of the backchannel
-flow (<a href="../grants/backchannel-authentication/">backchannel authentication</a>). Reading a <code>sub</code> costs what it
-costs: a client that holds one can learn the name its person signs in with by rendering the page itself, and
-<code>none</code> is the setting that does not pay it.</p>
+<p><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT</code> takes the same three names for the <code>login_hint</code> of the
+backchannel flow (<a href="../grants/backchannel-authentication/">backchannel authentication</a>). Reading a <code>sub</code> costs
+what it costs: a client that holds one can learn the name its person signs in with by rendering the page
+itself, and <code>none</code> is the setting that does not pay it.</p>
 <p><strong>On a tenant that federates domains</strong>, the login of an interaction asks for the address first, and an
 address of a domain an upstream identity provider answers for is sent to that provider; a <code>login_hint</code> that is
 such an address sends the browser there without showing the page. What the client asked of the login,
@@ -4304,7 +4306,7 @@ is sent to a redirect URI on behalf of somebody who is no longer there.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

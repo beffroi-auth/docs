@@ -4014,8 +4014,9 @@
 
 
 <h1 id="access-tokens">Access tokens<a class="headerlink" href="#access-tokens" title="Link to this section">&para;</a></h1>
-<p>An access token is what a client presents to a resource server. Each client receives its access tokens in
-one shape, the one it registered, so a resource server knows from that registration what it is validating:</p>
+<p>An access token is what a client presents to a resource server. The provider writes it in one of two shapes,
+and each client receives its access tokens in one of them, so a resource server knows from the client what it
+is validating:</p>
 <table>
 <thead>
 <tr>
@@ -4043,18 +4044,16 @@ one shape, the one it registered, so a resource server knows from that registrat
 </tr>
 </tbody>
 </table>
-<p>A client that registers no shape takes <code>jwt</code>, the first one the provider is wired with. A name no wired shape
-answers to is refused: a declared client is an error of the configuration, and a registration request is
-answered <code>invalid_client_metadata</code>. Both shapes live <code>tokens.access_token_ttl</code> seconds, ten minutes by
-default: the self-contained one cannot be taken back, so its lifetime is what bounds it, and the opaque one
-gets the same, a revocation being a facility and not a reason to live longer.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">tokens</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">access_token_ttl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">600</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">reporting</span><span class="p">:</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="c1"># ...</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">access_token_format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">opaque</span>
+<p><strong>Every client of the image receives the self-contained shape.</strong> The shape of a client is its
+<code>access_token_format</code>, a member of the deployment: a registration that carries it is refused with
+<code>invalid_client_metadata</code>, and no variable gives it to a client, so every client of the image takes <code>jwt</code>, the
+first shape the provider is wired with (<a href="../../clients/#what-the-image-does-not-set">what the image does not
+set</a>).</p>
+<p>Both shapes live <code>BEFFROI_ACCESS_TOKEN_TTL</code> seconds, ten minutes in the image: the self-contained one cannot
+be taken back, so its lifetime is what bounds it, and the opaque one gets the same, a revocation being a
+facility and not a reason to live longer. A deployment sets it in its environment
+(<a href="../../../application/configuration/#keys-and-lifetimes">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_ACCESS_TOKEN_TTL=600
 </span></code></pre></div>
 <p>No access token is ever encrypted.</p>
 <h2 id="what-it-says">What it says<a class="headerlink" href="#what-it-says" title="Link to this section">&para;</a></h2>
@@ -4082,7 +4081,7 @@ provider keeps under its SHA-256, which introspection renders under the same nam
 </tr>
 <tr>
 <td><code>aud</code></td>
-<td>The resources it is addressed to (RFC 8707 §2), named by the request or carried by what the grant spends, as the page of each grant says: a token exchange that names none is addressed to every resource of the presented token, and a token of an authorization that carries no resource is addressed to the <code>client_id</code>. One value is written as a string, several as a list</td>
+<td>The resources it is addressed to (RFC 8707 §2), named by the request or carried by what the grant spends, as the page of each grant says: a token exchange that names none is addressed to every resource of the presented token, and a token of an authorization that carries no resource is addressed to the <code>client_id</code>, as every token of a client of the image is. One value is written as a string, several as a list</td>
 </tr>
 <tr>
 <td><code>exp</code>, <code>iat</code></td>
@@ -4116,8 +4115,8 @@ provider keeps under its SHA-256, which introspection renders under the same nam
 </table>
 <p>The self-contained shape carries four claims more, which introspection does not render: <code>jti</code>, a random UUID;
 <code>userinfo_claims</code>, the claims the client asked for by name for the UserInfo endpoint (OIDC Core §5.5);
-<code>may_act</code>, who may act for the subject of a token of this client (RFC 8693 §4.4), when it registered one; and
-<code>person</code>, below.</p>
+<code>may_act</code>, who may act for the subject of a token of this client (RFC 8693 §4.4), when it carries one, which
+no client of the image does; and <code>person</code>, below.</p>
 <h3 id="the-header">The header<a class="headerlink" href="#the-header" title="Link to this section">&para;</a></h3>
 <p><code>typ</code> is <code>at+jwt</code> (RFC 9068 §2.1), <code>kid</code> names the key of the JWK Set that signed it, and <code>alg</code> is the
 algorithm the provider signs with by default, the first one it is wired with, <code>RS256</code>. It is never the
@@ -4132,7 +4131,7 @@ For both, the provider keeps the person beside the token: on the record of a ref
 self-contained token as the private claim <code>person</code> (RFC 7519 §4.3), sealed by the key management service of
 the tenant. Only the provider opens it, and a resource server reads it as it reads any claim it was given no
 meaning for. A token a client holds for itself is about nobody and carries none, and so does a token of a
-token exchange whose presented token carried no sign-in.</p>
+token exchange whose presented token named nobody.</p>
 <h2 id="what-the-provider-asks-of-a-token-it-is-presented">What the provider asks of a token it is presented<a class="headerlink" href="#what-the-provider-asks-of-a-token-it-is-presented" title="Link to this section">&para;</a></h2>
 <p>The provider's own endpoints that take an access token, UserInfo, introspection and the token exchange, read
 both shapes the same way and ask more of a token than its signature:</p>
@@ -4142,15 +4141,18 @@ both shapes the same way and ask more of a token than its signature:</p>
 <li>the grant it descends from has not been revoked;</li>
 <li>the person it is about is still served.</li>
 </ol>
-<p>A token nobody signed in for at this provider descends from no session, and only the first question is asked
-of it. A resource server that holds the token and the JWK Set and nothing else cannot ask the other three,
+<p>A token nobody signed in for at this provider descends from no session and no grant, and the second and third
+questions are not asked of it; the fourth is, when it names a person, as a token of a JWT bearer assertion
+does. A resource server that holds the token and the JWK Set and nothing else cannot ask the other three,
 which is what verifying offline means: <strong>a self-contained token outlives the end of its session, the consent
 taken back and the revocation of its grant wherever it is verified offline</strong>, until it expires. Introspection
 answers <code>"active": false</code> for it from the instant any of those happened.</p>
 <p>The UserInfo endpoint takes only a token addressed to the client itself, the one a request that names no
-resource gets: a token addressed to a resource is refused there with <code>invalid_token</code>, whatever it is good for
-elsewhere.</p>
+resource gets, as every request of a client of the image does: a token addressed to a resource is refused
+there with <code>invalid_token</code>, whatever it is good for elsewhere.</p>
 <h2 id="choosing-a-shape">Choosing a shape<a class="headerlink" href="#choosing-a-shape" title="Link to this section">&para;</a></h2>
+<p>A deployment of the image has no choice to make: every client of it receives <code>jwt</code>, above. The two shapes
+answer two kinds of resource server:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="jwt" name="__tabbed_1" type="radio" /><input id="opaque" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="jwt">jwt</label><label for="opaque">opaque</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4175,12 +4177,13 @@ the certificate of its connection for a client that authenticates with that cert
 <a href="../../sender-constrained/">Sender-constrained tokens</a> says what a resource server then asks of the
 caller.</p>
 <h2 id="adding-a-shape">Adding a shape<a class="headerlink" href="#adding-a-shape" title="Link to this section">&para;</a></h2>
-<p>A shape is two classes answering to one name, which is what a client registers in <code>access_token_format</code>: an
+<p>A shape is two classes answering to one name, which is what a client carries in <code>access_token_format</code>: an
 issuer implementing <code>Beffroi\Oidc\Port\AccessTokenShapeIssuerInterface</code>, tagged
-<code>beffroi.oidc.access_token_issuer</code>, and a verifier implementing <code>Beffroi\Oidc\Port\AccessTokenVerifierInterface</code>,
-tagged <code>beffroi.oidc.access_token_verifier</code>. The first tagged issuer is the shape a client that registers none
-takes. A shape written with no verifier, read with no issuer, or written by two issuers is refused, a token
-the provider writes and cannot read back being a token nobody can spend.</p>
+<code>beffroi.oidc.access_token_issuer</code>, and a verifier implementing
+<code>Beffroi\Oidc\Port\AccessTokenVerifierInterface</code>, tagged <code>beffroi.oidc.access_token_verifier</code>. The first
+tagged issuer is the shape a client that carries none takes, <code>jwt</code> in the application. A shape written with no
+verifier, read with no issuer, or written by two issuers is refused, a token the provider writes and cannot
+read back being a token nobody can spend.</p>
 
 
 
@@ -4201,7 +4204,7 @@ the provider writes and cannot read back being a token nobody can spend.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

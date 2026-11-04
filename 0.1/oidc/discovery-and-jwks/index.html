@@ -4036,7 +4036,7 @@ provider refuses rather than arbitrates.</p>
 </tr>
 <tr>
 <td><code>scopes_supported</code></td>
-<td><code>openid</code>, the scopes the wired claims stand for, the scopes the clients of the tenant registered, and <code>offline_access</code> where a wired grant issues a refresh token and another spends one. <a href="../scopes-and-claims/">Scopes and claims</a></td>
+<td><code>openid</code>, the scopes the wired claims stand for, the scopes of the APIs <code>BEFFROI_TENANT_SCOPES</code> names, the scopes the clients of the tenant registered, and <code>offline_access</code> where a wired grant issues a refresh token and another spends one. <a href="../scopes-and-claims/">Scopes and claims</a></td>
 </tr>
 <tr>
 <td><code>claims_supported</code>, <code>claims_parameter_supported</code></td>
@@ -4076,7 +4076,7 @@ provider refuses rather than arbitrates.</p>
 </tr>
 <tr>
 <td><code>id_token_encryption_*</code>, <code>userinfo_encryption_*</code>, <code>request_object_encryption_*</code> (<code>alg_values_supported</code>, <code>enc_values_supported</code>)</td>
-<td>The encryption algorithms wired: <code>ECDH-ES+A256KW</code> and <code>RSA-OAEP-256</code>, with <code>A256GCM</code>. A deployment that wires no key encryption or no content encryption algorithm announces none of these pairs rather than empty lists</td>
+<td>The encryption algorithms wired: <code>ECDH-ES+A256KW</code> and <code>RSA-OAEP-256</code>, with <code>A256GCM</code>. A provider wired with no key encryption or no content encryption algorithm announces none of these pairs rather than empty lists</td>
 </tr>
 <tr>
 <td><code>request_parameter_supported</code>, <code>request_uri_parameter_supported</code>, <code>require_request_uri_registration</code></td>
@@ -4131,7 +4131,7 @@ provider refuses rather than arbitrates.</p>
 <tbody>
 <tr>
 <td><code>registration_endpoint</code></td>
-<td>The registration policy of the tenant registers clients. Closed, which is the default, the tenant has no registration endpoint at all. <a href="../dynamic-registration/">Dynamic registration</a></td>
+<td><code>BEFFROI_REGISTRATION_MODE</code> names a mode the tenant registers clients in. Empty, as it is in the image, the tenant has no registration endpoint at all. <a href="../dynamic-registration/">Dynamic registration</a></td>
 </tr>
 <tr>
 <td><code>backchannel_authentication_endpoint</code>, <code>backchannel_token_delivery_modes_supported</code>, <code>backchannel_authentication_request_signing_alg_values_supported</code>, <code>backchannel_user_code_parameter_supported</code></td>
@@ -4143,15 +4143,15 @@ provider refuses rather than arbitrates.</p>
 </tr>
 <tr>
 <td><code>mtls_endpoint_aliases</code></td>
-<td><code>mutual_tls.origin</code> names the host that asks for a certificate</td>
+<td><code>BEFFROI_MTLS_ORIGIN</code> names the host that asks for a certificate. <a href="../sender-constrained/mutual-tls/#the-endpoint-aliases">Mutual TLS</a></td>
 </tr>
 <tr>
 <td><code>protected_resources</code></td>
-<td>A client of the tenant registered resources (RFC 9728 §4). <a href="../resources/">Resources</a></td>
+<td>A client of the tenant holds resources (RFC 9728 §4), which no client of the image does. <a href="../resources/">Resources</a></td>
 </tr>
 <tr>
 <td><code>authorization_details_types_supported</code></td>
-<td>A type of authorization detail is wired (RFC 9396 §10). <a href="../authorization-details/">Authorization details</a></td>
+<td>A type of authorization detail is wired (RFC 9396 §10), which the image wires none of. <a href="../authorization-details/">Authorization details</a></td>
 </tr>
 </tbody>
 </table>
@@ -4167,41 +4167,41 @@ publishes for: the keys it signs with and the keys a client encrypts to it with.
 their status: the key a browser is handed for web push, the key the tenant seals what leaves the process to,
 and the SAML keys, whose certificates the <a href="../../saml/identity-provider/">SAML metadata</a> publish.</p>
 <p><strong>How long a client keeps it.</strong> The answer says <code>Cache-Control: public, max-age=</code> followed by
-<code>keys.jwks_max_age</code>, three hundred seconds by default. A set with no key in it is answered <code>no-store</code>, so that
-no cache keeps an empty set for that long.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="c1"># kms and key_id, as the deployment names them</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">jwks_max_age</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+<code>BEFFROI_JWKS_MAX_AGE</code>, three hundred seconds in the image. A set with no key in it is answered <code>no-store</code>, so
+that no cache keeps an empty set for that long.</p>
+<p>Two variables set the figures of the set, here at the values of the image
+(<a href="../../application/configuration/#keys-and-lifetimes">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_JWKS_MAX_AGE=300
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BEFFROI_KEY_STAGING_DELAY=
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>jwks_max_age</code></td>
+<td><code>BEFFROI_JWKS_MAX_AGE</code></td>
 <td><code>300</code></td>
 <td>The <code>max-age</code> of the JWK Set, in seconds. The <code>max-age</code> of the SAML metadata reads it too</td>
 </tr>
 <tr>
-<td><code>staging_delay</code></td>
-<td><code>jwks_max_age</code> plus <code>60</code></td>
-<td>How long a new key is published before it signs, in seconds, for every key but the SAML signing key, which has its own</td>
+<td><code>BEFFROI_KEY_STAGING_DELAY</code></td>
+<td>empty</td>
+<td>How long a new key is published before it signs, in seconds, for every key but the SAML signing key, which has its own. Empty, <code>BEFFROI_JWKS_MAX_AGE</code> plus <code>60</code></td>
 </tr>
 </tbody>
 </table>
 <h3 id="through-a-rotation">Through a rotation<a class="headerlink" href="#through-a-rotation" title="Link to this section">&para;</a></h3>
 <p>A rotation asks a client for nothing but to read the set again within its <code>max-age</code>.</p>
 <ol>
-<li><strong>A new key is published before it signs</strong>, for <code>staging_delay</code> seconds: three hundred and sixty by
-   default, the <code>max-age</code> of the set plus the sixty seconds a copy has to be old before Symfony's
-   <code>oidc_login</code> fetches the set again on a <code>kid</code> it does not know. A client with a warm cache has seen the
-   new key by the time anything is signed with it.</li>
+<li><strong>A new key is published before it signs</strong>, for the staging delay: <code>BEFFROI_KEY_STAGING_DELAY</code> is empty in
+   the image, which makes it three hundred and sixty seconds, the <code>max-age</code> of the set plus the sixty seconds
+   a copy has to be old before Symfony's <code>oidc_login</code> fetches the set again on a <code>kid</code> it does not know. A
+   client with a warm cache has seen the new key by the time anything is signed with it.</li>
 <li><strong>The new key becomes active</strong> once that delay has run, and signs from then on; the key it replaces is
    retiring, and stays in the set.</li>
 <li><strong>The retiring key leaves the set</strong> once nothing it signed can still be presented: the longest lifetime
@@ -4237,7 +4237,7 @@ stages a successor once a key has worked its age.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

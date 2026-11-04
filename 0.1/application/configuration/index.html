@@ -4325,7 +4325,7 @@ is no JSON document, and is refused.</p>
 <tr>
 <td><code>BEFFROI_TENANT_LOGO_URI</code></td>
 <td>empty</td>
-<td>The logo every page shows, an absolute <code>https</code> URL. Empty, the placeholder mark the image serves at <code>/tenant-logo.svg</code> under the issuer. Every page that shows the logo names its origin in its <code>img-src</code>. A logo served from another host shows on the account and the other pages outside the flows of the protocol only when that host answers <code>Cross-Origin-Resource-Policy: cross-origin</code>, which those pages require of an image of another origin</td>
+<td>The logo every page shows, an absolute <code>https</code> URL. Empty, the placeholder mark the image serves at <code>/tenant-logo.svg</code> under the issuer. Every page that shows the logo names its origin in its <code>img-src</code>. A logo served from another host shows on the pages served under <code>Cross-Origin-Embedder-Policy: require-corp</code>, every page but those of <code>/authorize</code>, <code>/login</code>, <code>/consent</code>, <code>/logout</code>, <code>/device</code> and <code>/initiate-login</code>, only when that host answers <code>Cross-Origin-Resource-Policy: cross-origin</code></td>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
@@ -4711,8 +4711,9 @@ and the notifications of the backchannel flow as well as the logout tokens.</p>
 </tr>
 </tbody>
 </table>
-<p>The routes and services of both roles are in every image. A role turned off serves nothing, and the peers
-declared for it are served by nothing until it is turned on again. With both off, the tenant draws no SAML key.
+<p>The routes and services of both roles are in every image. A role turned off serves nothing, and a list that
+names a peer of it is refused whole wherever it is read, the sign-in and the logout among them, until the role
+is turned on again or the list is emptied. With both off, the tenant draws no SAML key.
 The SAML key is the key of both roles, rotated by the three figures above whichever role is on.</p>
 <h2 id="the-journal-and-the-load">The journal and the load<a class="headerlink" href="#the-journal-and-the-load" title="Link to this section">&para;</a></h2>
 <table>
@@ -5016,7 +5017,7 @@ fixtures. A production kernel reads none of them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

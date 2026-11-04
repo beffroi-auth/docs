@@ -4241,10 +4241,10 @@ so some state has to be the same for all of them.</p>
 <td>The worker, which enriches a provenance</td>
 </tr>
 <tr>
-<td>The FIDO metadata</td>
+<td>The FIDO metadata, and the list of passkey providers of the community in its directory <code>community/</code></td>
 <td><code>var/webauthn</code></td>
-<td><code>beffroi:webauthn:mds-refresh</code>, <code>beffroi:webauthn:mds-import</code></td>
-<td>The passkey ceremonies, which check an attestation against it</td>
+<td><code>beffroi:webauthn:mds-refresh</code>, <code>beffroi:webauthn:mds-import</code>, and <code>beffroi:webauthn:aaguids-refresh</code> for the list</td>
+<td>The page of the passkeys and <code>beffroi:user:show</code>, which name the authenticator of a passkey from both, and a ceremony whose options ask for an attestation, which the enrolment of the provider does not</td>
 </tr>
 </tbody>
 </table>
@@ -4252,8 +4252,7 @@ so some state has to be the same for all of them.</p>
 image, <a href="../../getting-started/the-standalone-application/#the-compose-file-of-the-image"><code>compose.prod.yaml</code></a>,
 adds <code>var/webauthn</code> and <code>var/share</code> to them, mounted on the server and on the worker alike: a rotation done by
 one process changes nothing for another that does not see the same directory.</p>
-<p>The application keeps eight caches in pools of their own, so that a deployment can point them at a shared
-store without touching the rest of its cache:</p>
+<p>The application keeps eight caches in pools of their own:</p>
 <table>
 <thead>
 <tr>
@@ -4299,12 +4298,13 @@ store without touching the rest of its cache:</p>
 <p>Each of them is on <code>cache.app</code>, which the application leaves on the filesystem adapter Symfony gives it, in
 <code>%kernel.share_dir%/pools/app</code>. The share directory carries the environment, so with the <code>APP_SHARE_DIR</code> of
 <code>.env</code> the pools of a production kernel are in <code>var/share/prod/pools/app</code>. Two containers share these pools
-when they share that directory, or once a deployment points the pools at a store they both reach, and each
-holds its own otherwise. The attempts at a password and at a code are counted per person, five in a sliding
-window of one minute, by two limiters, <code>beffroi_password_attempts</code> and <code>beffroi_code_attempts</code>, whose counts
-Symfony keeps in <code>cache.rate_limiter</code>, a pool on <code>cache.app</code> as well: they are shared as these pools are. The
-application names no session handler either, so the session of a browser lives where the native handler of PHP
-keeps it, in the container that served it.</p>
+when they share that directory, which the volume of <code>var/share</code> of the Compose file of the image does, and
+each holds its own otherwise: no variable points the pools at another store. The attempts at a password and at
+a code are counted per person, five in a sliding window of one minute, by two limiters,
+<code>beffroi_password_attempts</code> and <code>beffroi_code_attempts</code>, whose counts Symfony keeps in <code>cache.rate_limiter</code>, a
+pool on <code>cache.app</code> as well: they are shared as these pools are. The application names no session handler
+either, so the session of a browser lives where the native handler of PHP keeps it, in the container that
+served it.</p>
 <h2 id="tls-and-the-two-hosts">TLS and the two hosts<a class="headerlink" href="#tls-and-the-two-hosts" title="Link to this section">&para;</a></h2>
 <p>Caddy terminates TLS for the host of <code>SERVER_NAME</code>, unless a proxy in front of the image does
 (<a href="#behind-a-proxy">below</a>), and for the host that asks for a client certificate in every deployment. On the
@@ -4325,8 +4325,10 @@ for nothing.</p>
   of that host therefore ends at this listener.</li>
 <li><strong>Only the leaf reaches PHP</strong>, so no chain is validated there. The handshake proves that the client holds
   the private key of what it presented (RFC 8446 §4.4.3), which is what <code>self_signed_tls_client_auth</code>
-  (RFC 8705 §2.2) needs. A deployment that authenticates clients with <code>tls_client_auth</code> (RFC 8705 §2.1) adds a
-  <code>trust_pool</code> to the <code>client_auth</code> block of <code>mtls.Caddyfile</code>, so the chain is validated at the edge.</li>
+  (RFC 8705 §2.2) needs. The <code>client_auth</code> block of <code>mtls.Caddyfile</code> carries no <code>trust_pool</code>, so no chain is
+  validated at the edge either. A deployment that authenticates clients with <code>tls_client_auth</code> (RFC 8705
+  §2.1) writes the site block of that host in <code>CADDY_EXTRA_CONFIG</code>, in place of the import, with a
+  <code>trust_pool</code> in its <code>client_auth</code>, so the chain is validated at the edge.</li>
 </ul>
 <p><a href="../configuration/#the-web-server"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The variables of the web server</a></p>
@@ -4380,7 +4382,9 @@ development environment, where it would pin every <code>.localhost</code> name o
 <p><a href="../../the-project/secure-by-default/#what-a-deployment-answers-with"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The headers</a></p>
 <h2 id="what-leaves-the-provider">What leaves the provider<a class="headerlink" href="#what-leaves-the-provider" title="Link to this section">&para;</a></h2>
-<p>A deployment that filters what goes out reads it here. No outbound redirect is followed, whoever asks.</p>
+<p>A deployment that filters what goes out reads it here. No outbound redirect is followed, whoever asks, but
+two, each to the one host the application names: a download of MaxMind is followed to its storage, and a
+revocation list of the test service of the FIDO Alliance to the host that serves it.</p>
 <table>
 <thead>
 <tr>
@@ -4447,8 +4451,13 @@ development environment, where it would pin every <code>.localhost</code> name o
 </tr>
 <tr>
 <td>The console</td>
-<td>The FIDO Metadata Service</td>
+<td>The FIDO Metadata Service, and the revocation lists the certificates of the chain of its BLOB name</td>
 <td>On <code>beffroi:webauthn:mds-refresh</code></td>
+</tr>
+<tr>
+<td>The console</td>
+<td>The list of passkey providers the community keeps, the <code>aaguid.json</code> of <code>passkeydeveloper/passkey-authenticator-aaguids</code> on <code>raw.githubusercontent.com</code></td>
+<td>On <code>beffroi:webauthn:aaguids-refresh</code></td>
 </tr>
 </tbody>
 </table>
@@ -4472,7 +4481,7 @@ development environment, where it would pin every <code>.localhost</code> name o
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

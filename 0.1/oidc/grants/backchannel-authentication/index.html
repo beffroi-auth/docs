@@ -4098,17 +4098,24 @@ pinged it.</p>
     C-&gt;&gt;P: POST /token with the auth_req_id
     P-&gt;&gt;C: Access token, ID token, refresh token</code></pre>
 <h2 id="registering-a-client">Registering a client<a class="headerlink" href="#registering-a-client" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">branch-terminal</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'Branch</span><span class="nv"> </span><span class="s">terminal'</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">private_key_jwt</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">jwks_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://terminal.example.com/jwks.json'</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'urn:openid:params:grant-type:ciba'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">refresh_token</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'openid</span><span class="nv"> </span><span class="s">profile'</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="nt">backchannel_token_delivery_mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ping</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">            </span><span class="nt">backchannel_client_notification_endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">'https://terminal.example.com/ciba/notify'</span>
+<p>A client of this flow reaches a deployment of the image by <a href="../../dynamic-registration/">registering itself</a>,
+which the deployment opens in its environment
+(<a href="../../../application/configuration/#registration">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_REGISTRATION_MODE=initial_access_token
 </span></code></pre></div>
+<p>The client registers with:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Branch terminal"</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"token_endpoint_auth_method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"private_key_jwt"</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"jwks_uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://terminal.example.com/jwks.json"</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">"grant_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"urn:openid:params:grant-type:ciba"</span><span class="p">,</span><span class="w"> </span><span class="s2">"refresh_token"</span><span class="p">],</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"openid profile"</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">"backchannel_token_delivery_mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ping"</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">"backchannel_client_notification_endpoint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://terminal.example.com/ciba/notify"</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The answer carries the <code>client_id</code> the provider drew, and no secret, <code>private_key_jwt</code> proving no shared
+secret.</p>
 <table>
 <thead>
 <tr>
@@ -4182,7 +4189,7 @@ endpoint, then:</p>
 </tr>
 <tr>
 <td><code>resource</code></td>
-<td>Optional and repeatable, among the resources the client registered (RFC 8707 §2)</td>
+<td>Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client of the image registers none, so a <code>resource</code> it names is <code>invalid_target</code></td>
 </tr>
 <tr>
 <td><code>user_code</code></td>
@@ -4246,11 +4253,11 @@ the <code>exp</code> of the object, so that one signed request is made once.</p>
 <p>A request object this endpoint will not read is <code>invalid_request</code>, and not the <code>invalid_request_object</code> of the
 authorization endpoint: CIBA Core §13 does not name that error.</p>
 <h3 id="the-answer">The answer<a class="headerlink" href="#the-answer" title="Link to this section">&para;</a></h3>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"auth_req_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1bMVbP0yKpXLzwWWE8VgXGDxeQOCX3Bz6DkWnAAgiKM"</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">"auth_req_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1bMVbP0yKpXLzwWWE8VgXGDxeQOCX3Bz6DkWnAAgiKM"</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><code>200</code>, never cached (<code>Cache-Control: no-store</code>, CIBA Core §7.3). The <code>auth_req_id</code> is 256 random bits in
 base64url, 43 characters, of which the provider keeps the SHA-256 and, for a <code>ping</code> client only, the value
@@ -4259,27 +4266,27 @@ since it has to present both when it pings.</p>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>At most</th>
 <th>What it is</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>tokens.backchannel_authentication_ttl</code></td>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_TTL</code></td>
 <td><code>300</code> seconds</td>
 <td><code>3600</code></td>
-<td>How long a request lives when it asks for no <code>requested_expiry</code>, never longer than the option below</td>
+<td>How long a request lives when it asks for no <code>requested_expiry</code>, never longer than the variable below</td>
 </tr>
 <tr>
-<td><code>tokens.backchannel_authentication_max_requested_expiry</code></td>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_MAX_REQUESTED_EXPIRY</code></td>
 <td><code>1800</code> seconds</td>
 <td><code>3600</code></td>
 <td>The longest a request lives, whatever it asks for</td>
 </tr>
 <tr>
-<td><code>tokens.backchannel_authentication_interval</code></td>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_INTERVAL</code></td>
 <td><code>5</code> seconds</td>
 <td><code>30</code></td>
 <td>How long the client waits between two polls</td>
@@ -4297,7 +4304,7 @@ since it has to present both when it pings.</p>
 <tbody>
 <tr>
 <td><code>login_hint</code></td>
-<td>As <code>backchannel_authentication.login_hint</code> says, below</td>
+<td>As <code>BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT</code> says, below</td>
 </tr>
 <tr>
 <td><code>id_token_hint</code></td>
@@ -4309,16 +4316,17 @@ since it has to present both when it pings.</p>
 </tr>
 </tbody>
 </table>
+<p><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT</code> names what a <code>login_hint</code> is, one of three values:</p>
 <table>
 <thead>
 <tr>
-<th><code>login_hint</code></th>
+<th>Value</th>
 <th>What the hint is</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>sub</code>, the default</td>
+<td><code>sub</code>, in the image</td>
 <td>The subject this provider gives the person for this client, public or pairwise</td>
 </tr>
 <tr>
@@ -4327,19 +4335,19 @@ since it has to present both when it pings.</p>
 </tr>
 <tr>
 <td><code>none</code></td>
-<td>Nothing the application reads: the deployment tags a reader of its own, and without one a <code>login_hint</code> is <code>invalid_request</code></td>
+<td>Nothing the image reads: a <code>login_hint</code> is <code>invalid_request</code>, and a request names the person with an <code>id_token_hint</code></td>
 </tr>
 </tbody>
 </table>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">backchannel_authentication</span><span class="p">:</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">login_hint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sub</span>
+<p>A deployment names one in its environment, here the value of the image:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT=sub
 </span></code></pre></div>
 <p>CIBA Core §15 asks for an identifier that says nothing outside this provider, which the subject is and a
-username is not, hence the default. A reader of its own is a class implementing
-<code>Beffroi\Oidc\Application\Hint\UserHintInterface</code>, tagged <code>beffroi.oidc.ciba_user_hint</code>; two readers of the
-same parameter are refused, a parameter being read one way. The <code>login_hint</code> of an authorization request,
-read on the login page, is set apart with <code>interaction.login_hint</code>, which takes the same three values.</p>
+username is not, hence the value of the image. <code>none</code> leaves the parameter to a reader the application tags of
+its own, a class implementing <code>Beffroi\Oidc\Application\Hint\UserHintInterface</code>, tagged
+<code>beffroi.oidc.ciba_user_hint</code>, and the image tags none that reads a <code>login_hint</code>; two readers of the same
+parameter are refused, a parameter being read one way. The <code>login_hint</code> of an authorization request, read on
+the login page, is set apart with <code>BEFFROI_INTERACTION_LOGIN_HINT</code>, which takes the same three values.</p>
 <p><strong>Nobody is told whether the person exists.</strong> A hint that names nobody is answered with an <code>auth_req_id</code> like
 any other, and the request then goes the way of every request nobody answers, to <code>expired_token</code>. CIBA Core
 §13 defines <code>unknown_user_id</code> for that case, and the provider never answers it: a client that names a
@@ -4351,12 +4359,12 @@ lane</a> and answers the client without waiting for it. What travels is the
 name of the provider, the name of the client, the binding message when there is one, the expiry, and the
 address of the page where requests are answered. It carries no identifier of the request and no link that
 answers one, so that nothing reaching the person from outside can carry them to an approval.</p>
-<p>What carries it to the person is a channel the deployment wires: a class implementing
-<code>App\Ciba\PendingApprovalChannelInterface</code>, tagged <code>beffroi.pending_approval_channel</code>. The application ships
-one, <a href="../../../application/web-push/">web push</a> to the browsers the person subscribed on the notifications page
-of their account, in the lane while <code>web_push.subject</code> names a subject. A deployment that wires no channel
-still serves this flow: the person finds the request on the page where requests are answered, which is where
-any channel sends them anyway.</p>
+<p>What carries it to the person is a channel: a class implementing <code>App\Ciba\PendingApprovalChannelInterface</code>,
+tagged <code>beffroi.pending_approval_channel</code>. The image carries one, <a href="../../../application/web-push/">web push</a> to
+the browsers the person subscribed on the notifications page of their account, in the lane while
+<code>BEFFROI_WEB_PUSH_SUBJECT</code> names a subject. A deployment that sets that variable empty still serves this
+flow: the person finds the request on the page where requests are answered, which is where any channel sends
+them anyway.</p>
 <h2 id="answering-accountapprovals">Answering: <code>/account/approvals</code><a class="headerlink" href="#answering-accountapprovals" title="Link to this section">&para;</a></h2>
 <p>The page is "Requests waiting for you", the first card of the <a href="../../../application/account/">account pages</a>.
 The person signs in first, then sees the requests made for them that are still waiting, oldest first, and
@@ -4380,27 +4388,28 @@ whoever did not start it refuses it.</p>
 <h2 id="the-ping">The ping<a class="headerlink" href="#the-ping" title="Link to this section">&para;</a></h2>
 <p>In <code>ping</code> mode, once the person has answered either way, the provider tells the client so at its
 <code>backchannel_client_notification_endpoint</code> (CIBA Core §10.2):</p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nf">POST</span> <span class="nn">/ciba/notify</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">terminal.example.com</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer &lt;the client_notification_token of the request&gt;</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">{</span><span class="nt">"auth_req_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1bMVbP0yKpXLzwWWE8VgXGDxeQOCX3Bz6DkWnAAgiKM"</span><span class="p">}</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nf">POST</span> <span class="nn">/ciba/notify</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">terminal.example.com</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer &lt;the client_notification_token of the request&gt;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">{</span><span class="nt">"auth_req_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1bMVbP0yKpXLzwWWE8VgXGDxeQOCX3Bz6DkWnAAgiKM"</span><span class="p">}</span>
 </span></code></pre></div>
 <ul>
 <li><strong>No token travels there.</strong> The ping says there is something to collect, and the client collects it at the
   token endpoint.</li>
 <li><strong>It leaves on the notifications lane</strong>, never in the request of the person, with no cookie and no
-  redirect followed. Each call is given <code>backchannel_authentication.client_notification_timeout</code> seconds,
-  <code>3.0</code> by default, connection included.</li>
+  redirect followed. Each call is given <code>BEFFROI_CLIENT_NOTIFICATION_TIMEOUT</code> seconds, <code>3</code> in the image,
+  connection included.</li>
 <li><strong>A <code>2xx</code> is done.</strong> A redirection and a <code>400</code>, <code>401</code>, <code>403</code>, <code>404</code>, <code>405</code> or <code>501</code> are given up at once, the
   same answer coming back at every try. Any other answer, or none, is tried again under the retry policy of
-  the lane.</li>
+  the lane, which <code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES</code>, <code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY</code>,
+  <code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER</code> and <code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY</code> set for every
+  notification (<a href="../../../application/configuration/#notifications">configuration</a>).</li>
 <li><strong>A client that cannot be reached holds nothing up</strong>: it finds the same answer by polling.</li>
 </ul>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">backchannel_authentication</span><span class="p">:</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="nt">client_notification_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.0</span>
+<p>A deployment sets the timeout of a call in its environment, here at the value of the image:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>BEFFROI_CLIENT_NOTIFICATION_TIMEOUT=3
 </span></code></pre></div>
 <h2 id="collecting-the-tokens">Collecting the tokens<a class="headerlink" href="#collecting-the-tokens" title="Link to this section">&para;</a></h2>
 <p>The client sends <code>POST /token</code> with <code>grant_type=urn:openid:params:grant-type:ciba</code> and the <code>auth_req_id</code>
@@ -4447,10 +4456,10 @@ whoever did not start it refuses it.</p>
 it is asked, which is what a <code>ping</code> client needs, the ping coming sooner than its interval. The <code>auth_req_id</code>
 is spent once, atomically.</p>
 <p>The tokens are those of an ordinary authorization, descending from the session the person approved with: an
-access token addressed to the resources of the request, or to the client itself when it named none; an ID
-token, always, <code>openid</code> being required of the request, without a <code>nonce</code>; and a refresh token when one is
-due. They are bound to what the token request binds them to (<a href="../#what-the-token-endpoint-does">grants</a>),
-never to anything the browser that approved proved.</p>
+access token addressed to the resources of the request, or to the client itself when it named none, as every
+client of the image does; an ID token, always, <code>openid</code> being required of the request, without a <code>nonce</code>; and
+a refresh token when one is due. They are bound to what the token request binds them to
+(<a href="../#what-the-token-endpoint-does">grants</a>), never to anything the browser that approved proved.</p>
 <h2 id="what-is-announced">What is announced<a class="headerlink" href="#what-is-announced" title="Link to this section">&para;</a></h2>
 <p>While a grant of this flow is wired, the <a href="../../discovery-and-jwks/">discovery document</a> carries:</p>
 <table>
@@ -4499,7 +4508,7 @@ never to anything the browser that approved proved.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

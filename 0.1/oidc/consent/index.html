@@ -3956,26 +3956,30 @@
 
 
 <h1 id="consent">Consent<a class="headerlink" href="#consent" title="Link to this section">&para;</a></h1>
-<p>A consent is what a person agreed to let one client obtain about them: a set of scopes, and the
-<a href="../authorization-details/">authorization details</a> the client asked for beyond them. It is recorded once per
-person and client, and a request that asks for no more than it covers is answered without asking again. A
-person reads their consents and takes any of them back from <a href="../../application/account/">the pages of their
+<p>A consent is what a person agreed to let one client obtain about them: a set of scopes, the claims agreed to
+by name, and the <a href="../authorization-details/">authorization details</a> the client asked for beyond them. It is
+recorded once per person and client, and a request that asks for no more than it covers is answered without
+asking again. A person reads their consents and takes any of them back from <a href="../../application/account/">the pages of their
 account</a>, and an operator does the same at the console.</p>
 <h2 id="when-a-person-is-asked">When a person is asked<a class="headerlink" href="#when-a-person-is-asked" title="Link to this section">&para;</a></h2>
 <p>The question is asked during an <a href="../interactions/">interaction</a>, once the person is signed in:</p>
 <ul>
-<li><strong>A client registered with <code>requires_consent: false</code></strong> is never asked about, <code>prompt=consent</code> included. It
-  is the first-party application of the deployment, and only a declaration names one: a client that
-  registers itself never obtains the member.</li>
+<li><strong>A client declared with <code>requires_consent: false</code></strong> is never asked about, <code>prompt=consent</code> included: it
+  is the first-party application of a deployment. The member is out of reach of a deployment of the image,
+  which declares no client and refuses the member to a client that registers (<a href="../clients/#what-the-image-does-not-set">what the image does not
+  set</a>), so every client of the image is asked about as the next
+  line says.</li>
 <li><strong>Any other client</strong> is asked about when no consent of this person is in force for it, when the one in
-  force does not cover every scope of the request, or every authorization detail of it, and whenever the
-  request says <code>prompt=consent</code>.</li>
+  force does not cover every scope of the request, every authorization detail of it or every claim it asks
+  for by name, and whenever the request says <code>prompt=consent</code>.</li>
 <li><strong>With <code>prompt=none</code></strong>, a request that would have shown the page is answered <code>consent_required</code> at the
   redirect URI instead (OIDC Core §3.1.2.6).</li>
 </ul>
 <p>A consent covers a scope when it holds it, and an authorization detail when it holds an identical one, the
-same type with the same members: a request that changes anything in a detail asks again. A request that asks
-for no detail is covered by any consent that holds its scopes.</p>
+same type with the same members: a request that changes anything in a detail asks again. It covers a claim
+asked for by name when it holds that claim by name or holds a scope that stands for it, and a claim no scope
+the client registered stands for asks nothing, since it is not served. A request that asks for no detail, and
+for no claim by name beyond what its scopes stand for, is covered by any consent that holds its scopes.</p>
 <h2 id="the-page">The page<a class="headerlink" href="#the-page" title="Link to this section">&para;</a></h2>
 <p>The consent page, <code>/consent</code>, says who is asking and what for, in the language of the interaction:</p>
 <table>
@@ -4003,6 +4007,10 @@ for no detail is covered by any consent that holds its scopes.</p>
 <td><code>openid</code>, <code>profile</code>, <code>email</code>, <code>address</code>, <code>phone</code> and <code>offline_access</code> in words, any other scope by its name</td>
 </tr>
 <tr>
+<td>The claims the request asks for by name that no scope of it stands for</td>
+<td>The claims of OIDC Core §5.1 in words, any other by its name</td>
+</tr>
+<tr>
 <td>What the request asks for beyond its scopes</td>
 <td>One line per authorization detail, in the words its type gives</td>
 </tr>
@@ -4017,13 +4025,16 @@ for no detail is covered by any consent that holds its scopes.</p>
 </tbody>
 </table>
 <p>The page lists every scope the request asks for, those already agreed to included, and every authorization
-detail. A consent records scopes and details, and the claims a request names one by one in its <code>claims</code>
-parameter are not listed on the page: they are served whatever the consent holds (<a href="../scopes-and-claims/">scopes and
-claims</a>). Its Content-Security-Policy is the one of the deployment, completed with
-the origin of the client's logo and the one of the tenant's logo in <code>img-src</code>, and the origin of the redirect
-URI in <code>form-action</code>, where the answer is carried after an Allow: nothing a client registers makes the page
-load anything else. The template is <code>consent.html.twig</code>, in <code>apps/op/templates/beffroi/</code> with every other page
-of the provider (<a href="../../application/pages/">pages</a>).</p>
+detail. Of the claims a request names one by one in its <code>claims</code> parameter (OIDC Core §5.5), it lists those a
+scope the client registered stands for and no scope of the request does: a claim a scope of the request
+stands for is agreed to with that scope, and a claim no scope of the client stands for is not served, which is
+no error (OIDC Core §5.5.1), so the page does not ask about it (<a href="../scopes-and-claims/">scopes and claims</a>).</p>
+<p>Its Content-Security-Policy is the one of the deployment, completed with the origin of the client's logo and
+the one of the tenant's logo in <code>img-src</code>, and the origin of the redirect URI in <code>form-action</code>, where the
+answer is carried after an Allow: nothing a client registers makes the page load anything else. The template
+is <code>consent.html.twig</code>, in <code>apps/op/templates/beffroi/</code> with every other page of the provider, and it lists
+the claims with <code>claims.html.twig</code>, as the pages of the account list those a consent holds
+(<a href="../../application/pages/">pages</a>).</p>
 <p><strong>Allow</strong> records the consent and the interaction goes on, to the code. <strong>Deny</strong> ends the interaction, and
 the client receives <code>access_denied</code> at its redirect URI (RFC 6749 §4.1.2.1). A form posted without the token
 the page was rendered with is refused with a <code>403</code> page and decides nothing.</p>
@@ -4049,24 +4060,28 @@ the page was rendered with is refused with a <code>403</code> page and decides n
 <td>Every detail agreed to, each once, none when nothing beyond the scopes was asked</td>
 </tr>
 <tr>
+<td>The claims agreed to by name</td>
+<td>Every claim the page listed when the person agreed, each once, none when no request asked for one</td>
+</tr>
+<tr>
 <td>When it was given, and when it was taken back</td>
 <td>A consent taken back stays as a record, and asks again</td>
 </tr>
 </tbody>
 </table>
 <p><strong>A new agreement extends, and never takes back.</strong> When a person agrees to a request while a consent is in
-force, the provider records a new consent holding the scopes and the details of both, each once, and takes
-the previous one back at that instant. A request that asked for less does not narrow what was agreed before,
-and a request that asked for no detail keeps the details already held. A <code>ConsentGranted</code> event names the new
-consent and the one it replaced.</p>
+force, the provider records a new consent holding the scopes, the details and the claims agreed to by name of
+both, each once, and takes the previous one back at that instant. A request that asked for less does not
+narrow what was agreed before, and a request that asked for no detail keeps the details already held. A
+<code>ConsentGranted</code> event names the new consent and the one it replaced.</p>
 <p>The same consent is recorded whichever page asked for it: the consent page of an authorization request, the
 page where a person approves the code of a device, and the page where they approve a backchannel request. The
-last two add scopes alone, those flows reading no authorization detail.</p>
+last two add scopes alone, those flows reading neither an authorization detail nor a claim by name.</p>
 <h2 id="taking-it-back">Taking it back<a class="headerlink" href="#taking-it-back" title="Link to this section">&para;</a></h2>
 <p>A person takes a consent back from the page of their account that lists the applications they allowed; an
 operator does it at the console:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>beffroi:user:applications<span class="w"> </span>alice
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>bin/console<span class="w"> </span>beffroi:user:revoke-consent<span class="w"> </span>alice<span class="w"> </span>billing
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>bin/console<span class="w"> </span>beffroi:user:revoke-consent<span class="w"> </span>alice<span class="w"> </span>s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg
 </span></code></pre></div>
 <p><code>beffroi:user:applications</code> lists the consents in force of a person, with what each client holds.
 <code>beffroi:user:revoke-consent</code> takes back the consent a person gave a client, and says so when there was none.
@@ -4107,7 +4122,7 @@ Its introspection says it is inactive from the instant the consent is taken back
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

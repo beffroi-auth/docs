@@ -3983,27 +3983,27 @@ provider</a> of the tenant. It exists here because the deployment declares it, k
 its entity ID as a client of OpenID Connect is keyed by its <code>client_id</code>. No request registers one and no page
 edits one: a peer that may obtain an assertion about anybody is a decision of whoever runs the deployment.</p>
 <h2 id="declaring-one">Declaring one<a class="headerlink" href="#declaring-one" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">identity_provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">service_providers</span><span class="p">:</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="s">'https://sp.example.com/saml/metadata'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">                </span><span class="nt">metadata</span><span class="p">:</span><span class="w"> </span><span class="s">'https://sp.example.com/saml/metadata'</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">                </span><span class="nt">attributes</span><span class="p">:</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">                    </span><span class="s">'urn:oid:0.9.2342.19200300.100.1.1'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">                        </span><span class="nt">claim</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">preferred_username</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">                        </span><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uid</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">                    </span><span class="s">'urn:oid:0.9.2342.19200300.100.1.3'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">                        </span><span class="nt">claim</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">email</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">                        </span><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mail</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">                    </span><span class="s">'urn:oid:2.16.840.1.113730.3.1.241'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">                        </span><span class="nt">claim</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">                        </span><span class="nt">friendly_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">displayName</span>
+<p>A service provider is declared in <code>BEFFROI_SAML_SERVICE_PROVIDERS</code>, a JSON document keyed by entity ID, <code>{}</code>
+in the image, beside the variable of the role, which the image already turns on:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_SAML_IDENTITY_PROVIDER=true
 </span></code></pre></div>
+<div class="language-json highlight"><span class="filename">BEFFROI_SAML_SERVICE_PROVIDERS</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"https://sp.example.com/saml/metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://sp.example.com/saml/metadata"</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">            </span><span class="nt">"urn:oid:0.9.2342.19200300.100.1.1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"claim"</span><span class="p">:</span><span class="w"> </span><span class="s2">"preferred_username"</span><span class="p">,</span><span class="w"> </span><span class="nt">"friendly_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uid"</span><span class="p">},</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">            </span><span class="nt">"urn:oid:0.9.2342.19200300.100.1.3"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"claim"</span><span class="p">:</span><span class="w"> </span><span class="s2">"email"</span><span class="p">,</span><span class="w"> </span><span class="nt">"friendly_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mail"</span><span class="p">},</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">            </span><span class="nt">"urn:oid:2.16.840.1.113730.3.1.241"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"claim"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="p">,</span><span class="w"> </span><span class="nt">"friendly_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"displayName"</span><span class="p">}</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The document is the value of the variable, written on one line or over several as <a href="../../application/examples/#lists-in-json">lists in
+JSON</a> are.</p>
 <table>
 <thead>
 <tr>
-<th>Option</th>
+<th>Member</th>
 <th>Default</th>
 <th>What it decides</th>
 </tr>
@@ -4017,7 +4017,7 @@ edits one: a peer that may obtain an assertion about anybody is a decision of wh
 <tr>
 <td><code>metadata</code></td>
 <td>required</td>
-<td>Where its metadata are read from: an <code>https</code> URL, or the absolute path of a file of the deployment. Nothing else, a plain <code>http</code> URL included</td>
+<td>Where its metadata are read from: an <code>https</code> URL. The declaration takes the absolute path of a file as well, and the image carries no file of a peer, so a deployment of the image names a URL. Nothing else is read, a plain <code>http</code> URL included</td>
 </tr>
 <tr>
 <td><code>metadata_signers</code></td>
@@ -4041,13 +4041,12 @@ edits one: a peer that may obtain an assertion about anybody is a decision of wh
 </tr>
 </tbody>
 </table>
-<p>A declaration is refused while the identity provider of the tenant is written off, <code>enabled: false</code> or the
-block left out. One kept while an environment variable turns the role off is served by nothing until the
-variable turns it on again. A declaration that
-does not hold together fails the build of the deployment rather than its first login: when the container is
-compiled for every rule, and right after it, in the same build, for the claims the attributes name. A
-declaration that holds an environment variable, whose value only the running deployment knows, is held to
-the same rules at its first use.</p>
+<p>The list is read when a process first needs it, and held there to the rules of its members, the claims the
+attributes name included: a declaration that does not hold together is refused, naming its service provider.
+The whole list is refused, wherever it is read, single sign-on and the end of a session among them, when it
+declares a service provider while <code>BEFFROI_SAML_IDENTITY_PROVIDER</code> turns the role off. The reading below is a
+first one, so a declaration that does not hold is refused there rather than at a login. Changing the list
+asks for a restart of the processes, as every <a href="../../application/configuration/">variable</a> does.</p>
 <h2 id="its-metadata">Its metadata<a class="headerlink" href="#its-metadata" title="Link to this section">&para;</a></h2>
 <p>The declaration says where the metadata are; what they say is read there, and nowhere else. They are where
 the assertion consumer services of the service provider are, its single logout services, and the keys its
@@ -4055,15 +4054,15 @@ requests are verified with: the declaration names none of them, so a service pro
 assertion anywhere its own metadata do not list.</p>
 <p><strong>Read before the first login.</strong> A service provider whose metadata have never been accepted is refused, so
 a declaration is followed by a reading:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:saml:service-provider:refresh
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>bin/console<span class="w"> </span>beffroi:saml:service-provider:refresh<span class="w"> </span><span class="s1">'https://sp.example.com/saml/metadata'</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:saml:service-provider:refresh
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>bin/console<span class="w"> </span>beffroi:saml:service-provider:refresh<span class="w"> </span><span class="s1">'https://sp.example.com/saml/metadata'</span>
 </span></code></pre></div>
-<p>Without an argument it reads every service provider the configuration declares. Each one is reported as
-registered, registered by another process meanwhile, refreshed, unchanged, refused or failed, and a refusal
-names the rule it broke and never a value of the document. A timed step does the same every hour, for the
-service providers and the <a href="../upstream-identity-providers/">upstream identity providers</a> alike, and writes a
-refusal to the log as an error: the refused document comes back at every hour while the accepted one goes
-on serving, which is something an operator wants to be alerted on.</p>
+<p>Without an argument it reads every service provider <code>BEFFROI_SAML_SERVICE_PROVIDERS</code> declares. Each one is
+reported as registered, registered by another process meanwhile, refreshed, unchanged, refused or failed, and
+a refusal names the rule it broke and never a value of the document. A timed step does the same every hour,
+for the service providers and the <a href="../upstream-identity-providers/">upstream identity providers</a> alike, and
+writes a refusal to the log as an error: the refused document comes back at every hour while the accepted one
+goes on serving, which is something an operator wants to be alerted on.</p>
 <p><strong>How they are fetched.</strong> A URL is fetched with one <code>GET</code>, no redirect followed, ten seconds at most, and any
 status but <code>2xx</code> refused. A file or a body is refused as soon as it passes one mebibyte, which no metadata
 the loader accepts reaches.</p>
@@ -4088,11 +4087,11 @@ reading replaces the accepted document whatever its <code>validUntil</code>, so 
 else held the host gives way at the first refresh after the host is the service provider's again.</p>
 <p><strong>Only a person goes back on it.</strong> Forgetting the accepted document is a command run by hand, never a step
 of the schedule nor a request, and the next reading then registers the service provider as a first one:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:saml:service-provider:forget<span class="w"> </span><span class="s1">'https://sp.example.com/saml/metadata'</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:saml:service-provider:forget<span class="w"> </span><span class="s1">'https://sp.example.com/saml/metadata'</span>
 </span></code></pre></div>
 <p>An entity ID for which nothing is accepted is answered so, and the command fails, so a mistyped entity ID is
-never taken for a forgotten one. A declaration removed from the configuration leaves its accepted document
-where it is, read by nothing, until an operator forgets it.</p>
+never taken for a forgotten one. A service provider taken out of <code>BEFFROI_SAML_SERVICE_PROVIDERS</code> leaves its
+accepted document where it is, read by nothing, until an operator forgets it.</p>
 <p><strong>Sealed where it sits.</strong> The document is kept as the bytes that were read and sealed under the data key of
 the tenant, since an <code>md:ContactPerson</code> names people.</p>
 <h2 id="the-attributes-it-receives">The attributes it receives<a class="headerlink" href="#the-attributes-it-receives" title="Link to this section">&para;</a></h2>
@@ -4110,7 +4109,7 @@ format and the friendly name the mapping gives, and nothing else. A claim may be
 <tr>
 <td><code>claim</code></td>
 <td>required</td>
-<td>The name of the claim, as OpenID Connect names it (OIDC Core §5.1). The claims are the ones the provider serves to OpenID Connect, so a claim a deployment adds can be mapped the day its class is wired</td>
+<td>The name of the claim, as OpenID Connect names it (OIDC Core §5.1). The claims are the ones the provider serves to OpenID Connect, and a claim it does not serve refuses the declaration</td>
 </tr>
 <tr>
 <td><code>name_format</code></td>
@@ -4163,15 +4162,15 @@ service provider and its metadata say it does not sign. Whichever of the two say
 <p>Nothing else decides it, neither the <code>WantAuthnRequestsSigned</code> the identity provider announces nor any
 setting of the tenant or of the deployment. A signature a request does carry is verified whatever the rule
 says, under the keys of the metadata and never under a key the message names.</p>
-<p><code>signs_authn_requests: false</code> exists for the service providers that cannot sign, <a href="../microsoft-entra-id/">Microsoft Entra
+<p><code>signs_authn_requests</code> set to <code>false</code> exists for the service providers that cannot sign, <a href="../microsoft-entra-id/">Microsoft Entra
 ID</a> federating its guests among them. A logout request is another matter: it is
 always signed, whatever the declaration says of the sign-on.</p>
 <h2 id="the-encryption-it-asks-for">The encryption it asks for<a class="headerlink" href="#the-encryption-it-asks-for" title="Link to this section">&para;</a></h2>
-<p><code>encrypt_assertions: true</code> has every assertion of that service provider sent as a <code>saml:EncryptedAssertion</code>,
-never in clear. The declaration decides whether the assertions are encrypted; the metadata only decide which
-key they are encrypted for, which is the first certificate for encryption they list, read again when the
-response is written so that a key a refresh put in place meanwhile is the one used. A service provider that
-does not ask gets its assertions in clear, whatever keys its metadata hold.</p>
+<p><code>encrypt_assertions</code> set to <code>true</code> has every assertion of that service provider sent as a
+<code>saml:EncryptedAssertion</code>, never in clear. The declaration decides whether the assertions are encrypted; the
+metadata only decide which key they are encrypted for, which is the first certificate for encryption they
+list, read again when the response is written so that a key a refresh put in place meanwhile is the one used.
+A service provider that does not ask gets its assertions in clear, whatever keys its metadata hold.</p>
 <table>
 <thead>
 <tr>
@@ -4218,7 +4217,7 @@ refused before anybody signs in, and nothing is sent in clear.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 2, 2026 11:24:49 UTC">November 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

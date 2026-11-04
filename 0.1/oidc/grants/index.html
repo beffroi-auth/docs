@@ -3978,7 +3978,8 @@ refusal:</p>
 </ul>
 <p>A client registered with <code>require_sender_constrained_tokens</code> whose request binds nothing, and a client
 registered with <code>tls_client_certificate_bound_access_tokens</code> whose request presents no certificate, are
-refused with <code>invalid_request</code> before anything the request came to spend is read.</p>
+refused with <code>invalid_request</code> before anything the request came to spend is read. The first is a member
+no client of the image carries (<a href="../clients/#what-the-image-does-not-set">what the image does not set</a>).</p>
 </li>
 <li>
 <p><strong>The grant type.</strong> <code>grant_type</code> is looked up among the grants the provider is wired with, and a name
@@ -4084,13 +4085,13 @@ holds the tokens.</p>
 <td>Token exchange</td>
 <td>Never</td>
 <td>Never</td>
-<td>Its request fails: no token is issued</td>
+<td>Refused at registration</td>
 </tr>
 <tr>
 <td>JWT bearer</td>
 <td>Never, <code>openid</code> being refused</td>
 <td>Never</td>
-<td>Its request fails: no token is issued</td>
+<td>Refused at registration</td>
 </tr>
 </tbody>
 </table>
@@ -4098,10 +4099,9 @@ holds the tokens.</p>
 among the scopes or the client is confidential. <a href="refresh-token/">Refresh token</a> says what spending one
 does.</p>
 <h2 id="what-a-registration-carries">What a registration carries<a class="headerlink" href="#what-a-registration-carries" title="Link to this section">&para;</a></h2>
-<p>A client declared in the configuration that names no <code>grant_types</code> is registered for <code>authorization_code</code>
-and <code>refresh_token</code>; a client that registers itself and names none is registered for <code>authorization_code</code>
-alone, which is what RFC 7591 §2 gives it. What a client names is read against the grants the provider is
-wired with, and against what each of them does:</p>
+<p>A client of a deployment of the image <a href="../dynamic-registration/">registers itself</a>, and one that names no
+<code>grant_types</code> is registered for <code>authorization_code</code> alone, which is what RFC 7591 §2 gives it. What a client
+names is read against the grants the provider is wired with, and against what each of them does:</p>
 <ul>
 <li><strong>A name no wired grant gives itself</strong> is refused.</li>
 <li><strong><code>refresh_token</code></strong> needs, beside it, a grant that issues refresh tokens: <code>authorization_code</code>, the device
@@ -4109,24 +4109,32 @@ wired with, and against what each of them does:</p>
 <li><strong><code>authorization_code</code></strong> needs at least one redirect URI. A client registered for no grant that sends a
   browser back to it registers no redirect URI and no <code>response_types</code>: a redirect URI nothing would ever
   use is refused.</li>
-<li><strong><code>client_credentials</code></strong> needs an authentication method that proves something, so <code>none</code> is refused, and
-  a <code>client_id</code> that can be a <code>sub</code>: one to 255 visible ASCII characters, and no space.</li>
-<li><strong>Token exchange</strong> needs a <code>token_exchange</code> declaration, and a <code>token_exchange</code> declaration needs the
-  grant. The <code>client_id</code> is held to the same rule as for <code>client_credentials</code>.</li>
+<li><strong><code>client_credentials</code>, the JWT bearer grant and token exchange</strong> need an authentication method that
+  proves something, so <code>none</code> is refused with any of them. A client of <code>client_credentials</code> or of token
+  exchange also needs a <code>client_id</code> that can be a <code>sub</code>, one to 255 visible ASCII characters and no space,
+  which the identifier the provider draws for a client that registers itself always is.</li>
+<li><strong>Token exchange</strong> needs the <code>token_exchange</code> member, and the member needs the grant. <code>token_exchange</code> is a
+  member of the deployment, refused in a registration, so no client of the image is registered for the
+  grant.</li>
 </ul>
-<p>A declared client that breaks one of these rules is an error of the configuration, raised with the name of
-the client as soon as the clients are read. A registration request that breaks one is answered
-<code>invalid_redirect_uri</code> for the two rules on redirect URIs and <code>invalid_client_metadata</code> for the others.</p>
+<p>A registration that breaks one of these rules is answered <code>invalid_redirect_uri</code> for the two rules on
+redirect URIs and <code>invalid_client_metadata</code> for the others.</p>
+<p><strong>Three grants issue no token on a deployment of the image.</strong> No client of it is registered for token
+exchange, above. The client credentials and JWT bearer grants answer only a request that names a resource
+the client registered, and <code>resources</code> is a member of the deployment too: a client of the image registers
+none, so a request of either grant that gets as far as its resources is refused with <code>invalid_target</code> (<a href="../clients/#what-the-image-does-not-set">what
+the image does not set</a>).</p>
 <p>One more condition is read at the endpoint and not at registration: a client of backchannel authentication
 is served only once it registered a <code>backchannel_token_delivery_mode</code>, a member with no default. A client
 registered for the grant without one is accepted, and refused at the backchannel authentication endpoint
 with <code>unauthorized_client</code>. <a href="../clients/">Clients</a> has every other member of a registration.</p>
 <h2 id="what-is-announced">What is announced<a class="headerlink" href="#what-is-announced" title="Link to this section">&para;</a></h2>
 <p><code>grant_types_supported</code>, in the <a href="../discovery-and-jwks/">discovery document</a>, is the list of the wired
-grants in the order they are wired, which is the order of the table at the top of this page. The members
-that go with a grant follow it: the backchannel authentication endpoint and its metadata are announced only
-while a grant of that flow is wired, and <code>offline_access</code> is offered only while a wired grant issues refresh
-tokens and another spends them.</p>
+grants in the order they are wired, which is the order of the table at the top of this page. The image is
+wired with the seven, and announces them all, the three that issue no token to a client of the image included.
+The members that go with a grant follow it: the backchannel authentication endpoint and its metadata are
+announced only while a grant of that flow is wired, and <code>offline_access</code> is offered only while a wired grant
+issues refresh tokens and another spends them.</p>
 <h2 id="adding-a-grant">Adding a grant<a class="headerlink" href="#adding-a-grant" title="Link to this section">&para;</a></h2>
 <p>A grant is a class implementing <code>Beffroi\Oidc\Application\Token\GrantInterface</code>, tagged
 <code>beffroi.oidc.grant</code>. It names its <code>grant_type</code>, and turns an authenticated client and the parameters of a
@@ -4161,9 +4169,14 @@ namespace, and never by a rule written about its name:</p>
 <td>The rule on redirect URIs and response types</td>
 </tr>
 <tr>
+<td><code>RequiresClientAuthenticationInterface</code></td>
+<td>The client that uses it proves who it is</td>
+<td>The rule on public clients, at the registration and at the token endpoint</td>
+</tr>
+<tr>
 <td><code>ActsForTheClientItselfInterface</code></td>
-<td>Nobody is signed in behind it</td>
-<td>The rule on public clients and on the <code>client_id</code></td>
+<td>Nobody is signed in behind it, and it requires client authentication</td>
+<td>The rule on the <code>client_id</code>, which names the client where a subject is expected</td>
 </tr>
 <tr>
 <td><code>AsksTheUserOnAnotherDeviceInterface</code></td>
@@ -4202,7 +4215,7 @@ namespace, and never by a rule written about its name:</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

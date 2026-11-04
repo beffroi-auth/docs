@@ -3976,18 +3976,23 @@ and polls the token endpoint with the other while the person confirms the code i
         P-&gt;&gt;D: authorization_pending, then the tokens
     end</code></pre>
 <h2 id="registering-a-device">Registering a device<a class="headerlink" href="#registering-a-device" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">living-room-tv</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'Living</span><span class="nv"> </span><span class="s">room</span><span class="nv"> </span><span class="s">TV'</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">none</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'urn:ietf:params:oauth:grant-type:device_code'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">refresh_token</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'openid</span><span class="nv"> </span><span class="s">profile</span><span class="nv"> </span><span class="s">offline_access'</span>
+<p>A device reaches a deployment of the image by <a href="../../dynamic-registration/">registering itself</a>, which the
+deployment opens in its environment (<a href="../../../application/configuration/#registration">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_REGISTRATION_MODE=initial_access_token
 </span></code></pre></div>
-<p>A device that cannot keep a secret is a public client, <code>token_endpoint_auth_method: none</code>; a confidential
-client is served the same way. It registers no redirect URI: nothing of this flow sends a browser back to the
-client, so a redirect URI is refused unless the client is also registered for <code>authorization_code</code>. A public
-client gets a refresh token only by asking for <code>offline_access</code> (<a href="../refresh-token/">refresh token</a>).</p>
+<p>The device registers with:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Living room TV"</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"token_endpoint_auth_method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none"</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"grant_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"urn:ietf:params:oauth:grant-type:device_code"</span><span class="p">,</span><span class="w"> </span><span class="s2">"refresh_token"</span><span class="p">],</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"openid profile offline_access"</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>A device that cannot keep a secret is a public client, <code>token_endpoint_auth_method: none</code>, and the answer
+carries the <code>client_id</code> the provider drew and no secret; a confidential client is served the same way. It
+registers no redirect URI: nothing of this flow sends a browser back to the client, so a redirect URI is
+refused unless the client is also registered for <code>authorization_code</code>. A public client gets a refresh token
+only by asking for <code>offline_access</code> (<a href="../refresh-token/">refresh token</a>).</p>
 <h2 id="starting-the-device-authorization-endpoint">Starting: the device authorization endpoint<a class="headerlink" href="#starting-the-device-authorization-endpoint" title="Link to this section">&para;</a></h2>
 <p><code>POST /device_authorization</code> (RFC 8628 §3.1) authenticates the client exactly as the token endpoint does,
 then reads what it asks for. Its errors are the JSON of RFC 6749 §5.2, never a redirection and never a page.</p>
@@ -4005,7 +4010,7 @@ then reads what it asks for. Its errors are the JSON of RFC 6749 §5.2, never a 
 </tr>
 <tr>
 <td><code>resource</code></td>
-<td>Optional and repeatable, among the resources the client registered (RFC 8707 §2)</td>
+<td>Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client of the image registers none, so a <code>resource</code> it names is <code>invalid_target</code></td>
 </tr>
 </tbody>
 </table>
@@ -4036,14 +4041,14 @@ then reads what it asks for. Its errors are the JSON of RFC 6749 §5.2, never a 
 </tbody>
 </table>
 <p>The answer is <code>200</code>, never cached (<code>Cache-Control: no-cache, no-store</code>, RFC 8628 §3.2):</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"device_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GmRhmhcxhwAzkoEqiMEg_DnyEysNkuNhszIySk9eS0k"</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"user_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WDJB-MJHT"</span><span class="p">,</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"verification_uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://op.example.com/device"</span><span class="p">,</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">"verification_uri_complete"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://op.example.com/device?user_code=WDJB-MJHT"</span><span class="p">,</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">,</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">"device_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GmRhmhcxhwAzkoEqiMEg_DnyEysNkuNhszIySk9eS0k"</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">"user_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WDJB-MJHT"</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">"verification_uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://op.example.com/device"</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">"verification_uri_complete"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://op.example.com/device?user_code=WDJB-MJHT"</span><span class="p">,</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">,</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>The device code</strong> is 256 random bits in base64url, 43 characters, which only the device holds.</p>
 <p><strong>The user code</strong> is eight characters out of twenty consonants, <code>BCDFGHJKLMNPQRSTVWXZ</code>, shown in two groups
@@ -4056,21 +4061,21 @@ and where the device asked from.</p>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>At most</th>
 <th>What it is</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>tokens.device_code_ttl</code></td>
+<td><code>BEFFROI_DEVICE_CODE_TTL</code></td>
 <td><code>600</code> seconds</td>
 <td><code>1800</code></td>
 <td>How long both codes live</td>
 </tr>
 <tr>
-<td><code>tokens.device_code_interval</code></td>
+<td><code>BEFFROI_DEVICE_CODE_INTERVAL</code></td>
 <td><code>5</code> seconds</td>
 <td><code>30</code></td>
 <td>How long the device waits between two polls</td>
@@ -4147,10 +4152,10 @@ an answer is answered however soon it is asked. The device code is spent once, a
 poll after the approval: of several polls at once, exactly one is served.</p>
 <p>The tokens are those of an ordinary authorization, descending from the session the person approved with: an
 access token addressed to the resources the device named at the device authorization endpoint, or to the
-client itself when it named none; an ID token when <code>openid</code> was among the scopes, without a <code>nonce</code>; and a
-refresh token when one is due, starting a family with the absolute lifetime of every other. They are bound
-to what the polling request binds them to (<a href="../#what-the-token-endpoint-does">grants</a>), never to anything
-the browser that approved proved.</p>
+client itself when it named none, as every client of the image does; an ID token when <code>openid</code> was among the
+scopes, without a <code>nonce</code>; and a refresh token when one is due, starting a family with the absolute lifetime
+of every other. They are bound to what the polling request binds them to
+(<a href="../#what-the-token-endpoint-does">grants</a>), never to anything the browser that approved proved.</p>
 
 
 
@@ -4171,7 +4176,7 @@ the browser that approved proved.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

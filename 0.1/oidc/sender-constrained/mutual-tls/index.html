@@ -3978,7 +3978,7 @@ certificate presents neither method.</p>
 <tbody>
 <tr>
 <td><code>tls_client_auth</code> (RFC 8705 §2.1)</td>
-<td>Issued by a certificate authority the TLS listener trusts</td>
+<td>Issued by a certificate authority the TLS listener trusts, which the block the image delivers names none of (<a href="#how-the-certificate-reaches-the-application">below</a>)</td>
 <td>The one value the client registered, read out of the certificate and compared</td>
 </tr>
 <tr>
@@ -3989,8 +3989,8 @@ certificate presents neither method.</p>
 </tbody>
 </table>
 <p><strong>A <code>tls_client_auth</code> client registers exactly one of the five values of RFC 8705 §2.1.2</strong>, and a client
-registered for any other method registers none of them: a declaration that does not hold is refused at boot,
-and a registration that does not is refused.</p>
+registered for any other method registers none of them: a registration that does not hold is refused with
+<code>invalid_client_metadata</code>.</p>
 <table>
 <thead>
 <tr>
@@ -4021,16 +4021,18 @@ and a registration that does not is refused.</p>
 </tr>
 </tbody>
 </table>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">payments-app</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls_client_auth</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">tls_client_auth_subject_dn</span><span class="p">:</span><span class="w"> </span><span class="s">'CN=payments-app,O=Example,C=FR'</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">redirect_uris</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://payments.example.com/callback'</span><span class="p p-Indicator">]</span>
+<p>A client recognised by the subject of its certificate registers with (<a href="../../dynamic-registration/">dynamic
+registration</a>):</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Payments"</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">"redirect_uris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://payments.example.com/callback"</span><span class="p">],</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">"token_endpoint_auth_method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tls_client_auth"</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">"tls_client_auth_subject_dn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CN=payments-app,O=Example,C=FR"</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>The provider judges no chain.</strong> Only the leaf certificate reaches PHP, so what makes a certificate
 trustworthy, its chain, its validity period and its revocation, is judged by the TLS listener during the
-handshake, against the authorities the deployment configures there. A self-signed certificate is trusted for
+handshake, against the authorities the deployment names there. A self-signed certificate is trusted for
 what the client published and for nothing else, as the keys of <code>private_key_jwt</code> are; a client that renews
 its certificate publishes the new one before it presents it.</p>
 <p><strong>A certificate beside another credential</strong> does not make two methods. A client reaching the host that asks
@@ -4070,24 +4072,23 @@ certificate its own TLS connection received (RFC 8705 §3.2).</p>
 <h2 id="the-endpoint-aliases">The endpoint aliases<a class="headerlink" href="#the-endpoint-aliases" title="Link to this section">&para;</a></h2>
 <p>A deployment may serve the endpoints that read a certificate on a host of their own, whose listener asks for
 one, and leave the ordinary host of the issuer asking for nothing, so that a browser is never asked for a
-certificate at the authorization endpoint or on a page. The configuration names that host:</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">mutual_tls</span><span class="p">:</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">origin</span><span class="p">:</span><span class="w"> </span><span class="s">'https://mtls.op.example.com'</span>
+certificate at the authorization endpoint or on a page. It names the origin of that host in a variable, beside
+the two that have Caddy serve it (<a href="#how-the-certificate-reaches-the-application">below</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>BEFFROI_MTLS_ORIGIN=https://mtls.op.example.com
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>origin</code></td>
-<td>none</td>
-<td>The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Left out or empty, it announces none, and a client authenticating with a certificate reaches the ordinary endpoints, which is what a deployment serving one host does</td>
+<td><code>BEFFROI_MTLS_ORIGIN</code></td>
+<td>empty</td>
+<td>The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Empty, it announces none, which is what a deployment serving one host leaves</td>
 </tr>
 </tbody>
 </table>
@@ -4144,7 +4145,7 @@ for nothing.</p>
 <tr>
 <td><code>BEFFROI_MTLS_ORIGIN</code></td>
 <td>The application</td>
-<td>The origin of that host, which becomes <code>mutual_tls.origin</code></td>
+<td>The origin of that host, which the discovery document announces the aliases under</td>
 </tr>
 </tbody>
 </table>
@@ -4158,13 +4159,15 @@ that authenticates another way completes its handshake on that host too. A certi
 the signature of the handshake that proves its holder has the private key (RFC 8446 §4.4.3), and the leaf is
 handed to PHP as <code>SSL_CLIENT_CERT</code>, empty when the client presented none.</p>
 <p>The block verifies no chain, so it accepts a certificate whatever authority issued it, which is what
-<code>self_signed_tls_client_auth</code> needs. A deployment that authenticates clients with <code>tls_client_auth</code> has that
-block verify a presented certificate against the authorities it accepts: that is where the chain is judged,
-and nowhere else.</p>
+<code>self_signed_tls_client_auth</code> needs, and it names no authority a chain could be judged against. A deployment
+whose clients authenticate with <code>tls_client_auth</code> writes the site block of that host in <code>CADDY_EXTRA_CONFIG</code>,
+in place of <code>import mtls.Caddyfile</code>: the block of the image with a <code>trust_pool</code> of the authorities it accepts
+in its <code>client_auth</code>. That is where the chain is judged, and nowhere else.</p>
 <p>What reads <code>SSL_CLIENT_CERT</code> is <code>App\Http\Tls\EdgeClientCertificateResolver</code>, the implementation of
 <code>App\Http\Tls\ClientCertificateResolverInterface</code> the application is delivered with, which returns the
-certificate of a request or none. A deployment whose edge hands the certificate over some other way brings
-another implementation of that interface, rather than teaching the application a header to trust.</p>
+certificate of a request or none. An edge that hands the certificate over some other way takes another
+implementation of that interface, which is code of the application, rather than a header the application is
+taught to trust: the image carries this one alone.</p>
 
 
 
@@ -4185,7 +4188,7 @@ another implementation of that interface, rather than teaching the application a
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

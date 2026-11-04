@@ -4256,7 +4256,7 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 <tr>
 <td><code>ClientSourceInterface</code></td>
 <td>One source of clients</td>
-<td>The clients the configuration declares, and the clients registered dynamically, in Doctrine</td>
+<td>The clients the configuration declares, none in the image, and the clients registered dynamically, in Doctrine</td>
 </tr>
 <tr>
 <td><code>ClientInventoryInterface</code></td>
@@ -4345,8 +4345,12 @@ deployment.</p>
 </tr>
 </tbody>
 </table>
-<p>The application declares each pool on <code>cache.app</code>, in a pool of its own, so that a deployment points one at a
-shared store without touching the rest of its cache.</p>
+<p>The application declares each pool on <code>cache.app</code>, in a pool of its own, and leaves <code>cache.app</code> on the
+filesystem adapter Symfony gives it, in <code>%kernel.share_dir%/pools/app</code>: <code>var/share/prod/pools/app</code> in the
+image, <code>APP_SHARE_DIR</code> being compiled into it. No variable moves the pools elsewhere. The processes share them
+by sharing that directory, which the Compose file of the image mounts on the server and on the worker as one
+volume; processes that do not share it each remember on their own (<a href="../../application/deployment/#what-the-processes-share">what the processes
+share</a>).</p>
 <h2 id="what-the-provider-fetches">What the provider fetches<a class="headerlink" href="#what-the-provider-fetches" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4434,7 +4438,7 @@ shared store without touching the rest of its cache.</p>
 <tr>
 <td><code>MutualTlsEndpointLocatorInterface</code></td>
 <td>The same endpoints on the host that asks for a client certificate, or none (RFC 8705 §5)</td>
-<td>The router, under <code>mutual_tls.origin</code></td>
+<td>The router, under the origin <code>BEFFROI_MTLS_ORIGIN</code> names</td>
 </tr>
 <tr>
 <td><code>ClientConfigurationEndpointInterface</code></td>
@@ -4461,7 +4465,7 @@ shared store without touching the rest of its cache.</p>
 <tr>
 <td><code>LogoutTokenDeliveryInterface</code></td>
 <td>The budget a logout token is written for, which its <code>exp</code> and the retirement of its signing key read. It bounds the token and not the sending: a send that comes after it carries an expired token</td>
-<td>The waits of the retry policy of that lane and the timeout of the sender, from <code>back_channel_logout</code></td>
+<td>The waits of the retry policy of that lane and the timeout of the sender, from the <code>BEFFROI_BACK_CHANNEL_LOGOUT_*</code> variables (<a href="../logout/#its-delivery">logout</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -4590,7 +4594,7 @@ identifier is a class and a line of wiring, and the port that lists them is neve
 <tbody>
 <tr>
 <td><code>Configuration</code></td>
-<td>The clients, the registration policy and the trusted issuers, read from what a deployment declares and validated when it starts</td>
+<td>The clients, the registration policy and the trusted issuers, read from what the configuration of the application declares, and validated when the service that reads them is first built</td>
 </tr>
 <tr>
 <td><code>JwtLibrary</code></td>
@@ -4632,7 +4636,7 @@ the application's, or the one a team writes around the components.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

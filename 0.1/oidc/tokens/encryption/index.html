@@ -3994,16 +3994,19 @@ document and travels inside what hides it, so that a client that opens the JWE f
 rather than something to trust. A signed document inside a JWE is a nested JWT, and the header of the JWE
 says so with <code>cty</code> <code>JWT</code> (RFC 7519 §5.2).</p>
 <h2 id="registering-it">Registering it<a class="headerlink" href="#registering-it" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">my-application</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="c1"># ...</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">jwks_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://app.example.com/jwks.json'</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">id_token_encrypted_response_alg</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RSA-OAEP-256</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">id_token_encrypted_response_enc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">A256GCM</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">userinfo_signed_response_alg</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ES256</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="nt">userinfo_encrypted_response_alg</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RSA-OAEP-256</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">            </span><span class="nt">userinfo_encrypted_response_enc</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">A256GCM</span>
+<p>A client names the pairs it wants in its <a href="../../dynamic-registration/">registration</a>, beside the keys it
+publishes:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My application"</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">"redirect_uris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://app.example.com/oidc/callback"</span><span class="p">],</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"openid profile email"</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">"jwks_uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://app.example.com/jwks.json"</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">"id_token_encrypted_response_alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA-OAEP-256"</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">"id_token_encrypted_response_enc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A256GCM"</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">"userinfo_signed_response_alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ES256"</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">"userinfo_encrypted_response_alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA-OAEP-256"</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="nt">"userinfo_encrypted_response_enc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A256GCM"</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">}</span>
 </span></code></pre></div>
 <ul>
 <li><strong>The two members of a pair come together.</strong> OIDC Registration §2 lets the <code>enc</code> be left out and defaults it
@@ -4014,8 +4017,7 @@ says so with <code>cty</code> <code>JWT</code> (RFC 7519 §5.2).</p>
   encryption and publishes neither is refused. A <code>jwks</code> written down is read at registration and has to hold
   a key the registered algorithm can be addressed to; a set behind a URL is read when a document is minted.</li>
 </ul>
-<p>A declared client that breaks one of these rules is an error of the configuration, and a registration request
-that breaks one is answered <code>invalid_client_metadata</code>.</p>
+<p>A registration that breaks one of these rules is refused with <code>invalid_client_metadata</code>.</p>
 <h2 id="the-algorithms">The algorithms<a class="headerlink" href="#the-algorithms" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4055,21 +4057,21 @@ what a client may encrypt a <a href="../../request-objects/">request object</a> 
 </ol>
 <p>A client that publishes several keys therefore chooses the one it is encrypted to by saying more about it.</p>
 <p>A set behind a <code>jwks_uri</code> is read with one <code>GET</code>, over HTTPS or in plain HTTP on a loopback host, no redirect
-followed. What is read is kept for <code>client_authentication.jwks_ttl</code> seconds, a day by default, in a pool the
-workers share, under the URL it was read from. Encrypting a document never reads it again before that, a
-document addressed to a client naming no <code>kid</code> the provider could find missing. The kept set serves every
-use of the keys of the client, though, and a signature of the client whose header names a <code>kid</code> the set does
-not hold, the assertion of <code>private_key_jwt</code> or a request object, reads it again, at most once per
-<code>client_authentication.jwks_refetch_cooldown</code>, 300 seconds by default. A client that replaces its encryption
-key publishes the new one and keeps the private half of the old one for <code>jwks_ttl</code> after that.</p>
+followed. What is read is kept for <code>BEFFROI_JWKS_URI_TTL</code> seconds, a day in the image, in a pool the workers
+share, under the URL it was read from. Encrypting a document never reads it again before that, a document
+addressed to a client naming no <code>kid</code> the provider could find missing. The kept set serves every use of the
+keys of the client, though, and a signature of the client whose header names a <code>kid</code> the set does not hold,
+the assertion of <code>private_key_jwt</code> or a request object, reads it again, at most once per
+<code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code>, 300 seconds in the image. A client that replaces its encryption key
+publishes the new one and keeps the private half of the old one for <code>BEFFROI_JWKS_URI_TTL</code> after that.</p>
 <h2 id="when-the-key-cannot-be-read">When the key cannot be read<a class="headerlink" href="#when-the-key-cannot-be-read" title="Link to this section">&para;</a></h2>
 <p><strong>No document leaves in clear.</strong> When the set behind the <code>jwks_uri</code> cannot be read, or holds no key the
 registered algorithm can be addressed to, the provider writes nothing for that client, and the request that
 was to carry the document fails: the token request that was to carry the ID token, once the code, the device
 code or the <code>auth_req_id</code> it presented has been spent, the UserInfo request, or the authorization response.</p>
-<p>A read is given <code>client_authentication.jwks_timeout</code> seconds, 3 by default, and
-<code>client_authentication.jwks_max_size</code> bytes, 65536 by default, before it counts as a set that cannot be
-read.</p>
+<p>A read is given <code>BEFFROI_JWKS_URI_TIMEOUT</code> seconds, 3 in the image, and <code>BEFFROI_JWKS_URI_MAX_SIZE</code> bytes,
+65536 in the image, before it counts as a set that cannot be read
+(<a href="../../../application/configuration/#clients-and-their-requests">configuration</a>).</p>
 
 
 
@@ -4090,7 +4092,7 @@ read.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

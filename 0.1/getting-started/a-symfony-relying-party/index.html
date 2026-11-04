@@ -4176,10 +4176,11 @@ URI where the worker can reach it, over HTTPS, or over plain HTTP on a loopback 
 names, and the token is accepted from the issuers <code>issuers</code> lists. Beffroi signs every access token with
 <code>RS256</code>, which is what the handler accepts unless told otherwise, and types it <code>at+jwt</code> (RFC 9068 §2.1),
 which <code>enforce_at_jwt_type</code> holds it to.</p>
-<p>The <code>aud</code> of the token is the client it was issued to, unless the client asked for a resource (RFC 8707
-§2), in which case it names that resource and the <code>audience</code> of the handler is that identifier. Nothing
-reaches the provider: a token revoked there is accepted here until it expires, ten minutes after it was
-issued by default.</p>
+<p>The <code>aud</code> of the token is the client it was issued to, which is why the <code>audience</code> of the handler is the
+<code>client_id</code>: a client of the image registers no resource (RFC 8707 §2) a token could be addressed to
+instead (<a href="../../oidc/clients/#what-the-image-does-not-set">what the image does not set</a>). Nothing reaches
+the provider: a token revoked there is accepted here until it expires, ten minutes after it was issued by
+default.</p>
 </div>
 <div class="tabbed-block">
 <div class="language-yaml highlight"><span class="filename">config/packages/framework.yaml</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">framework</span><span class="p">:</span>
@@ -4203,10 +4204,9 @@ issued by default.</p>
 </span></code></pre></div>
 <p><code>OIDC_INTROSPECTION_URI</code> is the issuer followed by <code>/introspect</code>. The provider describes a token to the
 client it was issued to and to nobody else (RFC 7662 §2.2), so the resource server asks with the
-credentials of that client, and an opaque access token, <code>access_token_format: opaque</code> on the client, is
-read this way only. A token whose session has ended, or whose grant was taken back, is described as
-inactive from then on; a <code>cache</code> on the handler keeps an active answer for up to sixty seconds, never past
-the <code>exp</code> of the token.</p>
+credentials of that client. A token whose session has ended, or whose grant was taken back, is described
+as inactive from then on, which the first way cannot see; a <code>cache</code> on the handler keeps an active answer
+for up to sixty seconds, never past the <code>exp</code> of the token.</p>
 <p>Beffroi reads both halves of HTTP Basic credentials form-urlencoded, as RFC 6749 §2.3.1 writes them and
 as <code>oidc_login</code> sends them, while the scoped client sends <code>auth_basic</code> as it is given. A secret drawn in
 base64url reads the same both ways; one holding a <code>+</code>, a <code>%</code> or a colon is encoded in the variable the
@@ -4220,8 +4220,10 @@ scoped client reads.</p>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt"> path</span><span class="p">:</span><span class="w"> </span><span class="nv">^/api/invoices</span><span class="p p-Indicator">,</span><span class="nt"> roles</span><span class="p">:</span><span class="w"> </span><span class="s">'OAUTH2_SCOPE(invoices.read)'</span><span class="w"> </span><span class="p p-Indicator">}</span>
 </span></code></pre></div>
 <p>A token without it is refused with <code>403</code> and the <code>insufficient_scope</code> challenge of RFC 6750 §3.1. A scope that
-stands for no claim, <code>invoices.read</code> here, exists on the provider once a client registers it in its <code>scope</code>,
-and the application asks for it in its own.</p>
+stands for no claim, <code>invoices.read</code> here, is one the tenant hands out once the deployment names it, the
+client registers it in its <code>scope</code>, and the application asks for it in its own:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>BEFFROI_TENANT_SCOPES='["invoices.read"]'
+</span></code></pre></div>
 <h2 id="the-reference-relying-party">The reference relying party<a class="headerlink" href="#the-reference-relying-party" title="Link to this section">&para;</a></h2>
 <p><a href="https://github.com/beffroi-auth/oidc-demo">beffroi-auth/oidc-demo</a> is this page grown into everything the
 provider serves: a Symfony application on <code>oidc_login</code>, a resource server that checks the same access token
@@ -4253,7 +4255,7 @@ signs out, from the command line.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

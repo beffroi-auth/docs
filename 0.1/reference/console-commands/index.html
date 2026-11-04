@@ -4116,8 +4116,8 @@ table below is the map.</p>
 </tr>
 </tbody>
 </table>
-<p>What <code>beffroi:doctor</code> looks at is what is wired, one class per point, so a deployment that adds a point
-adds a class. It looks at every one of them before it answers: a doctor that stops on the first thing that
+<p>What <code>beffroi:doctor</code> looks at is what is wired, one class per point, so a point added to the application is
+a class added. It looks at every one of them before it answers: a doctor that stops on the first thing that
 is broken never reaches the second.</p>
 <p><code>beffroi:tenant:login-floor</code> takes the name of a predicate, <code>single_factor</code>, <code>two_factors</code>,
 <code>phishing_resistant</code> or <code>phishing_resistant_hardware</code>, and writes it on the row of the tenant rather than in
@@ -4184,7 +4184,7 @@ was forgotten. <a href="../../core/tenants/#the-floor-of-its-logins">The floor o
 </tr>
 <tr>
 <td><code>beffroi:user:show</code></td>
-<td>Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name and dates, and the groups with the source of each membership.</td>
+<td>Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name, authenticator and dates, and the groups with the source of each membership.</td>
 </tr>
 </tbody>
 </table>
@@ -4353,11 +4353,20 @@ an address and no place.</p>
 <td><code>beffroi:saml:identity-provider:forget</code></td>
 <td>Forget the metadata accepted for an upstream identity provider, so that the next refresh registers it again as a first one; the refresh refuses older documents only against what is accepted.</td>
 </tr>
+<tr>
+<td><code>beffroi:saml:identity-provider:list</code></td>
+<td>List the upstream identity providers the configuration declares, each with the URL of the metadata of the service provider to hand it.</td>
+</tr>
 </tbody>
 </table>
 <p>A timed step runs the same refresh every hour for the peers of both roles, so the command is for the first
 reading of a peer just declared and for reading why a document was refused. Forgetting is never a step of the
 schedule: it is the one way back from a signed document an operator decides to stop holding the provider to.</p>
+<p><code>beffroi:saml:identity-provider:list</code> reads the declarations and writes nothing. The URL it gives is the one
+the router writes under the origin of the issuer, its last segment the entity ID of the provider in base64url,
+and it answers once the tenant holds a key in service for that provider, which
+<code>beffroi:keys:generate --algorithm=SAML-ENCRYPTION:&lt;entity ID&gt;</code> draws. A tenant that declares no identity
+provider is told so, and the command fails.</p>
 <p><a href="../../saml/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> SAML 2.0</a></p>
 <h2 id="passkeys-and-fido-metadata">Passkeys and FIDO metadata<a class="headerlink" href="#passkeys-and-fido-metadata" title="Link to this section">&para;</a></h2>
@@ -4370,6 +4379,10 @@ schedule: it is the one way back from a signed document an operator decides to s
 </thead>
 <tbody>
 <tr>
+<td><code>beffroi:webauthn:aaguids-refresh</code></td>
+<td>Download the list of passkey providers the community keeps (names and logos by AAGUID, unsigned), refuse it unless it is that list and names one, and store it for the pages that name the authenticator of a passkey; --url for a mirror.</td>
+</tr>
+<tr>
 <td><code>beffroi:webauthn:mds-import</code></td>
 <td>Store a metadata statement file (unsigned, trusted as the file is) next to the FIDO Metadata BLOB, for the keys of a manufacturer the service does not list or the authenticators of the FIDO conformance tools.</td>
 </tr>
@@ -4379,6 +4392,12 @@ schedule: it is the one way back from a signed document an operator decides to s
 </tr>
 </tbody>
 </table>
+<p>Nothing runs these three on its own. The model of the authenticator of a passkey, which the page of the
+passkeys and <code>beffroi:user:show</code> name, is read from the FIDO metadata first and then from the list of the
+community, the <code>aaguid.json</code> of <code>passkeydeveloper/passkey-authenticator-aaguids</code>. That list is signed by
+nobody and carries no licence, so the image ships none of it: a deployment that never ran
+<code>beffroi:webauthn:aaguids-refresh</code> names an authenticator from the FIDO metadata alone. A list refused, an
+empty one or a download the service redirected among them, keeps nothing and leaves the stored one as it was.</p>
 <h2 id="what-a-command-may-not-do">What a command may not do<a class="headerlink" href="#what-a-command-may-not-do" title="Link to this section">&para;</a></h2>
 <p>A command never bypasses a rule the protocol applies. It cannot mint a token for a user, cannot read a
 signing key it is not allowed to open, and cannot read a personal datum the key management service refuses
@@ -4406,7 +4425,7 @@ before it runs, <code>beffroi:tenant:login-floor</code> asks before it forgets t
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

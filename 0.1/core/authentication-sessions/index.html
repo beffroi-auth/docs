@@ -4173,8 +4173,8 @@ included, and its opaque access tokens removed, the revocation dated by the end 
 moment the lane reached it. The provider refuses every token of an ended session at its use, in the meantime
 and afterwards: UserInfo and introspection refuse an access token whose session ended, and the token endpoint a
 refresh token whose session ended, revoking again what a refresh in flight had saved. A resource server that
-verifies a self-contained access token offline accepts it until it expires, ten minutes by default
-(<code>beffroi.tokens.access_token_ttl</code>).</p>
+verifies a self-contained access token offline accepts it until it expires, ten minutes in the image
+(<code>BEFFROI_ACCESS_TOKEN_TTL</code>).</p>
 <div class="admonition note">
 <p class="admonition-title">Expiry is not an end</p>
 <p>A session past its twelve hours signs nobody in and is not offered to the browser that held it, and no
@@ -4184,8 +4184,8 @@ been exchanged yet, an authorization code, a device code or a backchannel reques
 endpoint once its session has expired.</p>
 </div>
 <p>The row of a session, ended or not, is dropped by an hourly step once its expiry is older than the absolute
-lifetime of a refresh token family plus the lifetime of an access token, ninety days and ten minutes with the
-defaults: until then, a token issued under it can still be presented, and its session is what answers for it.</p>
+lifetime of a refresh token family plus the lifetime of an access token, ninety days and ten minutes in the
+image: until then, a token issued under it can still be presented, and its session is what answers for it.</p>
 
 
 
@@ -4206,7 +4206,7 @@ defaults: until then, a token issued under it can still be presented, and its se
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

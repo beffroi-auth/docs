@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Every option of the tree under `beffroi`, with its type, its default and what it decides.">
+        <meta name="description" content="Every option of the tree under `beffroi`, with the variable a deployment sets it with, its value in the image, its type and what it decides.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -73,7 +73,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Configuration reference">
-  <meta property="og:description" content="Every option of the tree under `beffroi`, with its type, its default and what it decides.">
+  <meta property="og:description" content="Every option of the tree under `beffroi`, with the variable a deployment sets it with, its value in the image, its type and what it decides.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3863,6 +3863,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#self_client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        self_client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#client_registration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3884,6 +3895,28 @@
   
     <nav class="md-nav" aria-label="saml">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samlkeys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        saml.keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samlmetadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        saml.metadata
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#samlidentity_provider" class="md-nav__link">
@@ -4355,6 +4388,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#self_client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        self_client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#client_registration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4376,6 +4420,28 @@
   
     <nav class="md-nav" aria-label="saml">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#samlkeys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        saml.keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#samlmetadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        saml.metadata
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#samlidentity_provider" class="md-nav__link">
@@ -4453,14 +4519,16 @@
 
 <h1 id="configuration-reference">Configuration reference<a class="headerlink" href="#configuration-reference" title="Link to this section">&para;</a></h1>
 <p>Every option the application reads under <code>beffroi</code>, section by section, in the order the application builds
-the tree. <a href="../../application/configuration-tree/">The configuration tree</a> says what each section is for and when
-a deployment needs it, and <a href="../../application/configuration/">the configuration</a> which environment variable
-fills each option a deployment chooses; this page is the list.</p>
+the tree. Only the application writes the tree, in its own <code>config/packages/beffroi.yaml</code>, and its file reads
+every option a deployment chooses from an environment variable: each option below is given with that
+variable, or, when no variable sets it, with what the image holds. <a href="../../application/configuration-tree/">The configuration
+tree</a> says what each section is for, and <a href="../../application/configuration/">the
+configuration</a> lists the variables.</p>
 <div class="admonition note">
 <p class="admonition-title">Your installation is the authority</p>
 <p>This page is written by hand from the configuration classes of the application, in <code>src/Configuration/</code>,
-and nothing generates it. The tree your version validates is the one your own installation prints, with
-its defaults:</p>
+from its <code>config/packages/beffroi.yaml</code> and from its <code>.env</code>, and nothing generates it. The tree your
+version validates is the one your own installation prints, with the defaults of the tree:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>config:dump-reference<span class="w"> </span>beffroi
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>bin/console<span class="w"> </span>config:dump-reference<span class="w"> </span>beffroi<span class="w"> </span>tokens
 </span></code></pre></div>
@@ -4471,13 +4539,25 @@ the version you run.</p>
 <ul>
 <li><strong>A path</strong> is written from the section it belongs to: <code>look.logo_uri</code> under <code>tenant</code> is
   <code>beffroi.tenant.look.logo_uri</code>.</li>
+<li><strong>The variable</strong> is the one the application's file reads the option from, and <strong>in the image</strong> is what the
+  option holds when a deployment does not set that variable: its value in <code>.env</code>, which the image is compiled
+  with, and what an empty value means where <code>.env</code> leaves it empty. An option whose variable is <strong>None</strong> is
+  one no variable sets: a deployment of the image does not change it, and the image holds what the file
+  writes, or the default of the tree where the file writes nothing.</li>
 <li><strong>A duration</strong> is in seconds, except the two retentions, which are in days.</li>
-<li><strong>A bound</strong> is in the type column. A value written in the file outside it is refused when the container is
-  built, as is an unknown key at any level of the tree.</li>
+<li><strong>A bound</strong> is in the type column. The tree refuses a value outside it, and a value a variable carries is
+  held to it when the container builds the service the value reaches, so the first request or command that
+  needs it refuses it. The age of a key, <code>keys.age</code>, is the exception: the timed step of the key lifecycle
+  refuses it at its first tick when it is not longer than the retirement window of its use. An unknown key is
+  refused at any level of the tree.</li>
 <li><strong>required</strong> means the configuration is refused without it. <strong>none</strong> means the option is absent until it
   is written, and the last column says what its absence decides.</li>
-<li><strong>A keyed section</strong>, <code>clients</code> for instance, holds one entry per key, and the key is a value, the
-  <code>client_id</code> there. It is kept exactly as written, never normalised.</li>
+<li><strong>A list a variable carries whole</strong>, the trusted issuers, the authorities of software statements and the
+  peers of each SAML role, is one JSON document of the shape its table gives, <code>{}</code> for none. Its table gives
+  the options of one entry, and their <strong>default</strong> is what an entry gets for an option it leaves out. The two
+  sections no variable sets, <code>clients</code> and <code>self_client</code>, give the default of the tree the same way.</li>
+<li><strong>A keyed section</strong> holds one entry per key, and the key is a value, the <code>iss</code> of a trusted issuer for
+  instance. It is kept exactly as written, never normalised.</li>
 <li><strong>A wired name</strong> is checked against what the provider is wired with: an algorithm, a grant, a method of
   client authentication. The table names what the application wires, and a refusal names the names that are
   wired.</li>
@@ -4485,119 +4565,144 @@ the version you run.</p>
 <h2 id="tenant"><code>tenant</code><a class="headerlink" href="#tenant" title="Link to this section">&para;</a></h2>
 <p>The one tenant of the deployment: required. <a href="../../core/tenants/">Tenants</a> is what a tenant is. A value the
 tenant cannot hold is refused when the provider builds the tenant, which it does before serving anything of
-it.</p>
+it. The issuer and six of these values are written in the row of the tenant: a change to one of the six is
+followed by <code>beffroi:tenant:synchronize</code>, which refuses another issuer than the one the row was written with,
+as <a href="../../application/configuration/#the-tenant">the tenant</a> says.</p>
 <table>
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>issuer</code></td>
-<td>string</td>
-<td>required</td>
+<td><code>BEFFROI_ISSUER</code></td>
+<td>string, not empty, required</td>
+<td><code>https://op.localhost</code>, the issuer of the development stack</td>
 <td>The issuer identifier (OIDC Discovery 1.0 §3), and the URL every endpoint is served under: an absolute <code>https</code> URL with no query, no fragment, no credentials and no trailing slash. Plain <code>http</code> is accepted on a loopback host only: <code>localhost</code>, a name under it, <code>127.0.0.0/8</code> or <code>[::1]</code></td>
 </tr>
 <tr>
 <td><code>slug</code></td>
+<td><code>BEFFROI_TENANT_SLUG</code></td>
 <td>string, not empty</td>
 <td><code>default</code></td>
 <td>The stable name of the tenant, from which its identifier is derived. Renaming it is creating another tenant</td>
 </tr>
 <tr>
 <td><code>name</code></td>
+<td><code>BEFFROI_TENANT_NAME</code></td>
 <td>string</td>
-<td>the host of the issuer</td>
+<td>empty: the host of the issuer</td>
 <td>What the pages call the tenant</td>
 </tr>
 <tr>
 <td><code>look.logo_uri</code></td>
+<td><code>BEFFROI_TENANT_LOGO_URI</code></td>
 <td>string</td>
-<td>none</td>
-<td>The logo every page shows: an absolute <code>https</code> URL with no fragment and no credentials, plain <code>http</code> on a loopback host only. The browser of the visitor loads it, never the provider. The consent page adds its origin to the <code>img-src</code> of the <code>Content-Security-Policy</code> the application sends; every other page shows it under that policy as the application writes it, so a logo served from another origin is named in its <code>img-src</code></td>
+<td>empty: <code>/tenant-logo.svg</code> under the issuer, the placeholder mark the image serves</td>
+<td>The logo every page shows: an absolute <code>https</code> URL with no fragment and no credentials, plain <code>http</code> on a loopback host only. The browser of the visitor loads it, never the provider. Every page that reads the tenant adds the origin of the logo to the <code>img-src</code> of the <code>Content-Security-Policy</code> the application sends, so no policy names it by hand. A logo served from another host shows on the pages served under <code>Cross-Origin-Embedder-Policy: require-corp</code>, every page but those of <code>/authorize</code>, <code>/login</code>, <code>/consent</code>, <code>/logout</code>, <code>/device</code> and <code>/initiate-login</code>, only when that host answers <code>Cross-Origin-Resource-Policy: cross-origin</code></td>
 </tr>
 <tr>
 <td><code>look.primary_color</code></td>
+<td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
 <td>string</td>
-<td>none</td>
-<td>The colour the buttons and the links of the pages are drawn in: <code>#</code> and three or six hexadecimal digits, as <code>#1b4b8f</code>. Declared with <code>primary_content_color</code> or not at all</td>
+<td><code>#1f6feb</code></td>
+<td>The colour the buttons and the links of the pages are drawn in: <code>#</code> and three or six hexadecimal digits, as <code>#1b4b8f</code>. Declared with <code>primary_content_color</code> or not at all, an empty variable being no colour</td>
 </tr>
 <tr>
 <td><code>look.primary_content_color</code></td>
+<td><code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code></td>
 <td>string</td>
-<td>none</td>
+<td><code>#ffffff</code></td>
 <td>The colour of what is written on <code>primary_color</code>, in the same notation</td>
 </tr>
 <tr>
 <td><code>self_served_claims</code></td>
+<td><code>BEFFROI_TENANT_SELF_SERVED_CLAIMS</code></td>
 <td>list of strings</td>
-<td>none</td>
-<td>The claims of OIDC Core §5.1 the people of the tenant may change of themselves on the page of their account, among the claims the provider is wired with: <code>name</code>, <code>given_name</code>, <code>family_name</code>, <code>middle_name</code>, <code>nickname</code>, <code>preferred_username</code>, <code>birthdate</code>, <code>gender</code>, <code>locale</code>, <code>zoneinfo</code>, <code>profile</code>, <code>picture</code>, <code>website</code> and <code>phone_number</code> in the application</td>
+<td>the fourteen claims the application wires</td>
+<td>The claims of OIDC Core §5.1 the people of the tenant may change of themselves on the page of their account, among the claims the provider is wired with: <code>name</code>, <code>given_name</code>, <code>family_name</code>, <code>middle_name</code>, <code>nickname</code>, <code>preferred_username</code>, <code>birthdate</code>, <code>gender</code>, <code>locale</code>, <code>zoneinfo</code>, <code>profile</code>, <code>picture</code>, <code>website</code> and <code>phone_number</code> in the application. A tenant whose directory owns the data names <code>[]</code></td>
 </tr>
 <tr>
 <td><code>authentication_classes</code></td>
+<td><code>BEFFROI_TENANT_AUTHENTICATION_CLASSES</code></td>
 <td>map of class name to predicate name</td>
-<td>the default policy</td>
+<td><code>{}</code>: the default policy</td>
 <td>The <code>acr</code> vocabulary of the tenant, in the order a session is answered in, each class on a predicate the provider is wired with: <code>phishing_resistant_hardware</code>, <code>phishing_resistant</code>, <code>two_factors</code> and <code>single_factor</code> in the application. Left empty, the default policy answers: <code>phrh</code>, <code>phr</code>, <code>2</code> and <code>1</code>, on those four in that order. A policy names one class at least on a predicate every login satisfies, <code>single_factor</code> among the four, so that every session has an <code>acr</code>. It never names <code>0</code> (OIDC Core §2), and the names of OpenID Connect EAP ACR Values 1.0 keep their meaning: <code>phrh</code> stands on <code>phishing_resistant_hardware</code> only, <code>phr</code> on it or on <code>phishing_resistant</code></td>
+</tr>
+<tr>
+<td><code>scopes</code></td>
+<td><code>BEFFROI_TENANT_SCOPES</code></td>
+<td>list of strings</td>
+<td><code>[]</code>: none</td>
+<td>The scopes of the APIs the tenant protects, which stand for no claim, as <code>["invoices.read","invoices.pay"]</code>. The tenant hands out tokens for them beside <code>openid</code>, the scopes of its claims and <code>offline_access</code>, announces them in <code>scopes_supported</code>, and a client that registers itself may register them: the image declares no client, so nothing else makes such a scope exist in it. Each is a scope token of RFC 6749 §3.3, and <code>offline_access</code> is refused, the wired grants deciding it (OIDC Core §11)</td>
 </tr>
 </tbody>
 </table>
 <h2 id="keys"><code>keys</code><a class="headerlink" href="#keys" title="Link to this section">&para;</a></h2>
 <p>Where the keys of the tenant are sealed, stored and rotated: required. The figures of rotation apply to every
-key of the tenant but its SAML keys, which take theirs from
-<a href="#samlidentity_provider"><code>saml.identity_provider</code></a>.</p>
+key of the tenant but its SAML keys, which take theirs from <a href="#samlkeys"><code>saml.keys</code></a>.</p>
 <table>
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>kms</code></td>
-<td>string, not empty</td>
-<td>required</td>
-<td>The name of the key management client the private keys are sealed with, an entry of <code>key_management.clients</code>. A name nothing is registered under fails the build of the container, naming the clients that are registered. The client seals and opens keys, and never signs</td>
+<td>None</td>
+<td>string, not empty, required</td>
+<td><code>op</code></td>
+<td>The name of the key management client the private keys are sealed with, an entry of <code>key_management.clients</code>. The application names <code>op</code>, the client <code>config/packages/key_management.yaml</code> builds from <code>BEFFROI_KMS_DSN</code>, so a deployment chooses its backend with that variable. A name nothing is registered under fails the build of the container, naming the clients that are registered. The client seals and opens keys, and never signs</td>
 </tr>
 <tr>
 <td><code>key_id</code></td>
-<td>string, not empty</td>
-<td>required</td>
+<td><code>BEFFROI_KMS_KEY_ID</code></td>
+<td>string, not empty, required</td>
+<td>empty, which every deployment replaces</td>
 <td>The key of that client the keys of the tenant are sealed under, in the terms of its backend: the identifier of a sodium key, a Vault transit key name, an ARN. <code>{tenant}</code> in it stands for the slug of the tenant, one master key per tenant. The data keys that seal personal data are wrapped under the same key</td>
 </tr>
 <tr>
 <td><code>data_key_secrets</code></td>
+<td><code>BEFFROI_DATA_KEY_SECRETS</code></td>
 <td>list of strings, not empty, one at least</td>
-<td><code>['%kernel.secret%']</code>, the secret of the kernel</td>
-<td>The secrets every data key of personal data is bound to its reference and its scope under, which the database does not hold. The first binds a new key, a key bound under any of them opens, and one bound under a secret no longer listed opens nothing, nor does what it sealed. A single string is read as a list of one. A secret is replaced by writing the new one first, then running <code>beffroi:data-keys:rewrap</code> towards the client that already wraps the keys, then dropping the old one: <a href="../../core/personal-data/#rotating-the-secret-that-binds-them">personal data</a></td>
+<td>not set: the secret of the kernel, <code>APP_SECRET</code></td>
+<td>The secrets every data key of personal data is bound to its reference and its scope under, which the database does not hold, as a JSON list. The first binds a new key, a key bound under any of them opens, and one bound under a secret no longer listed opens nothing, nor does what it sealed. A secret is replaced by writing the new one first, then running <code>beffroi:data-keys:rewrap</code> towards the client that already wraps the keys, then dropping the old one: <a href="../../core/personal-data/#rotating-the-secret-that-binds-them">personal data</a></td>
 </tr>
 <tr>
 <td><code>storage</code></td>
+<td>None</td>
 <td>string, not empty</td>
 <td><code>%kernel.project_dir%/var/keys</code></td>
 <td>The directory of the sealed keys, one file per key and per tenant, and of the pairwise salt of each tenant beside them (OIDC Core §8.1)</td>
 </tr>
 <tr>
 <td><code>jwks_max_age</code></td>
+<td><code>BEFFROI_JWKS_MAX_AGE</code></td>
 <td>integer, 0 or more</td>
 <td><code>300</code>, five minutes</td>
-<td>How long a relying party may keep the JWK Set (RFC 7517 §5): its <code>Cache-Control: public, max-age</code>, which the SAML metadata are served with as well. The default staging delay derives from it</td>
+<td>How long a relying party may keep the JWK Set (RFC 7517 §5): its <code>Cache-Control: public, max-age</code>, which the SAML metadata are served with as well. The staging delay derives from it while <code>BEFFROI_KEY_STAGING_DELAY</code> is empty</td>
 </tr>
 <tr>
 <td><code>staging_delay</code></td>
+<td><code>BEFFROI_KEY_STAGING_DELAY</code></td>
 <td>integer, 0 or more</td>
-<td><code>jwks_max_age</code> plus 60, six minutes with the default</td>
-<td>How long a new key is published before it signs. The default covers a relying party holding a copy of the JWK Set as old as <code>jwks_max_age</code>, and the sixty seconds after which Symfony's <code>oidc_login</code> reads the set again for a <code>kid</code> it does not hold</td>
+<td>empty: <code>jwks_max_age</code> plus 60, 360</td>
+<td>How long a new key is published before it signs. Empty, it covers a relying party holding a copy of the JWK Set as old as <code>jwks_max_age</code>, and the sixty seconds after which Symfony's <code>oidc_login</code> reads the set again for a <code>kid</code> it does not hold</td>
 </tr>
 <tr>
 <td><code>age</code></td>
+<td><code>BEFFROI_KEY_AGE</code></td>
 <td>integer, 1 or more</td>
 <td><code>7776000</code>, ninety days</td>
 <td>How long a key works before the timed step stages a successor behind it, counted from its activation. It is longer than the time a retiring key stays published, the longest lifetime of what is bound to a key of that use, or the rotation refuses it</td>
@@ -4609,14 +4714,16 @@ key of the tenant but its SAML keys, which take theirs from
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>metadata_storage</code></td>
+<td>None</td>
 <td>string, not empty</td>
 <td><code>%kernel.project_dir%/var/webauthn</code></td>
 <td>The directory of the FIDO metadata an attestation is checked against: the documents <code>beffroi:webauthn:mds-refresh</code> verified and <code>beffroi:webauthn:mds-import</code> stored. It is empty until one of them runs, which enrolling a passkey does not need</td>
@@ -4628,17 +4735,19 @@ key of the tenant but its SAML keys, which take theirs from
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>origin</code></td>
+<td><code>BEFFROI_MTLS_ORIGIN</code></td>
 <td>string</td>
-<td>none</td>
-<td>The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as <code>https://mtls.op.example.com</code>. The endpoints are announced under it in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Absent or empty, no alias is announced, and a client authenticating by certificate reaches the ordinary endpoints</td>
+<td>empty: no alias</td>
+<td>The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as <code>https://mtls.op.example.com</code>. The endpoints are announced under it in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, no alias is announced, and a client authenticating by certificate reaches the ordinary endpoints</td>
 </tr>
 </tbody>
 </table>
@@ -4648,74 +4757,86 @@ key of the tenant but its SAML keys, which take theirs from
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>authorization_code_ttl</code></td>
+<td><code>BEFFROI_AUTHORIZATION_CODE_TTL</code></td>
 <td>integer, 1 to 600</td>
 <td><code>60</code>, one minute</td>
 <td>How long an authorization code can be spent. RFC 6749 §4.1.2 recommends ten minutes at most, which is the bound</td>
 </tr>
 <tr>
 <td><code>access_token_ttl</code></td>
+<td><code>BEFFROI_ACCESS_TOKEN_TTL</code></td>
 <td>integer, 1 or more</td>
 <td><code>600</code>, ten minutes</td>
 <td>How long an access token is valid, in either shape: a JWT cannot be revoked, and an opaque token gets the same lifetime</td>
 </tr>
 <tr>
 <td><code>id_token_ttl</code></td>
+<td><code>BEFFROI_ID_TOKEN_TTL</code></td>
 <td>integer, 1 or more</td>
 <td><code>600</code>, ten minutes</td>
 <td>How long an ID token is valid</td>
 </tr>
 <tr>
 <td><code>request_uri_ttl</code></td>
+<td><code>BEFFROI_REQUEST_URI_TTL</code></td>
 <td>integer, 1 to 600</td>
 <td><code>60</code>, one minute</td>
 <td>How long a <code>request_uri</code> answered by the pushed authorization request endpoint lives (RFC 9126 §2.2)</td>
 </tr>
 <tr>
 <td><code>device_code_ttl</code></td>
+<td><code>BEFFROI_DEVICE_CODE_TTL</code></td>
 <td>integer, 1 to 1800</td>
 <td><code>600</code>, ten minutes</td>
 <td>How long a device code and its user code live (RFC 8628 §3.2)</td>
 </tr>
 <tr>
 <td><code>device_code_interval</code></td>
+<td><code>BEFFROI_DEVICE_CODE_INTERVAL</code></td>
 <td>integer, 1 to 30</td>
 <td><code>5</code></td>
 <td>How long a device waits between two polls of the token endpoint (RFC 8628 §3.2). One that polls sooner is answered <code>slow_down</code>, and its interval grows by five seconds (RFC 8628 §3.5)</td>
 </tr>
 <tr>
 <td><code>backchannel_authentication_ttl</code></td>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_TTL</code></td>
 <td>integer, 1 to 3600</td>
 <td><code>300</code>, five minutes</td>
 <td>How long a backchannel authentication request lives when the client sends no <code>requested_expiry</code> (CIBA Core §7.3), never longer than <code>backchannel_authentication_max_requested_expiry</code></td>
 </tr>
 <tr>
 <td><code>backchannel_authentication_max_requested_expiry</code></td>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_MAX_REQUESTED_EXPIRY</code></td>
 <td>integer, 1 to 3600</td>
 <td><code>1800</code>, thirty minutes</td>
 <td>The longest lifetime a client may ask for with <code>requested_expiry</code> (CIBA Core §7.1). A request that asks for more is served this, not refused</td>
 </tr>
 <tr>
 <td><code>backchannel_authentication_interval</code></td>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_INTERVAL</code></td>
 <td>integer, 1 to 30</td>
 <td><code>5</code></td>
 <td>How long a client waits between two polls of the token endpoint for a backchannel request (CIBA Core §7.3). One that polls sooner is answered <code>slow_down</code>, and its interval grows by five seconds (CIBA Core §11)</td>
 </tr>
 <tr>
 <td><code>refresh_token_ttl</code></td>
+<td><code>BEFFROI_REFRESH_TOKEN_TTL</code></td>
 <td>integer, 1 or more</td>
 <td><code>2592000</code>, thirty days</td>
-<td>The sliding lifetime of a refresh token, renewed at each rotation. The tree refuses one longer than <code>refresh_token_absolute_ttl</code></td>
+<td>The sliding lifetime of a refresh token, renewed at each rotation. It is refused longer than <code>refresh_token_absolute_ttl</code></td>
 </tr>
 <tr>
 <td><code>refresh_token_absolute_ttl</code></td>
+<td><code>BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL</code></td>
 <td>integer, 1 or more</td>
 <td><code>7776000</code>, ninety days</td>
 <td>The lifetime of a family of refresh tokens, counted from the authorization that started it. No rotation extends it</td>
@@ -4729,32 +4850,37 @@ key of the tenant but its SAML keys, which take theirs from
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>origin.limit</code></td>
+<td><code>BEFFROI_LOAD_ORIGIN_LIMIT</code></td>
 <td>integer, 1 or more</td>
 <td><code>2400</code></td>
 <td>Requests taken from one client address in the window, on every route of the two planes and for every tenant of the deployment, counted before anything is verified</td>
 </tr>
 <tr>
 <td><code>origin.interval</code></td>
+<td><code>BEFFROI_LOAD_ORIGIN_INTERVAL</code></td>
 <td>integer, 1 or more</td>
 <td><code>60</code>, one minute</td>
 <td>The window of that budget</td>
 </tr>
 <tr>
 <td><code>client.limit</code></td>
+<td><code>BEFFROI_LOAD_CLIENT_LIMIT</code></td>
 <td>integer, 1 or more</td>
 <td><code>1200</code></td>
 <td>Requests taken from one client of one tenant in the window, counted once the client has authenticated</td>
 </tr>
 <tr>
 <td><code>client.interval</code></td>
+<td><code>BEFFROI_LOAD_CLIENT_INTERVAL</code></td>
 <td>integer, 1 or more</td>
 <td><code>60</code>, one minute</td>
 <td>The window of that budget</td>
@@ -4766,14 +4892,16 @@ key of the tenant but its SAML keys, which take theirs from
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>retention</code></td>
+<td><code>BEFFROI_JOURNAL_RETENTION</code></td>
 <td>integer, 1 or more</td>
 <td><code>180</code></td>
 <td>Days an act of the journal is kept before the timed step forgets it, and with it what a client was given of a person in that act</td>
@@ -4785,14 +4913,16 @@ key of the tenant but its SAML keys, which take theirs from
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>retention</code></td>
+<td><code>BEFFROI_HISTORY_RETENTION</code></td>
 <td>integer, 1 or more</td>
 <td><code>180</code></td>
 <td>Days a change a person made to their claims is kept before the timed step forgets it</td>
@@ -4804,20 +4934,23 @@ key of the tenant but its SAML keys, which take theirs from
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>storage</code></td>
+<td>None</td>
 <td>string, not empty</td>
 <td><code>%kernel.project_dir%/var/geoip</code></td>
 <td>The directory of the GeoLite2 databases that place the address of a request: the files <code>beffroi:geoip:refresh</code> and the weekly timed step store. Every flow is served while it is empty</td>
 </tr>
 <tr>
 <td><code>license_key</code></td>
+<td><code>GEOIP_LICENSE_KEY</code></td>
 <td>string</td>
 <td>empty</td>
 <td>The licence key of the MaxMind account the databases are downloaded under. Empty, nothing is downloaded, and a provenance says an address and no place</td>
@@ -4829,22 +4962,25 @@ key of the tenant but its SAML keys, which take theirs from
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>breached.endpoint</code></td>
+<td><code>BEFFROI_BREACHED_PASSWORDS_ENDPOINT</code></td>
 <td>string</td>
-<td>empty</td>
-<td>The base URL of a range endpoint in the shape of Pwned Passwords, as <code>https://api.pwnedpasswords.com/range/</code>: the first five hexadecimal characters of the SHA-1 of a password are appended to it, the rest is compared locally, and no API key is needed. Empty, nobody is asked. Named, a password the list counts is refused, and one the list could not be asked about is not written either</td>
+<td>empty: nobody is asked</td>
+<td>The base URL of a range endpoint in the shape of Pwned Passwords, as <code>https://api.pwnedpasswords.com/range/</code>: the first five hexadecimal characters of the SHA-1 of a password are appended to it, the rest is compared locally, and no API key is needed. Named, a password the list counts is refused, and one the list could not be asked about is not written either</td>
 </tr>
 <tr>
 <td><code>breached.timeout</code></td>
+<td><code>BEFFROI_BREACHED_PASSWORDS_TIMEOUT</code></td>
 <td>number, 0.1 or more</td>
-<td><code>2.0</code></td>
+<td><code>2</code></td>
 <td>Seconds the whole exchange with the list may take where somebody waits for it: the command that sets a password, and the page where a person replaces their own</td>
 </tr>
 </tbody>
@@ -4854,17 +4990,19 @@ key of the tenant but its SAML keys, which take theirs from
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>login_hint</code></td>
+<td><code>BEFFROI_INTERACTION_LOGIN_HINT</code></td>
 <td><code>sub</code>, <code>username</code> or <code>none</code></td>
 <td><code>sub</code></td>
-<td>What the <code>login_hint</code> of an authorization request names, read one way and never searched (OIDC Core §3.1.2.1): <code>sub</code>, the subject the provider issued to that client; <code>username</code>, the name the person signs in with; <code>none</code>, which leaves the hint to a class tagged <code>beffroi.oidc.login_hint</code>, and the application tags none. The login page offers the name of the person the hint names, and nothing when it names nobody</td>
+<td>What the <code>login_hint</code> of an authorization request names, read one way and never searched (OIDC Core §3.1.2.1): <code>sub</code>, the subject the provider issued to that client; <code>username</code>, the name the person signs in with; <code>none</code>, which leaves the hint to a class tagged <code>beffroi.oidc.login_hint</code>, and the application tags none, so the image then reads no hint. The login page offers the name of the person the hint names, and nothing when it names nobody</td>
 </tr>
 </tbody>
 </table>
@@ -4877,69 +5015,78 @@ the pushes that tell a person something waits for them.</p>
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>timeout</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT</code></td>
 <td>number, 0.1 or more</td>
-<td><code>5.0</code></td>
+<td><code>5</code></td>
 <td>Seconds one attempt to post a logout token is given, connection included (Back-Channel Logout 1.0 §2.5)</td>
 </tr>
 <tr>
 <td><code>retries</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES</code></td>
 <td>integer, 0 or more</td>
 <td><code>6</code></td>
 <td>How many times a notification that did not reach its client is sent again</td>
 </tr>
 <tr>
 <td><code>retry_delay</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY</code></td>
 <td>integer, 1 or more</td>
 <td><code>2</code></td>
 <td>Seconds before the first retry</td>
 </tr>
 <tr>
 <td><code>retry_multiplier</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER</code></td>
 <td>integer, 1 or more</td>
 <td><code>3</code></td>
 <td>What each wait is multiplied by to give the next one</td>
 </tr>
 <tr>
 <td><code>retry_max_delay</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY</code></td>
 <td>integer, 1 or more</td>
 <td><code>60</code></td>
 <td>Seconds no wait exceeds</td>
 </tr>
 </tbody>
 </table>
-<p>With the defaults the waits are 2, 6, 18, 54, 60 and 60 seconds. The <code>exp</code> of a logout token is the whole
-schedule, its waits and one <code>timeout</code> per attempt, 235 seconds with the defaults, and a signing key another
-key takes over from stays in the JWK Set that long at least, so that a logout token still on its way
+<p>With the values of <code>.env</code> the waits are 2, 6, 18, 54, 60 and 60 seconds. The <code>exp</code> of a logout token is the
+whole schedule, its waits and one <code>timeout</code> per attempt, 235 seconds with those values, and a signing key
+another key takes over from stays in the JWK Set that long at least, so that a logout token still on its way
 verifies.</p>
 <h2 id="backchannel_authentication"><code>backchannel_authentication</code><a class="headerlink" href="#backchannel_authentication" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>login_hint</code></td>
+<td><code>BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT</code></td>
 <td><code>sub</code>, <code>username</code> or <code>none</code></td>
 <td><code>sub</code></td>
 <td>What the <code>login_hint</code> of a backchannel authentication request names (CIBA Core §7.1), under the three readings of <code>interaction.login_hint</code>; <code>none</code> leaves it to a class tagged <code>beffroi.oidc.ciba_user_hint</code>, and the one the application tags reads the <code>id_token_hint</code> instead. CIBA Core §15 asks for an identifier that says nothing outside the provider, which a <code>sub</code> is and a username is not</td>
 </tr>
 <tr>
 <td><code>client_notification_timeout</code></td>
+<td><code>BEFFROI_CLIENT_NOTIFICATION_TIMEOUT</code></td>
 <td>number, 0.1 or more</td>
-<td><code>3.0</code></td>
+<td><code>3</code></td>
 <td>Seconds one call to the notification endpoint of a client in <code>ping</code> mode is given, connection included (CIBA Core §10.2). It is retried on the schedule of <code>back_channel_logout</code></td>
 </tr>
 </tbody>
@@ -4949,22 +5096,25 @@ verifies.</p>
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>subject</code></td>
+<td><code>BEFFROI_WEB_PUSH_SUBJECT</code></td>
 <td>string, not empty</td>
-<td>none</td>
-<td>The <code>sub</code> of the token the provider signs for a push service (RFC 8292 §2.1): a <code>mailto:</code> or <code>https:</code> URI at which the operator of the deployment can be reached. Naming one turns web push on, with the application server key of the tenant, a P-256 key the key commands call <code>VAPID</code>. Absent, no push leaves the deployment, and the page where a browser would subscribe says so</td>
+<td><code>mailto:operator@op.localhost</code>, the contact of the development stack</td>
+<td>The <code>sub</code> of the token the provider signs for a push service (RFC 8292 §2.1): a <code>mailto:</code> or <code>https:</code> URI at which the operator of the deployment can be reached. Naming one turns web push on, with the application server key of the tenant, a P-256 key the key commands call <code>VAPID</code>; empty, no push leaves the deployment, and the page where a browser would subscribe says so. The one of <code>.env</code> turns web push on, so a deployment names its own contact or empties the variable</td>
 </tr>
 <tr>
 <td><code>timeout</code></td>
+<td><code>BEFFROI_WEB_PUSH_TIMEOUT</code></td>
 <td>number, 0.1 or more</td>
-<td><code>3.0</code></td>
+<td><code>3</code></td>
 <td>Seconds one push to one push service is given, connection included. It is retried on the schedule of <code>back_channel_logout</code></td>
 </tr>
 </tbody>
@@ -4976,44 +5126,51 @@ the provider reads behind a <code>jwks_uri</code>: the clients' and the <a href=
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>assertion_max_lifetime</code></td>
+<td><code>BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME</code></td>
 <td>integer, 1 or more</td>
 <td><code>300</code>, five minutes</td>
 <td>How far ahead of the request the <code>exp</code> of a client assertion may be (RFC 7523 §3). The assertions of a trusted issuer are held to the same</td>
 </tr>
 <tr>
 <td><code>assertion_leeway</code></td>
+<td><code>BEFFROI_CLIENT_ASSERTION_LEEWAY</code></td>
 <td>integer, 0 or more</td>
 <td><code>30</code></td>
 <td>Seconds allowed for the clock of a client or of a trusted issuer, both ways</td>
 </tr>
 <tr>
 <td><code>jwks_timeout</code></td>
+<td><code>BEFFROI_JWKS_URI_TIMEOUT</code></td>
 <td>number, 0.1 or more</td>
-<td><code>3.0</code></td>
+<td><code>3</code></td>
 <td>Seconds one read of a <code>jwks_uri</code> is given, connection included</td>
 </tr>
 <tr>
 <td><code>jwks_max_size</code></td>
+<td><code>BEFFROI_JWKS_URI_MAX_SIZE</code></td>
 <td>integer, 1 or more</td>
 <td><code>65536</code></td>
 <td>Bytes a <code>jwks_uri</code> may answer before the read stops</td>
 </tr>
 <tr>
 <td><code>jwks_ttl</code></td>
+<td><code>BEFFROI_JWKS_URI_TTL</code></td>
 <td>integer, 1 or more</td>
 <td><code>86400</code>, one day</td>
 <td>How long the keys read from a <code>jwks_uri</code> are kept, in the <code>beffroi.client_keys</code> and <code>beffroi.issuer_keys</code> cache pools</td>
 </tr>
 <tr>
 <td><code>jwks_refetch_cooldown</code></td>
+<td><code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code></td>
 <td>integer, 0 or more</td>
 <td><code>300</code>, five minutes</td>
 <td>Seconds between two reads of the same <code>jwks_uri</code> when a signature names a <code>kid</code> the kept set does not hold</td>
@@ -5025,32 +5182,37 @@ the provider reads behind a <code>jwks_uri</code>: the clients' and the <a href=
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>max_lifetime</code></td>
+<td><code>BEFFROI_REQUEST_OBJECT_MAX_LIFETIME</code></td>
 <td>integer, 1 or more</td>
 <td><code>3600</code>, one hour</td>
 <td>How long a request object may stand: its <code>exp</code> is at most this long after its <code>nbf</code> (RFC 9101 §4)</td>
 </tr>
 <tr>
 <td><code>leeway</code></td>
+<td><code>BEFFROI_REQUEST_OBJECT_LEEWAY</code></td>
 <td>integer, 0 or more</td>
 <td><code>30</code></td>
 <td>Seconds allowed for the clock of a client, both ways</td>
 </tr>
 <tr>
 <td><code>timeout</code></td>
+<td><code>BEFFROI_REQUEST_OBJECT_TIMEOUT</code></td>
 <td>number, 0.1 or more</td>
-<td><code>3.0</code></td>
+<td><code>3</code></td>
 <td>Seconds one read of a <code>request_uri</code> is given, connection included, while the browser of a person waits. Only a URL the client registered is read, and no redirect is followed</td>
 </tr>
 <tr>
 <td><code>max_size</code></td>
+<td><code>BEFFROI_REQUEST_OBJECT_MAX_SIZE</code></td>
 <td>integer, 1 or more</td>
 <td><code>65536</code></td>
 <td>Bytes a <code>request_uri</code> may answer before the read stops</td>
@@ -5062,32 +5224,37 @@ the provider reads behind a <code>jwks_uri</code>: the clients' and the <a href=
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>proof_max_age</code></td>
+<td><code>BEFFROI_DPOP_PROOF_MAX_AGE</code></td>
 <td>integer, 1 or more</td>
 <td><code>60</code>, one minute</td>
 <td>How long a proof stands, from its <code>iat</code> (RFC 9449 §4.3)</td>
 </tr>
 <tr>
 <td><code>leeway</code></td>
+<td><code>BEFFROI_DPOP_LEEWAY</code></td>
 <td>integer, 0 or more</td>
 <td><code>30</code></td>
 <td>Seconds allowed for the clock of a client, both ways</td>
 </tr>
 <tr>
 <td><code>nonce.required</code></td>
+<td><code>BEFFROI_DPOP_NONCE_REQUIRED</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>Whether a proof carries a nonce of the provider (RFC 9449 §8). On, a proof without a valid one is refused with <code>use_dpop_nonce</code> and a fresh nonce in the <code>DPoP-Nonce</code> header. It is read once, when the port that checks the proofs is built, so an environment variable may carry it</td>
+<td>Whether a proof carries a nonce of the provider (RFC 9449 §8). On, a proof without a valid one is refused with <code>use_dpop_nonce</code> and a fresh nonce in the <code>DPoP-Nonce</code> header. It is read once, when the port that checks the proofs is built</td>
 </tr>
 <tr>
 <td><code>nonce.ttl</code></td>
+<td><code>BEFFROI_DPOP_NONCE_TTL</code></td>
 <td>integer, 1 or more</td>
 <td><code>300</code>, five minutes</td>
 <td>How long a nonce the provider issued is accepted</td>
@@ -5096,8 +5263,11 @@ the provider reads behind a <code>jwks_uri</code>: the clients' and the <a href=
 </table>
 <h2 id="trusted_issuers"><code>trusted_issuers</code><a class="headerlink" href="#trusted_issuers" title="Link to this section">&para;</a></h2>
 <p>The issuers whose assertions the tenant accepts as an authorization grant (RFC 7523 §2.1), one entry per
-issuer; none by default, and the grant then serves nobody. A declaration that does not hold together is
-refused when the provider first reads the trusted issuers.</p>
+issuer. <code>BEFFROI_TRUSTED_ISSUERS</code> carries the section whole, a JSON document keyed by the <code>iss</code> of each
+issuer, and <code>.env</code> writes <code>{}</code>. The grant issues no token on the image whatever this section names: it
+addresses a token to a resource the client registered, and no client of the image registers one (<a href="../../oidc/grants/jwt-bearer/">JWT
+bearer</a>). A declaration that does not hold together is refused when the provider
+first reads the trusted issuers.</p>
 <table>
 <thead>
 <tr>
@@ -5136,7 +5306,7 @@ refused when the provider first reads the trusted issuers.</p>
 <td><code>clients</code></td>
 <td>list of strings</td>
 <td>required</td>
-<td>The clients that may present its assertions at the token endpoint, by <code>client_id</code>, one at least</td>
+<td>The clients that may present its assertions at the token endpoint, by <code>client_id</code>, one at least: for a client of the image, the identifier the answer to its registration carried</td>
 </tr>
 <tr>
 <td><code>identity_provider</code></td>
@@ -5153,10 +5323,20 @@ refused when the provider first reads the trusted issuers.</p>
 </tbody>
 </table>
 <h2 id="clients"><code>clients</code><a class="headerlink" href="#clients" title="Link to this section">&para;</a></h2>
-<p>The clients the deployment declares, one entry per client; none by default. Each one is read like a
-registration of RFC 7591 §2 and OIDC Registration §2, and a declaration that does not hold together is
-refused when the provider first reads its clients, naming the client, the option and the rule.
-<a href="../../oidc/clients/">Clients</a> is what a client is.</p>
+<p>The clients a file of the application declares, one entry per client; none by default. The application's
+file writes <code>clients: []</code>, and no variable sets the section: the image declares no client, and a client of a
+deployment registers itself (<a href="../../oidc/dynamic-registration/">dynamic registration</a>). The development
+configuration, which the image leaves out, declares clients here: those of the conformance suite and of the
+demonstrations. <a href="../../oidc/clients/">Clients</a> is what a client is.</p>
+<p>Each entry is read like a registration of RFC 7591 §2 and OIDC Registration §2, by the reader that reads a
+registration, and a declaration that does not hold together is refused when the provider first reads its
+clients, naming the client, the option and the rule. A client that registers itself carries the same members
+in its registration, except the key and <code>secret</code>, which the provider draws for it, and the seven members
+marked <em>deployment</em>, which a registration is refused for: no client of the image carries one of those, and
+<a href="../../oidc/clients/#what-the-image-does-not-set">what the image does not set</a> says what every client of the
+image has instead. The default column is what a declared client gets for a member it leaves out, and a client
+that registers itself gets what RFC 7591 §2 says instead (<a href="../../oidc/clients/#registering-one">registering
+one</a>).</p>
 <table>
 <thead>
 <tr>
@@ -5255,13 +5435,13 @@ refused when the provider first reads its clients, naming the client, the option
 <td><code>requires_consent</code></td>
 <td>boolean</td>
 <td><code>true</code></td>
-<td>Whether the person is asked to consent. <code>false</code> is for a first-party application, which is never shown the consent page, <code>prompt=consent</code> included</td>
+<td><em>Deployment.</em> Whether the person is asked to consent. <code>false</code> is for a first-party application, which is never shown the consent page, <code>prompt=consent</code> included</td>
 </tr>
 <tr>
 <td><code>requires_pkce</code></td>
 <td>boolean</td>
 <td><code>true</code></td>
-<td>Whether an authorization request of the client carries a PKCE challenge, <code>S256</code> being the only method. <code>false</code> is for a confidential client that cannot send one, and is refused for a public client; a challenge the client sends is verified all the same</td>
+<td><em>Deployment.</em> Whether an authorization request of the client carries a PKCE challenge, <code>S256</code> being the only method. <code>false</code> is for a confidential client that cannot send one, and is refused for a public client; a challenge the client sends is verified all the same</td>
 </tr>
 <tr>
 <td><code>require_pushed_authorization_requests</code></td>
@@ -5273,7 +5453,7 @@ refused when the provider first reads its clients, naming the client, the option
 <td><code>require_sender_constrained_tokens</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>A token request of the client proves a certificate (RFC 8705 §3) or a key (RFC 9449 §5), or it is refused rather than answered with bearer tokens (FAPI 2.0 Security Profile §5.3.1)</td>
+<td><em>Deployment.</em> A token request of the client proves a certificate (RFC 8705 §3) or a key (RFC 9449 §5), or it is refused rather than answered with bearer tokens (FAPI 2.0 Security Profile §5.3.1)</td>
 </tr>
 <tr>
 <td><code>tls_client_certificate_bound_access_tokens</code></td>
@@ -5345,7 +5525,7 @@ refused when the provider first reads its clients, naming the client, the option
 <td><code>access_token_format</code></td>
 <td>string</td>
 <td>the first wired shape, <code>jwt</code></td>
-<td>The shape of the access tokens of the client: <code>jwt</code>, verified offline against the JWK Set (RFC 9068), or <code>opaque</code>, a reference the resource server introspects (RFC 7662) and that can be revoked at once</td>
+<td><em>Deployment.</em> The shape of the access tokens of the client: <code>jwt</code>, verified offline against the JWK Set (RFC 9068), or <code>opaque</code>, a reference the resource server introspects (RFC 7662) and that can be revoked at once</td>
 </tr>
 <tr>
 <td><code>backchannel_logout_uri</code></td>
@@ -5423,7 +5603,7 @@ refused when the provider first reads its clients, naming the client, the option
 <td><code>resources</code></td>
 <td>list of strings</td>
 <td>none</td>
-<td>The resources the client may ask an access token for (RFC 8707 §2), each an absolute URI without a fragment; any other is refused with <code>invalid_target</code>. A client that registers none asks for none, and its tokens are addressed to itself</td>
+<td><em>Deployment.</em> The resources the client may ask an access token for (RFC 8707 §2), each an absolute URI without a fragment; any other is refused with <code>invalid_target</code>. A client that registers none asks for none, and its tokens are addressed to itself</td>
 </tr>
 <tr>
 <td><code>authorization_details_types</code></td>
@@ -5435,19 +5615,19 @@ refused when the provider first reads its clients, naming the client, the option
 <td><code>token_exchange.subject_token_types</code></td>
 <td>list of strings</td>
 <td>required in the block</td>
-<td>The token types the client may present as a <code>subject_token</code> or an <code>actor_token</code> (RFC 8693 §3), one at least, among the wired ones: <code>urn:ietf:params:oauth:token-type:access_token</code> in the application</td>
+<td><em>Deployment.</em> The token types the client may present as a <code>subject_token</code> or an <code>actor_token</code> (RFC 8693 §3), one at least, among the wired ones: <code>urn:ietf:params:oauth:token-type:access_token</code> in the application</td>
 </tr>
 <tr>
 <td><code>token_exchange.may_act_for_a_user</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>Whether the client may present a token somebody signed in for. <code>false</code> for a service that only exchanges tokens of its own</td>
+<td><em>Deployment.</em> Whether the client may present a token somebody signed in for. <code>false</code> for a service that only exchanges tokens of its own</td>
 </tr>
 <tr>
 <td><code>may_act</code></td>
 <td>string</td>
 <td>none</td>
-<td>Who may act for the subject of a token issued to the client (RFC 8693 §4.4), named as a subject. It is written on every token the client receives, and an exchange asked for by anybody else is refused</td>
+<td><em>Deployment.</em> Who may act for the subject of a token issued to the client (RFC 8693 §4.4), named as a subject. It is written on every token the client receives, and an exchange asked for by anybody else is refused</td>
 </tr>
 <tr>
 <td><code>request_uris</code></td>
@@ -5490,176 +5670,273 @@ refused when the provider first reads its clients, naming the client, the option
 <p>The <code>token_exchange</code> block is declared by a client registered for the token exchange grant, and refused for
 any other. A <code>tls_client_auth</code> client names exactly one of the five <code>tls_client_auth_*</code> options, and a client
 authenticating otherwise names none of them.</p>
-<h2 id="client_registration"><code>client_registration</code><a class="headerlink" href="#client_registration" title="Link to this section">&para;</a></h2>
-<p>How a client nobody declared comes to exist (RFC 7591). Without a <code>mode</code>, the tenant registers nobody.</p>
+<h2 id="self_client"><code>self_client</code><a class="headerlink" href="#self_client" title="Link to this section">&para;</a></h2>
+<p>The application as a client of the provider it serves, so that a firewall of the application signs its users
+in there with Symfony's <code>oidc_login</code>. The application's file does not write the section and no variable sets
+it, so the image is no client of its own provider: its pages sign a person in with the logins of the provider
+itself.</p>
+<p>Written, the section is a source of clients of its own, holding one client the provider knows as an ordinary
+one: its redirect URI and its post-logout redirect URI are the URLs the router writes for the routes it names,
+in the context of the issuer, its scheme, its host and its port; it is never shown the consent page; and it
+takes the defaults of a declared client for every other member. What its firewall needs is exposed as three
+container parameters, <code>beffroi.self_client.issuer</code>, <code>beffroi.self_client.client_id</code> and
+<code>beffroi.self_client.secret</code>, so that the firewall names them rather than writing them again.</p>
 <table>
 <thead>
 <tr>
 <th>Option</th>
 <th>Type</th>
 <th>Default</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_id</code></td>
+<td>string, not empty</td>
+<td><code>app</code></td>
+<td>The identifier the application is known by, which no client of <code>clients</code> may carry as well</td>
+</tr>
+<tr>
+<td><code>redirect_route</code></td>
+<td>string, not empty</td>
+<td>required</td>
+<td>The route the provider sends the browser back to with a code, the callback of the firewall of the application, <code>_oidc_login_callback_&lt;firewall&gt;</code> for <code>oidc_login</code>. Its URL is the one redirect URI the application registers, and a route the router writes no URL for is refused</td>
+</tr>
+<tr>
+<td><code>post_logout_route</code></td>
+<td>string</td>
+<td>none</td>
+<td>The route the provider sends the browser back to after a logout the application asked for (OIDC RP-Initiated Logout 1.0 §3). Absent, the application registers no post-logout redirect URI</td>
+</tr>
+<tr>
+<td><code>secret</code></td>
+<td>string, not empty</td>
+<td>required</td>
+<td>The secret the application authenticates with at the token endpoint: one environment variable, written <code>%env(NAME)%</code>, and never a secret written in a file, which is refused when the container is built. It is 32 visible ASCII characters at least, and never the secret of the kernel</td>
+</tr>
+</tbody>
+</table>
+<h2 id="client_registration"><code>client_registration</code><a class="headerlink" href="#client_registration" title="Link to this section">&para;</a></h2>
+<p>How a client nobody declared comes to exist (RFC 7591), which is how every client of the image comes to exist.
+Without a <code>mode</code>, the tenant registers nobody.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Variable</th>
+<th>Type</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>mode</code></td>
+<td><code>BEFFROI_REGISTRATION_MODE</code></td>
 <td>string</td>
-<td>none</td>
-<td>What authorises a registration, among the wired modes: <code>initial_access_token</code>, a token the tenant issues, limits and revokes (RFC 7591 §1.2); <code>open</code>, no credential at all (RFC 7591 §1.3), for a tenant with no real user; <code>software_statement</code>, a statement signed by an authority of <code>statement_issuers</code> (RFC 7591 §2.3). Absent or empty, the tenant has no registration endpoint: none in its discovery document, and <code>404</code> on the wire. A name no wired mode answers to is refused when a registration arrives, naming the wired ones</td>
+<td>empty: no registration endpoint</td>
+<td>What authorises a registration, among the wired modes: <code>initial_access_token</code>, a token the tenant issues, limits and revokes (RFC 7591 §1.2); <code>open</code>, no credential at all (RFC 7591 §1.3), for a tenant with no real user; <code>software_statement</code>, a statement signed by an authority of <code>statement_issuers</code> (RFC 7591 §2.3). Empty, the tenant has no registration endpoint: none in its discovery document, and <code>404</code> on the wire. A name no wired mode answers to is refused when a registration arrives, naming the wired ones</td>
 </tr>
 <tr>
 <td><code>keep_a_client_unused_for</code></td>
+<td><code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR</code></td>
 <td>integer, 1 or more</td>
 <td><code>7776000</code>, ninety days</td>
 <td>Seconds a registered client that was used may go unused before it is deleted</td>
 </tr>
 <tr>
 <td><code>keep_a_client_never_used_for</code></td>
+<td><code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR</code></td>
 <td>integer, 1 or more</td>
 <td><code>604800</code>, seven days</td>
 <td>Seconds a registered client that was never used lives</td>
 </tr>
 <tr>
 <td><code>sector_identifier_timeout</code></td>
+<td><code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT</code></td>
 <td>number, 0.1 or more</td>
-<td><code>3.0</code></td>
+<td><code>3</code></td>
 <td>Seconds one read of a <code>sector_identifier_uri</code> is given, connection included (OIDC Registration §5), when a client registers or replaces itself</td>
 </tr>
 <tr>
 <td><code>sector_identifier_max_size</code></td>
+<td><code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE</code></td>
 <td>integer, 1 or more</td>
 <td><code>65536</code></td>
 <td>Bytes such a document may answer before the read stops</td>
 </tr>
 <tr>
 <td><code>statement_issuers</code></td>
+<td><code>BEFFROI_REGISTRATION_STATEMENT_ISSUERS</code></td>
 <td>map</td>
-<td>none</td>
-<td>The authorities whose software statements the tenant accepts, keyed by the <code>iss</code> they sign with, compared byte for byte. With none, the <code>software_statement</code> mode registers nobody</td>
+<td><code>{}</code>: none</td>
+<td>The authorities whose software statements the tenant accepts, keyed by the <code>iss</code> they sign with, compared byte for byte, as one JSON document. With none, the <code>software_statement</code> mode registers nobody</td>
 </tr>
 <tr>
 <td><code>statement_issuers.&lt;iss&gt;.jwks</code></td>
+<td>In that document</td>
 <td>JWK Set</td>
-<td>required</td>
+<td>required in an entry</td>
 <td>The public keys of the authority, inline (RFC 7517 §5), and the only keys a statement is verified against, whatever its header names (RFC 8725 §3.10)</td>
 </tr>
 <tr>
 <td><code>statement_issuers.&lt;iss&gt;.signing_algorithms</code></td>
+<td>In that document</td>
 <td>list of strings</td>
-<td>required</td>
+<td>required in an entry</td>
 <td>The JWS algorithms its statements may be signed with, one at least, among those the provider verifies</td>
 </tr>
 <tr>
 <td><code>statement_max_lifetime</code></td>
+<td><code>BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME</code></td>
 <td>integer, 1 or more</td>
 <td><code>300</code>, five minutes</td>
 <td>How far ahead of the request the <code>exp</code> of a software statement may be (RFC 7591 §2.3). A statement without an <code>exp</code> is refused</td>
 </tr>
 <tr>
 <td><code>statement_leeway</code></td>
+<td><code>BEFFROI_REGISTRATION_STATEMENT_LEEWAY</code></td>
 <td>integer, 0 or more</td>
 <td><code>30</code></td>
 <td>Seconds allowed for the clock of an authority, both ways</td>
 </tr>
 <tr>
 <td><code>default_scope</code></td>
+<td><code>BEFFROI_REGISTRATION_DEFAULT_SCOPE</code></td>
 <td>string</td>
-<td>none</td>
-<td>What a client that registers itself and names no <code>scope</code> is registered with, space-delimited (RFC 7591 §2, RFC 6749 §3.3). Left out, such a client is registered with <code>openid</code> alone. A client that names its own scopes keeps them, and a scope written here that the tenant does not offer refuses every registration that names none</td>
+<td>empty: <code>openid</code> alone</td>
+<td>What a client that registers itself and names no <code>scope</code> is registered with, space-delimited (RFC 7591 §2, RFC 6749 §3.3). A client that names its own scopes keeps them, and a scope named here that the tenant does not offer refuses every registration that names none</td>
 </tr>
 <tr>
 <td><code>exempt_confidential_clients_from_pkce</code></td>
+<td>None</td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>Whether the confidential clients the tenant registers are registered without the PKCE requirement, for a tenant whose clients send no <code>code_challenge</code>. A public client is never exempted, <code>plain</code> does not exist, and a challenge a client sends is verified all the same</td>
+<td>Whether the confidential clients the tenant registers are registered without the PKCE requirement, for a tenant whose clients send no <code>code_challenge</code>. A public client is never exempted, <code>plain</code> does not exist, and a challenge a client sends is verified all the same. The application's file does not write it, so every client of the image registers with PKCE required: <a href="../../oidc/clients/#what-the-image-does-not-set">what the image does not set</a></td>
 </tr>
 </tbody>
 </table>
 <h2 id="saml"><code>saml</code><a class="headerlink" href="#saml" title="Link to this section">&para;</a></h2>
-<p>The SAML roles of the tenant and its peers. The routes and services of both roles are always wired,
-and a role that is off serves nothing. Whether a role is on may be an environment variable, read when the
-container builds what the role changes. Service providers are declared only while the identity provider is not
-written off, and upstream identity providers only while the service provider is not: the configuration is
-refused otherwise. A peer kept while an environment variable turns its role off is served by nothing. A
-declaration of a peer that does not hold together fails the build of the container, and one that holds an
-environment variable fails at its first use.</p>
+<p>The SAML roles of the tenant, the peers of each and the SAML keys. The routes and services of both roles are
+in every image, and a role that is off serves nothing. Whether each role is on is a variable, read when the
+container builds what the role changes: <code>.env</code> turns the identity provider on and the service provider off.
+The peers of each role are a JSON document a variable carries whole, read at their first use, the hourly
+refresh of the metadata or the first login: a declaration that does not hold together is refused then, and so
+are the peers of a role that is off, the hourly refresh writing the refusal to the log as an error.</p>
+<h3 id="samlkeys"><code>saml.keys</code><a class="headerlink" href="#samlkeys" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Variable</th>
+<th>Type</th>
+<th>In the image</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>staging_delay</code></td>
+<td><code>BEFFROI_SAML_KEY_STAGING_DELAY</code></td>
+<td>integer, 0 or more</td>
+<td><code>604800</code>, seven days</td>
+<td>How long a new SAML key is published in the metadata before it is used</td>
+</tr>
+<tr>
+<td><code>age</code></td>
+<td><code>BEFFROI_SAML_KEY_AGE</code></td>
+<td>integer, 1 or more</td>
+<td><code>31536000</code>, 365 days</td>
+<td>How long a SAML key works before the timed step stages a successor behind it, counted from its activation</td>
+</tr>
+</tbody>
+</table>
+<p>The two rotate every SAML key of the tenant, the signing key of both roles and the keys upstream identity
+providers encrypt for, whichever role is on, and turn neither role on. The keys of every other family keep the
+figures of <a href="#keys"><code>keys</code></a>.</p>
+<h3 id="samlmetadata"><code>saml.metadata</code><a class="headerlink" href="#samlmetadata" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Variable</th>
+<th>Type</th>
+<th>In the image</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cache_duration</code></td>
+<td><code>BEFFROI_SAML_METADATA_CACHE_DURATION</code></td>
+<td>integer, 1 or more</td>
+<td><code>86400</code>, one day</td>
+<td>The <code>cacheDuration</code> of the metadata of both roles (SAML Metadata §2.3.2), how long a peer keeps them before it reads them again. It is strictly shorter than <code>saml.keys.staging_delay</code>, or the configuration is refused</td>
+</tr>
+</tbody>
+</table>
 <h3 id="samlidentity_provider"><code>saml.identity_provider</code><a class="headerlink" href="#samlidentity_provider" title="Link to this section">&para;</a></h3>
 <p><a href="../../saml/identity-provider/">The identity provider</a> is the role.</p>
 <table>
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>enabled</code></td>
+<td><code>BEFFROI_SAML_IDENTITY_PROVIDER</code></td>
 <td>boolean</td>
-<td><code>false</code></td>
-<td>Whether the tenant is a SAML identity provider. Writing the block turns it on unless it says <code>enabled: false</code>, and <code>identity_provider: true</code> is the short form. Off, the tenant serves no metadata and none of the service providers declared; written off, it declares none</td>
+<td><code>true</code></td>
+<td>Whether the tenant is a SAML identity provider: its metadata at <code>/saml/metadata</code>, and the service providers below. Off, the tenant serves no metadata and none of its service providers</td>
 </tr>
 <tr>
 <td><code>want_authn_requests_signed</code></td>
+<td><code>BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED</code></td>
 <td>boolean</td>
 <td><code>true</code></td>
 <td>What the metadata say in <code>WantAuthnRequestsSigned</code> (SAML Metadata §2.4.3). It announces, and decides nothing: whether a request needs a signature is decided per service provider</td>
 </tr>
-<tr>
-<td><code>staging_delay</code></td>
-<td>integer, 0 or more</td>
-<td><code>604800</code>, seven days</td>
-<td>How long a new SAML key is published before it is used</td>
-</tr>
-<tr>
-<td><code>age</code></td>
-<td>integer, 1 or more</td>
-<td><code>31536000</code>, 365 days</td>
-<td>How long a SAML key works before the timed step stages a successor behind it, counted from its activation</td>
-</tr>
-<tr>
-<td><code>cache_duration</code></td>
-<td>integer, 1 or more</td>
-<td><code>86400</code>, one day</td>
-<td>The <code>cacheDuration</code> of the metadata of both roles (SAML Metadata §2.3.2). It is strictly shorter than <code>staging_delay</code>, or the configuration is refused</td>
-</tr>
 </tbody>
 </table>
-<p><code>staging_delay</code> and <code>age</code> rotate every SAML key of the tenant, the signing key of both roles and the keys
-upstream identity providers encrypt for, whichever role is on, and <code>cache_duration</code> is written in the metadata
-of both roles.</p>
 <h3 id="samlservice_provider"><code>saml.service_provider</code><a class="headerlink" href="#samlservice_provider" title="Link to this section">&para;</a></h3>
 <p><a href="../../saml/upstream-identity-providers/">Upstream identity providers</a> is the role.</p>
 <table>
 <thead>
 <tr>
 <th>Option</th>
+<th>Variable</th>
 <th>Type</th>
-<th>Default</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>enabled</code></td>
+<td><code>BEFFROI_SAML_SERVICE_PROVIDER</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>Whether the tenant is a SAML service provider to identity providers upstream of it, with the same short form. Off, it serves nothing, and its routes answer <code>404</code></td>
+<td>Whether the tenant is a SAML service provider to identity providers upstream of it. Off, it serves nothing, and its routes answer <code>404</code></td>
 </tr>
 <tr>
 <td><code>entity_id</code></td>
+<td><code>BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID</code></td>
 <td>string, not empty</td>
-<td>the URL of its metadata</td>
+<td>empty: the URL of its metadata</td>
 <td>The entity ID of the service provider: an absolute URI of 1024 characters at most, with no whitespace, control, format or invisible character, and never the entity ID of the identity provider of the tenant</td>
 </tr>
 </tbody>
 </table>
 <h3 id="samlservice_providers"><code>saml.service_providers</code><a class="headerlink" href="#samlservice_providers" title="Link to this section">&para;</a></h3>
-<p>The service providers of the tenant, one entry per entity ID. <a href="../../saml/service-providers/">Service providers</a>
-is how one is declared.</p>
+<p>The service providers of the tenant, one entry per entity ID, which <code>BEFFROI_SAML_SERVICE_PROVIDERS</code> carries
+whole, <code>{}</code> in <code>.env</code>. <a href="../../saml/service-providers/">Service providers</a> is how one is declared.</p>
 <table>
 <thead>
 <tr>
@@ -5727,8 +6004,9 @@ is how one is declared.</p>
 </tbody>
 </table>
 <h3 id="samlidentity_providers"><code>saml.identity_providers</code><a class="headerlink" href="#samlidentity_providers" title="Link to this section">&para;</a></h3>
-<p>The upstream identity providers of the tenant, one entry per entity ID.
-<a href="../../saml/upstream-identity-providers/">Upstream identity providers</a> is how one is declared.</p>
+<p>The upstream identity providers of the tenant, one entry per entity ID, which
+<code>BEFFROI_SAML_IDENTITY_PROVIDERS</code> carries whole, <code>{}</code> in <code>.env</code>. <a href="../../saml/upstream-identity-providers/">Upstream identity
+providers</a> is how one is declared.</p>
 <table>
 <thead>
 <tr>
@@ -5827,7 +6105,7 @@ is how one is declared.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

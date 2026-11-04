@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and what the issued token says.">
+        <meta name="description" content="Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and why no client of a deployment of the image is registered for it.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -73,7 +73,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Token exchange">
-  <meta property="og:description" content="Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and what the issued token says.">
+  <meta property="og:description" content="Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and why no client of a deployment of the image is registered for it.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -4019,64 +4019,31 @@ addressed to resources the first one was already addressed to, and good for no s
 carry (RFC 8693 §2.1). It is how a gateway that received a person's token calls the service behind it with a
 token of its own, narrowed to that service, and how a service tells the resource it calls that it acts for
 somebody else.</p>
-<p>The presented token may have been issued to any client of the tenant: holding it is what the request is
-about. What the client may do with it is registered in advance and never asked for, and the answer is an
-access token and nothing else.</p>
+<p><strong>No client of a deployment of the image is registered for it</strong>, and no access token of the image is one it
+takes: <a href="#registering-a-client-for-it">registering a client for it</a> says why. The rest of this page is what the
+grant does for a client that carries <code>token_exchange</code> and a token addressed to a resource.</p>
 <h2 id="registering-a-client-for-it">Registering a client for it<a class="headerlink" href="#registering-a-client-for-it" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">gateway</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'API</span><span class="nv"> </span><span class="s">gateway'</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(GATEWAY_SECRET)%'</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">client_secret_basic</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'urn:ietf:params:oauth:grant-type:token-exchange'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">client_credentials</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'invoices.read'</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">            </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://invoices.example.com'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">            </span><span class="nt">token_exchange</span><span class="p">:</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">                </span><span class="nt">subject_token_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'urn:ietf:params:oauth:token-type:access_token'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">                </span><span class="nt">may_act_for_a_user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span></code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Member</th>
-<th>What it decides</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>token_exchange.subject_token_types</code></td>
-<td>The types of token the client may present as a <code>subject_token</code> or as an <code>actor_token</code> (RFC 8693 §3), at least one. The provider reads one type, <code>urn:ietf:params:oauth:token-type:access_token</code>, an access token of this provider in either shape; a name it does not read is refused</td>
-</tr>
-<tr>
-<td><code>token_exchange.may_act_for_a_user</code></td>
-<td>Whether the client may present a token issued on a sign-in at this provider. <code>false</code> by default: a service that only ever exchanges tokens clients hold for themselves is not the same party as a gateway carrying a person's token, and the registration says which of the two it is. A token that carries no sign-in, one a client holds for itself or one of a <a href="../jwt-bearer/">JWT bearer</a> assertion, is presented without it</td>
-</tr>
-<tr>
-<td><code>resources</code></td>
-<td>The resources the new token may be addressed to. Every resource of the new token is one of these as well as one of the presented token</td>
-</tr>
-<tr>
-<td><code>scope</code></td>
-<td>The scopes the new token may carry. Every scope of the new token is one of these as well as one of the presented token</td>
-</tr>
-<tr>
-<td><code>may_act</code></td>
-<td>Registered on the client the presented token was issued to, not on this one: <a href="#who-may-act">below</a></td>
-</tr>
-</tbody>
-</table>
-<p>A client registered for the grant declares <code>token_exchange</code>, and a <code>token_exchange</code> without the grant is
-refused. The <code>client_id</code> of a client registered for the grant is one a <code>sub</code> can be, one to 255 visible ASCII
-characters and no space, since it is named where a subject is expected. <code>client_credentials</code> is beside the
-grant in the example for the <a href="#delegation-and-impersonation">delegation</a>, whose actor token is a token the
-client holds for itself.</p>
-<p><strong>The new token never holds more than the registration of the client that asks.</strong> A request that names no
-<code>scope</code> asks for every scope of the presented token, and one that names no <code>resource</code> for every resource it
-is addressed to; when that is more than the client registered, the request fails and no token is issued. A
-client that may be presented a token holding more than it registered names, in <code>scope</code> and <code>resource</code>, what
-it registered. The request of a public client fails the same way: an exchanged token is issued only to a
-client that authenticates itself.</p>
+<p>What a client may do at the exchange is registered in advance and never asked for, in the <code>token_exchange</code>
+member:</p>
+<ul>
+<li><code>subject_token_types</code>, the types of token the client may present as a <code>subject_token</code> or an <code>actor_token</code>
+  (RFC 8693 §3), at least one. The provider reads one type, <code>urn:ietf:params:oauth:token-type:access_token</code>,
+  an access token of this provider in either shape.</li>
+<li><code>may_act_for_a_user</code>, whether the client may present a token issued on a sign-in at this provider, <code>false</code>
+  when left out. A token that carries no sign-in, one a client holds for itself or one of a <a href="../jwt-bearer/">JWT
+  bearer</a> assertion, is presented without it.</li>
+</ul>
+<p>The grant and the member come together or not at all. The <code>client_id</code> of a client of the grant is one a <code>sub</code>
+can be, one to 255 visible ASCII characters and no space, since it is named where a subject is expected, and a
+public client is refused the grant.</p>
+<p><strong><code>token_exchange</code> is a member of the deployment.</strong> A registration that carries it is refused with
+<code>invalid_client_metadata</code>, and so is a registration that names the grant without it. A deployment of the image
+declares no client, and no variable gives the member to one, so no client of the image is registered for the
+grant, and the token endpoint answers a request of it with <code>unauthorized_client</code> (<a href="../../clients/#what-the-image-does-not-set">what the image does not
+set</a>).</p>
+<p><strong>Nor is an access token of the image exchangeable.</strong> A client of the image registers no resource, so each of
+its access tokens is addressed to the client itself, and an exchange refuses a token addressed to its own
+client: it was asked for no resource, so there is nothing to narrow.</p>
 <h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4092,7 +4059,7 @@ client that authenticates itself.</p>
 </tr>
 <tr>
 <td><code>subject_token</code></td>
-<td>Required: the token the new one is about</td>
+<td>Required: the token the new one is about, which may have been issued to any client of the tenant</td>
 </tr>
 <tr>
 <td><code>subject_token_type</code></td>
@@ -4112,120 +4079,44 @@ client that authenticates itself.</p>
 </tr>
 <tr>
 <td><code>scope</code></td>
-<td>Optional: a subset of the scopes of the presented token, each one registered by the client. Absent, the request asks for all of the presented token's</td>
+<td>Optional: a subset of the scopes of the presented token, each one registered by the client. Absent, all of the presented token's</td>
 </tr>
 <tr>
 <td><code>resource</code></td>
-<td>Optional and repeatable: a subset of the resources the presented token is addressed to, each one registered by the client. Absent, the request asks for all of the presented token's</td>
+<td>Optional and repeatable: a subset of the resources the presented token is addressed to, each one registered by the client. Absent, all of the presented token's</td>
 </tr>
 <tr>
 <td><code>audience</code></td>
-<td>Refused: what a token of this provider is addressed to is named by <code>resource</code> (RFC 8707 §2), and a logical name beside it would be a second way of saying it with nothing registered behind it</td>
+<td>Refused with <code>invalid_target</code>: what a token of this provider is addressed to is named by <code>resource</code> (RFC 8707 §2)</td>
 </tr>
 </tbody>
 </table>
 <h2 id="what-is-checked">What is checked<a class="headerlink" href="#what-is-checked" title="Link to this section">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Refusal</th>
-<th>Error</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>The client did not register <code>token_exchange</code></td>
-<td><code>unauthorized_client</code></td>
-</tr>
-<tr>
-<td>A <code>requested_token_type</code> other than the access token type</td>
-<td><code>invalid_request</code></td>
-</tr>
-<tr>
-<td>An <code>audience</code> parameter</td>
-<td><code>invalid_target</code></td>
-</tr>
-<tr>
-<td>A token type the provider does not read, or the client did not register, or a type missing beside its token, or present without one</td>
-<td><code>invalid_request</code></td>
-</tr>
-<tr>
-<td>A presented token this provider does not honour, below</td>
-<td><code>invalid_request</code></td>
-</tr>
-<tr>
-<td>A subject token somebody signed in for, presented by a client not registered with <code>may_act_for_a_user</code></td>
-<td><code>invalid_request</code></td>
-</tr>
-<tr>
-<td>An actor token issued to another client than the one presenting it</td>
-<td><code>invalid_request</code></td>
-</tr>
-<tr>
-<td>A party <code>may_act</code> does not name</td>
-<td><code>invalid_request</code></td>
-</tr>
-<tr>
-<td>A scope the presented token does not carry, or a <code>scope</code> that is not a list of scope tokens</td>
-<td><code>invalid_scope</code></td>
-</tr>
-<tr>
-<td>A resource the presented token is not addressed to, or a presented token addressed to its own client and to no resource</td>
-<td><code>invalid_target</code></td>
-</tr>
-</tbody>
-</table>
-<p>A scope or a resource of the new token that the client did not register, and a public client, make the
-request fail with no token issued, as said above.</p>
-<p><strong>A presented token is read the way the provider's own endpoints read one.</strong> It is an access token of this
-provider, in either shape, that has not expired; and a token issued on a sign-in at this provider is one
-whose session has not ended, whose grant has not been revoked, and which names a person the provider still
-serves, so that a session somebody ended cannot be turned into a fresh token by a service that kept an old
-one. What the client is told is that the token is not good, and not which of those questions it failed
-(RFC 8693 §2.2.2).</p>
-<p><strong>A token addressed to its own client is not exchangeable.</strong> It was asked for no resource, so there is
-nothing to narrow, and the new token could only be addressed outside what the old one covered.</p>
+<p>A presented token is read the way the provider's own endpoints read one: an access token of this provider that
+has not expired; when it was issued on a sign-in, whose session has not ended and whose grant has not been
+revoked; and when it names a person, one the provider still serves. The client is told that the token is not
+good, and not which of those questions it failed (RFC 8693 §2.2.2).</p>
+<p>A client not registered for the exchange is refused with <code>unauthorized_client</code>. A <code>requested_token_type</code> of
+another type, a token type the provider does not read or the client did not register, a presented token it
+does not honour, a token issued on a sign-in presented by a client without <code>may_act_for_a_user</code>, an actor
+token issued to another client than the one presenting it, and a party <code>may_act</code> does not name are
+<code>invalid_request</code>. A scope the presented token does not carry, or the client did not register, is
+<code>invalid_scope</code>; a resource the presented token is not addressed to, or the client did not register, and a
+presented token addressed to its own client, are <code>invalid_target</code>.</p>
 <h2 id="delegation-and-impersonation">Delegation and impersonation<a class="headerlink" href="#delegation-and-impersonation" title="Link to this section">&para;</a></h2>
-<p>The two cases of RFC 8693 §1.3 are told apart by the request and by nothing else: no flag, scope or
-registration member turns one into the other.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="delegation-with-an-actor-token" name="__tabbed_1" type="radio" /><input id="impersonation-without-one" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="delegation-with-an-actor-token">Delegation, with an actor token</label><label for="impersonation-without-one">Impersonation, without one</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p>The new token names who acts for the subject in an <code>act</code> claim (RFC 8693 §4.1), whose <code>sub</code> is the
-subject of the actor token. The actor token is a token issued to the client that presents it, typically
-one it holds for itself, whose <code>sub</code> is its <code>client_id</code>: a token is held by whoever holds it, so a client
-that could present somebody else's would write that somebody into the <code>act</code> of a token they never asked
-for.</p>
-<p>When the presented token already carried an <code>act</code>, the new actor is added around it, the most recent
-actor outermost, so a chain of exchanges nests and is never flattened:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">"act"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invoices-worker"</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"act"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gateway"</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<p>The new token says nothing of anybody acting beyond what the presented token already said: it is the
-subject, and the <code>act</code> the presented token carried, if any, is carried unchanged.</p>
-</div>
-</div>
-</div>
+<p>The two cases of RFC 8693 §1.1 are told apart by the request and by nothing else. With an <code>actor_token</code>, the
+exchange is a delegation: the new token names who acts for the subject in an <code>act</code> claim (RFC 8693 §4.1),
+whose <code>sub</code> is the subject of the actor token, which has to be a token issued to the client that presents it.
+An <code>act</code> the presented token already carried is nested inside the new one, the most recent actor outermost.
+Without one, it is an impersonation: the new token says nothing of anybody acting beyond what the presented
+token said, and carries its <code>act</code>, if any, unchanged.</p>
 <h3 id="who-may-act">Who may act<a class="headerlink" href="#who-may-act" title="Link to this section">&para;</a></h3>
-<p><code>may_act</code> is the word of the subject's side on the matter (RFC 8693 §4.4). Registered on a client, it names
-the one party that may act for the subject of a token issued to that client: it is written on every
-self-contained token that client receives, and an exchange of one of its tokens is refused with
-<code>invalid_request</code> for anybody else, whatever the registration of the client that asks says. The party
-compared is the one about to hold the new token: the outermost actor the new token would name or, when it
-would name none, the client that asked, whose <code>client_id</code> stands for it. A client that registered no
-<code>may_act</code> leaves the decision to the registration of whoever asks.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">frontend</span><span class="p">:</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">            </span><span class="c1"># ...</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">            </span><span class="nt">may_act</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gateway</span>
-</span></code></pre></div>
+<p><code>may_act</code> is the word of the subject's side (RFC 8693 §4.4). Registered on a client, it names the one party
+that may act for the subject of a token issued to that client: it is written on every self-contained token
+that client receives, and an exchange of a token of that client is refused with <code>invalid_request</code> for anybody
+else, the party compared being the outermost actor the new token would name or, when it would name none, the
+client that asked. It is a member of the deployment too, which no client of the image carries (<a href="../../clients/#what-the-image-does-not-set">what the image
+does not set</a>).</p>
 <h2 id="what-the-issued-token-says">What the issued token says<a class="headerlink" href="#what-the-issued-token-says" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4237,7 +4128,7 @@ would name none, the client that asked, whose <code>client_id</code> stands for 
 <tbody>
 <tr>
 <td><code>sub</code></td>
-<td>The <code>sub</code> of the presented token, unchanged, as it was written for the client that token was issued to (RFC 8693 §2.2.1)</td>
+<td>The <code>sub</code> of the presented token, unchanged (RFC 8693 §2.2.1)</td>
 </tr>
 <tr>
 <td><code>client_id</code></td>
@@ -4265,34 +4156,18 @@ would name none, the client that asked, whose <code>client_id</code> stands for 
 </tr>
 <tr>
 <td><code>person</code></td>
-<td>The person the token is about, sealed, when the presented token was issued on a sign-in: below</td>
-</tr>
-<tr>
-<td><code>may_act</code></td>
-<td>In the self-contained shape, when the client that asked registered one</td>
+<td>The person the token is about, sealed by the key management service of the tenant, when the presented token names a person (<a href="../../tokens/access-tokens/#the-person-a-token-is-about">access tokens</a>)</td>
 </tr>
 <tr>
 <td><code>cnf</code></td>
-<td>What the new token is bound to: what the exchange request binds it to (<a href="../#what-the-token-endpoint-does">grants</a>), whatever the presented token was bound to</td>
+<td>What the exchange request binds the new token to (<a href="../#what-the-token-endpoint-does">grants</a>), whatever the presented token was bound to</td>
 </tr>
 </tbody>
 </table>
-<p>The answer carries the access token, <code>issued_token_type</code> set to <code>urn:ietf:params:oauth:token-type:access_token</code>
-(RFC 8693 §2.2.1), its <code>token_type</code>, <code>expires_in</code> and <code>scope</code>, and no refresh token and no ID token. The new
-token lives <code>tokens.access_token_ttl</code>, in the shape the client that asked registered.</p>
-<p><strong>The new token descends from the grant the presented one descended from.</strong> Taking that grant back takes
-both, and the end of the session the presented token named refuses both, at the provider's own endpoints
-and at its introspection.</p>
-<p><strong>The issued token knows the person it is about, when the presented token was issued on a sign-in.</strong> Its
-<code>sub</code> was written for another client, and may be a pairwise subject the client that asked cannot read. So
-the provider keeps the person the presented token named beside it: on the record of an opaque token, and,
-in a self-contained one, as the private claim <code>person</code>, sealed by the key management service of the tenant,
-which only the provider can open and which tells the holder nothing it did not know. That is what lets the
-provider's own endpoints and introspection read an exchanged token, and what puts the acts it gives rise to,
-the tokens issued and the introspections that describe it, in the journal of that person.</p>
-<p>A presented token that carries no sign-in names no person to the exchange: a token a client holds for
-itself, and a token of a <a href="../jwt-bearer/">JWT bearer</a> assertion alike. The token issued for it then carries
-no <code>person</code> claim, its record names nobody, and its <code>tokens.issued</code> act is written in no journal.</p>
+<p>The answer carries the access token, <code>issued_token_type</code> set to
+<code>urn:ietf:params:oauth:token-type:access_token</code> (RFC 8693 §2.2.1), its <code>token_type</code>, <code>expires_in</code> and <code>scope</code>,
+and no refresh token and no ID token. The new token descends from the grant the presented one descended from:
+taking that grant back takes both, and the end of the session the presented token named refuses both.</p>
 
 
 
@@ -4313,7 +4188,7 @@ no <code>person</code> claim, its record names nobody, and its <code>tokens.issu
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

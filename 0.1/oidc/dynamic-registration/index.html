@@ -4023,79 +4023,75 @@
 
 <h1 id="dynamic-registration">Dynamic registration<a class="headerlink" href="#dynamic-registration" title="Link to this section">&para;</a></h1>
 <p>A client may register itself at <code>/register</code> (RFC 7591), and then read, replace and delete its own
-registration at the URI it was handed (RFC 7592). Registration is closed by default: a tenant opens it by
-naming a mode, which decides what authorises a registration. A client that registers itself is read by the
-reader a <a href="../clients/">declared</a> client is read by, under the same rules, and is held besides to what its
-tenant offers.</p>
+registration at the URI it was handed (RFC 7592). It is how a client reaches a deployment of the image, which
+declares none. Registration is closed by default: a deployment opens it by naming a mode, which decides what
+authorises a registration. A client that registers itself is read by the reader of <a href="../clients/">every client</a>,
+under its rules, and is held besides to what its tenant offers.</p>
 <h2 id="opening-it">Opening it<a class="headerlink" href="#opening-it" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">client_registration</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">initial_access_token</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">default_scope</span><span class="p">:</span><span class="w"> </span><span class="s">'openid</span><span class="nv"> </span><span class="s">profile</span><span class="nv"> </span><span class="s">email'</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">keep_a_client_unused_for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7776000</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">keep_a_client_never_used_for</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">604800</span>
+<p>A deployment opens registration with the variables of its environment, given to both processes
+(<a href="../../application/configuration/#registration">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_REGISTRATION_MODE=initial_access_token
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BEFFROI_REGISTRATION_DEFAULT_SCOPE='openid profile email'
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>mode</code></td>
-<td>none</td>
-<td>What authorises a registration: <code>initial_access_token</code>, <code>software_statement</code> or <code>open</code>. Left out, or empty, the tenant registers nobody and announces no registration endpoint</td>
+<td><code>BEFFROI_REGISTRATION_MODE</code></td>
+<td>empty</td>
+<td>What authorises a registration: <code>initial_access_token</code>, <code>software_statement</code> or <code>open</code>. Empty, the tenant registers nobody and announces no registration endpoint</td>
 </tr>
 <tr>
-<td><code>default_scope</code></td>
-<td>none</td>
-<td>What a client that names no <code>scope</code> is registered with (RFC 7591 §2). Left out, <code>openid</code> alone. It is held to what the tenant hands out like every registered scope, so a scope written here that the tenant does not offer refuses every registration that names no scope</td>
+<td><code>BEFFROI_REGISTRATION_DEFAULT_SCOPE</code></td>
+<td>empty</td>
+<td>What a client that names no <code>scope</code> is registered with (RFC 7591 §2), space-delimited. Empty, <code>openid</code> alone. It is held to what the tenant hands out like every registered scope, so a scope named here that the tenant does not offer refuses every registration that names no scope</td>
 </tr>
 <tr>
-<td><code>exempt_confidential_clients_from_pkce</code></td>
-<td><code>false</code></td>
-<td>The confidential clients this policy registers are registered without the PKCE requirement. A public client is never exempted, and a challenge an exempted client sends is verified all the same</td>
-</tr>
-<tr>
-<td><code>keep_a_client_unused_for</code></td>
+<td><code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR</code></td>
 <td><code>7776000</code></td>
 <td>Seconds a client that was used may go unused before it is deleted, ninety days</td>
 </tr>
 <tr>
-<td><code>keep_a_client_never_used_for</code></td>
+<td><code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR</code></td>
 <td><code>604800</code></td>
 <td>Seconds a client that was never used lives at all, seven days</td>
 </tr>
 <tr>
-<td><code>statement_issuers</code></td>
-<td>none</td>
+<td><code>BEFFROI_REGISTRATION_STATEMENT_ISSUERS</code></td>
+<td><code>{}</code></td>
 <td>The authorities whose software statements the tenant accepts, for the <code>software_statement</code> mode</td>
 </tr>
 <tr>
-<td><code>statement_max_lifetime</code></td>
+<td><code>BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME</code></td>
 <td><code>300</code></td>
 <td>Seconds ahead of the request the <code>exp</code> of a software statement may be</td>
 </tr>
 <tr>
-<td><code>statement_leeway</code></td>
+<td><code>BEFFROI_REGISTRATION_STATEMENT_LEEWAY</code></td>
 <td><code>30</code></td>
 <td>Seconds allowed of the clock of an authority, both ways</td>
 </tr>
 <tr>
-<td><code>sector_identifier_timeout</code></td>
-<td><code>3.0</code></td>
+<td><code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT</code></td>
+<td><code>3</code></td>
 <td>Seconds one read of a <code>sector_identifier_uri</code> is given, connection included</td>
 </tr>
 <tr>
-<td><code>sector_identifier_max_size</code></td>
+<td><code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE</code></td>
 <td><code>65536</code></td>
 <td>Bytes a <code>sector_identifier_uri</code> may answer before the read stops</td>
 </tr>
 </tbody>
 </table>
+<p>The policy of a tenant may also exempt the confidential clients it registers from PKCE, and no variable does:
+every client of the image is registered with PKCE required (<a href="../clients/#what-the-image-does-not-set">what the image does not
+set</a>).</p>
 <p><strong>Closed is the absence of the endpoint, not a mode that refuses.</strong> A tenant that names no mode answers a
 registration, a <code>POST</code> to <code>/register</code>, with a <code>404</code>, as it answers a path it does not serve, and its
 discovery document has no <code>registration_endpoint</code>. A tenant that names a mode announces the endpoint, and its
@@ -4106,10 +4102,10 @@ that are wired.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="an-initial-access-token" name="__tabbed_1" type="radio" /><input id="a-software-statement" name="__tabbed_1" type="radio" /><input id="open" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="an-initial-access-token">An initial access token</label><label for="a-software-statement">A software statement</label><label for="open">Open</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p><code>mode: initial_access_token</code> registers a client presented by an initial access token the tenant issued
-(RFC 7591 §1.2): a credential for the team that integrates, named, worth a number of registrations and
-no more, expiring, and revocable. It opens no other endpoint, carries no subject and no scope, and says
-one thing only: that whoever holds it may register a client with this tenant.</p>
+<p><code>BEFFROI_REGISTRATION_MODE=initial_access_token</code> registers a client presented by an initial access token
+the tenant issued (RFC 7591 §1.2): a credential for the team that integrates, named, worth a number of
+registrations and no more, expiring, and revocable. It opens no other endpoint, carries no subject and no
+scope, and says one thing only: that whoever holds it may register a client with this tenant.</p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nf">POST</span> <span class="nn">/register</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">op.example.com</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -4132,28 +4128,24 @@ served of what it is worth, and whether it still authorises anything. <code>beff
 takes one back at once, and the clients it registered stay.</p>
 </div>
 <div class="tabbed-block">
-<p><code>mode: software_statement</code> registers a client presented by a statement an authority the tenant pins
-signed (RFC 7591 §2.3), in the <code>software_statement</code> member of the body. The provider issues nothing: the
-proof is the authority's, which is what lets a registration cross the boundary of an organisation.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">client_registration</span><span class="p">:</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">software_statement</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="nt">statement_issuers</span><span class="p">:</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">            </span><span class="s">'https://authority.example.org'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">                </span><span class="nt">jwks</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:AUTHORITY_JWKS)%'</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">                </span><span class="nt">signing_algorithms</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'ES256'</span><span class="p p-Indicator">]</span>
+<p><code>BEFFROI_REGISTRATION_MODE=software_statement</code> registers a client presented by a statement an authority
+the tenant pins signed (RFC 7591 §2.3), in the <code>software_statement</code> member of the body. The provider
+issues nothing: the proof is the authority's, which is what lets a registration cross the boundary of an
+organisation.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>BEFFROI_REGISTRATION_MODE=software_statement
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>BEFFROI_REGISTRATION_STATEMENT_ISSUERS='{"https://authority.example.org": {"jwks": {"keys": [&lt;the public JWK of the authority&gt;]}, "signing_algorithms": ["ES256"]}}'
 </span></code></pre></div>
 <p>An authority is keyed by the <code>iss</code> it signs with, an absolute URI compared byte for byte, and pins its
-public keys inline and the algorithms it signs with, among those the provider verifies. The key comes
-from this configuration and never from the statement: a key or a <code>jwks_uri</code> the statement names is never
-read (RFC 8725 §3.10). A tenant that pins no authority accepts no statement.</p>
-<p>The statement is verified before any of it is read as metadata. Its signature is checked against the
-keys of the authority its <code>iss</code> names, under one of the algorithms pinned for it. Its <code>aud</code> names the
-issuer of the tenant, once. Its <code>exp</code> is
-present, not past, and no further ahead than <code>statement_max_lifetime</code>. Its <code>iat</code> is present and not in
-the future. Its <code>jti</code> is present and never seen before, remembered until the <code>exp</code>, so one statement
-registers one client. RFC 7591 §2.3 asks none of this of a statement; the provider asks it of every
-signed thing it takes back. Whatever fails, the answer is the same <code>invalid_software_statement</code>.</p>
+public keys inline, a JWK Set, and the algorithms it signs with, among those the provider verifies. The
+key comes from this variable and never from the statement: a key or a <code>jwks_uri</code> the statement names is
+never read (RFC 8725 §3.10). A tenant that pins no authority accepts no statement.</p>
+<p>The statement is verified before any of it is read as metadata. Its signature is checked against the keys
+of the authority its <code>iss</code> names, under one of the algorithms pinned for it. Its <code>aud</code> names the issuer of
+the tenant, once. Its <code>exp</code> is present, not past, and no further ahead than
+<code>BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME</code>. Its <code>iat</code> is present and not in the future. Its <code>jti</code> is
+present and never seen before, remembered until the <code>exp</code>, so one statement registers one client. RFC 7591
+§2.3 asks none of this of a statement; the provider asks it of every signed thing it takes back. Whatever
+fails, the answer is the same <code>invalid_software_statement</code>.</p>
 <p><strong>What a statement says outranks what the client sent</strong> (RFC 7591 §3.1.1): a member both carry is the
 statement's, so the registration is written with the <code>client_name</code> and the <code>logo_uri</code> the authority
 signed. A statement is held to what the tenant offers as a body is: one that names a scope, a grant or a
@@ -4165,14 +4157,13 @@ object is refused with <code>invalid_client_metadata</code> before anything else
 carries no statement is answered <code>401</code>.</p>
 </div>
 <div class="tabbed-block">
-<p><code>mode: open</code> registers whoever asks, with no credential at all (RFC 7591 §1.3): nothing authorises, so
-nothing is read and nothing is refused before the metadata is, and everything else, the reader, the
-policy and the refusals, is the same. A credential presented anyway is read by nothing and spent by
-nothing.</p>
+<p><code>BEFFROI_REGISTRATION_MODE=open</code> registers whoever asks, with no credential at all (RFC 7591 §3):
+nothing authorises, so nothing is read and nothing is refused before the metadata is, and everything else,
+the reader, the policy and the refusals, is the same. A credential presented anyway is read by nothing and
+spent by nothing.</p>
 <p>A client nobody vouched for chooses the name and the logo a person reads on the consent page, and a tenant
-that names this mode for its real users lets anybody write them. The application reads its mode from
-<code>BEFFROI_REGISTRATION_MODE</code>, empty in its image, which therefore registers nobody until a deployment names
-a mode; its development stack names <code>open</code>, for the conformance suite to register its clients.</p>
+that names this mode for its real users lets anybody write them. The development stack names it, for the
+conformance suite to register its clients.</p>
 </div>
 </div>
 </div>
@@ -4199,23 +4190,24 @@ read, and in the <code>software_statement</code> mode before anything, the state
 <li><strong>The members this provider defines for itself are not a client's to send</strong>: <code>requires_consent</code>,
   <code>requires_pkce</code>, <code>access_token_format</code>, <code>resources</code>, <code>token_exchange</code>, <code>may_act</code> and
   <code>require_sender_constrained_tokens</code> are exceptions and privileges. A body that carries one is refused, and a
-  software statement does not grant one either: a client that registers itself never obtains them.</li>
+  software statement does not grant one either: a client that registers itself never obtains them, and no
+  variable gives them to it (<a href="../clients/#what-the-image-does-not-set">what the image does not set</a>).</li>
 <li><strong>A member nobody reads is refused</strong>, <code>client_id</code> and <code>client_secret</code> included: the provider draws both.</li>
 <li><strong>What a member names is one the provider is wired with</strong>: a grant, a method, an algorithm, a mode of
   delivery, a kind of subject, a type of authorization detail.</li>
 <li><strong>A scope is one the tenant hands out</strong>, the ones its discovery document lists in <code>scopes_supported</code>.</li>
 <li><strong>A <code>sector_identifier_uri</code> is proven</strong>: the provider reads the document behind it once, with one <code>GET</code>,
-  no redirect followed, within <code>sector_identifier_timeout</code> and <code>sector_identifier_max_size</code>, and the document
+  no redirect followed, within the seconds and the bytes the two <code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_*</code>
+  variables give it, and the document
   is the JSON array of URIs of OIDC Registration §5 that lists every redirect URI of the client, or its
   <code>jwks_uri</code> when it registers no redirect URI (CIBA Core §4). A document that cannot be read, or that leaves
   one out, refuses the registration (<a href="../pairwise-subjects/">pairwise subjects</a>).</li>
 </ul>
 <p>What a client leaves out takes the defaults of RFC 7591 §2: the <code>authorization_code</code> grant alone, the <code>code</code>
 response type that goes with it, and <code>client_secret_basic</code>. A scope left out is the <code>default_scope</code> of the
-tenant, or <code>openid</code> alone. The registration policy writes beside the registration what it grants, the
-default scope on a registration that named none and the PKCE exemption on a confidential client when the
-tenant grants it, and that is read back before what the client sent, until the policy writes the
-registration again.</p>
+tenant, <code>BEFFROI_REGISTRATION_DEFAULT_SCOPE</code>, or <code>openid</code> alone. The registration policy writes beside the
+registration what it grants, the default scope on a registration that named none, and that is read back
+before what the client sent, until the policy writes the registration again.</p>
 <h2 id="the-answer">The answer<a class="headerlink" href="#the-answer" title="Link to this section">&para;</a></h2>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -4295,10 +4287,11 @@ discovery document: a client holds the URI it was handed.</p>
 <h2 id="the-clients-nobody-uses">The clients nobody uses<a class="headerlink" href="#the-clients-nobody-uses" title="Link to this section">&para;</a></h2>
 <p>A registered client carries the date it was last used, an authorization code issued for it or tokens issued
 to it at the token endpoint, and the provider deletes the ones nobody uses any more, on a timed step that
-runs every hour: a client used, but not for <code>keep_a_client_unused_for</code>, and a client never used and
-registered more than <code>keep_a_client_never_used_for</code> ago. One run deletes a hundred clients at most, and the
-next run takes the rest; what it deleted is written to the log. A tenant with no registration policy deletes
-nothing, and a declared client is never deleted: it goes away with its block in the configuration.</p>
+runs every hour: a client used, but not for <code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR</code> seconds, and a
+client never used and registered more than <code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR</code> seconds ago.
+One run deletes a hundred clients at most, and the next run takes the rest; what it deleted is written to the
+log. A tenant that registers nobody deletes nothing, and a client the configuration declares, which the image
+holds none of, is never deleted.</p>
 <p>Each deletion, by the step, by the client itself or by <code>beffroi:client:delete</code>, emits the same
 <code>RegisteredClientDeleted</code> event.</p>
 <h2 id="refusals">Refusals<a class="headerlink" href="#refusals" title="Link to this section">&para;</a></h2>
@@ -4334,8 +4327,7 @@ nothing, and a declared client is never deleted: it goes away with its block in 
 </table>
 <p>What these endpoints answer themselves, a registration, a read, a replacement, a deletion and their
 refusals, carries <code>Cache-Control: no-cache, no-store</code> and <code>Pragma: no-cache</code>. The description of a <code>400</code> is
-the sentence of the refusal, in ASCII (RFC 7591 §3.2.2), the same sentence a deployment reads when a
-declaration of the same member is refused.</p>
+the sentence of the refusal, in ASCII (RFC 7591 §3.2.2).</p>
 <p><a href="../clients/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Clients</a> and <a href="../pairwise-subjects/">pairwise subjects</a></p>
 
@@ -4358,7 +4350,7 @@ declaration of the same member is refused.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

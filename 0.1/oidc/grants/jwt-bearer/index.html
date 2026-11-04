@@ -4009,19 +4009,14 @@ somebody the tenant already knows, through an identity an operator linked, or it
 <p>Whoever holds the signing key of a trusted issuer can name a person of the tenant and be answered with an
 access token, so everything about that issuer is declared in advance and nothing about it is inferred.</p>
 <h2 id="declaring-the-issuer">Declaring the issuer<a class="headerlink" href="#declaring-the-issuer" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">trusted_issuers</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="s">'https://issuer.example.com'</span><span class="p p-Indicator">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="nt">jwks_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://issuer.example.com/jwks.json'</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">signing_algorithms</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'ES256'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">            </span><span class="nt">clients</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'gateway'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="nt">identity_provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example-issuer</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">            </span><span class="nt">trusted_scopes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'invoices.read'</span><span class="p p-Indicator">]</span>
+<p>A deployment declares the issuers its tenant trusts in <code>BEFFROI_TRUSTED_ISSUERS</code>, a JSON document keyed by
+the <code>iss</code> each one signs with (<a href="../../../application/configuration/#clients-and-their-requests">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_TRUSTED_ISSUERS='{"https://issuer.example.com": {"jwks_uri": "https://issuer.example.com/jwks.json", "signing_algorithms": ["ES256"], "clients": ["iFpsLkPvxgJFX_iygElXmtfxqudA9s0D8plYPk_PnDk"], "identity_provider": "example-issuer", "trusted_scopes": ["invoices.read"]}}'
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
+<th>Member</th>
 <th>What it decides</th>
 </tr>
 </thead>
@@ -4032,7 +4027,7 @@ access token, so everything about that issuer is declared in advance and nothing
 </tr>
 <tr>
 <td><code>jwks</code> or <code>jwks_uri</code></td>
-<td>Its keys, written down or read back from a URL, one or the other and never both, nor neither. A URL is HTTPS, or plain HTTP on a loopback host, and is read with one <code>GET</code>, no redirect followed. The keys read are kept in a pool the workers share, and read again at most once per cooldown when an assertion names a <code>kid</code> the kept set does not hold, which is how an issuer that rotates its keys is followed. These keys are the only ones an assertion is verified against, whatever its header names (RFC 8725 §3.10)</td>
+<td>Its keys, written down as a JWK Set or read back from a URL, one or the other and never both, nor neither. A URL is HTTPS, or plain HTTP on a loopback host, and is read with one <code>GET</code>, no redirect followed. The keys read are kept in a pool the workers share, and read again at most once per cooldown when an assertion names a <code>kid</code> the kept set does not hold, which is how an issuer that rotates its keys is followed. These keys are the only ones an assertion is verified against, whatever its header names (RFC 8725 §3.10)</td>
 </tr>
 <tr>
 <td><code>signing_algorithms</code></td>
@@ -4040,7 +4035,7 @@ access token, so everything about that issuer is declared in advance and nothing
 </tr>
 <tr>
 <td><code>clients</code></td>
-<td>The clients that may present its assertions, at least one. An issuer trusted for a gateway is not thereby trusted for every client of the tenant</td>
+<td>The clients that may present its assertions, at least one, by the <code>client_id</code> the provider drew for each when it <a href="#registering-the-client">registered</a>. An issuer trusted for a gateway is not thereby trusted for every client of the tenant</td>
 </tr>
 <tr>
 <td><code>identity_provider</code></td>
@@ -4052,12 +4047,15 @@ access token, so everything about that issuer is declared in advance and nothing
 </tr>
 </tbody>
 </table>
-<p>A declaration that breaks one of these rules, or carries an option this table does not name, is an error of
-the configuration. A tenant that declares no issuer accepts no assertion.</p>
-<p>What one read of a <code>jwks_uri</code> costs is set in <code>client_authentication</code>, for the issuers as for the clients:
-<code>jwks_ttl</code>, how long the keys read are kept, a day by default; <code>jwks_refetch_cooldown</code>, 300 seconds;
-<code>jwks_timeout</code>, 3 seconds for one read, connection included; and <code>jwks_max_size</code>, 65536 bytes. The pool of the
-issuers is not the pool of the clients, so a client is never verified against a set read for an issuer.</p>
+<p>A document that breaks one of these rules, or gives an issuer a member this table does not name, is refused
+by the first request or command that reads the trusted issuers, and a change of the variable reaches the
+processes when they restart. <code>{}</code>, the value of the image, trusts no issuer, and a tenant that trusts none
+accepts no assertion.</p>
+<p>What one read of a <code>jwks_uri</code> costs is set by the variables that bound the reads of the clients' sets too:
+<code>BEFFROI_JWKS_URI_TTL</code>, how long the keys read are kept, <code>86400</code> seconds, a day, in the image;
+<code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code>, <code>300</code> seconds; <code>BEFFROI_JWKS_URI_TIMEOUT</code>, <code>3</code> seconds for one read,
+connection included; and <code>BEFFROI_JWKS_URI_MAX_SIZE</code>, <code>65536</code> bytes. The pool of the issuers is not the pool of
+the clients, so a client is never verified against a set read for an issuer.</p>
 <h2 id="linking-the-people">Linking the people<a class="headerlink" href="#linking-the-people" title="Link to this section">&para;</a></h2>
 <p>The <code>sub</code> of an assertion names a person of the tenant through a <a href="../../../core/linked-identities/">linked identity</a>
 of the source the issuer declares, and through nothing else. An operator writes that link before the issuer
@@ -4068,20 +4066,32 @@ can name the person:</p>
 source gives them, compared byte for byte. Running the command again refreshes the link. A subject no link
 resolves, or that resolves to a disabled account, is refused like an assertion of an unknown issuer.</p>
 <h2 id="registering-the-client">Registering the client<a class="headerlink" href="#registering-the-client" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">gateway</span><span class="p">:</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">            </span><span class="nt">client_name</span><span class="p">:</span><span class="w"> </span><span class="s">'API</span><span class="nv"> </span><span class="s">gateway'</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">            </span><span class="nt">secret</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(GATEWAY_SECRET)%'</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">            </span><span class="nt">token_endpoint_auth_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">client_secret_basic</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">            </span><span class="nt">grant_types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'urn:ietf:params:oauth:grant-type:jwt-bearer'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">            </span><span class="nt">scope</span><span class="p">:</span><span class="w"> </span><span class="s">'invoices.read'</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">            </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://invoices.example.com'</span><span class="p p-Indicator">]</span>
+<p>The client reaches a deployment of the image by <a href="../../dynamic-registration/">registering itself</a>. The
+deployment opens registration, and names the scopes of the API the client calls, which the tenant then hands
+out (<a href="../../../application/configuration/#the-tenant">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>BEFFROI_REGISTRATION_MODE=initial_access_token
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>BEFFROI_TENANT_SCOPES='["invoices.read"]'
 </span></code></pre></div>
-<p>The client is named in the <code>clients</code> of the issuer, registered for the grant, and registered with the
-resources its tokens may be addressed to: a request names at least one, and a client that registered none
-obtains nothing. The request of a public client fails, and no token is issued: a token of this grant is
+<p>The client registers with:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"API gateway"</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">"token_endpoint_auth_method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"client_secret_basic"</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nt">"grant_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"urn:ietf:params:oauth:grant-type:jwt-bearer"</span><span class="p">],</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"invoices.read"</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The answer carries the <code>client_id</code> the provider drew, which the <code>clients</code> of the issuer then name, and the
+<code>client_secret</code>, said once. A public client is refused a registration for the grant: a token of this grant is
 issued only to a client that authenticates itself.</p>
+<div class="admonition warning">
+<p class="admonition-title">No token for a client of the image</p>
+<p>A request of this grant names at least one resource, among those the client registered, and <code>resources</code> is
+a member of the deployment: a registration that carries it is refused, and no variable gives it to a
+client (<a href="../../clients/#what-the-image-does-not-set">what the image does not set</a>). A client of the image
+therefore registers no resource, and a request it makes with an assertion this provider accepts is refused
+with <code>invalid_target</code>: on a deployment of the image, the JWT bearer grant issues no token. The rest of
+this page is what the grant does for a client that carries resources.</p>
+</div>
 <p>The assertion is the authorization, not the authentication of the client (RFC 7523 §2.1): the client
 authenticates beside it with the method it registered, as for every other grant. The two readings of an
 assertion share no registration, no validator and no record of the assertions already seen, so an assertion
@@ -4127,9 +4137,9 @@ assertions, not whether the subject resolves.</p>
    the header choosing among those keys only. Keys behind a <code>jwks_uri</code> that cannot be read are this same
    refusal.</li>
 <li>Its <code>aud</code> is one value, the issuer identifier of the tenant.</li>
-<li>It has an <code>exp</code>, which is still in the future and no further ahead than <code>client_authentication.assertion_max_lifetime</code>,
-   300 seconds by default, both allowing <code>client_authentication.assertion_leeway</code>, 30 seconds, of the clock of
-   the issuer.</li>
+<li>It has an <code>exp</code>, which is still in the future and no further ahead than
+   <code>BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME</code>, 300 seconds in the image, both allowing
+   <code>BEFFROI_CLIENT_ASSERTION_LEEWAY</code>, 30 seconds, of the clock of the issuer.</li>
 <li>It has an <code>iat</code>, no further in the future than the leeway.</li>
 <li>It has a <code>jti</code> this provider has not seen from that issuer before: the <code>jti</code> is remembered until the <code>exp</code>,
    so that an assertion is spent once.</li>
@@ -4200,7 +4210,7 @@ token and no refresh token.</p>
 </tr>
 <tr>
 <td><code>may_act</code></td>
-<td>In the self-contained shape, when the client registered one</td>
+<td>In the self-contained shape, when the client carries one, a member of the deployment</td>
 </tr>
 <tr>
 <td><code>cnf</code></td>
@@ -4231,7 +4241,7 @@ the subject the client reads.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

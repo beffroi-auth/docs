@@ -4252,7 +4252,7 @@ since that is the one the client knows how to verify (§2.6). Its header names <
 </tr>
 <tr>
 <td><code>exp</code></td>
-<td><code>iat</code> plus the budget of its delivery below, two hundred and thirty-five seconds by default</td>
+<td><code>iat</code> plus the budget of its delivery below, two hundred and thirty-five seconds in the image</td>
 </tr>
 <tr>
 <td><code>jti</code></td>
@@ -4300,66 +4300,66 @@ redirect is followed: the URI a client registered is where the token goes, and n
 </tr>
 <tr>
 <td>Any other status, or nothing within the timeout</td>
-<td>Sends it again later, waiting longer each time and never more than <code>retry_max_delay</code> seconds</td>
+<td>Sends it again later, waiting longer each time and never more than <code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY</code> seconds</td>
 </tr>
 </tbody>
 </table>
 <p>A client that refuses the token is given up on, and that is said, never kept quiet: an act of the journal,
 <code>logout_token.given_up</code>, naming the client and the person, so that somebody can see that a client was left
 believing its user signed in.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">back_channel_logout</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5.0</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">retry_delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">retry_multiplier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">retry_max_delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<p>Five variables set the schedule of the delivery, here at the values of the image
+(<a href="../../application/configuration/#notifications">configuration</a>):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT=5
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES=6
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY=2
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER=3
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY=60
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>timeout</code></td>
-<td><code>5.0</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT</code></td>
+<td><code>5</code></td>
 <td>Seconds one attempt is given, connection included, <code>0.1</code> at least. A client that hangs holds no worker</td>
 </tr>
 <tr>
-<td><code>retries</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES</code></td>
 <td><code>6</code></td>
 <td>How many retries the budget of a delivery counts</td>
 </tr>
 <tr>
-<td><code>retry_delay</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY</code></td>
 <td><code>2</code></td>
 <td>Seconds before the first retry</td>
 </tr>
 <tr>
-<td><code>retry_multiplier</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER</code></td>
 <td><code>3</code></td>
 <td>What each wait is multiplied by to give the next one</td>
 </tr>
 <tr>
-<td><code>retry_max_delay</code></td>
+<td><code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY</code></td>
 <td><code>60</code></td>
 <td>Seconds a wait never exceeds</td>
 </tr>
 </tbody>
 </table>
-<p>These numbers make the budget a logout token is written for. With the defaults, the waits before the first
-six retries are 2, 6, 18, 54, 60 and 60 seconds, and two hundred seconds of waiting plus five seconds for each
-of the seven attempts they count make two hundred and thirty-five seconds. That budget is the <code>exp</code> of the
-token, and the key that signed it stays in the JWK Set at least that long once it retires: changing one of
-these numbers moves both.</p>
+<p>These numbers make the budget a logout token is written for. With the values of the image, the waits before
+the first six retries are 2, 6, 18, 54, 60 and 60 seconds, and two hundred seconds of waiting plus five
+seconds for each of the seven attempts they count make two hundred and thirty-five seconds. That budget is the
+<code>exp</code> of the token, and the key that signed it stays in the JWK Set at least that long once it retires:
+changing one of these numbers moves both.</p>
 <p><strong>The budget bounds the token, not the sending.</strong> A client still out of reach when the budget has run out
-may be sent the token again, <code>retry_max_delay</code> seconds apart, and what it then receives is past its <code>exp</code>,
-which a client refuses as it would an expired ID token (§2.6). A client that answers within the budget
-receives a token it can act on; after it, it can only receive an expired one.</p>
+may be sent the token again, <code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY</code> seconds apart, and what it then
+receives is past its <code>exp</code>, which a client refuses as it would an expired ID token (§2.6). A client that
+answers within the budget receives a token it can act on; after it, it can only receive an expired one.</p>
 <h2 id="what-ends-a-session">What ends a session<a class="headerlink" href="#what-ends-a-session" title="Link to this section">&para;</a></h2>
 <p>A session ends:</p>
 <ul>
@@ -4386,9 +4386,11 @@ session presented before the lane has revoked it is the act <code>refresh_token.
 successor a refresh in flight saved after that revocation, which is revoked in turn. Once revoked, a refresh
 token is refused as any revoked token is, and that refusal writes nothing.</p>
 <p>What the provider cannot reach is a self-contained access token in the hands of a resource server that
-verifies it offline (RFC 9068 §4): it is accepted there until it expires, ten minutes after it was issued
-unless <code>tokens.access_token_ttl</code> says otherwise. A resource server that has to know at once introspects, or
-its clients are declared with opaque access tokens.</p>
+verifies it offline (RFC 9068 §4): it is accepted there until it expires, <code>BEFFROI_ACCESS_TOKEN_TTL</code> seconds
+after it was issued, ten minutes in the image. A resource server that has to know at once introspects. Every
+access token of the image is self-contained: <code>access_token_format</code>, which would give a client opaque ones, is a
+member of the deployment that no client of the image holds (<a href="../clients/#what-the-image-does-not-set">what the image does not
+set</a>).</p>
 <p><strong>A session is shared with SAML.</strong> The session a client signed in under is the one the SAML service
 providers of the browser signed in under too, which is why the end session endpoint goes through them before
 it reaches the <code>post_logout_redirect_uri</code>, and why a <code>LogoutRequest</code> of a service provider ends the session of
@@ -4425,14 +4427,15 @@ played.</p>
 </tr>
 </tbody>
 </table>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">portal</span><span class="p">:</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">            </span><span class="c1"># ...</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">            </span><span class="nt">post_logout_redirect_uris</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'https://portal.example.com/signed-out'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">            </span><span class="nt">frontchannel_logout_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://portal.example.com/logout/frontchannel'</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">            </span><span class="nt">frontchannel_logout_session_required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">            </span><span class="nt">backchannel_logout_uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://portal.example.com/logout/backchannel'</span>
+<p>A client told by both channels registers with (<a href="../dynamic-registration/">dynamic registration</a>):</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Portal"</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"redirect_uris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://portal.example.com/oidc/callback"</span><span class="p">],</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"post_logout_redirect_uris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://portal.example.com/signed-out"</span><span class="p">],</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">"frontchannel_logout_uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://portal.example.com/logout/frontchannel"</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">"frontchannel_logout_session_required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">"backchannel_logout_uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://portal.example.com/logout/backchannel"</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span>
 </span></code></pre></div>
 <h2 id="what-a-logout-can-promise">What a logout can promise<a class="headerlink" href="#what-a-logout-can-promise" title="Link to this section">&para;</a></h2>
 <ul>
@@ -4440,7 +4443,7 @@ played.</p>
   of the account read on another browser, the other sessions closed or a password changed, a new person
   signing in: no frame is loaded and no SAML service provider is told, SOAP being out of scope.</li>
 <li><strong>The front channel reaches the clients the browser lets it reach</strong>, and says so.</li>
-<li><strong>A logout token is good for two hundred and thirty-five seconds by default</strong>: a client the provider cannot
+<li><strong>A logout token is good for two hundred and thirty-five seconds in the image</strong>: a client the provider cannot
   reach within that time is left believing its user signed in, and a client that refuses the token is
   written down as given up on.</li>
 <li><strong>A self-contained access token outlives the session at a resource server that verifies it offline</strong>, up
@@ -4467,7 +4470,7 @@ played.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

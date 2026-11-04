@@ -4050,7 +4050,7 @@ hands what is left to an <a href="../interactions/">interaction</a>, which decid
 page at all. Every answer that reaches the client, a code or a refusal, carries <code>iss</code> (RFC 9207 §2), and
 <code>state</code> when the request carried one.</p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="err">GET /authorize?response_type=code</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="err">    &amp;client_id=billing</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="err">    &amp;client_id=s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="err">    &amp;redirect_uri=https%3A%2F%2Fbilling.example.com%2Foidc%2Fcallback</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="err">    &amp;scope=openid%20profile%20email</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="err">    &amp;state=af0ifjsldkj</span>
@@ -4238,10 +4238,11 @@ Each stage stops at its first refusal.</p>
 with and announces in <code>code_challenge_methods_supported</code> (RFC 7636 §4.3). <code>plain</code> is wired nowhere and
 announced nowhere, and a challenge sent without a method is refused rather than read as <code>plain</code>, which is
 what RFC 7636 §4.3 would make of it.</p>
-<p>A confidential client registered with <code>requires_pkce: false</code> may send neither parameter; a challenge it does
-send is held to the same rules, and the code exchange then verifies it. A public client cannot be registered
-so. The token endpoint compares <code>BASE64URL(SHA256(code_verifier))</code> with the challenge in constant time
-(<a href="../grants/authorization-code/">authorization code</a>).</p>
+<p>Every authorization request of the image carries them: the exemption of a confidential client, <code>requires_pkce:
+false</code>, is a member of the deployment, which the image gives no client (<a href="../clients/#what-the-image-does-not-set">what the image does not
+set</a>), and a public client is never exempted. The token endpoint
+compares <code>BASE64URL(SHA256(code_verifier))</code> with the challenge in constant time (<a href="../grants/authorization-code/">authorization
+code</a>).</p>
 <h2 id="the-redirect-uri">The redirect URI<a class="headerlink" href="#the-redirect-uri" title="Link to this section">&para;</a></h2>
 <p><code>redirect_uri</code> is required, and compared byte for byte with the redirect URIs the client registered (RFC 6749
 §3.1.2.3): a trailing slash, the case of a letter or a parameter of the query make another URI. The one
@@ -4256,7 +4257,7 @@ one, and the <code>iss</code> of the tenant:</p>
 </span></code></pre></div>
 <p>That is the <code>query</code> mode, the default for <code>code</code>; the <a href="../response-modes/">response mode</a> of the request
 decides how the answer travels, and a refusal travels the same way. The code is worth one exchange and lives
-60 seconds by default (<code>tokens.authorization_code_ttl</code>, 600 at most). A token request spends it as soon as
+60 seconds in the image (<code>BEFFROI_AUTHORIZATION_CODE_TTL</code>, 600 at most). A token request spends it as soon as
 it finds it, whatever the checks that follow decide, the client the code was issued to, the redirect URI and
 the verifier among them (<a href="../grants/authorization-code/">authorization code</a>).</p>
 <h2 id="refusals">Refusals<a class="headerlink" href="#refusals" title="Link to this section">&para;</a></h2>
@@ -4359,7 +4360,7 @@ authorization requests</a></p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

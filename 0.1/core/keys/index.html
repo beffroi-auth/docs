@@ -4118,66 +4118,64 @@ key announces its own staging on a transport, so a tenant is given that one befo
 deployment is wired with.</p>
 <h2 id="custody">Custody<a class="headerlink" href="#custody" title="Link to this section">&para;</a></h2>
 <p>The private half of a key is drawn in the process, sealed in an envelope by the key management service the
-configuration names, and only then written; the master key never leaves that service, and the private key never
+deployment names, and only then written; the master key never leaves that service, and the private key never
 reaches it. The envelope is bound to the tenant, and told from the envelope of a TOTP secret: sealed for one
 tenant, it does not open for another. The <code>kid</code> is the RFC 7638 thumbprint of the public key, SHA-256, so the same material carries the same
 name whoever drew it, and one material is the key of one algorithm: a second algorithm under a <code>kid</code> already held
 is refused.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">op</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KMS_KEY_ID)%'</span>
+<p>The service and its master key are the deployment's, two variables the image leaves empty, since nothing is
+sealed or signed under a key everybody has:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>BEFFROI_KMS_DSN="sodium+dir:///app/var/kms?ext=.key"
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>kms</code></td>
-<td>required</td>
-<td>The key management client that seals the keys, an entry of <code>key_management.clients</code></td>
+<td><code>BEFFROI_KMS_DSN</code></td>
+<td>empty</td>
+<td>The key management service that seals the keys, as the DSN of <code>op</code>, the client of <code>config/packages/key_management.yaml</code> the provider seals with</td>
 </tr>
 <tr>
-<td><code>key_id</code></td>
-<td>required</td>
+<td><code>BEFFROI_KMS_KEY_ID</code></td>
+<td>empty</td>
 <td>The master key of that service the keys are sealed under, <code>{tenant}</code> standing for the slug of the tenant, one master key each</td>
 </tr>
 <tr>
-<td><code>data_key_secrets</code></td>
-<td><code>['%kernel.secret%']</code>, the secret of the kernel</td>
-<td>The secrets every data key of <a href="../personal-data/#the-data-keys-of-a-tenant">personal data</a> is bound to its row under, the first binding a new one</td>
+<td><code>BEFFROI_DATA_KEY_SECRETS</code></td>
+<td>not set</td>
+<td>The secrets every data key of <a href="../personal-data/#the-data-keys-of-a-tenant">personal data</a> is bound to its row under, a JSON list, the first binding a new one. Not set, the secret of the kernel, <code>APP_SECRET</code>, alone</td>
 </tr>
 <tr>
-<td><code>storage</code></td>
-<td><code>%kernel.project_dir%/var/keys</code></td>
-<td>The directory of the sealed keys, one JSON file per key under the slug of its tenant, written through a sibling file renamed into place</td>
-</tr>
-<tr>
-<td><code>jwks_max_age</code></td>
+<td><code>BEFFROI_JWKS_MAX_AGE</code></td>
 <td><code>300</code></td>
 <td>How long a client may cache the JWK Set, in seconds, which the staging delay derives from</td>
 </tr>
 <tr>
-<td><code>staging_delay</code></td>
-<td><code>jwks_max_age</code> plus sixty seconds</td>
-<td>How long a new key is published before it is used, in seconds</td>
+<td><code>BEFFROI_KEY_STAGING_DELAY</code></td>
+<td>empty</td>
+<td>How long a new key is published before it is used, in seconds. Empty, <code>BEFFROI_JWKS_MAX_AGE</code> plus sixty seconds</td>
 </tr>
 <tr>
-<td><code>age</code></td>
+<td><code>BEFFROI_KEY_AGE</code></td>
 <td><code>7776000</code>, ninety days</td>
 <td>How long a key works before a successor is staged behind it, in seconds, counted from its activation</td>
 </tr>
 </tbody>
 </table>
-<p><a href="../../application/key-management/">Key management</a> says how the clients are declared. A process opens a key
-once and keeps it open for as long as it is the key that answers, so a worker that serves many requests asks the
-service once per key, where a process rebuilt at each request asks at each request. A key another has replaced,
-or that has retired, is let go.</p>
+<p>The sealed keys are files, one JSON file per key under the slug of its tenant, written through a sibling file
+renamed into place, in <code>var/keys</code> of the application: no variable moves that directory, which every process
+of a deployment shares (<a href="../../application/configuration/#what-the-files-say">what the files say</a>).</p>
+<p><a href="../../application/key-management/">Key management</a> says how the client is built from its DSN, and the
+backends it runs against. A process opens a key once and keeps it open for as long as it is the key that
+answers, so a worker that serves many requests asks the service once per key, where a process rebuilt at each
+request asks at each request. A key another has replaced, or that has retired, is let go.</p>
 <h2 id="the-life-of-a-key">The life of a key<a class="headerlink" href="#the-life-of-a-key" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4318,15 +4316,15 @@ somebody a step at every rotation is not rotated at the pace of one nobody sees:
 <tbody>
 <tr>
 <td>The keys of the JWK Set, and <code>MESSAGE-SEAL</code> and <code>VAPID</code> beside them</td>
-<td>the <code>max-age</code> of the JWK Set plus sixty seconds, 360 seconds by default</td>
+<td>the <code>max-age</code> of the JWK Set plus sixty seconds, 360 seconds in the image</td>
 <td>ninety days</td>
-<td><code>beffroi.keys.staging_delay</code>, <code>beffroi.keys.age</code></td>
+<td><code>BEFFROI_KEY_STAGING_DELAY</code>, <code>BEFFROI_KEY_AGE</code></td>
 </tr>
 <tr>
 <td><code>SAML-SIGNING</code>, and the <code>SAML-ENCRYPTION</code> key of each upstream identity provider</td>
 <td>seven days</td>
 <td>365 days</td>
-<td><code>beffroi.saml.identity_provider.staging_delay</code>, <code>age</code></td>
+<td><code>BEFFROI_SAML_KEY_STAGING_DELAY</code>, <code>BEFFROI_SAML_KEY_AGE</code></td>
 </tr>
 </tbody>
 </table>
@@ -4363,7 +4361,7 @@ key.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

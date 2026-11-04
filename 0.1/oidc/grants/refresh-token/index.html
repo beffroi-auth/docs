@@ -4019,7 +4019,7 @@ other scope, among the ones it registered.</p>
 </tr>
 <tr>
 <td><code>resource</code></td>
-<td>Optional and repeatable: a subset of the resources of the authorization, for this access token only (RFC 8707 §2.2)</td>
+<td>Optional and repeatable: a subset of the resources of the authorization, for this access token only (RFC 8707 §2.2). The authorization of a client of the image carries none, so a <code>resource</code> it names is <code>invalid_target</code></td>
 </tr>
 <tr>
 <td><code>authorization_details</code></td>
@@ -4075,7 +4075,7 @@ and rotation. One is enough, so the provider rotates exactly where the other two
 </table>
 <p>A successor belongs to the same family. It carries the whole authorization, whatever this request narrowed
 for its access token, and what the session had proven when the authorization was granted. Its own lifetime,
-<code>tokens.refresh_token_ttl</code>, starts at the rotation and never reaches past the end of the family. The act
+<code>BEFFROI_REFRESH_TOKEN_TTL</code>, starts at the rotation and never reaches past the end of the family. The act
 <code>refresh_token.rotated</code> is written in the journal of the person.</p>
 <h2 id="what-the-answer-carries">What the answer carries<a class="headerlink" href="#what-the-answer-carries" title="Link to this section">&para;</a></h2>
 <ul>
@@ -4110,7 +4110,7 @@ revocation</a> describes the endpoint.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

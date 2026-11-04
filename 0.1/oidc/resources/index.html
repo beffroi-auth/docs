@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The audience a client asks its access token for with the resource parameter, RFC 8707, at each endpoint that reads it.">
+        <meta name="description" content="The audience a client asks its access token for with the resource parameter, RFC 8707: why a client of the image asks for none, and what each endpoint does with one.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -73,7 +73,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Resources">
-  <meta property="og:description" content="The audience a client asks its access token for with the resource parameter, RFC 8707, at each endpoint that reads it.">
+  <meta property="og:description" content="The audience a client asks its access token for with the resource parameter, RFC 8707: why a client of the image asks for none, and what each endpoint does with one.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3982,75 +3982,71 @@
 that audience rather than for everything the client might reach (RFC 8707 §2). A resource server that
 receives a token addressed elsewhere has what it needs to refuse it. A request made for a person that names no
 resource gets a token addressed to the client itself, which is the token UserInfo accepts.</p>
+<p><strong>A client of the image asks for no resource.</strong> What a client may name is the closed list of its <code>resources</code>,
+and no client of a deployment of the image holds one: every <code>resource</code> parameter is refused, and every access
+token is addressed to the client it was issued to.</p>
 <h2 id="registering-resources">Registering resources<a class="headerlink" href="#registering-resources" title="Link to this section">&para;</a></h2>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">billing</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">            </span><span class="c1"># ...</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">            </span><span class="nt">resources</span><span class="p">:</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'https://api.example.com/'</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'urn:example:ledger'</span>
-</span></code></pre></div>
-<p><code>resources</code> is the closed list of what a client may ask a token for, with no pattern and no wildcard. Each
-value is an absolute URI (RFC 3986 §4.3) without a fragment. A query is allowed, RFC 8707 §2 recognising that
-it is sometimes what scopes the request, and a URN is a resource as an HTTPS URL is: a resource is an
-identifier, which the provider never fetches. What a request names is compared byte for byte with the list.</p>
-<p>A client that registers no resource asks for none. Only a declaration writes the list: a client that
-<a href="../dynamic-registration/">registers itself</a> and sends <code>resources</code> is refused with <code>invalid_client_metadata</code>,
-so it asks for none either.</p>
+<p><code>resources</code> is the closed list of what a client may ask a token for, with no pattern and no wildcard, compared
+byte for byte with what a request names. It is a member of the deployment: a client that <a href="../dynamic-registration/">registers
+itself</a> and sends it is refused with <code>invalid_client_metadata</code>, the registration
+policy of a tenant writes none, no variable gives one to a client, and the image declares no client. No client
+of the image holds a resource (<a href="../clients/#what-the-image-does-not-set">what the image does not set</a>), and a
+client that holds none asks for none.</p>
+<p>For a resource server that accepts the access tokens of the image, that means:</p>
+<ul>
+<li>the <code>aud</code> of every access token is the <code>client_id</code> of its client, so a resource server that checks the
+  audience (RFC 9068 §4) checks it against the identifiers of the clients that call it;</li>
+<li>the <code>aud</code> of a token tells no resource server from another: the tokens a client presents to two resource
+  servers carry the same <code>aud</code>, and a token one of them receives can be presented to the other. What tells
+  them apart is the <code>scope</code> of the token, one scope per API the tenant protects in <code>BEFFROI_TENANT_SCOPES</code>,
+  which a resource server holds a token to;</li>
+<li><code>client_credentials</code> and the JWT bearer grant, which address a token to a resource or issue none, issue none
+  (<a href="#at-the-token-endpoint">below</a>).</li>
+</ul>
 <h2 id="asking-for-one">Asking for one<a class="headerlink" href="#asking-for-one" title="Link to this section">&para;</a></h2>
 <p>At the authorization endpoint and at the <a href="../pushed-authorization-requests/">pushed authorization request
 endpoint</a>, <code>resource</code> may be sent several times, once per resource, which no
 other parameter may:</p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="err">GET /authorize?response_type=code&amp;client_id=billing&amp;...</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="err">    &amp;resource=https%3A%2F%2Fapi.example.com%2F</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="err">    &amp;resource=urn%3Aexample%3Aledger HTTP/1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="err">GET /authorize?response_type=code&amp;client_id=s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg&amp;...</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="err">    &amp;resource=https%3A%2F%2Fapi.example.com%2F</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="err">    &amp;resource=urn%3Aexample%3Aledger HTTP/1.1</span>
 </span></code></pre></div>
-<p>In a <a href="../request-objects/">request object</a>, the same claim carries a list of strings. A value named twice
-counts once. A value that is not an absolute URI without a fragment, and a resource the client did not
-register, are both <code>invalid_target</code>, at the redirect URI of an authorization request and as JSON at the
-pushed request endpoint; the description names no resource, what a client registered being nothing an error
-teaches whoever sent the request. A request that names none asks for none, and nothing is filled in from the
-registration: a token valid at several resources is valid at each of them (RFC 8707 §3), so it is asked for
-and never assumed.</p>
-<p>The resources named travel with the authorization: the code carries them, and the token endpoint may narrow
-them and never widen them.</p>
+<p>In a <a href="../request-objects/">request object</a>, the same claim carries a list of strings. A value that is not an
+absolute URI without a fragment (RFC 3986 §4.3), and a resource the client does not hold, are both
+<code>invalid_target</code>, at the redirect URI of an authorization request and as JSON at the pushed request endpoint;
+the description names no resource, what a client holds being nothing an error teaches whoever sent the
+request. On the image every value is one or the other, so the request above is refused. A request that names
+none asks for none, and nothing is filled in.</p>
 <h2 id="what-the-access-token-says">What the access token says<a class="headerlink" href="#what-the-access-token-says" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th></th>
-<th>Resources asked for</th>
-<th>None asked for</th>
+<th>On the image</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>aud</code> of the access token</td>
-<td>The resources, a string for one and a list for several (RFC 7519 §4.1.3)</td>
 <td>The <code>client_id</code></td>
 </tr>
 <tr>
 <td><code>client_id</code> of the access token</td>
-<td>The client, whatever the audience</td>
 <td>The client</td>
 </tr>
 <tr>
 <td><code>aud</code> at the introspection endpoint</td>
 <td>The same as the token</td>
-<td>The same as the token</td>
 </tr>
 <tr>
 <td>UserInfo</td>
-<td>Refused, <code>invalid_token</code> with a <code>401</code>: the token is addressed to a resource of its own and not to this provider</td>
 <td>Answered</td>
 </tr>
 </tbody>
 </table>
-<p>The opaque shape of access token is described by the introspection endpoint with the same <code>aud</code>. When the
-provider reads a self-contained token of its own back, it accepts in <code>aud</code> only the client itself and the
-resources that client registered, so a value it would never have written is refused before anything else is
-believed.</p>
+<p>When the provider reads a self-contained token of its own back, it accepts in <code>aud</code> only the client itself and
+the resources that client holds, the client alone on the image, so a value it would never have written is
+refused before anything else is believed.</p>
 <h2 id="at-the-token-endpoint">At the token endpoint<a class="headerlink" href="#at-the-token-endpoint" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4063,39 +4059,34 @@ believed.</p>
 <tbody>
 <tr>
 <td><code>authorization_code</code>, <code>refresh_token</code></td>
-<td>Narrows the access token of this response to those, among the ones the authorization carries. The refresh token stays bound to them all, so a later refresh may ask for another of them</td>
-<td>The resources of the authorization</td>
+<td>Refused with <code>invalid_target</code>: the authorization carries no resource to narrow to</td>
+<td>The token is addressed to the client</td>
 </tr>
 <tr>
 <td><code>client_credentials</code></td>
-<td>Among the ones the client registered</td>
+<td>Refused with <code>invalid_target</code>: the client holds no resource</td>
 <td>Refused with <code>invalid_target</code>: a token with nobody behind it is addressed to a resource, or it is not issued</td>
 </tr>
 <tr>
 <td>JWT bearer</td>
-<td>Among the ones the client registered</td>
 <td>Refused with <code>invalid_target</code></td>
-</tr>
-<tr>
-<td>Token exchange</td>
-<td>Narrows to some of the resources the presented token is addressed to</td>
-<td>The resources of the presented token. One addressed to its client and to no resource has none to pass on, and is not exchanged</td>
+<td>Refused with <code>invalid_target</code></td>
 </tr>
 </tbody>
 </table>
-<p>A resource outside what the line allows is <code>invalid_target</code>, in the JSON of the token endpoint. A token
-exchange is held to the registration of the client that asks as well: the resources its access token is
-addressed to, and the scopes it carries, are ones that client registered, so an exchange never reaches a
-resource or a scope its registration does not name. The device
-authorization endpoint and the backchannel authentication endpoint read <code>resource</code> when the flow starts,
-against the resources the client registered, answering <code>invalid_target</code> in their own JSON, and a request that
-names none there gets a token addressed to the client, a person being behind those flows.</p>
+<p>A deployment of the image therefore issues no token under <code>client_credentials</code> or the JWT bearer grant: a
+client may register either, and a token request under them that the other checks of its grant let through is
+refused with <code>invalid_target</code>, in the JSON of the token endpoint. No client of the image is registered for
+the <a href="../grants/token-exchange/">token exchange</a>, whose <code>token_exchange</code> member is a member of the deployment as
+well. The device authorization endpoint and the backchannel authentication endpoint read <code>resource</code> when the
+flow starts, and refuse any value with <code>invalid_target</code> in their own JSON; a request that names none there
+gets a token addressed to the client, a person being behind those flows.</p>
 <h2 id="what-the-tenant-announces">What the tenant announces<a class="headerlink" href="#what-the-tenant-announces" title="Link to this section">&para;</a></h2>
-<p>What a tenant announces as its protected resources is read from the clients that registered one, never from
-a list kept beside them, and it is the <code>protected_resources</code> member of RFC 9728 §4: the one member of the
-registry that says what the values of a <code>resource</code> parameter are, RFC 8707 registering none of its own. Every
-resource a client of the tenant registered is in it, each once. A tenant whose clients registered none
-announces nothing rather than an empty list, which a client would read as "no resource is acceptable here".</p>
+<p>What a tenant announces as its protected resources is read from the resources its clients hold, never from a
+list kept beside them, and it is the <code>protected_resources</code> member of RFC 9728 §4: the one member of the
+registry that says what the values of a <code>resource</code> parameter are, RFC 8707 registering none of its own. A
+tenant whose clients hold none announces nothing rather than an empty list, which a client would read as "no
+resource is acceptable here", and that is what a deployment of the image announces.</p>
 <p><a href="../tokens/access-tokens/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Access tokens</a> and <a href="../introspection-and-revocation/">introspection and
 revocation</a></p>
@@ -4119,7 +4110,7 @@ revocation</a></p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:23 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

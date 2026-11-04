@@ -4000,17 +4000,16 @@
 
 
 <h1 id="key-management">Key management<a class="headerlink" href="#key-management" title="Link to this section">&para;</a></h1>
-<p>The application seals the private keys of the tenant, its data keys and the secrets it holds for people with a
-client of <code>symfony/key-management</code>, which it declares in <code>config/packages/key_management.yaml</code> and names in
-<code>beffroi.keys.kms</code>. Which provider stands behind that client is the deployment's to say, by the DSN of
-<code>BEFFROI_KMS_DSN</code>. The key management service keeps the master keys and never signs: a private key is opened
-in the process that uses it, and what is sealed never reaches the service, only the data key it is sealed
-with, to be wrapped or opened.</p>
+<p>The application seals the private keys of the tenant, its data keys and the secrets it holds for people with
+<code>op</code>, a client of <code>symfony/key-management</code> that <code>config/packages/key_management.yaml</code> declares. Which provider
+stands behind that client is the deployment's to say, by the DSN of <code>BEFFROI_KMS_DSN</code>. The key management
+service keeps the master keys and never signs: a private key is opened in the process that uses it, and what
+is sealed never reaches the service, only the data key it is sealed with, to be wrapped or opened.</p>
 <h2 id="naming-the-client">Naming the client<a class="headerlink" href="#naming-the-client" title="Link to this section">&para;</a></h2>
 <p><code>config/packages/key_management.yaml</code> declares two clients, each built from a DSN of the environment: <code>op</code>
 from <code>BEFFROI_KMS_DSN</code>, and <code>second</code> from <code>BEFFROI_KMS_DSN_SECOND</code>, for a <a href="#moving-to-another-client">move to another
-client</a>. <code>config/packages/beffroi.yaml</code> names <code>op</code>, and the provider seals with it
-and never with <code>second</code>.</p>
+client</a>. The application's configuration names <code>op</code>, no variable names another,
+and the provider seals with it and never with <code>second</code>. The image compiles the file as it is:</p>
 <div class="language-yaml highlight"><span class="filename">config/packages/key_management.yaml</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">key_management</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="nt">op</span><span class="p">:</span><span class="w"> </span><span class="s">'service://beffroi.kms.op'</span>
@@ -4027,52 +4026,49 @@ and never with <code>second</code>.</p>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">        </span><span class="nt">factory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'@key_management.factory'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'fromString'</span><span class="p p-Indicator">]</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="nt">arguments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(BEFFROI_KMS_DSN_SECOND)%'</span><span class="p p-Indicator">]</span>
 </span></code></pre></div>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">op</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KMS_KEY_ID)%'</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/var/keys'</span>
+<p>A deployment names the service and the master key of <code>op</code>, two variables the image leaves empty, since nothing
+is sealed or signed under a key everybody has:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>BEFFROI_KMS_DSN="sodium+dir:///app/var/kms?ext=.key"
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Option</th>
-<th>Default</th>
+<th>Variable</th>
+<th>In the image</th>
 <th>What it decides</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>kms</code></td>
-<td>required</td>
-<td>The name of the client under <code>key_management.clients</code></td>
+<td><code>BEFFROI_KMS_DSN</code></td>
+<td>empty</td>
+<td>The DSN <code>op</code> is built from: which service seals, and how it is reached. <a href="#the-backends">The backends</a> are below</td>
 </tr>
 <tr>
-<td><code>key_id</code></td>
-<td>required</td>
-<td>The master key of that client the keys of the tenant are sealed under, in the terms of the backend: the name of a sodium key, a Transit key of Vault, an alias or an ARN of AWS. <code>{tenant}</code> stands for the slug of the tenant, which gives every tenant a master key of its own</td>
+<td><code>BEFFROI_KMS_KEY_ID</code></td>
+<td>empty</td>
+<td>The master key of that service the keys of the tenant are sealed under, in the terms of the backend: the name of a sodium key, a Transit key of Vault, an alias or an ARN of AWS. <code>{tenant}</code> stands for the slug of the tenant, which gives every tenant a master key of its own</td>
 </tr>
 <tr>
-<td><code>storage</code></td>
-<td><code>%kernel.project_dir%/var/keys</code></td>
-<td>The directory of the sealed keys and of the pairwise salt</td>
+<td><code>BEFFROI_KMS_DSN_SECOND</code></td>
+<td>empty</td>
+<td>The DSN <code>second</code> is built from, for a <a href="#moving-to-another-client">move to another client</a>. Empty, the client is declared and never built</td>
 </tr>
 </tbody>
 </table>
-<p>The rest of <code>beffroi.keys</code>, how long the JWK Set is cached, how long a new key is staged and how long a key
-works, is on <a href="../configuration-tree/">the configuration tree</a>, and what it does to a rotation on <a href="../console-commands/#rotating-a-key">the console
+<p>The sealed keys and the pairwise salt are kept in <code>var/keys</code> of the application, a directory no variable
+moves. How long the JWK Set is cached, how long a new key is staged and how long a key works are
+<code>BEFFROI_JWKS_MAX_AGE</code>, <code>BEFFROI_KEY_STAGING_DELAY</code> and <code>BEFFROI_KEY_AGE</code>, on
+<a href="../configuration/#keys-and-lifetimes">configuration</a>, and what they do to a rotation is on <a href="../console-commands/#rotating-a-key">the console
 commands</a>.</p>
 <p><strong>The DSN reaches the client through a service.</strong> The <code>dsn</code> of a client is validated when the container is
 built and takes no environment variable, while the DSN of a deployment comes from its environment and may
 carry a credential. So the application builds each client from the environment with the factory of the
 component, <code>key_management.factory</code>, and names it with <code>service://</code>.</p>
-<p><strong>A name nothing answers to fails the build of the container</strong>, and says which names would have answered:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>The KMS client "vault" named by the "beffroi.keys.kms" configuration is not registered in "key_management.clients": the registered ones are "op", "second".
-</span></code></pre></div>
-<p><strong>A client may be made of several providers.</strong> Declared under <code>key_management.clients</code> with its <code>members</code>,
-each with the master key it wraps under or <code>~</code> for the one each call names, a composite client wraps what it
-seals under every member and reads it back through the first that answers, so losing one provider loses
-nothing. A member listed under <code>retired</code> is read and never written to.</p>
+<p><strong>Each client is one provider.</strong> A DSN names one service, and <code>symfony/key-management</code> makes a client of
+several providers only from the <code>members</code> a client is given in <code>key_management.yaml</code>, which the file above
+gives neither of its two: a deployment of the image seals with the one service <code>BEFFROI_KMS_DSN</code> names.</p>
 <h2 id="what-it-seals">What it seals<a class="headerlink" href="#what-it-seals" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4084,15 +4080,15 @@ nothing. A member listed under <code>retired</code> is read and never written to
 <tbody>
 <tr>
 <td>The keys of the tenant, the ones that sign, the ones clients encrypt to, and the ones it keeps rather than publishing: the key messages are sealed to, the application server key of web push and the SAML keys</td>
-<td>One file per key, <code>&lt;storage&gt;/&lt;slug&gt;/&lt;kid&gt;.json</code>: the public half in the clear, the private half sealed. The directory is created <code>0700</code> and every file <code>0600</code></td>
+<td>One file per key, <code>var/keys/&lt;slug&gt;/&lt;kid&gt;.json</code>: the public half in the clear, the private half sealed. The directory is created <code>0700</code> and every file <code>0600</code></td>
 </tr>
 <tr>
 <td>The pairwise salt of the tenant (OIDC Core §8.1), drawn at its first use and never again</td>
-<td><code>&lt;storage&gt;/&lt;slug&gt;/pairwise.salt</code>, sealed</td>
+<td><code>var/keys/&lt;slug&gt;/pairwise.salt</code>, sealed</td>
 </tr>
 <tr>
 <td>The data keys of the sealed columns, one per tenant and per family of columns</td>
-<td>Rows of <code>beffroi_data_key</code>, wrapped by the master key of the tenant; each row names the client and the master key that wrapped it, and is bound to its reference and its scope under a secret of <code>beffroi.keys.data_key_secrets</code>, which the database does not hold</td>
+<td>Rows of <code>beffroi_data_key</code>, wrapped by the master key of the tenant; each row names the client and the master key that wrapped it, and is bound to its reference and its scope under a secret of <code>BEFFROI_DATA_KEY_SECRETS</code>, <code>APP_SECRET</code> while that variable is not set, which the database does not hold</td>
 </tr>
 <tr>
 <td>The secrets held for people: the secret of an authenticator application, the identifier and token of a backchannel request whose client is called back, the person a self-contained access token is about, an enrolment of an authenticator application in progress</td>
@@ -4115,32 +4111,35 @@ development stack of the project does, AWS through LocalStack, and are skipped o
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="sodium-in-the-environment" name="__tabbed_1" type="radio" /><input id="sodium-in-a-file" name="__tabbed_1" type="radio" /><input id="hashicorp-vault-transit" name="__tabbed_1" type="radio" /><input id="aws-kms" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="sodium-in-the-environment">Sodium, in the environment</label><label for="sodium-in-a-file">Sodium, in a file</label><label for="hashicorp-vault-transit">HashiCorp Vault Transit</label><label for="aws-kms">AWS KMS</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p>A sodium key written in the DSN itself, which is the default of a development machine.</p>
-<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>BEFFROI_KMS_DSN="sodium://?keys[signing]=&lt;32 bytes, base64url&gt;"
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>BEFFROI_KMS_KEY_ID="signing"
+<p>A sodium key written in the DSN itself, which is what the development stack provisions. Whoever reads the
+environment of the process holds the master key.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>BEFFROI_KMS_DSN="sodium://?keys[signing]=&lt;32 bytes, base64url&gt;"
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>BEFFROI_KMS_KEY_ID="signing"
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
 <p>The same sodium key read from a file of its own, mode <code>0600</code>, outside the web root and outside the
 storage of the sealed keys: what a self-hosted deployment without a key management service uses. It holds
-against a copy of the sealed keys, not against a compromise of the host.</p>
-<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>BEFFROI_KMS_DSN="sodium+dir:///app/var/kms?ext=.key"
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
+against a copy of the sealed keys, not against a compromise of the host.
+<a href="../configuration/#the-key-management-service">Configuration</a> says how the key is drawn into its volume.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>BEFFROI_KMS_DSN="sodium+dir:///app/var/kms?ext=.key"
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
 <p>A Transit key per tenant, and a token minted under a policy that allows data keys and decryption under
 those keys, their configuration and nothing else. The client is <code>symfony/hashicorp-vault-key-management</code>.
-The DSN below is the one of the Vault of the development stack, which answers in plain HTTP.</p>
-<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>BEFFROI_KMS_DSN="hashicorp-vault-transit://&lt;token&gt;@vault:8200?scheme=http"
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
+A Vault that answers in plain HTTP, as the one of the development stack does, is named with
+<code>?scheme=http</code> at the end of the DSN.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>BEFFROI_KMS_DSN="hashicorp-vault-transit://&lt;token&gt;@&lt;host&gt;:8200"
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
 <p>An alias per tenant, and the credentials of the provider chain of the SDK. The client is
 <code>symfony/aws-key-management</code>.</p>
-<div class="language-text highlight"><span class="filename">.env.local</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>BEFFROI_KMS_DSN="aws-kms://default?region=&lt;region&gt;"
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>BEFFROI_KMS_KEY_ID="alias/beffroi-{tenant}"
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>BEFFROI_KMS_DSN="aws-kms://default?region=&lt;region&gt;"
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>BEFFROI_KMS_KEY_ID="alias/beffroi-{tenant}"
 </span></code></pre></div>
 </div>
 </div>
@@ -4151,7 +4150,7 @@ and by <code>kid</code>; a key that retires is forgotten. Served by FrankenPHP i
 application is, a process pays one opening per key for all the signatures it makes; a process rebuilt at each
 request pays one at each request. The sealed columns follow the same rule with their data keys, one opening
 per data key and per process.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bin/console<span class="w"> </span>beffroi:keys:list<span class="w"> </span>--check
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:keys:list<span class="w"> </span>--check
 </span></code></pre></div>
 <p>Opens the keys in use and the ones about to be, and fails on a key the service cannot open: a key the provider
 cannot open is an outage at the first token request, so this is worth a run in a deployment pipeline.</p>
@@ -4167,27 +4166,31 @@ opened.</p>
 under a master key the service does not know when it opens it, is not an outage: it is an error, and no
 retry changes it.</p>
 <h2 id="moving-to-another-client">Moving to another client<a class="headerlink" href="#moving-to-another-client" title="Link to this section">&para;</a></h2>
-<p><strong>The data keys move without a single sealed value being read.</strong> Both clients are declared at once, and the
-data keys of the tenant are wrapped again by the new one:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second<span class="w"> </span>--dry-run
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second
+<p><strong>The data keys move without a single sealed value being read.</strong> <code>BEFFROI_KMS_DSN_SECOND</code> names the new
+service in the environment of every process, and the data keys of the tenant are wrapped again by <code>second</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second<span class="w"> </span>--dry-run
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>bin/console<span class="w"> </span>beffroi:data-keys:rewrap<span class="w"> </span>--to<span class="o">=</span>second
 </span></code></pre></div>
-<p>The master key is the one <code>beffroi.keys.key_id</code> gives the tenant, resolved and never typed, so the new client
+<p>The master key is the one <code>BEFFROI_KMS_KEY_ID</code> gives the tenant, resolved and never typed, so the new service
 holds a key under the same identifier. Every row names the client that wraps it, so the columns read through
-the rewrap and after it. A data key minted later, at the rotation of a family or at the first write of a new
-one, is wrapped by the client <code>beffroi.keys.kms</code> names, so the move ends once that client is the new one. The
-application declares its second client for this, <code>second</code>, from <code>BEFFROI_KMS_DSN_SECOND</code>, which stays empty,
-and its client never built, on a deployment that moves nothing.</p>
-<p><strong>The keys of the tenant move by rotation.</strong> An envelope sealed by one client does not open with another, so
-once the client <code>beffroi.keys.kms</code> names is the new one, every algorithm the tenant holds gets a new key sealed
-by it:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate<span class="w"> </span>--now<span class="w"> </span>--algorithm<span class="o">=</span>RS256
+the rewrap and after it, a row <code>second</code> wraps opening for as long as <code>BEFFROI_KMS_DSN_SECOND</code> names its
+service. A data key minted later, at the rotation of a family or at the first write of a new one, is wrapped
+by <code>op</code>, under the service <code>BEFFROI_KMS_DSN</code> names when the key is minted. <code>BEFFROI_KMS_DSN_SECOND</code> stays
+empty, and <code>second</code> never built, on a deployment that moves nothing.</p>
+<p><strong>The keys of the tenant move by rotation.</strong> An envelope sealed by one service does not open with another, so
+once <code>BEFFROI_KMS_DSN</code> names the new service, every algorithm the tenant holds gets a new key sealed by it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate<span class="w"> </span>--now<span class="w"> </span>--algorithm<span class="o">=</span>RS256
 </span></code></pre></div>
 <p>The key it replaces retires with its window, its public half still verifying what it signed; nothing is
 deleted. <code>beffroi:keys:list --check</code> names the algorithms whose keys the client cannot open.</p>
 <p><strong>The pairwise salt and the secrets held for people have no command that moves them.</strong> They are opened
-through the client <code>beffroi.keys.kms</code> names, so they open only for as long as that client is the one that
-sealed them.</p>
+through <code>op</code>, so they open only for as long as <code>BEFFROI_KMS_DSN</code> names the service that sealed them.</p>
+<div class="admonition warning">
+<p class="admonition-title">Pointing <code>BEFFROI_KMS_DSN</code> at another service</p>
+<p>Once <code>BEFFROI_KMS_DSN</code> names another service, the pairwise salt and the secrets held for people no longer
+open, and so does a data key <code>op</code> minted under the previous service after the rewrap. The image has no
+command that moves them first.</p>
+</div>
 <p><a href="../console-commands/#data-keys"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The commands, in full</a></p>
 
@@ -4210,7 +4213,7 @@ sealed them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 14:00:31 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     

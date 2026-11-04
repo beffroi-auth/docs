@@ -4198,7 +4198,7 @@ and the two controls of their bar, the language, <code>_locale_switcher.html.twi
 <tbody>
 <tr>
 <td><code>beffroi_tenant()</code></td>
-<td>What the page shows of its tenant: <code>name</code>, <code>logoUri</code>, <code>primaryColor</code>, <code>primaryContentColor</code>, or nothing when the row of the tenant is missing or disagrees with the configuration</td>
+<td>What the page shows of its tenant: <code>name</code>, <code>logoUri</code>, <code>primaryColor</code>, <code>primaryContentColor</code>, or nothing when the row of the tenant is missing or disagrees with the configuration. Reading it adds the origin of the logo to the <code>img-src</code> of the page (<a href="#what-a-tenant-shows-of-itself">below</a>)</td>
 </tr>
 <tr>
 <td><code>beffroi_locales()</code></td>
@@ -4216,8 +4216,16 @@ and the two controls of their bar, the language, <code>_locale_switcher.html.twi
 <td><code>beffroi_place</code>, <code>beffroi_device</code></td>
 <td>Where a request came from, and the browser it named</td>
 </tr>
+<tr>
+<td><code>beffroi_authenticator</code></td>
+<td>The make and model of the authenticator a passkey declared, as the first source that knows its AAGUID gives them, the FIDO metadata before the list of the community: a name, a logo when the source has one, a FIDO certification from the metadata alone, and the source. Nothing when no source knows the AAGUID, or when it is sixteen zero bytes. The page of the passkeys reads it from what the console stored, so it fetches nothing</td>
+</tr>
 </tbody>
 </table>
+<p>Three more draw the page rather than the provider: <code>theme()</code>, the theme the document is rendered in, which
+<code>document.html.twig</code> and the control of the theme read, <code>account_navigation()</code>, the pages of the account under
+their headings, which the column beside a page of the account lists, and <code>account_cards()</code>, the card of each
+of those pages on the home of the account.</p>
 <p><a href="../translations/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Translations</a></p>
 <h2 id="what-a-tenant-shows-of-itself">What a tenant shows of itself<a class="headerlink" href="#what-a-tenant-shows-of-itself" title="Link to this section">&para;</a></h2>
@@ -4230,10 +4238,17 @@ written on them, are written by <code>document.html.twig</code> as the two custo
 surface from, <code>--color-primary</code> and <code>--color-primary-content</code>, for both themes, in a <code>style</code> element that
 carries the nonce of the response and comes after the stylesheet. A tenant that declares no colour leaves the
 element off, and the theme answers.</p>
-<p>The consent page shows the logo of the asking client beside the one of the tenant, and adds the origins both
-are served from to the <code>img-src</code> of the policy its answer carries. Every other page is served under the
-policy of the deployment alone, so that policy allows the origin the logo of the tenant is served from: the
-application serves it from its own origin, which its <code>img-src 'self'</code> allows.</p>
+<p>Reading the tenant names the origin its logo is served from: every page that reads <code>beffroi_tenant()</code>, which
+every page that extends the layout does, adds that origin to the <code>img-src</code> of the policy its answer carries,
+and the consent page adds the origin of the logo of the asking client beside it. A deployment names neither
+origin anywhere, and the placeholder mark is served from the origin of the application, which <code>img-src 'self'</code>
+allows already.</p>
+<p>Every page but those of <code>/authorize</code>, <code>/login</code>, <code>/consent</code>, <code>/logout</code>, <code>/device</code> and <code>/initiate-login</code>, the
+pages of the account, the enrolment of a first passkey and the pages a SAML flow answers with among them, is
+also served <code>Cross-Origin-Embedder-Policy: require-corp</code>, under which a browser refuses an image of another
+origin whose answer does not let it in. A logo served from another host shows there when that host answers
+<code>Cross-Origin-Resource-Policy: cross-origin</code>. The pages of those six paths carry no
+<code>Cross-Origin-Embedder-Policy</code> (<code>config/packages/nelmio_security.yaml</code>).</p>
 <p><a href="../../core/tenants/#what-the-configuration-says"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> What the configuration says of a tenant</a></p>
 <h2 id="the-pages">The pages<a class="headerlink" href="#the-pages" title="Link to this section">&para;</a></h2>
@@ -4313,9 +4328,10 @@ application serves it from its own origin, which its <code>img-src 'self'</code>
 </tr>
 </tbody>
 </table>
-<p><code>scopes.html.twig</code> and <code>authorization_details.html.twig</code> write the scopes and the details of a request the
-same way on the consent page and on the pages of the account; <code>_brand.html.twig</code> and
-<code>_locale_switcher.html.twig</code> are included by the skeletons.</p>
+<p><code>scopes.html.twig</code>, <code>claims.html.twig</code> and <code>authorization_details.html.twig</code> write the scopes, the claims
+asked for by name and the details the same way on the consent page and on the two pages of the account that
+list what a person agreed to, <code>account/consents.html.twig</code> and <code>account/application.html.twig</code>;
+<code>_brand.html.twig</code> and <code>_locale_switcher.html.twig</code> are included by the skeletons.</p>
 <h3 id="the-login-page">The login page<a class="headerlink" href="#the-login-page" title="Link to this section">&para;</a></h3>
 <p><strong>It offers what the tenant admits.</strong> It shows the logins the firewall wires that the <a href="../../core/tenants/#the-floor-of-its-logins">floor of the
 tenant</a> accepts: a tenant that signs its people in by passkey
@@ -4331,9 +4347,13 @@ reach one. A login asked for by a page of the provider names no client.</p>
 <p>Who is asking is what the client registered of itself: its name, its logo, and the pages a person may read
 before deciding, <code>policy_uri</code>, <code>tos_uri</code> and <code>client_uri</code> in that order, each opened with no referrer. Then
 the person signed in, every scope of the request, the standard scopes of OIDC Core §5.4 in words and any
-other by its value, and what the request asks for beyond its scopes (RFC 9396 §2) in the words of its type.
-Allowing ends with the code carried to the client, so the page adds the origin of its redirection URI to the
-<code>form-action</code> of its policy.</p>
+other by its value, the claims the request asks for by name that a scope the client registered stands for and
+no scope of the request does (OIDC Core §5.5),
+those of §5.1 in words and any other by its name, and what the request asks for beyond its scopes (RFC 9396
+§2) in the words of its type. Allowing ends with the code carried to the client, so the page adds the origin
+of its redirection URI to the <code>form-action</code> of its policy.</p>
+<p><a href="../../oidc/consent/#the-page"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Which claims asked for by name the page lists</a></p>
 <h3 id="the-logout-pages">The logout pages<a class="headerlink" href="#the-logout-pages" title="Link to this section">&para;</a></h3>
 <p>The logout asks for a confirmation when the request did not prove it is about the session the browser holds
 (OIDC RP-Initiated Logout 1.0 §2), and the form posts the same parameters back with the answer. After it, the
@@ -4402,7 +4422,8 @@ that only reports, once that policy is written.</p>
   the last of which carries the code to the client. The logout confirmation adds the origin of the
   post-logout redirection URI, and the origin of the single logout service of each SAML service provider the
   logout goes through.</li>
-<li>The consent page adds the origins of the two logos it shows to <code>img-src</code>.</li>
+<li>Every page that reads the tenant adds the origin of its logo to <code>img-src</code>, and the consent page adds the
+  origin of the logo of the asking client as well.</li>
 </ul>
 <p>A policy that names no <code>form-action</code> is left alone, that directive falling back to no other; a policy that
 names <code>default-src</code> and no <code>img-src</code> gets an <code>img-src</code> written out of it, with the origins added.</p>
@@ -4451,17 +4472,17 @@ or the <code>interaction</code> field of the consent form, which is how a post f
 <tr>
 <td>Password login</td>
 <td><code>_username</code>, <code>_password</code></td>
-<td><code>_csrf_token</code>, <code>authenticate</code></td>
+<td><code>_csrf_token</code>, <code>beffroi_login</code></td>
 </tr>
 <tr>
 <td>Passkey login</td>
 <td><code>_passkey</code>, in a form marked <code>data-passkey="login"</code> naming its options in <code>data-options-url</code>, with a <code>data-passkey-button</code> and a <code>data-passkey-error</code></td>
-<td><code>_csrf_token</code>, <code>authenticate</code></td>
+<td><code>_csrf_token</code>, <code>beffroi_login</code></td>
 </tr>
 <tr>
 <td>Second step</td>
 <td><code>_code</code></td>
-<td><code>_csrf_token</code>, <code>authenticate</code></td>
+<td><code>_csrf_token</code>, <code>beffroi_login</code></td>
 </tr>
 <tr>
 <td>Address first</td>
@@ -4512,7 +4533,7 @@ or the <code>interaction</code> field of the consent form, which is how a post f
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 26, 2026 01:02:25 UTC">October 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
   </span>
 
     
