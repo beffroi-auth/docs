@@ -65,8 +65,8 @@ reads. `BEFFROI_PLANE` restricts a process to one of them:
 | `interaction` | The interaction plane; every route of the protocol plane answers `404` |
 
 The refusal comes after the router and before the firewall, so a request to the other plane opens no session
-and counts against no budget. The root `/` of the application belongs to the interaction plane, and a route
-whose name carries no plane, such as `/theme`, is served by every process. A process serves its plane on each
+and counts against no budget. The root `/` of the application and the choice of a theme, `/theme`, belong to
+the interaction plane, as every route the image serves belongs to one of the two. A process serves its plane on each
 of its hosts, the one that asks for a client certificate included. Whatever sends a request to one process or
 the other reads its path, and [the endpoints](../reference/endpoints.md) give the plane of every path.
 
