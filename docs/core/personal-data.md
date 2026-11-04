@@ -94,9 +94,9 @@ bin/console beffroi:user:reindex
 | `<slug>.<family>`, one per family of the table above | Every sealed value of that family | Minted at the first write of the family. After thirty days, the next write mints another, and the older keys stay to open what they sealed |
 | `<slug>.blind_index` | Every blind index of the tenant | Minted at the first lookup or write that needs it, never replaced: every tag already written was derived under it |
 
-A data key is 32 bytes, AES-256-GCM, held wrapped in the table `beffroi_data_key` by the master key the
-configuration names for the tenant, `beffroi.keys.key_id` resolved for its slug, the one its own keys are sealed
-under. A process opens each data key once and keeps it, so the key management service is asked once per key and not
+A data key is 32 bytes, AES-256-GCM, held wrapped in the table `beffroi_data_key` by the master key
+`BEFFROI_KMS_KEY_ID` names for the tenant, resolved for its slug, the one its own keys are sealed under. A
+process opens each data key once and keeps it, so the key management service is asked once per key and not
 once per value. Nothing in the ordinary life of a tenant removes a data key: a new key is minted beside the ones
 there, and a rewrap changes what protects a key and not the key.
 
@@ -104,8 +104,8 @@ Each row is also bound to its reference and its scope: an HMAC-SHA256 of the two
 data key and from a secret the database does not hold. A key that is not the one minted for its reference and
 its scope therefore opens nothing: a row whose key was replaced, a row copied under another reference or
 scope, a row written into the table by whoever can write the database, even when the key it carries is wrapped
-under a master key the provider may use. The secrets are those of `beffroi.keys.data_key_secrets`, the
-secret of the kernel unless the configuration names others, one list for the whole deployment: the first one
+under a master key the provider may use. The secrets are those of `BEFFROI_DATA_KEY_SECRETS`, the secret of
+the kernel, `APP_SECRET`, while that variable is not set, one list for the whole deployment: the first one
 binds a new row, and a row bound under any of them opens. A row bound under a secret that is no longer listed
 opens nothing, and neither does any value sealed under its key.
 
@@ -126,16 +126,16 @@ bin/console beffroi:data-keys:rewrap --to=second
 
 | Option | What it says |
 |---|---|
-| `--to` | The key management client that wraps the data keys the tenant holds, a name of `key_management.clients` |
+| `--to` | The key management client that wraps the data keys the tenant holds, `op` or `second` in the application |
 | `--from` | Move only the keys that client wraps; all of them when it is left out |
 | `--dry-run` | List what would move, and write nothing |
 
-The master key is not asked for: it is the one the configuration resolves for the slug of the tenant, so an
+The master key is not asked for: it is the one `BEFFROI_KMS_KEY_ID` resolves for the slug of the tenant, so an
 operator cannot type the master key of another tenant. No sealed value is read and none is rewritten, every
 ciphertext going on referring to the same data key, the index key included. The provider serves while the keys
 move: a read resolves the client and the master key from the row of the data key it names, whatever wrapped it.
 The command moves the keys the tenant holds when it runs; a key minted afterwards, the first of a family or the
-next one after thirty days, is wrapped by the client `beffroi.keys.kms` names. The act
+next one after thirty days, is wrapped by `op`, the client the provider seals with. The act
 `tenant.data_keys_rewrapped` goes to the journal, and its event carries the client the keys were taken from when
 `--from` named one, the client and the master key that wrap them afterwards, how many keys moved, and how many
 scopes the tenant holds. One tenant at a time, by hand: nothing schedules it.
@@ -155,8 +155,8 @@ BEFFROI_DATA_KEY_SECRETS='["<the new secret>","<the old secret>"]'
 1. Write the new secret first and keep the one it replaces second, and give that environment to every
    process of the deployment before going on: a process that does not list a secret opens no row bound under
    it.
-2. Run `beffroi:data-keys:rewrap` with `--to` naming the client that already wraps the keys of the tenant, the
-   one `beffroi.keys.kms` names unless a rewrap moved them. Every key is bound again under the first secret as
+2. Run `beffroi:data-keys:rewrap` with `--to` naming the client that already wraps the keys of the tenant,
+   `op` unless a rewrap moved them. Every key is bound again under the first secret as
    it moves, and its value and every ciphertext sealed under it stay as they are.
 3. Drop the old secret once the command has moved every key.
 
@@ -183,7 +183,7 @@ afterwards. It cannot be undone.
 transport, an event, a command or a notification, is a JWE to the `MESSAGE-SEAL` key of the tenant, under
 `ECDH-ES+A256KW` and `A256GCM`, its protected header naming the tenant, so a body moved to the queue of another
 tenant does not open there. The serializer that seals it is the default one of every transport, the failure
-transport included, so a broker, the table of a transport and a backup of either hold nothing readable. What stays
+transport included, so the table of a transport and a backup of it hold nothing readable. What stays
 in the clear on a message is what makes a failed one readable: the class of the message, its stamps and the slug of
 the tenant it was written under, nothing of a person among them.
 
@@ -194,8 +194,8 @@ asks for are sealed where they sit like every other column of a person.
 
 | What | Kept for | Forgotten by |
 |---|---|---|
-| An act of the journal, and what a client was given at it | `beffroi.journal.retention` days, 180 by default | A daily step |
-| A change of a claim | `beffroi.history.retention` days, 180 by default | A daily step |
+| An act of the journal, and what a client was given at it | `BEFFROI_JOURNAL_RETENTION` days, 180 in the image | A daily step |
+| A change of a claim | `BEFFROI_HISTORY_RETENTION` days, 180 in the image | A daily step |
 | The archive a person asked for | Seven days from the moment it was asked for, a figure in the code | An hourly step |
 
 **The archive is the one file in which all of it stands in clear at once**, so it is held by rules rather than by

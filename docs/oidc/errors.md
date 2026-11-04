@@ -77,7 +77,7 @@ token refused because it was not issued here is told so and nothing more.
 | `unauthorized_client` | `400` | `/token`, for a grant the client is not registered for; `/device_authorization` and `/backchannel_authentication`, for a client not registered for that flow | Never |
 | `unsupported_grant_type` | `400` | `/token`, for a grant the provider is not wired with | Never |
 | `invalid_scope` | `400` | `/authorize`, `/par`, `/token`, `/device_authorization`, `/backchannel_authentication` | At the authorization endpoint |
-| `invalid_target` | `400` | `/authorize`, `/par`, `/token`, for a resource that is malformed or that the client did not register (RFC 8707 §2) | At the authorization endpoint |
+| `invalid_target` | `400` | `/authorize`, `/par`, `/token`, `/device_authorization`, `/backchannel_authentication`, for a resource that is malformed or that the client or the authorization does not hold, at `/token` for none at all under `client_credentials` and the JWT bearer grant (RFC 8707 §2), and for the targets the [token exchange](grants/token-exchange.md) refuses. No client of the image holds a resource: [resources](resources.md) | At the authorization endpoint |
 | `invalid_authorization_details` | `400` | `/authorize`, `/par`, `/token` (RFC 9396 §5) | At the authorization endpoint |
 | `unsupported_response_type` | `400` | `/authorize`, `/par`: anything but `code` | At the authorization endpoint |
 | `unsupported_response_mode` | `400` | `/authorize`, `/par` | At the authorization endpoint, in the default mode |
@@ -134,21 +134,20 @@ has room again, and `Cache-Control: no-store`. On the protocol plane the body is
 `error_description` and no `error` member, since none of the registered codes says a budget is spent and a
 client is not meant to act on it but to wait; on the interaction plane it is the page `too_many_requests`.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    load:
-        origin:
-            limit: 2400
-            interval: 60
-        client:
-            limit: 1200
-            interval: 60
+Four variables give the two budgets their numbers, here at the values of the image
+([configuration](../application/configuration.md#the-journal-and-the-load)):
+
+``` dotenv
+BEFFROI_LOAD_ORIGIN_LIMIT=2400
+BEFFROI_LOAD_ORIGIN_INTERVAL=60
+BEFFROI_LOAD_CLIENT_LIMIT=1200
+BEFFROI_LOAD_CLIENT_INTERVAL=60
 ```
 
-| Option | Default | What it decides |
+| Variables | In the image | What they decide |
 |---|---|---|
-| `origin.limit`, `origin.interval` | `2400` requests in `60` seconds | What one address may send, whatever it asks for. It is not counted per tenant: it bounds the load on the machine |
-| `client.limit`, `client.interval` | `1200` requests in `60` seconds | What one authenticated client of one tenant may ask |
+| `BEFFROI_LOAD_ORIGIN_LIMIT`, `BEFFROI_LOAD_ORIGIN_INTERVAL` | `2400` requests in `60` seconds | What one address may send, whatever it asks for. It is not counted per tenant: it bounds the load on the machine |
+| `BEFFROI_LOAD_CLIENT_LIMIT`, `BEFFROI_LOAD_CLIENT_INTERVAL` | `1200` requests in `60` seconds | What one authenticated client of one tenant may ask |
 
 A number too low on `/token` or on `/jwks` is an outage a deployment inflicts on itself, so a deployment
 sets them from what its own clients send.

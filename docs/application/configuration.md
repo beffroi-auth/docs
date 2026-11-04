@@ -70,7 +70,7 @@ is no JSON document, and is refused.
 | Variable | In `.env` | What it decides |
 |---|---|---|
 | `BEFFROI_TENANT_NAME` | empty | What the pages and the consent call the tenant. Empty, the host of the issuer |
-| `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. Every page that shows the logo names its origin in its `img-src`. A logo served from another host shows on the account and the other pages outside the flows of the protocol only when that host answers `Cross-Origin-Resource-Policy: cross-origin`, which those pages require of an image of another origin |
+| `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. Every page that shows the logo names its origin in its `img-src`. A logo served from another host shows on the pages served under `Cross-Origin-Embedder-Policy: require-corp`, every page but those of `/authorize`, `/login`, `/consent`, `/logout`, `/device` and `/initiate-login`, only when that host answers `Cross-Origin-Resource-Policy: cross-origin` |
 | `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons and the links of the pages are drawn in: `#` and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour |
 | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | `#ffffff` | The colour of what is written on it, in the same notation |
 | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the application lets a person change, from `name` to `phone_number` | What a person may change of themselves on the page of their account. A tenant whose directory owns the data names `[]` |
@@ -175,8 +175,9 @@ and the notifications of the backchannel flow as well as the logout tokens.
 | `BEFFROI_SAML_SERVICE_PROVIDERS` | `{}` | The [service providers](../saml/service-providers.md) the identity provider serves, keyed by entity ID |
 | `BEFFROI_SAML_IDENTITY_PROVIDERS` | `{}` | The [upstream identity providers](../saml/upstream-identity-providers.md) the service provider receives assertions of, keyed by entity ID |
 
-The routes and services of both roles are in every image. A role turned off serves nothing, and the peers
-declared for it are served by nothing until it is turned on again. With both off, the tenant draws no SAML key.
+The routes and services of both roles are in every image. A role turned off serves nothing, and a list that
+names a peer of it is refused whole wherever it is read, the sign-in and the logout among them, until the role
+is turned on again or the list is emptied. With both off, the tenant draws no SAML key.
 The SAML key is the key of both roles, rotated by the three figures above whichever role is on.
 
 ## The journal and the load

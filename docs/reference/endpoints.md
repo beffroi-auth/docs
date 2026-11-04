@@ -10,10 +10,12 @@ deployment whose issuer is `https://op.example.com` serves the token endpoint at
 `https://op.example.com/token`. The root itself, `/`, is `beffroi_interaction_home`, a route of the application
 that sends a browser to the home of its account.
 
-Every route name carries its plane. `beffroi_protocol_*` is server to server, called by a client or a
-resource server; `beffroi_interaction_*` is a browser, where a person reads a page and answers. The
+Every route name of the provider carries its plane. `beffroi_protocol_*` is server to server, called by a
+client or a resource server; `beffroi_interaction_*` is a browser, where a person reads a page and answers. The
 `BEFFROI_PLANE` environment variable restricts a process to one plane, so an interaction never reaches a
-machine that only serves the protocol, and the other way round.
+machine that only serves the protocol, and the other way round. One more route of the application,
+`POST /theme`, `app_theme`, where a visitor chooses the theme of the pages, carries no plane, and every
+process serves it.
 
 ## The protocol plane
 
@@ -74,7 +76,7 @@ session rather than sending it to a login.
 | `GET` | `/account/passkeys` | `beffroi_interaction_account_passkeys` | The passkeys of this person, with their names, dates and state |
 | `GET` | `/account/two-factor` | `beffroi_interaction_account_two_factor` | The second factor, and the backup codes that go with it |
 | `GET` | `/account/two-factor/enrol` | `beffroi_interaction_account_two_factor_enrolment` | The two steps of a TOTP enrolment, the key and the first code |
-| `GET` | `/account/consents` | `beffroi_interaction_account_consents` | One line per client this person agreed to, with the scopes it holds |
+| `GET` | `/account/consents` | `beffroi_interaction_account_consents` | One line per client this person agreed to, with the scopes, the claims by name and the authorization details it holds |
 | `GET` | `/account/applications/{id}` | `beffroi_interaction_account_application` | What one of those applications holds, behind its line |
 | `GET` | `/account/sessions` | `beffroi_interaction_account_sessions` | Where this person is signed in, and what each session proved |
 | `GET` | `/account/acts` | `beffroi_interaction_account_acts` | What happened to the account: who signed in and how, the refused attempts, what signed out, what changed of the means of signing in, and what the person did of their own record |
@@ -91,7 +93,7 @@ the archive wrapped under a passphrase, which is the file.
 
 | Method | Path | Route |
 |---|---|---|
-| `POST` | `/account/profile` | `beffroi_interaction_account_profile_describe` |
+| `POST` | `/account/profile/{claim}` | `beffroi_interaction_account_profile_describe` |
 | `POST` | `/account/password` | `beffroi_interaction_account_password_change` |
 | `POST` | `/account/passkeys/options` | `beffroi_interaction_account_passkeys_options` |
 | `POST` | `/account/passkeys` | `beffroi_interaction_account_passkeys_enrol` |

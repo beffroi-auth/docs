@@ -62,7 +62,7 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 | Port | What it answers | In the application |
 |---|---|---|
 | `ClientRepositoryInterface` | The client of a tenant that carries an identifier | The module, over every source wired |
-| `ClientSourceInterface` | One source of clients | The clients the configuration declares, and the clients registered dynamically, in Doctrine |
+| `ClientSourceInterface` | One source of clients | The clients the configuration declares, none in the image, and the clients registered dynamically, in Doctrine |
 | `ClientInventoryInterface` | Every client of a source, for whoever runs the deployment | The module, over the same two sources |
 | `ClientStoreInterface` | The rows of the clients registered dynamically (RFC 7591 §3.2.1, RFC 7592) | Doctrine |
 | `UnusedClientsInterface` | The clients a source may drop for lack of use | Doctrine; the declared clients answer none, and are never dropped |
@@ -87,8 +87,12 @@ deployment.
 | `ClientJwksCacheInterface` | The keys read back from a `jwks_uri`, with when they were read | `beffroi.client_keys`, and `beffroi.issuer_keys` for trusted issuers |
 | `ClientLoadBudgetInterface` | What an authenticated client may still ask in the window | A rate limiter on `beffroi.load` |
 
-The application declares each pool on `cache.app`, in a pool of its own, so that a deployment points one at a
-shared store without touching the rest of its cache.
+The application declares each pool on `cache.app`, in a pool of its own, and leaves `cache.app` on the
+filesystem adapter Symfony gives it, in `%kernel.share_dir%/pools/app`: `var/share/prod/pools/app` in the
+image, `APP_SHARE_DIR` being compiled into it. No variable moves the pools elsewhere. The processes share them
+by sharing that directory, which the Compose file of the image mounts on the server and on the worker as one
+volume; processes that do not share it each remember on their own ([what the processes
+share](../application/deployment.md#what-the-processes-share)).
 
 ## What the provider fetches
 
@@ -114,7 +118,7 @@ shared store without touching the rest of its cache.
 | Port | What it answers | In the application |
 |---|---|---|
 | `EndpointLocatorInterface` | The URL of every endpoint of a tenant, under its issuer | The router |
-| `MutualTlsEndpointLocatorInterface` | The same endpoints on the host that asks for a client certificate, or none (RFC 8705 §5) | The router, under `mutual_tls.origin` |
+| `MutualTlsEndpointLocatorInterface` | The same endpoints on the host that asks for a client certificate, or none (RFC 8705 §5) | The router, under the origin `BEFFROI_MTLS_ORIGIN` names |
 | `ClientConfigurationEndpointInterface` | The URL where one client reads, replaces and deletes itself (RFC 7592 §3) | The router |
 
 ## Reaching somebody
@@ -122,7 +126,7 @@ shared store without touching the rest of its cache.
 | Port | What it answers | In the application |
 |---|---|---|
 | `PendingApprovalNotifierInterface` | Telling a person that a backchannel request waits for them | A message on the lane of the notifications |
-| `LogoutTokenDeliveryInterface` | The budget a logout token is written for, which its `exp` and the retirement of its signing key read. It bounds the token and not the sending: a send that comes after it carries an expired token | The waits of the retry policy of that lane and the timeout of the sender, from `back_channel_logout` |
+| `LogoutTokenDeliveryInterface` | The budget a logout token is written for, which its `exp` and the retirement of its signing key read. It bounds the token and not the sending: a send that comes after it carries an expired token | The waits of the retry policy of that lane and the timeout of the sender, from the `BEFFROI_BACK_CHANNEL_LOGOUT_*` variables ([logout](logout.md#its-delivery)) |
 
 ## What the wiring says
 
@@ -162,7 +166,7 @@ The package carries the implementations that need nothing but its own dependenci
 
 | Namespace | What is in it |
 |---|---|
-| `Configuration` | The clients, the registration policy and the trusted issuers, read from what a deployment declares and validated when it starts |
+| `Configuration` | The clients, the registration policy and the trusted issuers, read from what the configuration of the application declares, and validated when the service that reads them is first built |
 | `JwtLibrary` | The reader of a compact JWT, the verifier of a client's signature, of a DPoP proof and of a `client_secret_jwt` MAC, and the JWE encrypter, on `web-token/jwt-library` |
 | `Pki` | The reader of a client certificate, on `spomky-labs/pki-framework` |
 | `Null` | `NoDpopNonce`, the provider that asks no nonce of a proof |

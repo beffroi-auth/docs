@@ -25,7 +25,7 @@ code. There is no `insecure_` setting, no compatibility mode, and no global swit
 | A password is compared against a list of compromised values before it is written | A password can be long, varied and still known to everybody. NIST SP 800-63B §3.1.1.2 asks for the list, and what the list holds is refused rather than warned about |
 | A password is fifteen characters at least where it signs somebody in alone, eight where a second factor goes with it | NIST SP 800-63B §3.1.1.2 makes the length two numbers, and the floor of the logins of the tenant says which one a password serves |
 | A page that adds or takes away a way in asks for the proof again | A session outlives the moment it was opened, which is right for a page that shows what the account holds and wrong for the gesture somebody else would lock its owner out with |
-| What leaves the process on a transport leaves sealed | What a column seals, a queue may not carry in clear: the body of every message is sealed to the tenant, so a broker, a failure table and a backup of either are worth nothing without the key management service |
+| What leaves the process on a transport leaves sealed | What a column seals, a queue may not carry in clear: the body of every message is sealed to the tenant, so a queue, a failure table and a backup of either are worth nothing without the key management service |
 | Every end of a session revokes what was issued under it | However a session ends, at the end session endpoint, from the account, by the console or by a SAML logout, its refresh tokens are revoked, its opaque access tokens removed, and the provider refuses every token of it from then on. What a resource server verifies offline, a self-contained access token, lasts until it expires, which is why it lives ten minutes by default |
 | A form another site posts a browser to the provider with is posted again from the provider's own origin, and a post from another site is never answered with a new session cookie | Under `SameSite=Lax` a cross-site `POST` arrives without the session. Answered with a new cookie, it would sign the browser out of the provider; posted again, it reaches the session the browser holds. Both rules read where the post comes from in `Sec-Fetch-Site`, and a browser that does not send it is answered as it always was |
 | A person of a domain an upstream identity provider answers for signs in there and nowhere else | A local password would outlive the person's departure from the directory of their organisation, so none is posed for them and none is accepted from them |
@@ -36,11 +36,12 @@ code. There is no `insecure_` setting, no compatibility mode, and no global swit
 An exception is named, bounded and written down where it applies, for one client or for one tenant, and
 never a global switch. The shape they take:
 
-- **PKCE can be waived for a confidential client, never for a public one.** A client declared in the
-  configuration that cannot send a `code_challenge` is declared with `requires_pkce: false`, and the clients
-  a tenant lets register themselves are exempted together only when its registration policy says
-  `exempt_confidential_clients_from_pkce: true`. A public client is refused either way, `plain` does not
-  exist, and a challenge a client does send is verified like any other.
+- **PKCE can be waived for a confidential client, never for a public one.** A client the configuration
+  declares is waived with `requires_pkce: false`, and the clients a tenant lets register themselves are
+  waived together only when its registration policy says `exempt_confidential_clients_from_pkce: true`. The
+  image does neither, so every authorization request of a deployment of the image carries a `code_challenge`. A public client
+  is refused either way, `plain` does not exist, and a challenge a client does send is verified like any
+  other.
 - **A public client's loopback URI matches on any port.** A native application listens on whatever port the
   system gives it (RFC 8252 §7.3), so for a public client, and for a URI on `127.0.0.1` or `[::1]` only, the
   comparison ignores the port and nothing else: another path or a host name instead of the IP literal is

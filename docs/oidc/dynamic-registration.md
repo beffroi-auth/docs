@@ -6,34 +6,36 @@ description: 'A client the provider has never seen, RFC 7591 and RFC 7592: close
 # Dynamic registration
 
 A client may register itself at `/register` (RFC 7591), and then read, replace and delete its own
-registration at the URI it was handed (RFC 7592). Registration is closed by default: a tenant opens it by
-naming a mode, which decides what authorises a registration. A client that registers itself is read by the
-reader a [declared](clients.md) client is read by, under the same rules, and is held besides to what its
-tenant offers.
+registration at the URI it was handed (RFC 7592). It is how a client reaches a deployment of the image, which
+declares none. Registration is closed by default: a deployment opens it by naming a mode, which decides what
+authorises a registration. A client that registers itself is read by the reader of [every client](clients.md),
+under its rules, and is held besides to what its tenant offers.
 
 ## Opening it
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    client_registration:
-        mode: initial_access_token
-        default_scope: 'openid profile email'
-        keep_a_client_unused_for: 7776000
-        keep_a_client_never_used_for: 604800
+A deployment opens registration with the variables of its environment, given to both processes
+([configuration](../application/configuration.md#registration)):
+
+``` dotenv
+BEFFROI_REGISTRATION_MODE=initial_access_token
+BEFFROI_REGISTRATION_DEFAULT_SCOPE='openid profile email'
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `mode` | none | What authorises a registration: `initial_access_token`, `software_statement` or `open`. Left out, or empty, the tenant registers nobody and announces no registration endpoint |
-| `default_scope` | none | What a client that names no `scope` is registered with (RFC 7591 §2). Left out, `openid` alone. It is held to what the tenant hands out like every registered scope, so a scope written here that the tenant does not offer refuses every registration that names no scope |
-| `exempt_confidential_clients_from_pkce` | `false` | The confidential clients this policy registers are registered without the PKCE requirement. A public client is never exempted, and a challenge an exempted client sends is verified all the same |
-| `keep_a_client_unused_for` | `7776000` | Seconds a client that was used may go unused before it is deleted, ninety days |
-| `keep_a_client_never_used_for` | `604800` | Seconds a client that was never used lives at all, seven days |
-| `statement_issuers` | none | The authorities whose software statements the tenant accepts, for the `software_statement` mode |
-| `statement_max_lifetime` | `300` | Seconds ahead of the request the `exp` of a software statement may be |
-| `statement_leeway` | `30` | Seconds allowed of the clock of an authority, both ways |
-| `sector_identifier_timeout` | `3.0` | Seconds one read of a `sector_identifier_uri` is given, connection included |
-| `sector_identifier_max_size` | `65536` | Bytes a `sector_identifier_uri` may answer before the read stops |
+| `BEFFROI_REGISTRATION_MODE` | empty | What authorises a registration: `initial_access_token`, `software_statement` or `open`. Empty, the tenant registers nobody and announces no registration endpoint |
+| `BEFFROI_REGISTRATION_DEFAULT_SCOPE` | empty | What a client that names no `scope` is registered with (RFC 7591 §2), space-delimited. Empty, `openid` alone. It is held to what the tenant hands out like every registered scope, so a scope named here that the tenant does not offer refuses every registration that names no scope |
+| `BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR` | `7776000` | Seconds a client that was used may go unused before it is deleted, ninety days |
+| `BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR` | `604800` | Seconds a client that was never used lives at all, seven days |
+| `BEFFROI_REGISTRATION_STATEMENT_ISSUERS` | `{}` | The authorities whose software statements the tenant accepts, for the `software_statement` mode |
+| `BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME` | `300` | Seconds ahead of the request the `exp` of a software statement may be |
+| `BEFFROI_REGISTRATION_STATEMENT_LEEWAY` | `30` | Seconds allowed of the clock of an authority, both ways |
+| `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT` | `3` | Seconds one read of a `sector_identifier_uri` is given, connection included |
+| `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE` | `65536` | Bytes a `sector_identifier_uri` may answer before the read stops |
+
+The policy of a tenant may also exempt the confidential clients it registers from PKCE, and no variable does:
+every client of the image is registered with PKCE required ([what the image does not
+set](clients.md#what-the-image-does-not-set)).
 
 **Closed is the absence of the endpoint, not a mode that refuses.** A tenant that names no mode answers a
 registration, a `POST` to `/register`, with a `404`, as it answers a path it does not serve, and its
@@ -46,10 +48,10 @@ that are wired.
 
 === "An initial access token"
 
-    `mode: initial_access_token` registers a client presented by an initial access token the tenant issued
-    (RFC 7591 §1.2): a credential for the team that integrates, named, worth a number of registrations and
-    no more, expiring, and revocable. It opens no other endpoint, carries no subject and no scope, and says
-    one thing only: that whoever holds it may register a client with this tenant.
+    `BEFFROI_REGISTRATION_MODE=initial_access_token` registers a client presented by an initial access token
+    the tenant issued (RFC 7591 §1.2): a credential for the team that integrates, named, worth a number of
+    registrations and no more, expiring, and revocable. It opens no other endpoint, carries no subject and no
+    scope, and says one thing only: that whoever holds it may register a client with this tenant.
 
     ``` http
     POST /register HTTP/1.1
@@ -79,32 +81,28 @@ that are wired.
 
 === "A software statement"
 
-    `mode: software_statement` registers a client presented by a statement an authority the tenant pins
-    signed (RFC 7591 §2.3), in the `software_statement` member of the body. The provider issues nothing: the
-    proof is the authority's, which is what lets a registration cross the boundary of an organisation.
+    `BEFFROI_REGISTRATION_MODE=software_statement` registers a client presented by a statement an authority
+    the tenant pins signed (RFC 7591 §2.3), in the `software_statement` member of the body. The provider
+    issues nothing: the proof is the authority's, which is what lets a registration cross the boundary of an
+    organisation.
 
-    ``` yaml title="config/packages/beffroi.yaml"
-    beffroi:
-        client_registration:
-            mode: software_statement
-            statement_issuers:
-                'https://authority.example.org':
-                    jwks: '%env(json:AUTHORITY_JWKS)%'
-                    signing_algorithms: ['ES256']
+    ``` dotenv
+    BEFFROI_REGISTRATION_MODE=software_statement
+    BEFFROI_REGISTRATION_STATEMENT_ISSUERS='{"https://authority.example.org": {"jwks": {"keys": [<the public JWK of the authority>]}, "signing_algorithms": ["ES256"]}}'
     ```
 
     An authority is keyed by the `iss` it signs with, an absolute URI compared byte for byte, and pins its
-    public keys inline and the algorithms it signs with, among those the provider verifies. The key comes
-    from this configuration and never from the statement: a key or a `jwks_uri` the statement names is never
-    read (RFC 8725 §3.10). A tenant that pins no authority accepts no statement.
+    public keys inline, a JWK Set, and the algorithms it signs with, among those the provider verifies. The
+    key comes from this variable and never from the statement: a key or a `jwks_uri` the statement names is
+    never read (RFC 8725 §3.10). A tenant that pins no authority accepts no statement.
 
-    The statement is verified before any of it is read as metadata. Its signature is checked against the
-    keys of the authority its `iss` names, under one of the algorithms pinned for it. Its `aud` names the
-    issuer of the tenant, once. Its `exp` is
-    present, not past, and no further ahead than `statement_max_lifetime`. Its `iat` is present and not in
-    the future. Its `jti` is present and never seen before, remembered until the `exp`, so one statement
-    registers one client. RFC 7591 §2.3 asks none of this of a statement; the provider asks it of every
-    signed thing it takes back. Whatever fails, the answer is the same `invalid_software_statement`.
+    The statement is verified before any of it is read as metadata. Its signature is checked against the keys
+    of the authority its `iss` names, under one of the algorithms pinned for it. Its `aud` names the issuer of
+    the tenant, once. Its `exp` is present, not past, and no further ahead than
+    `BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME`. Its `iat` is present and not in the future. Its `jti` is
+    present and never seen before, remembered until the `exp`, so one statement registers one client. RFC 7591
+    §2.3 asks none of this of a statement; the provider asks it of every signed thing it takes back. Whatever
+    fails, the answer is the same `invalid_software_statement`.
 
     **What a statement says outranks what the client sent** (RFC 7591 §3.1.1): a member both carry is the
     statement's, so the registration is written with the `client_name` and the `logo_uri` the authority
@@ -119,15 +117,14 @@ that are wired.
 
 === "Open"
 
-    `mode: open` registers whoever asks, with no credential at all (RFC 7591 §1.3): nothing authorises, so
-    nothing is read and nothing is refused before the metadata is, and everything else, the reader, the
-    policy and the refusals, is the same. A credential presented anyway is read by nothing and spent by
-    nothing.
+    `BEFFROI_REGISTRATION_MODE=open` registers whoever asks, with no credential at all (RFC 7591 §3):
+    nothing authorises, so nothing is read and nothing is refused before the metadata is, and everything else,
+    the reader, the policy and the refusals, is the same. A credential presented anyway is read by nothing and
+    spent by nothing.
 
     A client nobody vouched for chooses the name and the logo a person reads on the consent page, and a tenant
-    that names this mode for its real users lets anybody write them. The application reads its mode from
-    `BEFFROI_REGISTRATION_MODE`, empty in its image, which therefore registers nobody until a deployment names
-    a mode; its development stack names `open`, for the conformance suite to register its clients.
+    that names this mode for its real users lets anybody write them. The development stack names it, for the
+    conformance suite to register its clients.
 
 ## The request
 
@@ -156,23 +153,24 @@ What a client may register is what the specifications define, and what the tenan
 - **The members this provider defines for itself are not a client's to send**: `requires_consent`,
   `requires_pkce`, `access_token_format`, `resources`, `token_exchange`, `may_act` and
   `require_sender_constrained_tokens` are exceptions and privileges. A body that carries one is refused, and a
-  software statement does not grant one either: a client that registers itself never obtains them.
+  software statement does not grant one either: a client that registers itself never obtains them, and no
+  variable gives them to it ([what the image does not set](clients.md#what-the-image-does-not-set)).
 - **A member nobody reads is refused**, `client_id` and `client_secret` included: the provider draws both.
 - **What a member names is one the provider is wired with**: a grant, a method, an algorithm, a mode of
   delivery, a kind of subject, a type of authorization detail.
 - **A scope is one the tenant hands out**, the ones its discovery document lists in `scopes_supported`.
 - **A `sector_identifier_uri` is proven**: the provider reads the document behind it once, with one `GET`,
-  no redirect followed, within `sector_identifier_timeout` and `sector_identifier_max_size`, and the document
+  no redirect followed, within the seconds and the bytes the two `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_*`
+  variables give it, and the document
   is the JSON array of URIs of OIDC Registration §5 that lists every redirect URI of the client, or its
   `jwks_uri` when it registers no redirect URI (CIBA Core §4). A document that cannot be read, or that leaves
   one out, refuses the registration ([pairwise subjects](pairwise-subjects.md)).
 
 What a client leaves out takes the defaults of RFC 7591 §2: the `authorization_code` grant alone, the `code`
 response type that goes with it, and `client_secret_basic`. A scope left out is the `default_scope` of the
-tenant, or `openid` alone. The registration policy writes beside the registration what it grants, the
-default scope on a registration that named none and the PKCE exemption on a confidential client when the
-tenant grants it, and that is read back before what the client sent, until the policy writes the
-registration again.
+tenant, `BEFFROI_REGISTRATION_DEFAULT_SCOPE`, or `openid` alone. The registration policy writes beside the
+registration what it grants, the default scope on a registration that named none, and that is read back
+before what the client sent, until the policy writes the registration again.
 
 ## The answer
 
@@ -246,10 +244,11 @@ discovery document: a client holds the URI it was handed.
 
 A registered client carries the date it was last used, an authorization code issued for it or tokens issued
 to it at the token endpoint, and the provider deletes the ones nobody uses any more, on a timed step that
-runs every hour: a client used, but not for `keep_a_client_unused_for`, and a client never used and
-registered more than `keep_a_client_never_used_for` ago. One run deletes a hundred clients at most, and the
-next run takes the rest; what it deleted is written to the log. A tenant with no registration policy deletes
-nothing, and a declared client is never deleted: it goes away with its block in the configuration.
+runs every hour: a client used, but not for `BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR` seconds, and a
+client never used and registered more than `BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR` seconds ago.
+One run deletes a hundred clients at most, and the next run takes the rest; what it deleted is written to the
+log. A tenant that registers nobody deletes nothing, and a client the configuration declares, which the image
+holds none of, is never deleted.
 
 Each deletion, by the step, by the client itself or by `beffroi:client:delete`, emits the same
 `RegisteredClientDeleted` event.
@@ -266,7 +265,6 @@ Each deletion, by the step, by the client itself or by `beffroi:client:delete`, 
 
 What these endpoints answer themselves, a registration, a read, a replacement, a deletion and their
 refusals, carries `Cache-Control: no-cache, no-store` and `Pragma: no-cache`. The description of a `400` is
-the sentence of the refusal, in ASCII (RFC 7591 §3.2.2), the same sentence a deployment reads when a
-declaration of the same member is refused.
+the sentence of the refusal, in ASCII (RFC 7591 §3.2.2).
 
 [:beffroi-arrow-right: Clients](clients.md) and [pairwise subjects](pairwise-subjects.md)

@@ -42,7 +42,7 @@ provider refuses rather than arbitrates.
 | Members | What decides them |
 |---|---|
 | `issuer`, `authorization_endpoint`, `token_endpoint`, `userinfo_endpoint`, `jwks_uri` | The issuer, and the routes under it. Always present |
-| `scopes_supported` | `openid`, the scopes the wired claims stand for, the scopes the clients of the tenant registered, and `offline_access` where a wired grant issues a refresh token and another spends one. [Scopes and claims](scopes-and-claims.md) |
+| `scopes_supported` | `openid`, the scopes the wired claims stand for, the scopes of the APIs `BEFFROI_TENANT_SCOPES` names, the scopes the clients of the tenant registered, and `offline_access` where a wired grant issues a refresh token and another spends one. [Scopes and claims](scopes-and-claims.md) |
 | `claims_supported`, `claims_parameter_supported` | `sub` and the claims the provider serves; `true` |
 | `response_types_supported` | `["code"]`, and nothing else: no implicit flow and no hybrid |
 | `response_modes_supported` | The response modes wired, `query`, `form_post`, `query.jwt` and `form_post.jwt` in the application, plus `jwt` when a signed mode is among them (JARM §2.1). [Response modes](response-modes.md) |
@@ -52,7 +52,7 @@ provider refuses rather than arbitrates.
 | `subject_types_supported` | The kinds of `sub` the provider assigns: `public` and `pairwise`. [Pairwise subjects](pairwise-subjects.md) |
 | `token_endpoint_auth_methods_supported`, `token_endpoint_auth_signing_alg_values_supported` | The client authentication methods wired, in the order they are tried, and what their assertions may be signed with. [Client authentication](client-authentication.md) |
 | `id_token_signing_alg_values_supported`, `userinfo_signing_alg_values_supported` | The signature algorithms the provider is wired with: `RS256`, `PS256`, `ES256` and `EdDSA` in the application |
-| `id_token_encryption_*`, `userinfo_encryption_*`, `request_object_encryption_*` (`alg_values_supported`, `enc_values_supported`) | The encryption algorithms wired: `ECDH-ES+A256KW` and `RSA-OAEP-256`, with `A256GCM`. A deployment that wires no key encryption or no content encryption algorithm announces none of these pairs rather than empty lists |
+| `id_token_encryption_*`, `userinfo_encryption_*`, `request_object_encryption_*` (`alg_values_supported`, `enc_values_supported`) | The encryption algorithms wired: `ECDH-ES+A256KW` and `RSA-OAEP-256`, with `A256GCM`. A provider wired with no key encryption or no content encryption algorithm announces none of these pairs rather than empty lists |
 | `request_parameter_supported`, `request_uri_parameter_supported`, `require_request_uri_registration` | `true` all three: a `request_uri` is read only from a URL its client registered |
 | `request_object_signing_alg_values_supported` | The signature algorithms wired, and `none` beside them only when a client of the tenant registered `request_object_signing_alg: none`. [Request objects](request-objects.md) |
 | `authorization_response_iss_parameter_supported` | `true`: every authorization response carries `iss` (RFC 9207) |
@@ -68,12 +68,12 @@ Some members are announced only when what they describe exists, and are absent o
 
 | Members | Present when |
 |---|---|
-| `registration_endpoint` | The registration policy of the tenant registers clients. Closed, which is the default, the tenant has no registration endpoint at all. [Dynamic registration](dynamic-registration.md) |
+| `registration_endpoint` | `BEFFROI_REGISTRATION_MODE` names a mode the tenant registers clients in. Empty, as it is in the image, the tenant has no registration endpoint at all. [Dynamic registration](dynamic-registration.md) |
 | `backchannel_authentication_endpoint`, `backchannel_token_delivery_modes_supported`, `backchannel_authentication_request_signing_alg_values_supported`, `backchannel_user_code_parameter_supported` | A grant of the backchannel flow is wired; the last one is then `false`. [Backchannel authentication](grants/backchannel-authentication.md) |
 | `authorization_signing_alg_values_supported`, `authorization_encryption_alg_values_supported`, `authorization_encryption_enc_values_supported` | A signed response mode is wired |
-| `mtls_endpoint_aliases` | `mutual_tls.origin` names the host that asks for a certificate |
-| `protected_resources` | A client of the tenant registered resources (RFC 9728 §4). [Resources](resources.md) |
-| `authorization_details_types_supported` | A type of authorization detail is wired (RFC 9396 §10). [Authorization details](authorization-details.md) |
+| `mtls_endpoint_aliases` | `BEFFROI_MTLS_ORIGIN` names the host that asks for a certificate. [Mutual TLS](sender-constrained/mutual-tls.md#the-endpoint-aliases) |
+| `protected_resources` | A client of the tenant holds resources (RFC 9728 §4), which no client of the image does. [Resources](resources.md) |
+| `authorization_details_types_supported` | A type of authorization detail is wired (RFC 9396 §10), which the image wires none of. [Authorization details](authorization-details.md) |
 
 The document announces no `check_session_iframe`: OpenID Connect Session Management 1.0 is not implemented,
 and logout goes through the front and back channels. Its content changes when the wiring or the registrations
@@ -91,29 +91,30 @@ their status: the key a browser is handed for web push, the key the tenant seals
 and the SAML keys, whose certificates the [SAML metadata](../saml/identity-provider.md) publish.
 
 **How long a client keeps it.** The answer says `Cache-Control: public, max-age=` followed by
-`keys.jwks_max_age`, three hundred seconds by default. A set with no key in it is answered `no-store`, so that
-no cache keeps an empty set for that long.
+`BEFFROI_JWKS_MAX_AGE`, three hundred seconds in the image. A set with no key in it is answered `no-store`, so
+that no cache keeps an empty set for that long.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    keys:
-        # kms and key_id, as the deployment names them
-        jwks_max_age: 300
+Two variables set the figures of the set, here at the values of the image
+([configuration](../application/configuration.md#keys-and-lifetimes)):
+
+``` dotenv
+BEFFROI_JWKS_MAX_AGE=300
+BEFFROI_KEY_STAGING_DELAY=
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `jwks_max_age` | `300` | The `max-age` of the JWK Set, in seconds. The `max-age` of the SAML metadata reads it too |
-| `staging_delay` | `jwks_max_age` plus `60` | How long a new key is published before it signs, in seconds, for every key but the SAML signing key, which has its own |
+| `BEFFROI_JWKS_MAX_AGE` | `300` | The `max-age` of the JWK Set, in seconds. The `max-age` of the SAML metadata reads it too |
+| `BEFFROI_KEY_STAGING_DELAY` | empty | How long a new key is published before it signs, in seconds, for every key but the SAML signing key, which has its own. Empty, `BEFFROI_JWKS_MAX_AGE` plus `60` |
 
 ### Through a rotation
 
 A rotation asks a client for nothing but to read the set again within its `max-age`.
 
-1. **A new key is published before it signs**, for `staging_delay` seconds: three hundred and sixty by
-   default, the `max-age` of the set plus the sixty seconds a copy has to be old before Symfony's
-   `oidc_login` fetches the set again on a `kid` it does not know. A client with a warm cache has seen the
-   new key by the time anything is signed with it.
+1. **A new key is published before it signs**, for the staging delay: `BEFFROI_KEY_STAGING_DELAY` is empty in
+   the image, which makes it three hundred and sixty seconds, the `max-age` of the set plus the sixty seconds
+   a copy has to be old before Symfony's `oidc_login` fetches the set again on a `kid` it does not know. A
+   client with a warm cache has seen the new key by the time anything is signed with it.
 2. **The new key becomes active** once that delay has run, and signs from then on; the key it replaces is
    retiring, and stays in the set.
 3. **The retiring key leaves the set** once nothing it signed can still be presented: the longest lifetime

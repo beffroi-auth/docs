@@ -9,8 +9,10 @@ A scope is a name for what a client may obtain, and a claim is one thing it lear
 OpenID Connect stands for a set of claims (OIDC Core §5.4), and the `claims` parameter asks for claims one by
 one (OIDC Core §5.5). What a client receives is what its request asked for and the provider holds a value
 of: the claims of the scopes the client registered and the person agreed to, and the claims it named in
-`claims`. A claim named in `claims` is served whichever scopes the client registered or the person agreed
-to, and the [consent page](consent.md) lists scopes and authorization details, not the claims named this way.
+`claims` that a scope it registered stands for. A claim named in `claims` is held where the scope that stands
+for it is held: a client registered for no scope that stands for it is not told it, which is no error (OIDC
+Core §5.5.1), and the [consent page](consent.md) lists the claims named this way that no scope of the request
+stands for.
 
 ## Scopes
 
@@ -30,18 +32,18 @@ to, and the [consent page](consent.md) lists scopes and authorization details, n
 a request that names one outside the list is refused with `invalid_scope`.
 
 **The document says what the tenant hands out.** `scopes_supported` lists `openid` first, then the scopes the
-wired claims providers stand for, then every scope a client of the tenant registered, then `offline_access`
-when a wired grant issues a refresh token and a wired grant spends one. A scope that stands for no claim
-exists because a client registered it, so a typing mistake in a registration shows in the document rather
-than being granted in silence. A client that [registers itself](dynamic-registration.md) is held to that
-list: a scope the tenant does not hand out is refused at its registration.
+wired claims providers stand for, then the scopes of the APIs the tenant protects, which a deployment names in
+`BEFFROI_TENANT_SCOPES`, then every scope a client the configuration declares registered, then
+`offline_access` when a wired grant issues a refresh token and a wired grant spends one. A client that
+[registers itself](dynamic-registration.md) is held to that list: a scope the tenant does not hand out, a
+typing mistake among them, is refused at its registration rather than granted in silence.
 
 ## Where a claim goes
 
 | Document | What it carries about the person |
 |---|---|
-| The ID token | `sub`, the claims of the protocol (`auth_time`, `acr`, `amr`, `sid` and the others), and the claims the request asked for by name in `claims.id_token`. Nothing a scope stands for |
-| The UserInfo answer | `sub`, the claims the scopes of the access token stand for, and the claims the request asked for by name in `claims.userinfo`, whatever their scope |
+| The ID token | `sub`, the claims of the protocol (`auth_time`, `acr`, `amr`, `sid` and the others), and the claims the request asked for by name in `claims.id_token` that a scope the client registered stands for. A scope adds nothing to it |
+| The UserInfo answer | `sub`, the claims the scopes of the access token stand for, and the claims the request asked for by name in `claims.userinfo` that a scope the client registered stands for, whether or not the request named that scope |
 
 So a client reads the claims of `profile` or `email` at UserInfo, and in its ID token only the ones it asked
 for by name. The names asked in `claims.userinfo` travel with the access token, in its private claim
@@ -69,7 +71,9 @@ boolean, and `values`, a non-empty array of those (OIDC Core §5.5.1). A member 
 A name made of digits, a member of another shape, a document nested deeper than a request needs or anything
 that is not JSON is refused with `invalid_request` at the redirect URI. `claims_parameter_supported` is `true`.
 
-What is asked for is served by name, with or without its scope, when the person has a value for it.
+What is asked for is served by name when a scope the client registered stands for it, whether or not the
+request names that scope, when the person agreed to it, by name or with a scope that stands for it, and when
+the person has a value for it.
 `essential`, `value` and `values` say nothing to the provider of claims; the one claim they decide is `acr`,
 whose `values` name the classes of authentication a client accepts and whose `essential` makes the request
 binding ([interactions](interactions.md)).
@@ -93,9 +97,9 @@ claim above.
 
 ## Claims of your own
 
-A deployment that serves claims the core does not hold, and the scope that stands for them, adds a class
-beside the one that serves the claims of §5.1, implementing `Beffroi\Oidc\Port\ClaimsProviderInterface` and
-tagged `beffroi.oidc.claims_provider`:
+The image serves the claims of §5.1 and no other. A claim the core does not hold, and the scope that stands
+for it, is code of the application: a class beside `StandardClaimsProvider`, which serves the claims of §5.1,
+implementing `Beffroi\Oidc\Port\ClaimsProviderInterface` and tagged `beffroi.oidc.claims_provider`:
 
 ``` php title="src/Claims/EmployeeClaims.php"
 <?php
@@ -114,7 +118,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class EmployeeClaims implements ClaimsProviderInterface
 {
     /**
-     * @param EmployeeDirectory $directory where this deployment keeps its employee numbers
+     * @param EmployeeDirectory $directory where the application reads its employee numbers
      */
     public function __construct(
         private EmployeeDirectory $directory,
@@ -129,6 +133,11 @@ final readonly class EmployeeClaims implements ClaimsProviderInterface
         return $number === null ? [] : ['employee_number' => $number];
     }
 
+    public function claimsOf(Scopes $scopes): array
+    {
+        return $scopes->has(new Scope('employee')) ? ['employee_number'] : [];
+    }
+
     public function supportedScopes(): array
     {
         return [new Scope('employee')];
@@ -141,8 +150,20 @@ final readonly class EmployeeClaims implements ClaimsProviderInterface
 }
 ```
 
+No file of the configuration of the application loads `src/Claims/`, so the class becomes a service, and a
+provider of claims, once `config/services.yaml` declares it with what it reads; `autoconfigure` is on in that
+file, and the attribute of the class adds the tag:
+
+``` yaml title="config/services.yaml"
+services:
+    # ...
+    App\Claims\EmployeeClaims: ~
+    App\Claims\EmployeeDirectory: ~
+```
+
 `$scopes` is `null` when the document is an ID token, which carries what was asked for by name and nothing a
 scope stands for, and `$requested` holds the names asked for by the request, for the document being written.
+`claimsOf()` says which claims a scope stands for, which is what a claim asked for by name is held to.
 A claim without a value is left out of what the method returns. What the class serves is announced in
 `scopes_supported` and `claims_supported`, and a client registers the scope as it registers any other. Two
 providers that both return a value for one claim are refused when they meet; two that stand for the same scope

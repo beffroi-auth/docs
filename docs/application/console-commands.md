@@ -60,18 +60,18 @@ for its age, activates every staged key whose delay has elapsed, and retires eve
 A tenant nobody watches does not sign with the same key for ever, and the tick that stages a successor is never
 the one that activates it.
 
-| Figure | Default | Set by |
+| Figure | In the image | Set by |
 |---|---|---|
-| The staging delay, how long a new key is published before it signs | `jwks_max_age` plus sixty seconds: 360 seconds with the default `jwks_max_age` of 300 | `beffroi.keys.staging_delay` |
-| The age, how long a key works before a successor is staged, counted from its activation | 90 days | `beffroi.keys.age`, in seconds |
+| The staging delay, how long a new key is published before it signs | `BEFFROI_JWKS_MAX_AGE` plus sixty seconds: 360 seconds with the 300 of the image | `BEFFROI_KEY_STAGING_DELAY`, in seconds |
+| The age, how long a key works before a successor is staged, counted from its activation | 90 days | `BEFFROI_KEY_AGE`, in seconds |
 | The retirement window, how long a replaced key stays published | The longest lifetime of what is bound to a key of that use: the ID tokens, access tokens, signed authorization responses and logout tokens for a key that signs, the request objects and pushed requests a client may still be encrypting for a key it encrypts to | Read from those lifetimes, never set on its own |
 
-The sixty seconds are the cooldown of Symfony's `oidc_login`, which fetches the JWK Set again on a `kid` it does
-not know only once its copy is that old: they cover a relying party whose copy came late through a shared
-cache. An age that is not
-longer than the retirement window of its use is refused at the first tick that reaches it, since every rotation
-would otherwise leave one more key in the JWK Set. The SAML signing key has figures of its own, seven days of
-staging and a year of age by default, under [`beffroi.saml.identity_provider`](../saml/identity-provider.md).
+The sixty seconds are the cooldown of Symfony's `oidc_login`, which fetches the JWK Set again on a `kid` it
+does not know only once its copy is that old: they cover a relying party whose copy came late through a shared
+cache. An age that is not longer than the retirement window of its use is refused at the first tick that
+reaches it, since every rotation would otherwise leave one more key in the JWK Set. The SAML signing key has
+figures of its own, seven days of staging and a year of age in the image, `BEFFROI_SAML_KEY_STAGING_DELAY` and
+`BEFFROI_SAML_KEY_AGE` ([the SAML identity provider](../saml/identity-provider.md)).
 
 ### Rotating by hand
 
@@ -123,22 +123,23 @@ key, a data key being minted at the first write of its family. The command never
 **`beffroi:data-keys:rewrap`** wraps the data keys of the tenant with another client from now on, or with
 another master key of the same one. No sealed value is read or rewritten: what changes is how a data key is
 protected, and every ciphertext goes on naming the same key. Each key it moves is bound again under the first
-secret of `beffroi.keys.data_key_secrets`, so the command run towards the client that already wraps the keys
-is how that secret is replaced ([personal data](../core/personal-data.md#rotating-the-secret-that-binds-them)).
+secret of `BEFFROI_DATA_KEY_SECRETS`, `APP_SECRET` while that variable is not set, so the command run towards
+the client that already wraps the keys is how that secret is replaced ([personal
+data](../core/personal-data.md#rotating-the-secret-that-binds-them)).
 
 ``` bash
 bin/console beffroi:data-keys:rewrap --to=second --dry-run
 bin/console beffroi:data-keys:rewrap --to=second --from=op
 ```
 
-- `--to` names the client of `key_management.clients` that wraps the keys from now on, and the command lists
-  the clients of the deployment when it is missing.
+- `--to` names the client that wraps the keys from now on, `op`, built from `BEFFROI_KMS_DSN`, or `second`,
+  built from `BEFFROI_KMS_DSN_SECOND`, and the command lists the clients when it is missing.
 - `--from` moves only the keys that client holds; all of them without it.
 - `--dry-run` lists what would move and writes nothing.
 
-The master key is the one `beffroi.keys.key_id` gives the tenant, resolved from the configuration and never
+The master key is the one `BEFFROI_KMS_KEY_ID` names for the tenant, resolved from the environment and never
 asked for: an operator who had to type it could type the one of another tenant. It moves one tenant, the one
-of the configuration, and nothing schedules it.
+of `BEFFROI_TENANT_SLUG`, and nothing schedules it.
 
 **`beffroi:data-keys:destroy`** erases every data key of the tenant, the key of its blind indexes with them.
 Every column they sealed keeps its ciphertext, and nothing in this database opens it again: that is the

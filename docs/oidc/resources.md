@@ -1,6 +1,6 @@
 ---
 title: Resources
-description: The audience a client asks its access token for with the resource parameter, RFC 8707, at each endpoint that reads it.
+description: 'The audience a client asks its access token for with the resource parameter, RFC 8707: why a client of the image asks for none, and what each endpoint does with one.'
 ---
 
 # Resources
@@ -10,26 +10,29 @@ that audience rather than for everything the client might reach (RFC 8707 §2). 
 receives a token addressed elsewhere has what it needs to refuse it. A request made for a person that names no
 resource gets a token addressed to the client itself, which is the token UserInfo accepts.
 
+**A client of the image asks for no resource.** What a client may name is the closed list of its `resources`,
+and no client of a deployment of the image holds one: every `resource` parameter is refused, and every access
+token is addressed to the client it was issued to.
+
 ## Registering resources
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        billing:
-            # ...
-            resources:
-                - 'https://api.example.com/'
-                - 'urn:example:ledger'
-```
+`resources` is the closed list of what a client may ask a token for, with no pattern and no wildcard, compared
+byte for byte with what a request names. It is a member of the deployment: a client that [registers
+itself](dynamic-registration.md) and sends it is refused with `invalid_client_metadata`, the registration
+policy of a tenant writes none, no variable gives one to a client, and the image declares no client. No client
+of the image holds a resource ([what the image does not set](clients.md#what-the-image-does-not-set)), and a
+client that holds none asks for none.
 
-`resources` is the closed list of what a client may ask a token for, with no pattern and no wildcard. Each
-value is an absolute URI (RFC 3986 §4.3) without a fragment. A query is allowed, RFC 8707 §2 recognising that
-it is sometimes what scopes the request, and a URN is a resource as an HTTPS URL is: a resource is an
-identifier, which the provider never fetches. What a request names is compared byte for byte with the list.
+For a resource server that accepts the access tokens of the image, that means:
 
-A client that registers no resource asks for none. Only a declaration writes the list: a client that
-[registers itself](dynamic-registration.md) and sends `resources` is refused with `invalid_client_metadata`,
-so it asks for none either.
+- the `aud` of every access token is the `client_id` of its client, so a resource server that checks the
+  audience (RFC 9068 §4) checks it against the identifiers of the clients that call it;
+- the `aud` of a token tells no resource server from another: the tokens a client presents to two resource
+  servers carry the same `aud`, and a token one of them receives can be presented to the other. What tells
+  them apart is the `scope` of the token, one scope per API the tenant protects in `BEFFROI_TENANT_SCOPES`,
+  which a resource server holds a token to;
+- `client_credentials` and the JWT bearer grant, which address a token to a resource or issue none, issue none
+  ([below](#at-the-token-endpoint)).
 
 ## Asking for one
 
@@ -38,60 +41,54 @@ endpoint](pushed-authorization-requests.md), `resource` may be sent several time
 other parameter may:
 
 ``` http
-GET /authorize?response_type=code&client_id=billing&...
+GET /authorize?response_type=code&client_id=s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg&...
     &resource=https%3A%2F%2Fapi.example.com%2F
     &resource=urn%3Aexample%3Aledger HTTP/1.1
 ```
 
-In a [request object](request-objects.md), the same claim carries a list of strings. A value named twice
-counts once. A value that is not an absolute URI without a fragment, and a resource the client did not
-register, are both `invalid_target`, at the redirect URI of an authorization request and as JSON at the
-pushed request endpoint; the description names no resource, what a client registered being nothing an error
-teaches whoever sent the request. A request that names none asks for none, and nothing is filled in from the
-registration: a token valid at several resources is valid at each of them (RFC 8707 §3), so it is asked for
-and never assumed.
-
-The resources named travel with the authorization: the code carries them, and the token endpoint may narrow
-them and never widen them.
+In a [request object](request-objects.md), the same claim carries a list of strings. A value that is not an
+absolute URI without a fragment (RFC 3986 §4.3), and a resource the client does not hold, are both
+`invalid_target`, at the redirect URI of an authorization request and as JSON at the pushed request endpoint;
+the description names no resource, what a client holds being nothing an error teaches whoever sent the
+request. On the image every value is one or the other, so the request above is refused. A request that names
+none asks for none, and nothing is filled in.
 
 ## What the access token says
 
-| | Resources asked for | None asked for |
-|---|---|---|
-| `aud` of the access token | The resources, a string for one and a list for several (RFC 7519 §4.1.3) | The `client_id` |
-| `client_id` of the access token | The client, whatever the audience | The client |
-| `aud` at the introspection endpoint | The same as the token | The same as the token |
-| UserInfo | Refused, `invalid_token` with a `401`: the token is addressed to a resource of its own and not to this provider | Answered |
+| | On the image |
+|---|---|
+| `aud` of the access token | The `client_id` |
+| `client_id` of the access token | The client |
+| `aud` at the introspection endpoint | The same as the token |
+| UserInfo | Answered |
 
-The opaque shape of access token is described by the introspection endpoint with the same `aud`. When the
-provider reads a self-contained token of its own back, it accepts in `aud` only the client itself and the
-resources that client registered, so a value it would never have written is refused before anything else is
-believed.
+When the provider reads a self-contained token of its own back, it accepts in `aud` only the client itself and
+the resources that client holds, the client alone on the image, so a value it would never have written is
+refused before anything else is believed.
 
 ## At the token endpoint
 
 | Grant | A `resource` named | None named |
 |---|---|---|
-| `authorization_code`, `refresh_token` | Narrows the access token of this response to those, among the ones the authorization carries. The refresh token stays bound to them all, so a later refresh may ask for another of them | The resources of the authorization |
-| `client_credentials` | Among the ones the client registered | Refused with `invalid_target`: a token with nobody behind it is addressed to a resource, or it is not issued |
-| JWT bearer | Among the ones the client registered | Refused with `invalid_target` |
-| Token exchange | Narrows to some of the resources the presented token is addressed to | The resources of the presented token. One addressed to its client and to no resource has none to pass on, and is not exchanged |
+| `authorization_code`, `refresh_token` | Refused with `invalid_target`: the authorization carries no resource to narrow to | The token is addressed to the client |
+| `client_credentials` | Refused with `invalid_target`: the client holds no resource | Refused with `invalid_target`: a token with nobody behind it is addressed to a resource, or it is not issued |
+| JWT bearer | Refused with `invalid_target` | Refused with `invalid_target` |
 
-A resource outside what the line allows is `invalid_target`, in the JSON of the token endpoint. A token
-exchange is held to the registration of the client that asks as well: the resources its access token is
-addressed to, and the scopes it carries, are ones that client registered, so an exchange never reaches a
-resource or a scope its registration does not name. The device
-authorization endpoint and the backchannel authentication endpoint read `resource` when the flow starts,
-against the resources the client registered, answering `invalid_target` in their own JSON, and a request that
-names none there gets a token addressed to the client, a person being behind those flows.
+A deployment of the image therefore issues no token under `client_credentials` or the JWT bearer grant: a
+client may register either, and a token request under them that the other checks of its grant let through is
+refused with `invalid_target`, in the JSON of the token endpoint. No client of the image is registered for
+the [token exchange](grants/token-exchange.md), whose `token_exchange` member is a member of the deployment as
+well. The device authorization endpoint and the backchannel authentication endpoint read `resource` when the
+flow starts, and refuse any value with `invalid_target` in their own JSON; a request that names none there
+gets a token addressed to the client, a person being behind those flows.
 
 ## What the tenant announces
 
-What a tenant announces as its protected resources is read from the clients that registered one, never from
-a list kept beside them, and it is the `protected_resources` member of RFC 9728 §4: the one member of the
-registry that says what the values of a `resource` parameter are, RFC 8707 registering none of its own. Every
-resource a client of the tenant registered is in it, each once. A tenant whose clients registered none
-announces nothing rather than an empty list, which a client would read as "no resource is acceptable here".
+What a tenant announces as its protected resources is read from the resources its clients hold, never from a
+list kept beside them, and it is the `protected_resources` member of RFC 9728 §4: the one member of the
+registry that says what the values of a `resource` parameter are, RFC 8707 registering none of its own. A
+tenant whose clients hold none announces nothing rather than an empty list, which a client would read as "no
+resource is acceptable here", and that is what a deployment of the image announces.
 
 [:beffroi-arrow-right: Access tokens](tokens/access-tokens.md) and [introspection and
 revocation](introspection-and-revocation.md)

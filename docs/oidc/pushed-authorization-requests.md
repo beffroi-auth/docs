@@ -16,7 +16,7 @@ the authorization endpoint reads one with, before any browser is sent anywhere.
 POST /par HTTP/1.1
 Host: op.example.com
 Content-Type: application/x-www-form-urlencoded
-Authorization: Basic YmlsbGluZzpzM2NyM3Q...
+Authorization: Basic czZCaDNkUmtxdDNIbTl2QmtybmZlUjdfeFUyWnlRNGxKYU4wY1A4VHdZZzo3RmpmcDBa...
 
 response_type=code
 &redirect_uri=https%3A%2F%2Fbilling.example.com%2Foidc%2Fcallback
@@ -73,29 +73,30 @@ client, is answered `429`, with `Retry-After`, `Cache-Control: no-store` and an 
 
 ## How long a reference lives
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    tokens:
-        request_uri_ttl: 60
+One variable sets it, here at the value of the image
+([configuration](../application/configuration.md#keys-and-lifetimes)):
+
+``` dotenv
+BEFFROI_REQUEST_URI_TTL=60
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `tokens.request_uri_ttl` | `60` | Seconds a reference lives, at most `600` (RFC 9126 §2.2) |
+| `BEFFROI_REQUEST_URI_TTL` | `60` | Seconds a reference lives, a second at least and `600` at most (RFC 9126 §2.2) |
 
 `expires_in` is the number of seconds the reference still has, never more than it has.
 
 ## Using the reference
 
 ``` http
-GET /authorize?client_id=billing&request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3A6esc_11ACC5bwc014ltc14eY22cQ2xpZW50UmVxdWVz HTTP/1.1
+GET /authorize?client_id=s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg&request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3A6esc_11ACC5bwc014ltc14eY22cQ2xpZW50UmVxdWVz HTTP/1.1
 ```
 
 `client_id` and `request_uri` are the whole of the request: the parameters are the ones that were pushed, and
 any other parameter of the query is dropped, so the query never contradicts what was pushed (RFC 9126 §4).
 
 **A reference is read by the client it was issued to**, before it expires, and **spent with the code it
-buys** (FAPI 2.0 Security Profile §5.3.1). Until a code is issued, the reference may be read again: a person
+buys** (FAPI 2.0 Security Profile §5.3.2.2). Until a code is issued, the reference may be read again: a person
 who reloads the page they were sent to is still holding a request nobody has answered. Two interactions
 begun on one reference cannot both finish: the reference is claimed when the code is issued, and the second
 to claim it is refused.
@@ -111,24 +112,27 @@ registered.
 
 ## Requiring it
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        billing:
-            # ...
-            require_pushed_authorization_requests: true
+A client holds itself to pushed requests when it registers ([dynamic registration](dynamic-registration.md)):
+
+``` json
+{
+    "client_name": "Billing",
+    "redirect_uris": ["https://billing.example.com/oidc/callback"],
+    "scope": "openid profile",
+    "require_pushed_authorization_requests": true
+}
 ```
 
 A client registered with `require_pushed_authorization_requests` starts an authorization request in no
 other way (RFC 9126 §6). An ordinary request of that client is refused on a page, with `invalid_request`,
 before its redirect URI is even read, so that nothing of the request goes back to the browser that carried
-it. It is a member of the client, and nothing of the deployment sets it for every client.
+it. It is a member of the client, and no variable sets it for every client.
 
 The discovery document announces `pushed_authorization_request_endpoint`, and
 `require_pushed_authorization_requests` (RFC 9126 §5) as `true` exactly when the tenant has clients and every
-one of them carries the requirement, whichever source holds them, and `false` as soon as one does not. When
-the deployment serves a host that asks for a certificate, the endpoint is announced under that host as well,
-in `mtls_endpoint_aliases` ([mutual TLS](sender-constrained/mutual-tls.md)).
+one of them carries the requirement, and `false` as soon as one does not. When `BEFFROI_MTLS_ORIGIN` names
+the host that asks for a certificate, the endpoint is announced under that host as well, in
+`mtls_endpoint_aliases` ([mutual TLS](sender-constrained/mutual-tls.md)).
 
 [:beffroi-arrow-right: Authorization request](authorization-request.md) and [request
 objects](request-objects.md)

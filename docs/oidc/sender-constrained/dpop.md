@@ -45,8 +45,9 @@ port, so `HTTPS://OP.EXAMPLE.COM:443/token` names `https://op.example.com/token`
 is, RFC 3986 making it case sensitive.
 
 **A proof stands for the time a request spends on the wire.** It is refused when its `iat` is more than
-`leeway` seconds ahead of the clock of the provider, and when the request arrives `proof_max_age` plus
-`leeway` seconds or more after its `iat`: 30 seconds ahead and 90 seconds behind, by default.
+`BEFFROI_DPOP_LEEWAY` seconds ahead of the clock of the provider, and when the request arrives
+`BEFFROI_DPOP_PROOF_MAX_AGE` plus `BEFFROI_DPOP_LEEWAY` seconds or more after its `iat`: 30 seconds ahead and
+90 seconds behind, in the image.
 
 **A proof is used once.** Its `jti` is remembered with the thumbprint of the key until the proof stops being
 accepted, so that two clients choosing the same `jti` do not collide, and a proof presented again inside its
@@ -99,43 +100,41 @@ by whichever request the rest of the grant accepts.
 ## The nonce
 
 The provider may ask that every proof carry a value it handed out (RFC 9449 §8), which says when the proof
-was made in terms the provider knows rather than in the `iat` its client wrote. It is off by default.
+was made in terms the provider knows rather than in the `iat` its client wrote. It is off in the image, and a
+deployment turns it on with a variable
+([configuration](../../application/configuration.md#clients-and-their-requests)):
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    dpop:
-        nonce:
-            required: true
+``` dotenv
+BEFFROI_DPOP_NONCE_REQUIRED=true
 ```
 
-**With `required: true`**, a proof that carries no `nonce`, or one the provider did not issue in the last
-`ttl` seconds, is refused with `use_dpop_nonce` and a fresh nonce in the `DPoP-Nonce` header of the answer. The
-client makes its proof again with that nonce and sends the request again. A nonce stands for its whole
-lifetime and is not spent by the first proof that carries it, what makes a proof single-use being its `jti`;
-the provider hands out a new one only with a refusal, so a client keeps the last nonce it was given until the
-next refusal.
+**With `BEFFROI_DPOP_NONCE_REQUIRED=true`**, a proof that carries no `nonce`, or one the provider did not issue
+in the last `BEFFROI_DPOP_NONCE_TTL` seconds, is refused with `use_dpop_nonce` and a fresh nonce in the
+`DPoP-Nonce` header of the answer. The client makes its proof again with that nonce and sends the request
+again. A nonce stands for its whole lifetime and is not spent by the first proof that carries it, what makes a
+proof single-use being its `jti`; the provider hands out a new one only with a refusal, so a client keeps the
+last nonce it was given until the next refusal.
 
-**With `required: false`**, the `nonce` claim of a proof is compared with nothing, and no answer carries
-`DPoP-Nonce`.
+**With `BEFFROI_DPOP_NONCE_REQUIRED=false`**, the `nonce` claim of a proof is compared with nothing, and no
+answer carries `DPoP-Nonce`.
 
 ## Configuration
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    dpop:
-        proof_max_age: 60
-        leeway: 30
-        nonce:
-            required: false
-            ttl: 300
+Four variables decide how a proof is read, here at the values of the image:
+
+``` dotenv
+BEFFROI_DPOP_PROOF_MAX_AGE=60
+BEFFROI_DPOP_LEEWAY=30
+BEFFROI_DPOP_NONCE_REQUIRED=false
+BEFFROI_DPOP_NONCE_TTL=300
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `proof_max_age` | `60` | Seconds a proof stands from its `iat`, before the leeway is added, one at least. Every second beyond what a request spends on the wire is a second a proof taken off that wire may be sent again in |
-| `leeway` | `30` | Seconds allowed of the clock of a client, added on both sides of the window: a proof is taken up to `leeway` seconds ahead of the provider, and until `proof_max_age` plus `leeway` seconds after its `iat` |
-| `nonce.required` | `false` | Whether every proof carries a nonce the provider issued |
-| `nonce.ttl` | `300` | Seconds a nonce is accepted once issued, one at least |
+| `BEFFROI_DPOP_PROOF_MAX_AGE` | `60` | Seconds a proof stands from its `iat`, before the leeway is added, one at least. Every second beyond what a request spends on the wire is a second a proof taken off that wire may be sent again in |
+| `BEFFROI_DPOP_LEEWAY` | `30` | Seconds allowed of the clock of a client, added on both sides of the window: a proof is taken up to `BEFFROI_DPOP_LEEWAY` seconds ahead of the provider, and until `BEFFROI_DPOP_PROOF_MAX_AGE` plus `BEFFROI_DPOP_LEEWAY` seconds after its `iat` |
+| `BEFFROI_DPOP_NONCE_REQUIRED` | `false` | Whether every proof carries a nonce the provider issued, `true` or `false` |
+| `BEFFROI_DPOP_NONCE_TTL` | `300` | Seconds a nonce is accepted once issued, one at least |
 
 What a proof may be signed with is not an option: it is the list of signature algorithms the provider is
 wired with, which the discovery document announces in `dpop_signing_alg_values_supported` and every challenge
@@ -143,12 +142,14 @@ of UserInfo under `DPoP` names in `algs`.
 
 !!! warning "The proofs already seen and the nonces live in a cache pool"
 
-    Both are kept in the pool `beffroi.dpop`, which the application declares on `cache.app`. A deployment that
-    runs on several machines points that pool at a store they all reach: otherwise a proof replayed on
-    another machine is not recognised as a replay there, and a nonce one machine issued is refused by the
-    next. The pool tells a hit from a miss and not an insertion from a replacement, so two presentations of
-    one proof arriving in the same instant may both be taken; what a replay needs is a wider window than
-    that.
+    Both are kept in the pool `beffroi.dpop`, which the application declares on `cache.app`, on the
+    filesystem in `var/share/prod/pools/app` in the image, and no variable moves it elsewhere. The processes
+    share it by sharing that directory, which the Compose file of the image mounts on the server and on the
+    worker as one volume ([what the processes share](../../application/deployment.md#what-the-processes-share)).
+    Two servers that do not share it each keep their own: a proof replayed on the other is not recognised as
+    a replay there, and a nonce one of them issued is refused by the other. The pool tells a hit from a miss
+    and not an insertion from a replacement, so two presentations of one proof arriving in the same instant
+    may both be taken; what a replay needs is a wider window than that.
 
 ## What a resource server checks
 

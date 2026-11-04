@@ -19,12 +19,12 @@ certificate presents neither method.
 
 | `token_endpoint_auth_method` | The certificate | What makes it the client's |
 |---|---|---|
-| `tls_client_auth` (RFC 8705 §2.1) | Issued by a certificate authority the TLS listener trusts | The one value the client registered, read out of the certificate and compared |
+| `tls_client_auth` (RFC 8705 §2.1) | Issued by a certificate authority the TLS listener trusts, which the block the image delivers names none of ([below](#how-the-certificate-reaches-the-application)) | The one value the client registered, read out of the certificate and compared |
 | `self_signed_tls_client_auth` (RFC 8705 §2.2) | Any, self-signed included | The client publishes it in its JWK Set, `jwks` or `jwks_uri`: the first certificate of the `x5c` of one of its keys (RFC 7517 §4.7), or the `x5t#S256` of one of them (§4.9) |
 
 **A `tls_client_auth` client registers exactly one of the five values of RFC 8705 §2.1.2**, and a client
-registered for any other method registers none of them: a declaration that does not hold is refused at boot,
-and a registration that does not is refused.
+registered for any other method registers none of them: a registration that does not hold is refused with
+`invalid_client_metadata`.
 
 | Member | Compared with the certificate |
 |---|---|
@@ -34,18 +34,21 @@ and a registration that does not is refused.
 | `tls_client_auth_san_ip` | An `iPAddress` entry, as the octets it stands for, so the registered text may be written in any form RFC 4291 §2.2 allows |
 | `tls_client_auth_san_email` | An `rfc822Name` entry, as the text it is, nothing folded |
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        payments-app:
-            token_endpoint_auth_method: tls_client_auth
-            tls_client_auth_subject_dn: 'CN=payments-app,O=Example,C=FR'
-            redirect_uris: ['https://payments.example.com/callback']
+A client recognised by the subject of its certificate registers with ([dynamic
+registration](../dynamic-registration.md)):
+
+``` json
+{
+    "client_name": "Payments",
+    "redirect_uris": ["https://payments.example.com/callback"],
+    "token_endpoint_auth_method": "tls_client_auth",
+    "tls_client_auth_subject_dn": "CN=payments-app,O=Example,C=FR"
+}
 ```
 
 **The provider judges no chain.** Only the leaf certificate reaches PHP, so what makes a certificate
 trustworthy, its chain, its validity period and its revocation, is judged by the TLS listener during the
-handshake, against the authorities the deployment configures there. A self-signed certificate is trusted for
+handshake, against the authorities the deployment names there. A self-signed certificate is trusted for
 what the client published and for nothing else, as the keys of `private_key_jwt` are; a client that renews
 its certificate publishes the new one before it presents it.
 
@@ -94,17 +97,16 @@ certificate its own TLS connection received (RFC 8705 §3.2).
 
 A deployment may serve the endpoints that read a certificate on a host of their own, whose listener asks for
 one, and leave the ordinary host of the issuer asking for nothing, so that a browser is never asked for a
-certificate at the authorization endpoint or on a page. The configuration names that host:
+certificate at the authorization endpoint or on a page. It names the origin of that host in a variable, beside
+the two that have Caddy serve it ([below](#how-the-certificate-reaches-the-application)):
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    mutual_tls:
-        origin: 'https://mtls.op.example.com'
+``` dotenv
+BEFFROI_MTLS_ORIGIN=https://mtls.op.example.com
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `origin` | none | The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Left out or empty, it announces none, and a client authenticating with a certificate reaches the ordinary endpoints, which is what a deployment serving one host does |
+| `BEFFROI_MTLS_ORIGIN` | empty | The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Empty, it announces none, which is what a deployment serving one host leaves |
 
 With an origin, the discovery document carries `mtls_endpoint_aliases` (RFC 8705 §5): the same paths, on the
 other origin, for six endpoints.
@@ -149,7 +151,7 @@ for nothing.
 |---|---|---|
 | `MTLS_SERVER_NAME` | Caddy | The name of the host that asks for a certificate |
 | `CADDY_EXTRA_CONFIG` | Caddy | `import mtls.Caddyfile`, which adds that site block |
-| `BEFFROI_MTLS_ORIGIN` | The application | The origin of that host, which becomes `mutual_tls.origin` |
+| `BEFFROI_MTLS_ORIGIN` | The application | The origin of that host, which the discovery document announces the aliases under |
 
 `.env` leaves `BEFFROI_MTLS_ORIGIN` empty, so the image announces no alias until a deployment names the origin
 of its own host. The development stack names `https://mtls.op.localhost` in its `.env.local`.
@@ -164,11 +166,13 @@ the signature of the handshake that proves its holder has the private key (RFC 8
 handed to PHP as `SSL_CLIENT_CERT`, empty when the client presented none.
 
 The block verifies no chain, so it accepts a certificate whatever authority issued it, which is what
-`self_signed_tls_client_auth` needs. A deployment that authenticates clients with `tls_client_auth` has that
-block verify a presented certificate against the authorities it accepts: that is where the chain is judged,
-and nowhere else.
+`self_signed_tls_client_auth` needs, and it names no authority a chain could be judged against. A deployment
+whose clients authenticate with `tls_client_auth` writes the site block of that host in `CADDY_EXTRA_CONFIG`,
+in place of `import mtls.Caddyfile`: the block of the image with a `trust_pool` of the authorities it accepts
+in its `client_auth`. That is where the chain is judged, and nowhere else.
 
 What reads `SSL_CLIENT_CERT` is `App\Http\Tls\EdgeClientCertificateResolver`, the implementation of
 `App\Http\Tls\ClientCertificateResolverInterface` the application is delivered with, which returns the
-certificate of a request or none. A deployment whose edge hands the certificate over some other way brings
-another implementation of that interface, rather than teaching the application a header to trust.
+certificate of a request or none. An edge that hands the certificate over some other way takes another
+implementation of that interface, which is code of the application, rather than a header the application is
+taught to trust: the image carries this one alone.

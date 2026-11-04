@@ -119,7 +119,7 @@ since that is the one the client knows how to verify (§2.6). Its header names `
 | `sub` | The subject identifier the client knows the person by, public or pairwise, never the identifier of the account |
 | `aud` | The client |
 | `iat` | When the token was minted |
-| `exp` | `iat` plus the budget of its delivery below, two hundred and thirty-five seconds by default |
+| `exp` | `iat` plus the budget of its delivery below, two hundred and thirty-five seconds in the image |
 | `jti` | A UUID drawn for this token |
 | `events` | `{"http://schemas.openid.net/event/backchannel-logout": {}}` |
 | `sid` | The session that ended, always, whether the client registered `backchannel_logout_session_required` or not |
@@ -143,40 +143,41 @@ redirect is followed: the URI a client registered is where the token goes, and n
 | A `2xx` status | Done |
 | `400` or `501`, which §2.8 makes final | Gives up at once |
 | A redirection | Gives up at once: the same answer would come back every time, and the provider follows none. The client registers the URL it redirects to instead |
-| Any other status, or nothing within the timeout | Sends it again later, waiting longer each time and never more than `retry_max_delay` seconds |
+| Any other status, or nothing within the timeout | Sends it again later, waiting longer each time and never more than `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY` seconds |
 
 A client that refuses the token is given up on, and that is said, never kept quiet: an act of the journal,
 `logout_token.given_up`, naming the client and the person, so that somebody can see that a client was left
 believing its user signed in.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    back_channel_logout:
-        timeout: 5.0
-        retries: 6
-        retry_delay: 2
-        retry_multiplier: 3
-        retry_max_delay: 60
+Five variables set the schedule of the delivery, here at the values of the image
+([configuration](../application/configuration.md#notifications)):
+
+``` dotenv
+BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT=5
+BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES=6
+BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY=2
+BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER=3
+BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY=60
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `timeout` | `5.0` | Seconds one attempt is given, connection included, `0.1` at least. A client that hangs holds no worker |
-| `retries` | `6` | How many retries the budget of a delivery counts |
-| `retry_delay` | `2` | Seconds before the first retry |
-| `retry_multiplier` | `3` | What each wait is multiplied by to give the next one |
-| `retry_max_delay` | `60` | Seconds a wait never exceeds |
+| `BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT` | `5` | Seconds one attempt is given, connection included, `0.1` at least. A client that hangs holds no worker |
+| `BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES` | `6` | How many retries the budget of a delivery counts |
+| `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY` | `2` | Seconds before the first retry |
+| `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER` | `3` | What each wait is multiplied by to give the next one |
+| `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY` | `60` | Seconds a wait never exceeds |
 
-These numbers make the budget a logout token is written for. With the defaults, the waits before the first
-six retries are 2, 6, 18, 54, 60 and 60 seconds, and two hundred seconds of waiting plus five seconds for each
-of the seven attempts they count make two hundred and thirty-five seconds. That budget is the `exp` of the
-token, and the key that signed it stays in the JWK Set at least that long once it retires: changing one of
-these numbers moves both.
+These numbers make the budget a logout token is written for. With the values of the image, the waits before
+the first six retries are 2, 6, 18, 54, 60 and 60 seconds, and two hundred seconds of waiting plus five
+seconds for each of the seven attempts they count make two hundred and thirty-five seconds. That budget is the
+`exp` of the token, and the key that signed it stays in the JWK Set at least that long once it retires:
+changing one of these numbers moves both.
 
 **The budget bounds the token, not the sending.** A client still out of reach when the budget has run out
-may be sent the token again, `retry_max_delay` seconds apart, and what it then receives is past its `exp`,
-which a client refuses as it would an expired ID token (§2.6). A client that answers within the budget
-receives a token it can act on; after it, it can only receive an expired one.
+may be sent the token again, `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY` seconds apart, and what it then
+receives is past its `exp`, which a client refuses as it would an expired ID token (§2.6). A client that
+answers within the budget receives a token it can act on; after it, it can only receive an expired one.
 
 ## What ends a session
 
@@ -209,9 +210,11 @@ successor a refresh in flight saved after that revocation, which is revoked in t
 token is refused as any revoked token is, and that refusal writes nothing.
 
 What the provider cannot reach is a self-contained access token in the hands of a resource server that
-verifies it offline (RFC 9068 §4): it is accepted there until it expires, ten minutes after it was issued
-unless `tokens.access_token_ttl` says otherwise. A resource server that has to know at once introspects, or
-its clients are declared with opaque access tokens.
+verifies it offline (RFC 9068 §4): it is accepted there until it expires, `BEFFROI_ACCESS_TOKEN_TTL` seconds
+after it was issued, ten minutes in the image. A resource server that has to know at once introspects. Every
+access token of the image is self-contained: `access_token_format`, which would give a client opaque ones, is a
+member of the deployment that no client of the image holds ([what the image does not
+set](clients.md#what-the-image-does-not-set)).
 
 **A session is shared with SAML.** The session a client signed in under is the one the SAML service
 providers of the browser signed in under too, which is why the end session endpoint goes through them before
@@ -229,15 +232,17 @@ played.
 | `backchannel_logout_uri` | Where the logout token is posted. HTTPS, or plain HTTP on a loopback host |
 | `backchannel_logout_session_required` | Whether the client reads the `sid` of the logout token, which is sent either way. It needs a `backchannel_logout_uri`. Default `false` |
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        portal:
-            # ...
-            post_logout_redirect_uris: ['https://portal.example.com/signed-out']
-            frontchannel_logout_uri: 'https://portal.example.com/logout/frontchannel'
-            frontchannel_logout_session_required: true
-            backchannel_logout_uri: 'https://portal.example.com/logout/backchannel'
+A client told by both channels registers with ([dynamic registration](dynamic-registration.md)):
+
+``` json
+{
+    "client_name": "Portal",
+    "redirect_uris": ["https://portal.example.com/oidc/callback"],
+    "post_logout_redirect_uris": ["https://portal.example.com/signed-out"],
+    "frontchannel_logout_uri": "https://portal.example.com/logout/frontchannel",
+    "frontchannel_logout_session_required": true,
+    "backchannel_logout_uri": "https://portal.example.com/logout/backchannel"
+}
 ```
 
 ## What a logout can promise
@@ -246,7 +251,7 @@ beffroi:
   of the account read on another browser, the other sessions closed or a password changed, a new person
   signing in: no frame is loaded and no SAML service provider is told, SOAP being out of scope.
 - **The front channel reaches the clients the browser lets it reach**, and says so.
-- **A logout token is good for two hundred and thirty-five seconds by default**: a client the provider cannot
+- **A logout token is good for two hundred and thirty-five seconds in the image**: a client the provider cannot
   reach within that time is left believing its user signed in, and a client that refuses the token is
   written down as given up on.
 - **A self-contained access token outlives the session at a resource server that verifies it offline**, up

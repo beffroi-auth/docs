@@ -12,18 +12,20 @@ cannot find out they are looking at the same one by comparing them (OIDC Core §
 
 ## Choosing the kind
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        billing:
-            # ...
-            subject_type: pairwise
+A client chooses its kind when it registers ([dynamic registration](dynamic-registration.md)):
+
+``` json
+{
+    "client_name": "Billing",
+    "redirect_uris": ["https://billing.example.com/oidc/callback"],
+    "subject_type": "pairwise"
+}
 ```
 
 `subject_type` is `public` or `pairwise`, the two kinds the application wires, which the discovery document
 lists in `subject_types_supported` in that order. A client that registers none takes the first, `public`. A
-client that registers itself may send the member too. A kind nothing wires is refused when the client is read,
-rather than served an identifier of another kind.
+kind nothing wires is refused with `invalid_client_metadata`, rather than served an identifier of another
+kind.
 
 ## The identifier
 
@@ -63,21 +65,23 @@ of them (OIDC Registration §5): they are then of that host's sector, and see a 
 itself](dynamic-registration.md) with a `sector_identifier_uri` publishes behind it the JSON array of URIs of
 OIDC Registration §5, and the array lists every redirect URI the client registers, or its `jwks_uri` when it
 registers no redirect URI. The provider reads it once, when the registration or its replacement is written,
-with one `GET` that follows no redirect, within `client_registration.sector_identifier_timeout`, three
-seconds by default, and `client_registration.sector_identifier_max_size`, 65536 bytes by default. A document
-that cannot be read, that is not an array of strings, or that leaves one of those URIs out, refuses the
-registration with `invalid_client_metadata`. Without that proof, a client able to name any sector could put
-itself in another's and read its users under their identifiers. A client the deployment declares is not
-asked for the document: the deployment answers for what it declares, and the host of the URI is its sector.
+with one `GET` that follows no redirect, within `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT` seconds,
+three in the image, and `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE` bytes, 65536 in the image
+([configuration](../application/configuration.md#registration)). A document that cannot be read, that is not
+an array of strings, or that leaves one of those URIs out, refuses the registration with
+`invalid_client_metadata`. Without that proof, a client able to name any sector could put itself in
+another's and read its users under their identifiers.
 
 ## The salt
 
 The salt is a secret of the tenant: 256 random bits, drawn the first time the tenant needs it and never
 again, sealed by the key management service of the tenant, and kept as a file beside its sealed keys,
-`<keys.storage>/<tenant slug>/pairwise.salt`. Two workers that draw at the same moment leave one salt, the one
-written first, and the other reads it back. The same salt computes the persistent `NameID` the [SAML identity
-provider](../saml/identity-provider.md) gives a service provider, from other inputs, so that no identifier of
-one is an identifier of the other, and whichever of the two is computed first draws it.
+`var/keys/<tenant slug>/pairwise.salt` under the application, in the directory the processes share ([what the
+processes share](../application/deployment.md#what-the-processes-share)). Two workers that draw at the same
+moment leave one salt, the one written first, and the other reads it back. The same salt computes the
+persistent `NameID` the [SAML identity provider](../saml/identity-provider.md) gives a service provider, from
+other inputs, so that no identifier of one is an identifier of the other, and whichever of the two is computed
+first draws it.
 
 !!! warning "Back the salt up with the keys"
 

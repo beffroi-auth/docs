@@ -109,7 +109,7 @@ refuses fails when it is loaded, as a conversion error naming the type, and neve
 **Some of them read the wiring back.** A stored password hash names its algorithm, a confirmation of
 RFC 8705 or RFC 9449 names its kind, an `authorization_details` names its type, a PKCE challenge names its
 method, and the `acr` vocabulary and the floor of a tenant name their predicates. Each is read back as the
-class the deployment wires under that name, so a row naming something the deployment no longer wires fails
+class the application wires under that name, so a row naming something the application no longer wires fails
 at load rather than being read as something else: a password algorithm leaves the wiring once no hash of it
 is left, or every row holding one fails to load.
 
@@ -120,7 +120,7 @@ client, which no mapping carries, so no DBAL type could hand the object back who
 
 **A client is not a row a table joins.** A client declared in the configuration has no row at all, so the
 tables keep `client_id`, and the client is put back on a row once it is loaded, from the sources of clients
-the deployment wires. A row whose client is no longer registered, removed from the configuration or deleted,
+the application wires. A row whose client is no longer registered, removed from the configuration or deleted,
 is treated as absent: a token or a consent of a client that does not exist is not one.
 
 ## Sealed columns

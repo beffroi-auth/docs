@@ -25,17 +25,21 @@ says so with `cty` `JWT` (RFC 7519 §5.2).
 
 ## Registering it
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        my-application:
-            # ...
-            jwks_uri: 'https://app.example.com/jwks.json'
-            id_token_encrypted_response_alg: RSA-OAEP-256
-            id_token_encrypted_response_enc: A256GCM
-            userinfo_signed_response_alg: ES256
-            userinfo_encrypted_response_alg: RSA-OAEP-256
-            userinfo_encrypted_response_enc: A256GCM
+A client names the pairs it wants in its [registration](../dynamic-registration.md), beside the keys it
+publishes:
+
+``` json
+{
+    "client_name": "My application",
+    "redirect_uris": ["https://app.example.com/oidc/callback"],
+    "scope": "openid profile email",
+    "jwks_uri": "https://app.example.com/jwks.json",
+    "id_token_encrypted_response_alg": "RSA-OAEP-256",
+    "id_token_encrypted_response_enc": "A256GCM",
+    "userinfo_signed_response_alg": "ES256",
+    "userinfo_encrypted_response_alg": "RSA-OAEP-256",
+    "userinfo_encrypted_response_enc": "A256GCM"
+}
 ```
 
 - **The two members of a pair come together.** OIDC Registration §2 lets the `enc` be left out and defaults it
@@ -46,8 +50,7 @@ beffroi:
   encryption and publishes neither is refused. A `jwks` written down is read at registration and has to hold
   a key the registered algorithm can be addressed to; a set behind a URL is read when a document is minted.
 
-A declared client that breaks one of these rules is an error of the configuration, and a registration request
-that breaks one is answered `invalid_client_metadata`.
+A registration that breaks one of these rules is refused with `invalid_client_metadata`.
 
 ## The algorithms
 
@@ -76,13 +79,13 @@ The provider encrypts to a key the client publishes, chosen by what the keys say
 A client that publishes several keys therefore chooses the one it is encrypted to by saying more about it.
 
 A set behind a `jwks_uri` is read with one `GET`, over HTTPS or in plain HTTP on a loopback host, no redirect
-followed. What is read is kept for `client_authentication.jwks_ttl` seconds, a day by default, in a pool the
-workers share, under the URL it was read from. Encrypting a document never reads it again before that, a
-document addressed to a client naming no `kid` the provider could find missing. The kept set serves every
-use of the keys of the client, though, and a signature of the client whose header names a `kid` the set does
-not hold, the assertion of `private_key_jwt` or a request object, reads it again, at most once per
-`client_authentication.jwks_refetch_cooldown`, 300 seconds by default. A client that replaces its encryption
-key publishes the new one and keeps the private half of the old one for `jwks_ttl` after that.
+followed. What is read is kept for `BEFFROI_JWKS_URI_TTL` seconds, a day in the image, in a pool the workers
+share, under the URL it was read from. Encrypting a document never reads it again before that, a document
+addressed to a client naming no `kid` the provider could find missing. The kept set serves every use of the
+keys of the client, though, and a signature of the client whose header names a `kid` the set does not hold,
+the assertion of `private_key_jwt` or a request object, reads it again, at most once per
+`BEFFROI_JWKS_URI_REFETCH_COOLDOWN`, 300 seconds in the image. A client that replaces its encryption key
+publishes the new one and keeps the private half of the old one for `BEFFROI_JWKS_URI_TTL` after that.
 
 ## When the key cannot be read
 
@@ -91,6 +94,6 @@ registered algorithm can be addressed to, the provider writes nothing for that c
 was to carry the document fails: the token request that was to carry the ID token, once the code, the device
 code or the `auth_req_id` it presented has been spent, the UserInfo request, or the authorization response.
 
-A read is given `client_authentication.jwks_timeout` seconds, 3 by default, and
-`client_authentication.jwks_max_size` bytes, 65536 by default, before it counts as a set that cannot be
-read.
+A read is given `BEFFROI_JWKS_URI_TIMEOUT` seconds, 3 in the image, and `BEFFROI_JWKS_URI_MAX_SIZE` bytes,
+65536 in the image, before it counts as a set that cannot be read
+([configuration](../../application/configuration.md#clients-and-their-requests)).

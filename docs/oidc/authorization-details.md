@@ -1,6 +1,6 @@
 ---
 title: Authorization details
-description: 'Asking for what a scope cannot say, RFC 9396: the types a deployment wires, how a request is judged, what the person reads and what the token carries.'
+description: 'Asking for what a scope cannot say, RFC 9396: a type is code of the application and the image wires none, how a request is judged, what the person reads and what the token carries.'
 ---
 
 # Authorization details
@@ -12,18 +12,18 @@ to be able to read before agreeing to it, rather than recognise.
 
 ## A type is a class of the deployment
 
-The application wires no type. A type says what a client may do to what in the words of one domain, so no type
-is universal, and a deployment that serves rich authorization requests wires the one its domain needs. A
-provider wired with none refuses every `authorization_details` of a request that reads one, and announces
-nothing. The requests that read one are an authorization request, a pushed request and a token request of
-the `authorization_code` or `refresh_token` grant; every other request ignores it, as it ignores any
-parameter it does not read.
+A type says what a client may do to what in the words of one domain, so no type is universal, and the image
+wires none: a deployment of the image serves no rich authorization request. A provider wired with no type
+refuses every `authorization_details` of a request that reads one, and announces nothing. The requests that
+read one are an authorization request, a pushed request and a token request of the `authorization_code` or
+`refresh_token` grant; every other request ignores it, as it ignores any parameter it does not read.
 
-A type implements `Beffroi\Oidc\Domain\AuthorizationDetails\AuthorizationDetailTypeInterface`, names itself,
-and validates its own members: it is the only place that knows what a detail of its kind means. It returns
-the detail it accepted, building the members it keeps in an order of its own, so that two requests asking for
-the same thing in a different order produce the same detail, and the parameters the consent page renders it
-with. A detail it refuses, it refuses by throwing `Beffroi\Oidc\Exception\InvalidArgumentException`.
+**A type is code of the application**, and no variable names one. It is a class that implements
+`Beffroi\Oidc\Domain\AuthorizationDetails\AuthorizationDetailTypeInterface`, names itself, and validates its
+own members: it is the only place that knows what a detail of its kind means. It returns the detail it
+accepted, building the members it keeps in an order of its own, so that two requests asking for the same thing
+in a different order produce the same detail, and the parameters the consent page renders it with. A detail
+it refuses, it refuses by throwing `Beffroi\Oidc\Exception\InvalidArgumentException`.
 
 ``` php title="src/AuthorizationDetails/AccountAccessType.php"
 <?php
@@ -72,9 +72,20 @@ final readonly class AccountAccessType implements AuthorizationDetailTypeInterfa
 }
 ```
 
-The third argument is what the page says of the detail: the parameters of the message
-`authorization_details.<type>` of the `beffroi` domain, which the deployment writes in its own catalogue
-([translations](../application/translations.md)):
+What wires a type is the tag `beffroi.oidc.authorization_detail_type` on a service of the application. No
+file of its configuration loads `src/AuthorizationDetails/`, so the class becomes a service, and a type, once
+`config/services.yaml` declares it; `autoconfigure` is on in that file, and the attribute of the class adds the
+tag:
+
+``` yaml title="config/services.yaml"
+services:
+    # ...
+    App\AuthorizationDetails\AccountAccessType: ~
+```
+
+The third argument of the `AuthorizationDetail` the class returns is what the page says of the detail: the
+parameters of the message `authorization_details.<type>` of the `beffroi` domain, which goes in the catalogues
+of the application with the type ([translations](../application/translations.md)):
 
 ``` xml title="translations/beffroi+intl-icu.en.xlf"
 <trans-unit id="authorization_details.account_access" resname="authorization_details.account_access">
@@ -85,24 +96,27 @@ The third argument is what the page says of the detail: the parameters of the me
 
 What is wired is what a client may register, what a request may name and what the discovery document
 announces in `authorization_details_types_supported` (RFC 9396 §10). Two classes that answer for one `type`
-are a wiring the provider refuses to read. The development stack wires one type, `invoice_payment`, whose
-detail names an invoice, the actions asked of it among `read` and `pay`, the locations where it is used and
-the most that may be moved. The image of the application leaves it out, so a deployment of the image
-announces no type.
+are a wiring the provider refuses to read. The one type the code of the application holds is the lab's,
+`invoice_payment`, whose detail names an invoice, the actions asked of it among `read` and `pay`, the
+locations where it is used and the most that may be moved: the development stack wires it, and the image
+leaves it out, so a deployment of the image announces no type.
 
 ## Registering the types
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        billing:
-            # ...
-            authorization_details_types: ['account_access']
+Where the application wires the type above, a client that [registers itself](dynamic-registration.md) asks
+for it with:
+
+``` json
+{
+    "client_name": "Billing",
+    "redirect_uris": ["https://billing.example.com/oidc/callback"],
+    "authorization_details_types": ["account_access"]
+}
 ```
 
 `authorization_details_types` is the closed list of the types a client may ask for, among the ones wired, and
-a client that registers none asks for none. A name nothing serves is refused when the client is read, the
-refusal listing the types that are wired. A client that registers itself may send the member as well.
+a client that registers none asks for none. A name nothing serves is refused with `invalid_client_metadata`,
+the refusal listing the types that are wired, or saying there are none: on the image, every name is refused.
 
 ## Asking
 

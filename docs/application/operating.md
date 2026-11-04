@@ -118,14 +118,16 @@ blind index with them.
 | `beffroi:geoip:refresh` | The day a licence key is named, and to read why a refresh was refused | Every week |
 | `beffroi:saml:service-provider:refresh`, `beffroi:saml:identity-provider:refresh` | For the first reading of a peer just declared, and to read why a document was refused | Every hour |
 | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import` | To fill the FIDO metadata an attestation is checked against | None |
+| `beffroi:webauthn:aaguids-refresh` | To store the list of passkey providers the community keeps, which names the authenticator of a passkey the FIDO metadata do not, and to read why a list was refused. A refused list, an empty one among them, keeps nothing and leaves the stored one as it was | None |
 
 ## When something fails
 
 **`beffroi:doctor` is what to ask first.** It reads, writes nothing, and is safe on a provider serving
 traffic. What it looks at is what is wired, and in this application that is one point: whether a logout
-token is retried for as long as it stays verifiable. A deployment that sends the notifications to a transport
-of its own, retried on another schedule, keeps a provider that works and logout tokens a client may refuse
-when they arrive late, after a rotation or after the client restarts, which nothing else shows.
+token is retried for as long as it stays verifiable. No variable sends the notifications to another transport
+or retries them on another schedule, so the point holds on a deployment of the image; a configuration of the
+application that did either would keep a provider that works and logout tokens a client may refuse when they
+arrive late, after a rotation or after the client restarts, which nothing else shows.
 
 **A message that fails is tried again, then kept.** The three lanes of the provider's own writes retry it on
 the numbers the application prepends to Messenger; the lane of the notifications retries it on the schedule of
@@ -163,5 +165,5 @@ One directory to back up, one key management service and one secret to keep.
 No command restores a deployment: a restore is the database and `var/keys` put back together, under the same
 master key and the same `APP_SECRET`. The pairwise subjects of OpenID Connect and the persistent identifiers of SAML are computed from
 the salt and never drawn, so they are the same after a restore that brings the salt back with the database. The GeoLite2
-databases in `var/geoip` and the FIDO metadata in `var/webauthn` are written again by the commands that wrote
-them.
+databases in `var/geoip`, and the FIDO metadata and the list of the community in `var/webauthn`, are written
+again by the commands that wrote them.

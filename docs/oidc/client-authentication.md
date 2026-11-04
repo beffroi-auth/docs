@@ -26,10 +26,9 @@ The application wires seven, in this order:
 | `self_signed_tls_client_auth` | `client_id`, and a certificate at the TLS handshake (RFC 8705 §2.2) | That the certificate is one the client publishes | `jwks` or `jwks_uri` |
 | `none` | `client_id` alone (RFC 6749 §2.1) | Nothing: the client names itself | Nothing |
 
-A client that registers no method takes `client_secret_basic`, the first one wired for a declared client and
-the default of RFC 7591 §2 for one that registers itself. What the wiring holds is what a client may
-register and what the discovery document announces, so a method taken out of the wiring is neither accepted
-nor announced.
+A client that registers no method takes `client_secret_basic`, the default of RFC 7591 §2. What the wiring
+holds is what a client may register and what the discovery document announces, so a method taken out of the
+wiring is neither accepted nor announced.
 
 | Member of the discovery document | What it lists |
 |---|---|
@@ -78,7 +77,7 @@ signature is verified first, and nothing the assertion says is believed before i
 | `aud` | One value, and only one: the issuer of the tenant. A client registered for the backchannel grant may name the token endpoint or the backchannel authentication endpoint instead, on either host the provider serves them on (CIBA Core §7.1) |
 | `exp` | Present, not past, and no further ahead than the lifetime the provider accepts |
 | `iat` | Present, and not in the future |
-| `jti` | Present, and never seen before for that client: it is remembered until the `exp` in the `beffroi.client_assertions` cache pool, which a deployment of several machines points at a store they share |
+| `jti` | Present, and never seen before for that client: it is remembered until the `exp` in the `beffroi.client_assertions` cache pool, which the processes share when they share its directory, as the Compose file of the image has them do ([what the processes share](../application/deployment.md#what-the-processes-share)) |
 
 **The key is the client's and nobody else's.** A `kid` in the header names one of the keys the client
 publishes, a header without one is tried against all of them, and a key that names another `alg`, or a `use`
@@ -91,27 +90,28 @@ most once per cooldown: a client that rotates its key is followed at once, and o
 never published cannot make the provider call it on every request. A set that cannot be read refuses the
 authentication, and the reason goes to the audit trail.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    client_authentication:
-        assertion_max_lifetime: 300
-        assertion_leeway: 30
-        jwks_timeout: 3.0
-        jwks_max_size: 65536
-        jwks_ttl: 86400
-        jwks_refetch_cooldown: 300
+Six variables bound the assertion and the reads, here at the values of the image
+([configuration](../application/configuration.md#clients-and-their-requests)):
+
+``` dotenv
+BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME=300
+BEFFROI_CLIENT_ASSERTION_LEEWAY=30
+BEFFROI_JWKS_URI_TIMEOUT=3
+BEFFROI_JWKS_URI_MAX_SIZE=65536
+BEFFROI_JWKS_URI_TTL=86400
+BEFFROI_JWKS_URI_REFETCH_COOLDOWN=300
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `assertion_max_lifetime` | `300` | Seconds ahead of the request the `exp` of an assertion may be (RFC 7523 §3) |
-| `assertion_leeway` | `30` | Seconds allowed of the clock of a client, both ways |
-| `jwks_timeout` | `3.0` | Seconds one read of a `jwks_uri` is given, connection included |
-| `jwks_max_size` | `65536` | Bytes a `jwks_uri` may answer before the read stops |
-| `jwks_ttl` | `86400` | Seconds a set read from a `jwks_uri` is kept |
-| `jwks_refetch_cooldown` | `300` | Seconds between two reads of one `jwks_uri` when an assertion names an unknown `kid` |
+| `BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME` | `300` | Seconds ahead of the request the `exp` of an assertion may be (RFC 7523 §3), a second at least |
+| `BEFFROI_CLIENT_ASSERTION_LEEWAY` | `30` | Seconds allowed of the clock of a client, both ways |
+| `BEFFROI_JWKS_URI_TIMEOUT` | `3` | Seconds one read of a `jwks_uri` is given, connection included, a tenth of a second at least |
+| `BEFFROI_JWKS_URI_MAX_SIZE` | `65536` | Bytes a `jwks_uri` may answer before the read stops |
+| `BEFFROI_JWKS_URI_TTL` | `86400` | Seconds a set read from a `jwks_uri` is kept |
+| `BEFFROI_JWKS_URI_REFETCH_COOLDOWN` | `300` | Seconds between two reads of one `jwks_uri` when an assertion names an unknown `kid` |
 
-The same six options bound the assertions of the issuers a tenant trusts for the [JWT bearer
+The same six variables bound the assertions of the issuers a tenant trusts for the [JWT bearer
 grant](grants/jwt-bearer.md), and the reads of the sets they publish.
 
 ## A certificate
@@ -121,8 +121,9 @@ and the client names itself in `client_id`. The certificate is the one the TLS l
 provider writes in the `SSL_CLIENT_CERT` server variable, never a header: a request that carries
 `SSL-Client-Cert`, `X-SSL-Client-Cert`, `X-Client-Cert` or `X-Forwarded-Client-Cert` is refused with
 `invalid_request`. Only the leaf reaches the provider, so the chain, the validity period and the revocation of
-the certificate are judged by the listener, which is where a deployment that turns `tls_client_auth` on says
-which authorities it accepts.
+the certificate are judged by the listener, which is where a deployment that turns `tls_client_auth` on names
+the authorities it accepts: the block the image delivers names none ([mutual
+TLS](sender-constrained/mutual-tls.md#how-the-certificate-reaches-the-application)).
 
 - **`tls_client_auth`** compares one value read out of the certificate with the one the client registered:
   its subject distinguished name, written as RFC 4514 writes one and normalised when the client is read, so
@@ -170,10 +171,10 @@ method it registered; why it was refused goes to the audit trail, with the clien
 `ClientAuthenticationFailed` event. A `401` carries `WWW-Authenticate: Basic realm="<issuer>"` when the client
 used the `Authorization` header, and no challenge otherwise (RFC 6749 §5.2).
 
-A client that authenticates counts one request against its own load budget, `load.client`, 1200 requests in
-60 seconds by default, here and nowhere else, this being the one place its identifier is proven rather than
-claimed. A public client counts nothing there, the budget of the address it calls from bounding it. A spent
-budget is answered `429` with a `Retry-After`.
+A client that authenticates counts one request against its own load budget, `BEFFROI_LOAD_CLIENT_LIMIT`
+requests in `BEFFROI_LOAD_CLIENT_INTERVAL` seconds, 1200 in 60 in the image, here and nowhere else, this being
+the one place its identifier is proven rather than claimed. A public client counts nothing there, the budget
+of the address it calls from bounding it. A spent budget is answered `429` with a `Retry-After`.
 
 [:beffroi-arrow-right: Clients](clients.md), [DPoP](sender-constrained/dpop.md) and [mutual
 TLS](sender-constrained/mutual-tls.md)

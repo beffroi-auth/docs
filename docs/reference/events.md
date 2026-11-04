@@ -25,10 +25,10 @@ an event nothing listens to is announced all the same.
 
 ## What listens
 
-**Every event is written to the journal.** `WriteTheActDownHandler` hears every event of the three packages and
-writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person and the
-client when it concerns a client, and nothing else. A row is kept `beffroi.journal.retention` days, 180 by default,
-and `beffroi:user:journal` reads it back for a person.
+**Every event is written to the journal.** `WriteTheActDownHandler` hears every event of the three packages
+and writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person
+and the client when it concerns a client, and nothing else. A row is kept `BEFFROI_JOURNAL_RETENTION` days,
+180 in the image, and `beffroi:user:journal` reads it back for a person.
 
 The other listeners of the application each hear one event, or an interface a few of them implement:
 

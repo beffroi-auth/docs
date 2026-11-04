@@ -15,7 +15,7 @@ verifier that only it holds.
 
 | | |
 |---|---|
-| Lifetime | 60 seconds, `tokens.authorization_code_ttl`, at most 600 (RFC 6749 §4.1.2) |
+| Lifetime | `BEFFROI_AUTHORIZATION_CODE_TTL`, 60 seconds in the image, at most 600 (RFC 6749 §4.1.2) |
 | Value | 256 random bits in base64url, 43 characters |
 | What the provider keeps | Its SHA-256, never the value |
 | Bound to | The client, the redirect URI of the request, the PKCE challenge, the DPoP key the request reserved it for when it reserved it for one (RFC 9449 §10), and the session it was issued in |
@@ -24,10 +24,11 @@ verifier that only it holds.
 What the session had proven is frozen on the code: a step-up or a new login afterwards changes the session,
 and never a code already issued nor a token that descends from one.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    tokens:
-        authorization_code_ttl: 60
+A deployment sets the lifetime in its environment
+([configuration](../../application/configuration.md#keys-and-lifetimes)):
+
+``` dotenv
+BEFFROI_AUTHORIZATION_CODE_TTL=60
 ```
 
 ## The request
@@ -38,7 +39,7 @@ beffroi:
 | `code` | Required |
 | `redirect_uri` | Required: the one the authorization request carried, as it carried it |
 | `code_verifier` | Required when the authorization request carried a `code_challenge` (RFC 7636 §4.5), refused when it carried none |
-| `resource` | Optional and repeatable: narrows what the access token is addressed to, among the resources of the authorization (RFC 8707 §2.2) |
+| `resource` | Optional and repeatable: narrows what the access token is addressed to, among the resources of the authorization (RFC 8707 §2.2). The authorization of a client of the image carries none, so a `resource` it names is `invalid_target` |
 | `authorization_details` | Optional: narrows the details the access token carries, among those of the authorization (RFC 9396 §7) |
 
 The client authenticates beside them with the method it registered, which for a public client is its
@@ -57,8 +58,9 @@ so that a client guessing learns nothing of which check it failed.
 3. It has not expired.
 4. `redirect_uri` is the redirect URI of the authorization request, compared as a string (RFC 6749 §4.1.3).
 5. PKCE holds (RFC 7636 §4.6): the `code_verifier`, transformed with `S256`, is the `code_challenge` of the
-   request. A code issued without a challenge, which only a confidential client registered with
-   `requires_pkce: false` obtains, is refused when a `code_verifier` comes with it (RFC 9700 §4.8.2).
+   request. A code issued without a challenge is refused when a `code_verifier` comes with it (RFC 9700
+   §4.8.2). Only a confidential client exempted from PKCE obtains such a code, and no client of the image is
+   ([what the image does not set](../clients.md#what-the-image-does-not-set)).
 6. A code the request reserved for a key, with `dpop_jkt` or by the DPoP proof of its pushed request, is spent
    by a request whose DPoP proof is signed by that key (RFC 9449 §10), and by no other.
 7. The session the code was issued in is still active: it has not ended, and it has not expired.
@@ -71,16 +73,17 @@ carry is `invalid_target`, and an `authorization_details` it does not carry is
 
 ## What the answer carries
 
-- **An access token**, in the shape the client registered ([access tokens](../tokens/access-tokens.md)). It is
-  addressed to the resources the token request named, or to all those of the authorization when it named
-  none, or to the client itself when the authorization carries none. It is bound to what this request binds
-  it to, the key of its DPoP proof or the certificate of its connection, as
-  [grants](index.md#what-the-token-endpoint-does) says, and is a bearer token otherwise.
+- **An access token**, an `at+jwt` for every client of the image ([access tokens](../tokens/access-tokens.md)).
+  It is addressed to the resources the token request named, or to all those of the authorization when it
+  named none, or to the client itself when the authorization carries none, which is every authorization of
+  a client of the image. It is bound to what this request binds it to, the key of its DPoP proof or the
+  certificate of its connection, as [grants](index.md#what-the-token-endpoint-does) says, and is a bearer
+  token otherwise.
 - **An ID token** when `openid` is among the scopes, carrying the `nonce` of the authorization request
   ([ID tokens](../tokens/id-tokens.md)).
 - **A refresh token** when one is due: the client is registered for `refresh_token`, and either
   `offline_access` was granted or the client is confidential. It starts a family whose absolute lifetime is
-  `tokens.refresh_token_absolute_ttl`, ninety days by default, and it carries the whole authorization,
+  `BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL`, ninety days in the image, and it carries the whole authorization,
   whatever subset of its resources and details the access token beside it was narrowed to ([refresh
   tokens](../tokens/refresh-tokens.md)).
 
@@ -96,8 +99,8 @@ tell which.
 |---|---|
 | The grant itself | Revoked: the provider's own endpoints and its introspection refuse every access token of that grant from then on |
 | Every refresh token descending from the code | Revoked, the rotated ones included |
-| The opaque access tokens of the grant | Removed, so that wherever they are presented they are unknown |
-| A self-contained access token of the grant | Accepted until it expires by a resource server that verifies it offline against the JWK Set, which nothing the provider does can reach. It lives `tokens.access_token_ttl`, ten minutes by default |
+| The opaque access tokens of the grant | Removed, so that wherever they are presented they are unknown. A client of the image has none, its access tokens being self-contained |
+| A self-contained access token of the grant | Accepted until it expires by a resource server that verifies it offline against the JWK Set, which nothing the provider does can reach. It lives `BEFFROI_ACCESS_TOKEN_TTL`, ten minutes in the image |
 
 The act `authorization_code.replayed` is written in the journal of the person, naming the client the code
 was issued to, the client that presented it again, and the refresh tokens it revoked.

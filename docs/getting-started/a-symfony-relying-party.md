@@ -180,10 +180,11 @@ An `access_token` firewall checks the access token a request carries, in one of 
     `RS256`, which is what the handler accepts unless told otherwise, and types it `at+jwt` (RFC 9068 §2.1),
     which `enforce_at_jwt_type` holds it to.
 
-    The `aud` of the token is the client it was issued to, unless the client asked for a resource (RFC 8707
-    §2), in which case it names that resource and the `audience` of the handler is that identifier. Nothing
-    reaches the provider: a token revoked there is accepted here until it expires, ten minutes after it was
-    issued by default.
+    The `aud` of the token is the client it was issued to, which is why the `audience` of the handler is the
+    `client_id`: a client of the image registers no resource (RFC 8707 §2) a token could be addressed to
+    instead ([what the image does not set](../oidc/clients.md#what-the-image-does-not-set)). Nothing reaches
+    the provider: a token revoked there is accepted here until it expires, ten minutes after it was issued by
+    default.
 
 === "Any token, described by the provider"
 
@@ -212,10 +213,9 @@ An `access_token` firewall checks the access token a request carries, in one of 
 
     `OIDC_INTROSPECTION_URI` is the issuer followed by `/introspect`. The provider describes a token to the
     client it was issued to and to nobody else (RFC 7662 §2.2), so the resource server asks with the
-    credentials of that client, and an opaque access token, `access_token_format: opaque` on the client, is
-    read this way only. A token whose session has ended, or whose grant was taken back, is described as
-    inactive from then on; a `cache` on the handler keeps an active answer for up to sixty seconds, never past
-    the `exp` of the token.
+    credentials of that client. A token whose session has ended, or whose grant was taken back, is described
+    as inactive from then on, which the first way cannot see; a `cache` on the handler keeps an active answer
+    for up to sixty seconds, never past the `exp` of the token.
 
     Beffroi reads both halves of HTTP Basic credentials form-urlencoded, as RFC 6749 §2.3.1 writes them and
     as `oidc_login` sends them, while the scoped client sends `auth_basic` as it is given. A secret drawn in
@@ -231,8 +231,12 @@ security:
 ```
 
 A token without it is refused with `403` and the `insufficient_scope` challenge of RFC 6750 §3.1. A scope that
-stands for no claim, `invoices.read` here, exists on the provider once a client registers it in its `scope`,
-and the application asks for it in its own.
+stands for no claim, `invoices.read` here, is one the tenant hands out once the deployment names it, the
+client registers it in its `scope`, and the application asks for it in its own:
+
+``` dotenv
+BEFFROI_TENANT_SCOPES='["invoices.read"]'
+```
 
 ## The reference relying party
 

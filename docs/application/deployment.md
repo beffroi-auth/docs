@@ -111,15 +111,14 @@ so some state has to be the same for all of them.
 | The sealed keys of the tenant, and its pairwise salt | `var/keys` | `beffroi:keys:*`, the timed step of the key lifecycle, and the first process that needs the salt | Every process that signs, decrypts or seals |
 | The key of the file backend, when that is the key management service | The directory its DSN names, `var/kms` on the development stack and in the Compose file of the image | Whoever provisions it | Every process |
 | The GeoLite2 databases of addresses | `var/geoip` | `beffroi:geoip:refresh`, the weekly step | The worker, which enriches a provenance |
-| The FIDO metadata | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import` | The passkey ceremonies, which check an attestation against it |
+| The FIDO metadata, and the list of passkey providers of the community in its directory `community/` | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import`, and `beffroi:webauthn:aaguids-refresh` for the list | The page of the passkeys and `beffroi:user:show`, which name the authenticator of a passkey from both, and a ceremony whose options ask for an attestation, which the enrolment of the provider does not |
 
 The development stack gives `var/keys`, `var/kms` and `var/geoip` a volume each, and the Compose file of the
 image, [`compose.prod.yaml`](../getting-started/the-standalone-application.md#the-compose-file-of-the-image),
 adds `var/webauthn` and `var/share` to them, mounted on the server and on the worker alike: a rotation done by
 one process changes nothing for another that does not see the same directory.
 
-The application keeps eight caches in pools of their own, so that a deployment can point them at a shared
-store without touching the rest of its cache:
+The application keeps eight caches in pools of their own:
 
 | Pool | What it holds |
 |---|---|
@@ -135,12 +134,13 @@ store without touching the rest of its cache:
 Each of them is on `cache.app`, which the application leaves on the filesystem adapter Symfony gives it, in
 `%kernel.share_dir%/pools/app`. The share directory carries the environment, so with the `APP_SHARE_DIR` of
 `.env` the pools of a production kernel are in `var/share/prod/pools/app`. Two containers share these pools
-when they share that directory, or once a deployment points the pools at a store they both reach, and each
-holds its own otherwise. The attempts at a password and at a code are counted per person, five in a sliding
-window of one minute, by two limiters, `beffroi_password_attempts` and `beffroi_code_attempts`, whose counts
-Symfony keeps in `cache.rate_limiter`, a pool on `cache.app` as well: they are shared as these pools are. The
-application names no session handler either, so the session of a browser lives where the native handler of PHP
-keeps it, in the container that served it.
+when they share that directory, which the volume of `var/share` of the Compose file of the image does, and
+each holds its own otherwise: no variable points the pools at another store. The attempts at a password and at
+a code are counted per person, five in a sliding window of one minute, by two limiters,
+`beffroi_password_attempts` and `beffroi_code_attempts`, whose counts Symfony keeps in `cache.rate_limiter`, a
+pool on `cache.app` as well: they are shared as these pools are. The application names no session handler
+either, so the session of a browser lives where the native handler of PHP keeps it, in the container that
+served it.
 
 ## TLS and the two hosts
 
@@ -164,8 +164,10 @@ for nothing.
   of that host therefore ends at this listener.
 - **Only the leaf reaches PHP**, so no chain is validated there. The handshake proves that the client holds
   the private key of what it presented (RFC 8446 §4.4.3), which is what `self_signed_tls_client_auth`
-  (RFC 8705 §2.2) needs. A deployment that authenticates clients with `tls_client_auth` (RFC 8705 §2.1) adds a
-  `trust_pool` to the `client_auth` block of `mtls.Caddyfile`, so the chain is validated at the edge.
+  (RFC 8705 §2.2) needs. The `client_auth` block of `mtls.Caddyfile` carries no `trust_pool`, so no chain is
+  validated at the edge either. A deployment that authenticates clients with `tls_client_auth` (RFC 8705
+  §2.1) writes the site block of that host in `CADDY_EXTRA_CONFIG`, in place of the import, with a
+  `trust_pool` in its `client_auth`, so the chain is validated at the edge.
 
 [:beffroi-arrow-right: The variables of the web server](configuration.md#the-web-server)
 
@@ -228,7 +230,9 @@ development environment, where it would pin every `.localhost` name of the machi
 
 ## What leaves the provider
 
-A deployment that filters what goes out reads it here. No outbound redirect is followed, whoever asks.
+A deployment that filters what goes out reads it here. No outbound redirect is followed, whoever asks, but
+two, each to the one host the application names: a download of MaxMind is followed to its storage, and a
+revocation list of the test service of the FIDO Alliance to the host that serves it.
 
 | From | To | When |
 |---|---|---|
@@ -243,4 +247,5 @@ A deployment that filters what goes out reads it here. No outbound redirect is f
 | The worker | The push service of a browser | When a backchannel request waits on the person who subscribed that browser |
 | The worker, the console | The metadata of the SAML peers given by URL | Every hour, and on `beffroi:saml:*:refresh` |
 | The worker, the console | MaxMind, when a licence key is named | Every week, and on `beffroi:geoip:refresh` |
-| The console | The FIDO Metadata Service | On `beffroi:webauthn:mds-refresh` |
+| The console | The FIDO Metadata Service, and the revocation lists the certificates of the chain of its BLOB name | On `beffroi:webauthn:mds-refresh` |
+| The console | The list of passkey providers the community keeps, the `aaguid.json` of `passkeydeveloper/passkey-authenticator-aaguids` on `raw.githubusercontent.com` | On `beffroi:webauthn:aaguids-refresh` |

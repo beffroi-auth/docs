@@ -13,7 +13,7 @@ page at all. Every answer that reaches the client, a code or a refusal, carries 
 
 ``` http
 GET /authorize?response_type=code
-    &client_id=billing
+    &client_id=s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg
     &redirect_uri=https%3A%2F%2Fbilling.example.com%2Foidc%2Fcallback
     &scope=openid%20profile%20email
     &state=af0ifjsldkj
@@ -101,10 +101,11 @@ with and announces in `code_challenge_methods_supported` (RFC 7636 §4.3). `plai
 announced nowhere, and a challenge sent without a method is refused rather than read as `plain`, which is
 what RFC 7636 §4.3 would make of it.
 
-A confidential client registered with `requires_pkce: false` may send neither parameter; a challenge it does
-send is held to the same rules, and the code exchange then verifies it. A public client cannot be registered
-so. The token endpoint compares `BASE64URL(SHA256(code_verifier))` with the challenge in constant time
-([authorization code](grants/authorization-code.md)).
+Every authorization request of the image carries them: the exemption of a confidential client, `requires_pkce:
+false`, is a member of the deployment, which the image gives no client ([what the image does not
+set](clients.md#what-the-image-does-not-set)), and a public client is never exempted. The token endpoint
+compares `BASE64URL(SHA256(code_verifier))` with the challenge in constant time ([authorization
+code](grants/authorization-code.md)).
 
 ## The redirect URI
 
@@ -126,7 +127,7 @@ Location: https://billing.example.com/oidc/callback?code=SplxlOBeZQQYbYS6WxSbIA0
 
 That is the `query` mode, the default for `code`; the [response mode](response-modes.md) of the request
 decides how the answer travels, and a refusal travels the same way. The code is worth one exchange and lives
-60 seconds by default (`tokens.authorization_code_ttl`, 600 at most). A token request spends it as soon as
+60 seconds in the image (`BEFFROI_AUTHORIZATION_CODE_TTL`, 600 at most). A token request spends it as soon as
 it finds it, whatever the checks that follow decide, the client the code was issued to, the redirect URI and
 the verifier among them ([authorization code](grants/authorization-code.md)).
 

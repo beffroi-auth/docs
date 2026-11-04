@@ -31,7 +31,7 @@ other scope, among the ones it registered.
 | `grant_type` | `refresh_token` |
 | `refresh_token` | Required |
 | `scope` | Optional: a subset of the scopes of the refresh token, for this answer only (RFC 6749 §6) |
-| `resource` | Optional and repeatable: a subset of the resources of the authorization, for this access token only (RFC 8707 §2.2) |
+| `resource` | Optional and repeatable: a subset of the resources of the authorization, for this access token only (RFC 8707 §2.2). The authorization of a client of the image carries none, so a `resource` it names is `invalid_target` |
 | `authorization_details` | Optional: a subset of the details of the authorization, for this access token only (RFC 9396 §7) |
 
 The client authenticates beside them with the method it registered.
@@ -70,7 +70,7 @@ and rotation. One is enough, so the provider rotates exactly where the other two
 
 A successor belongs to the same family. It carries the whole authorization, whatever this request narrowed
 for its access token, and what the session had proven when the authorization was granted. Its own lifetime,
-`tokens.refresh_token_ttl`, starts at the rotation and never reaches past the end of the family. The act
+`BEFFROI_REFRESH_TOKEN_TTL`, starts at the rotation and never reaches past the end of the family. The act
 `refresh_token.rotated` is written in the journal of the person.
 
 ## What the answer carries
