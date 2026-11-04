@@ -5,28 +5,28 @@ description: The two shapes an access token is written in, a signed at+jwt or an
 
 # Access tokens
 
-An access token is what a client presents to a resource server. Each client receives its access tokens in
-one shape, the one it registered, so a resource server knows from that registration what it is validating:
+An access token is what a client presents to a resource server. The provider writes it in one of two shapes,
+and each client receives its access tokens in one of them, so a resource server knows from the client what it
+is validating:
 
 | Shape | `access_token_format` | What it is | How a resource server reads it | At the revocation endpoint |
 |---|---|---|---|---|
 | Self-contained | `jwt` | A JWT signed by the tenant, of type `at+jwt` (RFC 9068) | Offline, against the [JWK Set](../discovery-and-jwks.md) of the issuer | Refused: it expires on its own (RFC 7009 §2.2.1) |
 | Reference | `opaque` | 256 random bits in base64url, 43 characters, which mean something to this provider alone | At the [introspection endpoint](../introspection-and-revocation.md) (RFC 7662) | Taken back at once |
 
-A client that registers no shape takes `jwt`, the first one the provider is wired with. A name no wired shape
-answers to is refused: a declared client is an error of the configuration, and a registration request is
-answered `invalid_client_metadata`. Both shapes live `tokens.access_token_ttl` seconds, ten minutes by
-default: the self-contained one cannot be taken back, so its lifetime is what bounds it, and the opaque one
-gets the same, a revocation being a facility and not a reason to live longer.
+**Every client of the image receives the self-contained shape.** The shape of a client is its
+`access_token_format`, a member of the deployment: a registration that carries it is refused with
+`invalid_client_metadata`, and no variable gives it to a client, so every client of the image takes `jwt`, the
+first shape the provider is wired with ([what the image does not
+set](../clients.md#what-the-image-does-not-set)).
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    tokens:
-        access_token_ttl: 600
-    clients:
-        reporting:
-            # ...
-            access_token_format: opaque
+Both shapes live `BEFFROI_ACCESS_TOKEN_TTL` seconds, ten minutes in the image: the self-contained one cannot
+be taken back, so its lifetime is what bounds it, and the opaque one gets the same, a revocation being a
+facility and not a reason to live longer. A deployment sets it in its environment
+([configuration](../../application/configuration.md#keys-and-lifetimes)):
+
+``` dotenv
+BEFFROI_ACCESS_TOKEN_TTL=600
 ```
 
 No access token is ever encrypted.
@@ -41,7 +41,7 @@ provider keeps under its SHA-256, which introspection renders under the same nam
 | `iss` | The issuer of the tenant |
 | `sub` | Who the token is about: for a person who signed in, the subject this provider gives them for this client, public or [pairwise](../pairwise-subjects.md); for a client acting for itself, its `client_id`; for a token of a token exchange or of a JWT bearer assertion, the subject the grant named |
 | `client_id` | The client the token was issued to (RFC 9068 §2.2) |
-| `aud` | The resources it is addressed to (RFC 8707 §2), named by the request or carried by what the grant spends, as the page of each grant says: a token exchange that names none is addressed to every resource of the presented token, and a token of an authorization that carries no resource is addressed to the `client_id`. One value is written as a string, several as a list |
+| `aud` | The resources it is addressed to (RFC 8707 §2), named by the request or carried by what the grant spends, as the page of each grant says: a token exchange that names none is addressed to every resource of the presented token, and a token of an authorization that carries no resource is addressed to the `client_id`, as every token of a client of the image is. One value is written as a string, several as a list |
 | `exp`, `iat` | When it expires, and when it was issued |
 | `scope` | The scopes it carries, space-delimited |
 | `auth_time`, `acr`, `amr`, `sid` | What the session had proven when the authorization was granted, and that session (RFC 9068 §2.2.1). Absent from a token nobody signed in for |
@@ -52,8 +52,8 @@ provider keeps under its SHA-256, which introspection renders under the same nam
 
 The self-contained shape carries four claims more, which introspection does not render: `jti`, a random UUID;
 `userinfo_claims`, the claims the client asked for by name for the UserInfo endpoint (OIDC Core §5.5);
-`may_act`, who may act for the subject of a token of this client (RFC 8693 §4.4), when it registered one; and
-`person`, below.
+`may_act`, who may act for the subject of a token of this client (RFC 8693 §4.4), when it carries one, which
+no client of the image does; and `person`, below.
 
 ### The header
 
@@ -72,7 +72,7 @@ For both, the provider keeps the person beside the token: on the record of a ref
 self-contained token as the private claim `person` (RFC 7519 §4.3), sealed by the key management service of
 the tenant. Only the provider opens it, and a resource server reads it as it reads any claim it was given no
 meaning for. A token a client holds for itself is about nobody and carries none, and so does a token of a
-token exchange whose presented token carried no sign-in.
+token exchange whose presented token named nobody.
 
 ## What the provider asks of a token it is presented
 
@@ -84,17 +84,21 @@ both shapes the same way and ask more of a token than its signature:
 3. the grant it descends from has not been revoked;
 4. the person it is about is still served.
 
-A token nobody signed in for at this provider descends from no session, and only the first question is asked
-of it. A resource server that holds the token and the JWK Set and nothing else cannot ask the other three,
+A token nobody signed in for at this provider descends from no session and no grant, and the second and third
+questions are not asked of it; the fourth is, when it names a person, as a token of a JWT bearer assertion
+does. A resource server that holds the token and the JWK Set and nothing else cannot ask the other three,
 which is what verifying offline means: **a self-contained token outlives the end of its session, the consent
 taken back and the revocation of its grant wherever it is verified offline**, until it expires. Introspection
 answers `"active": false` for it from the instant any of those happened.
 
 The UserInfo endpoint takes only a token addressed to the client itself, the one a request that names no
-resource gets: a token addressed to a resource is refused there with `invalid_token`, whatever it is good for
-elsewhere.
+resource gets, as every request of a client of the image does: a token addressed to a resource is refused
+there with `invalid_token`, whatever it is good for elsewhere.
 
 ## Choosing a shape
+
+A deployment of the image has no choice to make: every client of it receives `jwt`, above. The two shapes
+answer two kinds of resource server:
 
 === "jwt"
 
@@ -120,9 +124,10 @@ caller.
 
 ## Adding a shape
 
-A shape is two classes answering to one name, which is what a client registers in `access_token_format`: an
+A shape is two classes answering to one name, which is what a client carries in `access_token_format`: an
 issuer implementing `Beffroi\Oidc\Port\AccessTokenShapeIssuerInterface`, tagged
-`beffroi.oidc.access_token_issuer`, and a verifier implementing `Beffroi\Oidc\Port\AccessTokenVerifierInterface`,
-tagged `beffroi.oidc.access_token_verifier`. The first tagged issuer is the shape a client that registers none
-takes. A shape written with no verifier, read with no issuer, or written by two issuers is refused, a token
-the provider writes and cannot read back being a token nobody can spend.
+`beffroi.oidc.access_token_issuer`, and a verifier implementing
+`Beffroi\Oidc\Port\AccessTokenVerifierInterface`, tagged `beffroi.oidc.access_token_verifier`. The first
+tagged issuer is the shape a client that carries none takes, `jwt` in the application. A shape written with no
+verifier, read with no issuer, or written by two issuers is refused, a token the provider writes and cannot
+read back being a token nobody can spend.

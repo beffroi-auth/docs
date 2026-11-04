@@ -126,7 +126,7 @@ writes, for every caller, and not only by the page that shows the form.
 - **A new number is not a verified one.** A person who writes a telephone number takes back its verification,
   since what was proved was proved of the number that is gone.
 - **What it said before is kept.** Each change writes what the claim said and what it says now, sealed, kept
-  for `beffroi.history.retention` days, 180 by default, and read at `/account/profile/changes`. The act,
+  for `BEFFROI_HISTORY_RETENTION` days, 180 in the image, and read at `/account/profile/changes`. The act,
   `person.described_themselves`, goes to the journal of the person, which keeps the act and never the value.
   Saying again what a claim already says writes the act and no change.
 

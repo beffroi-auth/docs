@@ -20,11 +20,13 @@ time from, and an event dispatcher (PSR-14), which the application binds to its 
 
 ## Where the implementations live
 
-Most ports have one implementation, which the application aliases the interface to; a name in the tables below is
-that implementation, in the bridge of the core (`Beffroi\Core\Bridge`) or in the application (`App`). Where the
-tables name a class of the application, an integration of one's own around the components implements the port
-itself. Where several implementations of one interface are read as one list, a port, an interface of the model or
-an interface of the bridge, a tag feeds that list, every service carrying the tag being in it:
+Most ports have one implementation, which the application aliases the interface to; a name in the tables below
+is that implementation, in the bridge of the core (`Beffroi\Core\Bridge`) or in the application (`App`). Where
+the tables name a class of the application, an integration of one's own around the components implements the
+port itself. The sources of the model of an authenticator are a list the wiring names in order, the FIDO
+metadata before the list of the community. Every other list of several implementations of one interface, a
+port, an interface of the model or an interface of the bridge, is fed by a tag, every service carrying the tag
+being in it, and a list a role switches takes as well the services of that role while the role is on:
 
 | Tag | What the class implements | What reads the tagged list |
 |---|---|---|
@@ -38,7 +40,7 @@ an interface of the bridge, a tag feeds that list, every service carrying the ta
 | `beffroi.key_encryption_algorithm` | `JoseKeyEncryptionAlgorithmInterface` | `JoseKeyEncryptionAlgorithms` |
 | `beffroi.content_encryption_algorithm` | `JoseContentEncryptionAlgorithmInterface` | `JoseContentEncryptionAlgorithms` |
 | `beffroi.message_sealing_algorithm` | `JoseMessageSealingAlgorithmInterface` | `JoseMessageSealingAlgorithms` |
-| `beffroi.application_server_algorithm` | `JoseApplicationServerAlgorithmInterface` | `JoseApplicationServerAlgorithms`, the configuration of web push tagging the algorithm when web push is turned on |
+| `beffroi.application_server_algorithm` | `JoseApplicationServerAlgorithmInterface` | `JoseApplicationServerAlgorithms`: the services carrying the tag, none in the application, and `Vapid` while web push is on, which `BEFFROI_WEB_PUSH_SUBJECT` decides |
 | `beffroi.claim` | `ClaimInterface` | `WiredClaims`, the claims a person may describe themselves with and an upstream profile may fill |
 
 ## Identity
@@ -51,6 +53,7 @@ an interface of the bridge, a tag feeds that list, every service carrying the ta
 | `LinkedIdentityRepositoryInterface` | `find`, `save` | A linked identity by its provider and its subject | `DoctrineLinkedIdentityRepository` (application) |
 | `LinkedIdentitiesOfAPersonInterface` | `of` | The linked identities of one person, for their archive | `DoctrineLinkedIdentityRepository` (application) |
 | `UpstreamProvidersInterface` | `of` | The upstream providers a tenant declares, whatever their protocol | `SamlUpstreamProviders` (application) |
+| `ClaimsInterface` | `named` | A claim a person is described with in this deployment, by its name of OIDC Core §5.1, or nothing when nothing wired answers that name: what a profile written at the console is held to | `WiredClaims` (application) |
 | `ClaimHistoryInterface` | `record`, `forgetBefore` | Where a change of a claim is written, and forgotten past its retention | `DoctrineClaimHistory` (application) |
 | `ChangesOfAPersonInterface` | `lastOf`, `everyChangeOf` | The changes of one person, the last few or all of them in pages | `DoctrineClaimHistory` (application) |
 | `CanPageChangesOfAPersonInterface` | `pageOfChanges` | One page of those changes, over a period | `DoctrineClaimHistory` (application) |
@@ -82,6 +85,8 @@ an interface of the bridge, a tag feeds that list, every service carrying the ta
 | `PasskeyRegistrarInterface` | `creationOptions`, `verifyAttestation` | The registration ceremony of WebAuthn Level 3 §7.1 | `WebauthnPasskeyRegistrar` (core) |
 | `PasskeyAuthenticatorInterface` | `requestOptions`, `verifyAssertion` | The authentication ceremony of WebAuthn Level 3 §7.2 | `WebauthnPasskeyAuthenticator` (core) |
 | `MetadataBlobStoreInterface` | `write`, `readAll` | The FIDO metadata the ceremonies read | `FileMetadataBlobStore` (application) |
+| `AuthenticatorListStoreInterface` | `write`, `read` | The list of passkey providers the community keeps, as the console downloaded it, which names models and nothing else | `FileAuthenticatorListStore` (application) |
+| `AuthenticatorModelSourceInterface` | `model` | The make and model a source names for the AAGUID a passkey declared, or nothing; read by the page of the passkeys and the console, by no ceremony | `MetadataAuthenticatorModels`, then `StoredAuthenticatorList` (core), asked in that order by `AuthenticatorModels` |
 | `TotpAlgorithmInterface` | `codeAt`, `provisioningUri` | The code of a time step (RFC 6238 §4.2), and the URI an application scans | `OtphpTotpAlgorithm` (core) |
 | `SecretSealerInterface` | `seal`, `unseal` | The secret of a TOTP, sealed by the key management service of the tenant | `EnvelopeSecretSealer` (core) |
 | `EnrolmentTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The enrolment tickets of a person | `DoctrineEnrolmentTicketRepository` (application) |
@@ -92,6 +97,8 @@ an interface of the bridge, a tag feeds that list, every service carrying the ta
 |---|---|---|---|
 | `AuthenticationSessionRepositoryInterface` | `find`, `findActiveByUser`, `save` | The sessions of the provider | `DoctrineAuthenticationSessionRepository` (application) |
 | `CanPageActiveSessionsInterface` | `pageOfActiveSessions` | One page of the sessions open in the name of a person | `DoctrineAuthenticationSessionRepository` (application) |
+| `CanFindUnendedSessionsInterface` | `findUnendedByUser` | The sessions of one person that nothing has ended, those past their expiry included, for what ends every session of a person but the one it keeps | `DoctrineAuthenticationSessionRepository` (application) |
+| `SubjectsOfSessionsInterface` | `of` | The subject of the person a session names, read where the store keeps it in the clear, so that announcing a replayed code, a reused refresh token or a token a client gave back asks nothing of the key management service | `DoctrineAuthenticationSessionRepository` (application) |
 | `AuthenticationPredicatesInterface` | `named` | A predicate of the `acr` policy by its name, refused when nothing wired carries it | `WiredAuthenticationPredicates` (core) |
 | `GeoLocatorInterface` | `locate` | The place of an address, on the lane and never on the path of a request | `GeoLite2GeoLocator` (application) |
 | `UserAgentParserInterface` | `parse` | A device read from a user agent | `NullUserAgentParser` (core), which reads none |
@@ -112,6 +119,7 @@ an interface of the bridge, a tag feeds that list, every service carrying the ta
 | `RotationSchedulesInterface` | `of` | The staging delay and the age of the family of an algorithm | `JoseKeyAlgorithms` (core) |
 | `KeyBoundArtifactInterface` | `keyUse`, `longestLifetime` | A kind of artifact bound to a key, and how long it stays usable | Six kinds of `beffroi/oidc`, tagged |
 | `SigningKeyProviderInterface` | `activeKey` | The active key of a signature algorithm, opened | `SealedKeyProvider` (core) |
+| `SigningKeyOpenerInterface` | `open` | The active key of a signature algorithm opened first, before a caller spends what it cannot get back, and what signs under it afterwards without asking the key management service anything | `JwtLibraryJwsSigner` (core) |
 | `DecryptionKeyProviderInterface` | `decryptionKey` | The published key a JWE names, opened | `SealedKeyProvider` (core) |
 | `PublicKeySetProviderInterface` | `publicKeys` | The JWK Set of the tenant, which opens nothing | `SealedKeyProvider` (core) |
 | `KeptSigningKeyProviderInterface` | `activeKeptSigningKey` | The active key of a kept algorithm that signs, the SAML key | `SealedKeyProvider` (core) |

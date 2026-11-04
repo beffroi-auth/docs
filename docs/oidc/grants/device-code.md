@@ -28,20 +28,29 @@ sequenceDiagram
 
 ## Registering a device
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        living-room-tv:
-            client_name: 'Living room TV'
-            token_endpoint_auth_method: none
-            grant_types: ['urn:ietf:params:oauth:grant-type:device_code', refresh_token]
-            scope: 'openid profile offline_access'
+A device reaches a deployment of the image by [registering itself](../dynamic-registration.md), which the
+deployment opens in its environment ([configuration](../../application/configuration.md#registration)):
+
+``` dotenv
+BEFFROI_REGISTRATION_MODE=initial_access_token
 ```
 
-A device that cannot keep a secret is a public client, `token_endpoint_auth_method: none`; a confidential
-client is served the same way. It registers no redirect URI: nothing of this flow sends a browser back to the
-client, so a redirect URI is refused unless the client is also registered for `authorization_code`. A public
-client gets a refresh token only by asking for `offline_access` ([refresh token](refresh-token.md)).
+The device registers with:
+
+``` json
+{
+    "client_name": "Living room TV",
+    "token_endpoint_auth_method": "none",
+    "grant_types": ["urn:ietf:params:oauth:grant-type:device_code", "refresh_token"],
+    "scope": "openid profile offline_access"
+}
+```
+
+A device that cannot keep a secret is a public client, `token_endpoint_auth_method: none`, and the answer
+carries the `client_id` the provider drew and no secret; a confidential client is served the same way. It
+registers no redirect URI: nothing of this flow sends a browser back to the client, so a redirect URI is
+refused unless the client is also registered for `authorization_code`. A public client gets a refresh token
+only by asking for `offline_access` ([refresh token](refresh-token.md)).
 
 ## Starting: the device authorization endpoint
 
@@ -51,7 +60,7 @@ then reads what it asks for. Its errors are the JSON of RFC 6749 §5.2, never a 
 | Parameter | |
 |---|---|
 | `scope` | Required, among the scopes the client registered. RFC 8628 §3.1 makes it optional; here it is what the person is shown, and a request naming nothing would ask them to agree to everything the client ever registered |
-| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2) |
+| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client of the image registers none, so a `resource` it names is `invalid_target` |
 
 | Refusal | Error |
 |---|---|
@@ -84,10 +93,10 @@ user code.
 The provider keeps the SHA-256 of both codes, never the codes, beside the client, the scopes, the resources
 and where the device asked from.
 
-| Option | Default | At most | What it is |
+| Variable | In the image | At most | What it is |
 |---|---|---|---|
-| `tokens.device_code_ttl` | `600` seconds | `1800` | How long both codes live |
-| `tokens.device_code_interval` | `5` seconds | `30` | How long the device waits between two polls |
+| `BEFFROI_DEVICE_CODE_TTL` | `600` seconds | `1800` | How long both codes live |
+| `BEFFROI_DEVICE_CODE_INTERVAL` | `5` seconds | `30` | How long the device waits between two polls |
 
 ## Confirming: the page at `/device`
 
@@ -137,7 +146,7 @@ poll after the approval: of several polls at once, exactly one is served.
 
 The tokens are those of an ordinary authorization, descending from the session the person approved with: an
 access token addressed to the resources the device named at the device authorization endpoint, or to the
-client itself when it named none; an ID token when `openid` was among the scopes, without a `nonce`; and a
-refresh token when one is due, starting a family with the absolute lifetime of every other. They are bound
-to what the polling request binds them to ([grants](index.md#what-the-token-endpoint-does)), never to anything
-the browser that approved proved.
+client itself when it named none, as every client of the image does; an ID token when `openid` was among the
+scopes, without a `nonce`; and a refresh token when one is due, starting a family with the absolute lifetime
+of every other. They are bound to what the polling request binds them to
+([grants](index.md#what-the-token-endpoint-does)), never to anything the browser that approved proved.

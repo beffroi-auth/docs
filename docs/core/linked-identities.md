@@ -55,7 +55,7 @@ bin/console beffroi:user:link alice 'https://idp.example.org/saml/metadata' 'the
 | Argument | What it says |
 |---|---|
 | `username` | The user of this tenant |
-| `provider` | The upstream provider, as the configuration that trusts it names it |
+| `provider` | The upstream provider, as the declaration that trusts it names it: the `identity_provider` of a trusted issuer, or the entity ID of an upstream SAML identity provider |
 | `subject` | The subject that provider gives this user, compared byte for byte |
 
 The command prints the username, the provider, the subject, the identifier of the row and the slug of the

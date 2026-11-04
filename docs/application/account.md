@@ -25,10 +25,10 @@ titles below are the ones the English catalogue carries.
 | Your information | `/account/profile` | What the provider holds of this person: the name they sign in with, the two dates of the record, and one line per claim of OIDC Core §5.1 |
 | Your passkeys | `/account/passkeys` | Their passkeys, with the name each one was given, its dates and its state |
 | Two-factor authentication | `/account/two-factor` | The authenticator application, when there is one, and how many backup codes are left |
-| Applications you have allowed | `/account/consents` | One line per client in force, with the scopes it holds, and a page per application behind it |
+| Applications you have allowed | `/account/consents` | One line per client in force, with the scopes, the authorization details and the claims asked for by name it holds, and a page per application behind it |
 | Where you are signed in | `/account/sessions` | Where this person is signed in at this moment, what each session proved, and where it was last seen |
 | Your password | `/account/password` | When the password was last written, and the form that replaces it |
-| What happened to your account | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the means of signing in and what they did of their own record. Its card counts the refused attempts the journal holds, twenty at most, since a failure is what somebody comes to look for |
+| What happened to your account | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the means of signing in and what they did of their own record. Its card counts the refusals among the last twenty attempts to sign in as them, since a failure is what somebody comes to look for: a refusal leaves the count once twenty attempts have followed it |
 | Notifications | `/account/notifications` | The browsers this provider can reach by web push |
 | Your data | `/account/archive` | The one file holding everything the provider knows of them, and where their last request for it has got to |
 

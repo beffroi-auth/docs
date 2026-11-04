@@ -65,18 +65,18 @@ The length and the estimate are two rules and neither absorbs the other: the est
 
 ## The list of compromised passwords
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    passwords:
-        breached:
-            endpoint: 'https://api.pwnedpasswords.com/range/'
-            timeout: 2.0
+The image asks nobody: calling a service the provider does not own is the deployment's decision. A deployment
+that wants the list names it:
+
+``` dotenv
+BEFFROI_BREACHED_PASSWORDS_ENDPOINT=https://api.pwnedpasswords.com/range/
+BEFFROI_BREACHED_PASSWORDS_TIMEOUT=2
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `endpoint` | empty | A range endpoint in the shape of Pwned Passwords, to which the first five hexadecimal characters of the SHA-1 of a password are appended. Empty, nobody is asked |
-| `timeout` | `2.0` | How long one request to the list may take, in seconds, the whole exchange; 0.1 at the least |
+| `BEFFROI_BREACHED_PASSWORDS_ENDPOINT` | empty | A range endpoint in the shape of Pwned Passwords, to which the first five hexadecimal characters of the SHA-1 of a password are appended. Empty, nobody is asked |
+| `BEFFROI_BREACHED_PASSWORDS_TIMEOUT` | `2` | How long one request to the list may take, in seconds with decimals, the whole exchange; 0.1 at the least |
 
 **The list is asked by range.** The first five hexadecimal characters of the SHA-1 of the password go out, the
 thirty-five that are left are compared locally against every suffix the range answers, the answer is asked
@@ -87,10 +87,10 @@ typed it goes with the request.
 a body that is not a range is not a clean answer: nothing is written, and whoever posed the password is told to
 pose it again. A password the list counts is refused, and how many times it counts it is not said.
 
-**A deployment that names no endpoint asks nobody** and poses passwords on the rules of the core alone, no
-password and no prefix of one ever leaving it. On the page of the account, the list is asked last, after the
-password in use was verified and found different from the one posed, so a person who mistyped is answered
-without anything leaving.
+**A deployment that leaves the endpoint empty asks nobody** and poses passwords on the rules of the core
+alone, no password and no prefix of one ever leaving it. On the page of the account, the list is asked last,
+after the password in use was verified and found different from the one posed, so a person who mistyped is
+answered without anything leaving.
 
 ## A password already in use
 

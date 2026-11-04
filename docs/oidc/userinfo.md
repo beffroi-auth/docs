@@ -53,8 +53,9 @@ The claims of the person, as the token entitles its client to them:
   account;
 - the claims the scopes of the token stand for (OIDC Core §5.4);
 - the claims the authorization request asked for by name in the `userinfo` member of its `claims` parameter
-  (OIDC Core §5.5), by their names: the `essential`, `value` and `values` such a request may carry decide
-  nothing here.
+  (OIDC Core §5.5), among those a scope the client registered stands for ([scopes and
+  claims](scopes-and-claims.md)), by their names: the `essential`, `value` and `values` such a request may
+  carry decide nothing here.
 
 A claim the provider holds no value of is left out rather than sent empty, and a name it does not know is no
 error. [Scopes and claims](scopes-and-claims.md) says which claims each scope stands for.

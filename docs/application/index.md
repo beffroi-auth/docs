@@ -40,7 +40,7 @@ machine to the next through its environment.
 
 | Page | What it covers |
 |---|---|
-| [The configuration tree](configuration-tree.md) | One tree under `beffroi`, section by section: its shape checked when the container is built, the values of the tenant, the clients and the trusted issuers when the provider first builds them |
+| [The configuration tree](configuration-tree.md) | One tree under `beffroi`, section by section, each value read from the variable a deployment sets: its shape checked when the container is built, the values of the environment when the provider first builds what they reach |
 | [Routes and planes](routes-and-planes.md) | The controllers of both planes, and `BEFFROI_PLANE` to restrict a process to one |
 | [Persistence](persistence.md) | The Doctrine mapping, the migrations, and the DBAL types that read value objects back |
 | [Security](security.md) | The firewalls, the authenticators, and what a session carries |

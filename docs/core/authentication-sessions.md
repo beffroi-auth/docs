@@ -125,8 +125,8 @@ included, and its opaque access tokens removed, the revocation dated by the end 
 moment the lane reached it. The provider refuses every token of an ended session at its use, in the meantime
 and afterwards: UserInfo and introspection refuse an access token whose session ended, and the token endpoint a
 refresh token whose session ended, revoking again what a refresh in flight had saved. A resource server that
-verifies a self-contained access token offline accepts it until it expires, ten minutes by default
-(`beffroi.tokens.access_token_ttl`).
+verifies a self-contained access token offline accepts it until it expires, ten minutes in the image
+(`BEFFROI_ACCESS_TOKEN_TTL`).
 
 !!! note "Expiry is not an end"
 
@@ -137,5 +137,5 @@ verifies a self-contained access token offline accepts it until it expires, ten 
     endpoint once its session has expired.
 
 The row of a session, ended or not, is dropped by an hourly step once its expiry is older than the absolute
-lifetime of a refresh token family plus the lifetime of an access token, ninety days and ten minutes with the
-defaults: until then, a token issued under it can still be presented, and its session is what answers for it.
+lifetime of a refresh token family plus the lifetime of an access token, ninety days and ten minutes in the
+image: until then, a token issued under it can still be presented, and its session is what answers for it.

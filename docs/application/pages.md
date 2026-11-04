@@ -62,11 +62,17 @@ The templates read what they show of the provider through these functions and fi
 
 | Twig | What it gives |
 |---|---|
-| `beffroi_tenant()` | What the page shows of its tenant: `name`, `logoUri`, `primaryColor`, `primaryContentColor`, or nothing when the row of the tenant is missing or disagrees with the configuration |
+| `beffroi_tenant()` | What the page shows of its tenant: `name`, `logoUri`, `primaryColor`, `primaryContentColor`, or nothing when the row of the tenant is missing or disagrees with the configuration. Reading it adds the origin of the logo to the `img-src` of the page ([below](#what-a-tenant-shows-of-itself)) |
 | `beffroi_locales()` | The languages the deployment serves, the default one first |
 | `beffroi_locale_choice()` | The same list, or none when the record of a signed-in person decided the language of the page |
 | `beffroi_moment` | A date, on the clock of the person, in the words of the language of the page, the zone always named |
 | `beffroi_place`, `beffroi_device` | Where a request came from, and the browser it named |
+| `beffroi_authenticator` | The make and model of the authenticator a passkey declared, as the first source that knows its AAGUID gives them, the FIDO metadata before the list of the community: a name, a logo when the source has one, a FIDO certification from the metadata alone, and the source. Nothing when no source knows the AAGUID, or when it is sixteen zero bytes. The page of the passkeys reads it from what the console stored, so it fetches nothing |
+
+Three more draw the page rather than the provider: `theme()`, the theme the document is rendered in, which
+`document.html.twig` and the control of the theme read, `account_navigation()`, the pages of the account under
+their headings, which the column beside a page of the account lists, and `account_cards()`, the card of each
+of those pages on the home of the account.
 
 [:beffroi-arrow-right: Translations](translations.md)
 
@@ -83,10 +89,18 @@ surface from, `--color-primary` and `--color-primary-content`, for both themes, 
 carries the nonce of the response and comes after the stylesheet. A tenant that declares no colour leaves the
 element off, and the theme answers.
 
-The consent page shows the logo of the asking client beside the one of the tenant, and adds the origins both
-are served from to the `img-src` of the policy its answer carries. Every other page is served under the
-policy of the deployment alone, so that policy allows the origin the logo of the tenant is served from: the
-application serves it from its own origin, which its `img-src 'self'` allows.
+Reading the tenant names the origin its logo is served from: every page that reads `beffroi_tenant()`, which
+every page that extends the layout does, adds that origin to the `img-src` of the policy its answer carries,
+and the consent page adds the origin of the logo of the asking client beside it. A deployment names neither
+origin anywhere, and the placeholder mark is served from the origin of the application, which `img-src 'self'`
+allows already.
+
+Every page but those of `/authorize`, `/login`, `/consent`, `/logout`, `/device` and `/initiate-login`, the
+pages of the account, the enrolment of a first passkey and the pages a SAML flow answers with among them, is
+also served `Cross-Origin-Embedder-Policy: require-corp`, under which a browser refuses an image of another
+origin whose answer does not let it in. A logo served from another host shows there when that host answers
+`Cross-Origin-Resource-Policy: cross-origin`. The pages of those six paths carry no
+`Cross-Origin-Embedder-Policy` (`config/packages/nelmio_security.yaml`).
 
 [:beffroi-arrow-right: What the configuration says of a tenant](../core/tenants.md#what-the-configuration-says)
 
@@ -108,9 +122,10 @@ application serves it from its own origin, which its `img-src 'self'` allows.
 | `form_post.html.twig`, `saml_post.html.twig`, `post_again.html.twig` | Wherever an answer goes back in a form: an authorization response, a SAML message, a post from another site | A form the browser posts on its own |
 | `front_channel_logout.html.twig` | The end of a session whose clients registered a front-channel logout URI | The frames of Front-Channel Logout 1.0 §3 |
 
-`scopes.html.twig` and `authorization_details.html.twig` write the scopes and the details of a request the
-same way on the consent page and on the pages of the account; `_brand.html.twig` and
-`_locale_switcher.html.twig` are included by the skeletons.
+`scopes.html.twig`, `claims.html.twig` and `authorization_details.html.twig` write the scopes, the claims
+asked for by name and the details the same way on the consent page and on the two pages of the account that
+list what a person agreed to, `account/consents.html.twig` and `account/application.html.twig`;
+`_brand.html.twig` and `_locale_switcher.html.twig` are included by the skeletons.
 
 ### The login page
 
@@ -131,9 +146,13 @@ reach one. A login asked for by a page of the provider names no client.
 Who is asking is what the client registered of itself: its name, its logo, and the pages a person may read
 before deciding, `policy_uri`, `tos_uri` and `client_uri` in that order, each opened with no referrer. Then
 the person signed in, every scope of the request, the standard scopes of OIDC Core §5.4 in words and any
-other by its value, and what the request asks for beyond its scopes (RFC 9396 §2) in the words of its type.
-Allowing ends with the code carried to the client, so the page adds the origin of its redirection URI to the
-`form-action` of its policy.
+other by its value, the claims the request asks for by name that a scope the client registered stands for and
+no scope of the request does (OIDC Core §5.5),
+those of §5.1 in words and any other by its name, and what the request asks for beyond its scopes (RFC 9396
+§2) in the words of its type. Allowing ends with the code carried to the client, so the page adds the origin
+of its redirection URI to the `form-action` of its policy.
+
+[:beffroi-arrow-right: Which claims asked for by name the page lists](../oidc/consent.md#the-page)
 
 ### The logout pages
 
@@ -192,7 +211,8 @@ that only reports, once that policy is written.
   the last of which carries the code to the client. The logout confirmation adds the origin of the
   post-logout redirection URI, and the origin of the single logout service of each SAML service provider the
   logout goes through.
-- The consent page adds the origins of the two logos it shows to `img-src`.
+- Every page that reads the tenant adds the origin of its logo to `img-src`, and the consent page adds the
+  origin of the logo of the asking client as well.
 
 A policy that names no `form-action` is left alone, that directive falling back to no other; a policy that
 names `default-src` and no `img-src` gets an `img-src` written out of it, with the origins added.
@@ -216,9 +236,9 @@ or the `interaction` field of the consent form, which is how a post finds its in
 
 | Form | Fields | Token |
 |---|---|---|
-| Password login | `_username`, `_password` | `_csrf_token`, `authenticate` |
-| Passkey login | `_passkey`, in a form marked `data-passkey="login"` naming its options in `data-options-url`, with a `data-passkey-button` and a `data-passkey-error` | `_csrf_token`, `authenticate` |
-| Second step | `_code` | `_csrf_token`, `authenticate` |
+| Password login | `_username`, `_password` | `_csrf_token`, `beffroi_login` |
+| Passkey login | `_passkey`, in a form marked `data-passkey="login"` naming its options in `data-options-url`, with a `data-passkey-button` and a `data-passkey-error` | `_csrf_token`, `beffroi_login` |
+| Second step | `_code` | `_csrf_token`, `beffroi_login` |
 | Address first | `_address` | `_token`, `beffroi_login_address` |
 | Consent | `interaction`, `answer` with `allow` or `deny` | `_token`, `beffroi_consent` |
 | Logout | The parameters of the request, `confirm` with `yes` or `no` | `_token`, `beffroi_logout` |

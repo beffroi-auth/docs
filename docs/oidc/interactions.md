@@ -77,10 +77,12 @@ none was asked for or none is satisfied.
 
 ## What decides a consent
 
-Once the login is settled, a client registered with `requires_consent: false` is answered at once. Any other
-client is sent to the [consent page](consent.md) when the person has not agreed yet to every scope and every
-authorization detail of the request, or when the request says `prompt=consent`. A consent given during the
-interaction answers that, and the code is issued.
+Once the login is settled, the client is sent to the [consent page](consent.md) when the person has not agreed
+yet to every scope and every authorization detail of the request, or when the request says `prompt=consent`.
+A consent given during the interaction answers that, and the code is issued. Every client of the image goes
+through it: `requires_consent: false`, which has a first-party application answered at once, is a member of
+the deployment that no client of the image holds ([what the image does not
+set](clients.md#what-the-image-does-not-set)).
 
 ## `prompt=none`
 
@@ -102,22 +104,23 @@ hint would: the value the client sent appears nowhere on the login form. The ste
 tenant that federates domains, below, is the exception: a hint that holds an `@` fills its field as the
 client wrote it.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    interaction:
-        login_hint: sub
+The deployment names the way in a variable, here at the value of the image
+([configuration](../application/configuration.md#clients-and-their-requests)):
+
+``` dotenv
+BEFFROI_INTERACTION_LOGIN_HINT=sub
 ```
 
 | Value | What the hint is read as |
 |---|---|
-| `sub`, the default | The `sub` this provider issued to that client, read for that client, so a [pairwise](pairwise-subjects.md) identifier names somebody only to a client of its sector |
+| `sub`, the value of the image | The `sub` this provider issued to that client, read for that client, so a [pairwise](pairwise-subjects.md) identifier names somebody only to a client of its sector |
 | `username` | The name the person signs in with |
-| `none` | Nothing of the application: a deployment that names its users some other way tags a `UserHintInterface` of its own `beffroi.oidc.login_hint` |
+| `none` | Nothing: the hint names nobody. Another reading is code of the application, a class implementing `Beffroi\Oidc\Application\Hint\UserHintInterface` tagged `beffroi.oidc.login_hint`, which the image carries none of |
 
-`backchannel_authentication.login_hint` takes the same three names for the `login_hint` of the backchannel
-flow ([backchannel authentication](grants/backchannel-authentication.md)). Reading a `sub` costs what it
-costs: a client that holds one can learn the name its person signs in with by rendering the page itself, and
-`none` is the setting that does not pay it.
+`BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT` takes the same three names for the `login_hint` of the
+backchannel flow ([backchannel authentication](grants/backchannel-authentication.md)). Reading a `sub` costs
+what it costs: a client that holds one can learn the name its person signs in with by rendering the page
+itself, and `none` is the setting that does not pay it.
 
 **On a tenant that federates domains**, the login of an interaction asks for the address first, and an
 address of a domain an upstream identity provider answers for is sent to that provider; a `login_hint` that is

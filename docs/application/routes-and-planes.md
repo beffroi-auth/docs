@@ -90,9 +90,10 @@ name starts with neither, as `app_theme`, where a visitor chooses the theme of t
 
 The variable is read by the process and not compiled into the container, so one build serves the three.
 Every process imports the same routes and declares the same firewalls; what differs between the process that
-serves the browsers and the one that serves the clients is that one line of its environment.
+serves the browsers and the one that serves the clients is one variable of its environment, which the second
+sets to:
 
-``` dotenv title=".env.local"
+``` dotenv
 BEFFROI_PLANE=protocol
 ```
 

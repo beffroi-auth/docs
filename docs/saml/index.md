@@ -14,8 +14,8 @@ signed in by one is signed in for the other, and a session that ends ends for bo
 
 | Role | What it is for | Turned on by |
 |---|---|---|
-| [Identity provider](identity-provider.md) | An application that speaks SAML signs its users in against Beffroi: a SimpleSAMLphp or Shibboleth service provider, a product that asks for a SAML identity provider, Microsoft Entra ID federating its guests | `beffroi.saml.identity_provider` |
-| [Service provider](upstream-identity-providers.md) | Beffroi signs a person in against the SAML identity provider of their organisation, found by the domain of their address, and then answers the OpenID Connect client or the page that was waiting | `beffroi.saml.service_provider` |
+| [Identity provider](identity-provider.md) | An application that speaks SAML signs its users in against Beffroi: a SimpleSAMLphp or Shibboleth service provider, a product that asks for a SAML identity provider, Microsoft Entra ID federating its guests | `BEFFROI_SAML_IDENTITY_PROVIDER`, `true` in the image |
+| [Service provider](upstream-identity-providers.md) | Beffroi signs a person in against the SAML identity provider of their organisation, found by the domain of their address, and then answers the OpenID Connect client or the page that was waiting | `BEFFROI_SAML_SERVICE_PROVIDER`, `false` in the image |
 
 ``` mermaid
 graph LR
@@ -24,21 +24,27 @@ graph LR
   b -- "AuthnRequest" --> up["The identity provider<br/>of an organisation<br/><small>upstream</small>"]
 ```
 
-Both roles are off by default, and each is a switch of its own. A deployment that turns neither on draws no
-SAML key and publishes no metadata, and every message that reaches its single sign-on or single logout service
-is refused, nobody being declared to send one: nothing of this section costs anything to a provider that does
-not use it.
+Each role is a switch of its own, a variable that reads `true` or `false`, an empty one reading `false`. The
+image is an identity provider and no service provider, and a deployment that plays both roles sets:
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    saml:
-        identity_provider: true
-        service_provider: true
+``` dotenv
+BEFFROI_SAML_IDENTITY_PROVIDER=true
+BEFFROI_SAML_SERVICE_PROVIDER=true
 ```
 
-The peers themselves, the service providers on one side and the upstream identity providers on the other,
-are declared in the same section, keyed by their entity ID. They are configuration and nothing else: no
-request registers one and no page edits one.
+A role is read when a process builds what it changes, so turning one on or off is a restart of the processes
+and not a new image. A deployment that turns both off draws no SAML key and publishes no metadata, and every
+message that reaches its single sign-on or single logout service is refused, nobody being declared to send
+one: nothing of this section costs anything to a provider that does not use it. The identity provider the
+image turns on costs as little until it is used: it publishes no metadata until a SAML key is drawn for the
+tenant, and refuses every message until a service provider is declared.
+[Configuration](../application/configuration.md#saml) lists the variables of both roles.
+
+The peers themselves are declared by two more variables, each a JSON document keyed by entity ID, `{}` in the
+image: `BEFFROI_SAML_SERVICE_PROVIDERS` for the service providers on one side, and
+`BEFFROI_SAML_IDENTITY_PROVIDERS` for the upstream identity providers on the other. The deployment declares
+them and nothing else does: no request registers one and no page edits one. A list names the peers of a role
+that is on, and one that names a peer while its role is off is refused whole, wherever it is read.
 
 ## What is served
 
@@ -49,13 +55,13 @@ Paths are relative to the issuer, as every route of the application.
 | `GET` | `/saml/metadata` | identity provider | The metadata of the identity provider. Its URL is its entity ID |
 | `GET` `POST` | `/saml/sso` | identity provider | Single sign-on, over HTTP-Redirect and HTTP-POST at the one URL |
 | `GET` `POST` | `/saml/slo` | identity provider | Single logout, over both bindings, a request or an answer |
-| `GET` | `/saml/sp/metadata` | service provider | The metadata of the service provider. Its URL is its entity ID unless the deployment names another |
+| `GET` | `/saml/sp/metadata` | service provider | The metadata of the service provider. Its URL is its entity ID unless `BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID` names another |
 | `GET` | `/saml/sp/metadata/{identity provider}` | service provider | The same metadata with the encryption certificates meant for one upstream identity provider |
 | `POST` | `/saml/sp/acs` | service provider | The assertion consumer service, over HTTP-POST |
 
-A role the deployment did not turn on serves nothing. The metadata of that role answer `404`, and so do the
-sign-on and the assertion consumer service of the service provider; the single sign-on and single logout
-services of the identity provider refuse every message, as one of an issuer nobody declared. [The
+A role turned off serves nothing. The metadata of that role answer `404`, and so do the sign-on and the
+assertion consumer service of the service provider; the single sign-on and single logout services of the
+identity provider refuse every message, as one of an issuer nobody declared. [The
 endpoints](../reference/endpoints.md#saml-20) lists the routes behind them, the ones a login sends a browser
 back through included.
 
@@ -72,7 +78,7 @@ needs one of them relaxed is a peer this provider does not serve.
 | A message is read only in what a signature covers | Signature wrapping hands the verifier one element and the reader another |
 | A peer's keys come from its metadata, never from the `KeyInfo` of a message | A message that names the key it is verified with verifies under the attacker's key |
 | Every assertion and every logout message is accepted once | A message taken off the wire is not a second login, nor a second logout |
-| A peer is declared by the deployment, and its metadata come from a file of the deployment or an `https` URL, no redirect followed | A peer registered by a request, or metadata fetched wherever a redirect points, is a peer an attacker chose |
+| A peer is declared by the deployment, and its metadata are read where its declaration says, an `https` URL with no redirect followed | A peer registered by a request, or metadata fetched wherever a redirect points, is a peer an attacker chose |
 | Every endpoint a browser is sent to is `https` on a host | An assertion posted in clear, or to a `javascript:` URL, is an assertion given away |
 | A response nobody asked for is refused, and no assertion is sent unasked | Nothing binds an unsolicited response to the browser that carries it, which is how a victim is signed in to an attacker's account |
 
@@ -87,8 +93,8 @@ guarantees.
   through the browser that ended the session, never server to server.
 - Metadata aggregates of an inter-institution federation: an `md:EntitiesDescriptor` is refused by name,
   and each peer is declared on its own.
-- An administration interface for the peers. They are configuration, and the console reads and refreshes
-  their metadata.
+- An administration interface for the peers. The deployment declares them in its variables, and the console
+  reads and refreshes their metadata.
 - Single logout with an upstream identity provider, which the metadata of the service provider do not
   announce.
 - Sign-on started by an identity provider. Every assertion the identity provider writes answers an

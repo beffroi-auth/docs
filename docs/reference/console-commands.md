@@ -20,8 +20,8 @@ table below is the map.
 | `beffroi:tenant:login-floor` | Name the floor of every login of the tenant, and forget the credentials it forbids. |
 | `beffroi:tenant:synchronize` | Write the row of the tenant of the configuration: created, renamed, or left alone. |
 
-What `beffroi:doctor` looks at is what is wired, one class per point, so a deployment that adds a point
-adds a class. It looks at every one of them before it answers: a doctor that stops on the first thing that
+What `beffroi:doctor` looks at is what is wired, one class per point, so a point added to the application is
+a class added. It looks at every one of them before it answers: a doctor that stops on the first thing that
 is broken never reaches the second.
 
 `beffroi:tenant:login-floor` takes the name of a predicate, `single_factor`, `two_factors`,
@@ -47,7 +47,7 @@ was forgotten. [The floor of its logins](../core/tenants.md#the-floor-of-its-log
 | `beffroi:user:revoke-session` | End a session of a user by its identifier; the relying parties of that session are told by the back-channel. |
 | `beffroi:user:sessions` | List the sessions open in the name of a user, with what each one proved and where it was last seen. |
 | `beffroi:user:set-password` | Set or replace the password of a user, asked on the terminal or read from the standard input. |
-| `beffroi:user:show` | Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name and dates, and the groups with the source of each membership. |
+| `beffroi:user:show` | Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name, authenticator and dates, and the groups with the source of each membership. |
 
 **An enrolment ticket** is for a person who has nothing to sign in with yet, on a tenant that signs its people
 in by passkey and holds no password of theirs to give them. The link opens one enrolment of a passkey, once,
@@ -124,10 +124,17 @@ an address and no place.
 | `beffroi:saml:service-provider:forget` | Forget the metadata accepted for a service provider, so that the next refresh registers it again as a first one; the refresh refuses older documents only against what is accepted. |
 | `beffroi:saml:identity-provider:refresh` | Read the metadata of the upstream identity providers the configuration declares, or of one of them, and keep each document accepted; an expired or an older document is refused and the one accepted kept. |
 | `beffroi:saml:identity-provider:forget` | Forget the metadata accepted for an upstream identity provider, so that the next refresh registers it again as a first one; the refresh refuses older documents only against what is accepted. |
+| `beffroi:saml:identity-provider:list` | List the upstream identity providers the configuration declares, each with the URL of the metadata of the service provider to hand it. |
 
 A timed step runs the same refresh every hour for the peers of both roles, so the command is for the first
 reading of a peer just declared and for reading why a document was refused. Forgetting is never a step of the
 schedule: it is the one way back from a signed document an operator decides to stop holding the provider to.
+
+`beffroi:saml:identity-provider:list` reads the declarations and writes nothing. The URL it gives is the one
+the router writes under the origin of the issuer, its last segment the entity ID of the provider in base64url,
+and it answers once the tenant holds a key in service for that provider, which
+`beffroi:keys:generate --algorithm=SAML-ENCRYPTION:<entity ID>` draws. A tenant that declares no identity
+provider is told so, and the command fails.
 
 [:beffroi-arrow-right: SAML 2.0](../saml/index.md)
 
@@ -135,8 +142,16 @@ schedule: it is the one way back from a signed document an operator decides to s
 
 | Command | What it does |
 |---|---|
+| `beffroi:webauthn:aaguids-refresh` | Download the list of passkey providers the community keeps (names and logos by AAGUID, unsigned), refuse it unless it is that list and names one, and store it for the pages that name the authenticator of a passkey; --url for a mirror. |
 | `beffroi:webauthn:mds-import` | Store a metadata statement file (unsigned, trusted as the file is) next to the FIDO Metadata BLOB, for the keys of a manufacturer the service does not list or the authenticators of the FIDO conformance tools. |
 | `beffroi:webauthn:mds-refresh` | Download the FIDO Metadata BLOB, verify its signature under the pinned root and store it for the passkey ceremonies; --url for another service, --root for another root. |
+
+Nothing runs these three on its own. The model of the authenticator of a passkey, which the page of the
+passkeys and `beffroi:user:show` name, is read from the FIDO metadata first and then from the list of the
+community, the `aaguid.json` of `passkeydeveloper/passkey-authenticator-aaguids`. That list is signed by
+nobody and carries no licence, so the image ships none of it: a deployment that never ran
+`beffroi:webauthn:aaguids-refresh` names an authenticator from the FIDO metadata alone. A list refused, an
+empty one or a download the service redirected among them, keeps nothing and leaves the stored one as it was.
 
 ## What a command may not do
 

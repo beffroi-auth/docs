@@ -29,7 +29,7 @@ When `openid` is among the scopes of the answer and a person who signed in at th
 | `iss` | The issuer of the tenant |
 | `sub` | The subject this provider gives the person for this client, public or [pairwise](../pairwise-subjects.md) (OIDC Core §8) |
 | `aud` | The `client_id`, as a string |
-| `exp` | `tokens.id_token_ttl` seconds after `iat`, ten minutes by default |
+| `exp` | `BEFFROI_ID_TOKEN_TTL` seconds after `iat`, ten minutes in the image ([lifetimes](index.md#lifetimes)) |
 | `iat` | When it was issued |
 | `auth_time` | When the session last proved something, as it stood when the authorization was granted |
 | `nonce` | The `nonce` of the authorization request, when it carried one |
@@ -44,8 +44,9 @@ afterwards moves the session, and never the `auth_time`, `acr` or `amr` of a tok
 authorization, those of the ID tokens a refresh issues included.
 
 Beside these, an ID token carries the claims the authorization request asked for by name in
-`claims.id_token` (OIDC Core §5.5), when the person has a value for them and a wired claims provider serves
-them; one of them never replaces a claim of the table. The claims the scopes stand for, those
+`claims.id_token` (OIDC Core §5.5), when a scope the client registered stands for them, the person has a
+value for them and a wired claims provider serves them ([scopes and claims](../scopes-and-claims.md)); one of
+them never replaces a claim of the table. The claims the scopes stand for, those
 of `profile` or `email`, are not in the ID token: the client reads them at the [UserInfo
 endpoint](../userinfo.md).
 
@@ -57,17 +58,15 @@ token presented to it as an access token, which is the point.
 The client chooses the algorithm in `id_token_signed_response_alg` (OIDC Registration §2), among those the
 provider is wired with: `RS256`, `PS256`, `ES256` and `EdDSA`. A client that registers none gets the first of
 them, `RS256`, which OIDC Core §15.1 makes mandatory. A name nothing signs under, `none` among them, is
-refused: a declared client is an error of the configuration, and a registration request is answered
-`invalid_client_metadata`.
+refused with `invalid_client_metadata`. The client names it when it [registers](../dynamic-registration.md):
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    tokens:
-        id_token_ttl: 600
-    clients:
-        my-application:
-            # ...
-            id_token_signed_response_alg: ES256
+``` json
+{
+    "client_name": "My application",
+    "redirect_uris": ["https://app.example.com/oidc/callback"],
+    "scope": "openid profile email",
+    "id_token_signed_response_alg": "ES256"
+}
 ```
 
 The key is the active signing key of the tenant for that algorithm, published in the JWK Set under the `kid`

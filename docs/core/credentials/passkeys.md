@@ -134,8 +134,8 @@ at the login.
 ## The FIDO metadata
 
 The metadata of the FIDO Alliance say, authenticator by authenticator, what it is and whether it was found
-compromised. Two commands store them under `beffroi.webauthn.metadata_storage`, `var/webauthn` of the project by
-default, and nothing refreshes them on its own:
+compromised. Two commands store them in `var/webauthn` of the application, a directory no variable moves, and
+nothing refreshes them on its own:
 
 ``` bash
 bin/console beffroi:webauthn:mds-refresh

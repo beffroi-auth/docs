@@ -52,33 +52,37 @@ deployment is wired with.
 ## Custody
 
 The private half of a key is drawn in the process, sealed in an envelope by the key management service the
-configuration names, and only then written; the master key never leaves that service, and the private key never
+deployment names, and only then written; the master key never leaves that service, and the private key never
 reaches it. The envelope is bound to the tenant, and told from the envelope of a TOTP secret: sealed for one
 tenant, it does not open for another. The `kid` is the RFC 7638 thumbprint of the public key, SHA-256, so the same material carries the same
 name whoever drew it, and one material is the key of one algorithm: a second algorithm under a `kid` already held
 is refused.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    keys:
-        kms: op
-        key_id: '%env(BEFFROI_KMS_KEY_ID)%'
+The service and its master key are the deployment's, two variables the image leaves empty, since nothing is
+sealed or signed under a key everybody has:
+
+``` dotenv
+BEFFROI_KMS_DSN="sodium+dir:///app/var/kms?ext=.key"
+BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `kms` | required | The key management client that seals the keys, an entry of `key_management.clients` |
-| `key_id` | required | The master key of that service the keys are sealed under, `{tenant}` standing for the slug of the tenant, one master key each |
-| `data_key_secrets` | `['%kernel.secret%']`, the secret of the kernel | The secrets every data key of [personal data](personal-data.md#the-data-keys-of-a-tenant) is bound to its row under, the first binding a new one |
-| `storage` | `%kernel.project_dir%/var/keys` | The directory of the sealed keys, one JSON file per key under the slug of its tenant, written through a sibling file renamed into place |
-| `jwks_max_age` | `300` | How long a client may cache the JWK Set, in seconds, which the staging delay derives from |
-| `staging_delay` | `jwks_max_age` plus sixty seconds | How long a new key is published before it is used, in seconds |
-| `age` | `7776000`, ninety days | How long a key works before a successor is staged behind it, in seconds, counted from its activation |
+| `BEFFROI_KMS_DSN` | empty | The key management service that seals the keys, as the DSN of `op`, the client of `config/packages/key_management.yaml` the provider seals with |
+| `BEFFROI_KMS_KEY_ID` | empty | The master key of that service the keys are sealed under, `{tenant}` standing for the slug of the tenant, one master key each |
+| `BEFFROI_DATA_KEY_SECRETS` | not set | The secrets every data key of [personal data](personal-data.md#the-data-keys-of-a-tenant) is bound to its row under, a JSON list, the first binding a new one. Not set, the secret of the kernel, `APP_SECRET`, alone |
+| `BEFFROI_JWKS_MAX_AGE` | `300` | How long a client may cache the JWK Set, in seconds, which the staging delay derives from |
+| `BEFFROI_KEY_STAGING_DELAY` | empty | How long a new key is published before it is used, in seconds. Empty, `BEFFROI_JWKS_MAX_AGE` plus sixty seconds |
+| `BEFFROI_KEY_AGE` | `7776000`, ninety days | How long a key works before a successor is staged behind it, in seconds, counted from its activation |
 
-[Key management](../application/key-management.md) says how the clients are declared. A process opens a key
-once and keeps it open for as long as it is the key that answers, so a worker that serves many requests asks the
-service once per key, where a process rebuilt at each request asks at each request. A key another has replaced,
-or that has retired, is let go.
+The sealed keys are files, one JSON file per key under the slug of its tenant, written through a sibling file
+renamed into place, in `var/keys` of the application: no variable moves that directory, which every process
+of a deployment shares ([what the files say](../application/configuration.md#what-the-files-say)).
+
+[Key management](../application/key-management.md) says how the client is built from its DSN, and the
+backends it runs against. A process opens a key once and keeps it open for as long as it is the key that
+answers, so a worker that serves many requests asks the service once per key, where a process rebuilt at each
+request asks at each request. A key another has replaced, or that has retired, is let go.
 
 ## The life of a key
 
@@ -160,8 +164,8 @@ somebody a step at every rotation is not rotated at the pace of one nobody sees:
 
 | Family | Staged for | Works for | Set by |
 |---|---|---|---|
-| The keys of the JWK Set, and `MESSAGE-SEAL` and `VAPID` beside them | the `max-age` of the JWK Set plus sixty seconds, 360 seconds by default | ninety days | `beffroi.keys.staging_delay`, `beffroi.keys.age` |
-| `SAML-SIGNING`, and the `SAML-ENCRYPTION` key of each upstream identity provider | seven days | 365 days | `beffroi.saml.identity_provider.staging_delay`, `age` |
+| The keys of the JWK Set, and `MESSAGE-SEAL` and `VAPID` beside them | the `max-age` of the JWK Set plus sixty seconds, 360 seconds in the image | ninety days | `BEFFROI_KEY_STAGING_DELAY`, `BEFFROI_KEY_AGE` |
+| `SAML-SIGNING`, and the `SAML-ENCRYPTION` key of each upstream identity provider | seven days | 365 days | `BEFFROI_SAML_KEY_STAGING_DELAY`, `BEFFROI_SAML_KEY_AGE` |
 
 The SAML keys are staged for a week because their next certificate is published in metadata that service
 providers fetch once a day, and that some administrators upload by hand. [The identity

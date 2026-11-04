@@ -47,17 +47,21 @@ What the lanes carry out:
 
 | Bus | Middleware |
 |---|---|
-| `command.bus`, the default bus | The default middleware of Messenger, then `router_context`, `doctrine_ping_connection`, `doctrine_close_connection` and `doctrine_transaction` |
+| `command.bus`, the default bus | The default middleware of Messenger, then `router_context`, `beffroi.messenger.ping_connection`, `beffroi.messenger.close_connection` and `doctrine_transaction` |
 | `event.bus` | The default middleware, with `allow_no_handlers`: an event nothing listens to is announced all the same |
 | `query.bus` | The default middleware |
 
 `doctrine_transaction` makes a handler one unit of work, and the default middleware, which no bus turns off,
 is what has an event announced from a handler leave once that handler has committed. `router_context` gives
 a worker the context of the request that dispatched the message, so that a URL built there is an absolute URL
-of the issuer, and the two connection middleware are what let a worker run for days. This is why the buses are
-written in the contract and not in `config/packages/messenger.yaml`: a configuration that wired them itself and
-got either of the first two wrong would break the asynchronous half of the provider, and nothing in a browser
-would show it.
+of the issuer, and the two connection middleware are what let a worker run for days: before a message a worker
+consumed is handled, `beffroi.messenger.ping_connection` reconnects a connection the database closed while the
+worker waited, and once it is handled `beffroi.messenger.close_connection` closes the connections. Both are
+services of the application on the classes of the Doctrine bridge of Symfony,
+`DoctrineDbalPingConnectionMiddleware` and `DoctrineDbalCloseConnectionMiddleware`, and act on every
+connection of the registry. This is why the buses are written in the contract and not in
+`config/packages/messenger.yaml`: a configuration that wired them itself and got either of the first two wrong
+would break the asynchronous half of the provider, and nothing in a browser would show it.
 
 **The transports.**
 
@@ -111,12 +115,13 @@ of its own, and a block written under `framework` does not override what `Beffro
     sending: a client still out of reach when the budget has run out may be sent the token again,
     `retry_max_delay` seconds apart, and what it receives then is past its `exp`.
 
-    A deployment that routes the notifications to a lane of its own, or names another retry service on
-    `async_notifications`, keeps a provider that works and two figures that no longer agree: a client reached
-    on a late retry refuses a token it can no longer verify, and the person stays signed in there.
-    `beffroi:doctor` says so. Writing the four numbers of a retry strategy on `async_notifications` changes
-    nothing: the service `BeffroiExtension` prepends survives the merge, and the component prefers a service to
-    its numbers.
+    No variable routes the notifications to another lane or names another retry service on
+    `async_notifications`, so the two figures agree on every deployment of the image. A configuration of the
+    application that changed either would keep a provider that works and two figures that disagree: a client
+    reached on a retry the budget does not count refuses the token, and the person stays signed in there.
+    `beffroi:doctor` says whether they agree. The four numbers of a retry strategy written on
+    `async_notifications` change nothing: the service `BeffroiExtension` prepends survives the merge, and the
+    component prefers a service to its numbers.
 
 ## The worker
 
@@ -159,9 +164,9 @@ to consume.
 ## What leaves the process is sealed
 
 What a column seals, a queue does not carry in the clear. **The body of every message is a compact JWE**,
-sealed to the key the tenant keeps for it, `MESSAGE-SEAL`, under `ECDH-ES+A256KW` and `A256GCM`: what a broker
-keeps on its disk, what the table of a transport holds and what waits in the failure transport is worth
-nothing without the key management service.
+sealed to the key the tenant keeps for it, `MESSAGE-SEAL`, under `ECDH-ES+A256KW` and `A256GCM`: what the
+table of a transport holds and what waits in the failure transport is worth nothing without the key management
+service.
 
 - **The sender asks the key management service for nothing.** It seals to the public half of the newest key
   of that algorithm in service, a staged one included, so the event that announces the first key of a tenant

@@ -12,70 +12,75 @@ upstream of it, each one answering for the e-mail domains it names. This page is
 
 ## Turning it on
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    saml:
-        service_provider:
-            enabled: true
+The image is no service provider, and a deployment turns the role on with:
+
+``` dotenv
+BEFFROI_SAML_SERVICE_PROVIDER=true
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `enabled` | `false` | Whether the role is on. Its routes and services are always wired; off, it serves nothing, and its metadata, its assertion consumer service and its sign-on answer `404`. It may be an environment variable, read when the container builds what the role changes, so turning the role on or off asks for a restart and not for a new build of the container |
-| `entity_id` | the URL of its metadata | The entity ID of the service provider, for one its identity providers already know by a name it keeps: an absolute URI of 1024 characters at most, with no whitespace, control, format or invisible character |
+| `BEFFROI_SAML_SERVICE_PROVIDER` | `false` | Whether the role is on, `true` or `false`, an empty variable reading `false`. Its routes and services are always wired; off, it serves nothing, and its metadata, its assertion consumer service and its sign-on answer `404`. It is read when a process builds what the role changes, so turning the role on or off asks for a restart and not for a new image |
+| `BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID` | empty | The entity ID of the service provider, for one its identity providers already know by a name it keeps: an absolute URI of 1024 characters at most, with no whitespace, control, format or invisible character. Empty, the URL of its metadata |
 
 The service provider signs with the SAML signing key of the [identity provider](identity-provider.md#the-key),
-one key for both roles, rotated by the figures of `beffroi.saml.identity_provider` whichever role is on. A
-deployment that serves only this role draws that key the same way:
+one key for both roles, rotated by `BEFFROI_SAML_KEY_STAGING_DELAY` and `BEFFROI_SAML_KEY_AGE` whichever role
+is on. A deployment that serves only this role draws that key the same way:
 
 ``` bash
 bin/console beffroi:keys:generate --algorithm=SAML-SIGNING
 ```
 
 The two roles are two entities. The entity ID of the service provider is never the one of the identity
-provider of the tenant, which the configuration refuses whether that role is on or not, so turning it on
-later never makes the two one.
+provider of the tenant, which the provider refuses the first time it locates its service provider, whether
+the identity provider is on or not, so turning it on later never makes the two one.
 
 ## Its metadata
 
-Served at `/saml/sp/metadata`, which is also its entity ID unless `entity_id` names another. They hold:
+Served at `/saml/sp/metadata`, which is also its entity ID unless `BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID`
+names another. They hold:
 
 - one `md:SPSSODescriptor` of SAML 2.0, with `AuthnRequestsSigned="true"`, since every request it sends is
   signed, and `WantAssertionsSigned="true"`, so that an identity provider configured from them signs its
   assertion;
 - one `KeyDescriptor use="signing"` per SAML key in service, as the identity provider's metadata list them;
 - one assertion consumer service, on HTTP-POST, at `/saml/sp/acs`;
-- the `cacheDuration` of the identity provider's metadata, and no `validUntil`.
+- the `cacheDuration` of the identity provider's metadata, `BEFFROI_SAML_METADATA_CACHE_DURATION`, and no
+  `validUntil`.
 
 They list no single logout service, single logout with an upstream identity provider not being served, and
 no key for encryption: the certificate an identity provider encrypts for is published to that provider alone,
-below. Like the identity provider's, they are unsigned, and every URL in them comes from the configuration of
-the tenant.
+below. Like the identity provider's, they are unsigned, and every URL in them comes from the issuer of the
+tenant and the variables above, never from the request that asked for them.
 
 ## Declaring an identity provider
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    saml:
-        service_provider: true
-        identity_providers:
-            'https://idp.example.org/saml/metadata':
-                metadata: 'https://idp.example.org/saml/metadata'
-                domains: ['example.org']
-                email_attribute: mail
-                profile:
-                    givenName: given_name
-                    sn: family_name
-                groups:
-                    attribute: memberOf
-                    map:
-                        staff: Staff
+An upstream identity provider is declared in `BEFFROI_SAML_IDENTITY_PROVIDERS`, a JSON document keyed by
+entity ID, `{}` in the image, beside the variable that turns the role on:
+
+``` dotenv
+BEFFROI_SAML_SERVICE_PROVIDER=true
 ```
 
-| Option | Default | What it decides |
+``` json title="BEFFROI_SAML_IDENTITY_PROVIDERS"
+{
+    "https://idp.example.org/saml/metadata": {
+        "metadata": "https://idp.example.org/saml/metadata",
+        "domains": ["example.org"],
+        "email_attribute": "mail",
+        "profile": {"givenName": "given_name", "sn": "family_name"},
+        "groups": {"attribute": "memberOf", "map": {"staff": "Staff"}}
+    }
+}
+```
+
+The document is the value of the variable, written on one line or over several as [lists in
+JSON](../application/examples.md#lists-in-json) are.
+
+| Member | Default | What it decides |
 |---|---|---|
 | The key | | The entity ID of the identity provider, compared exactly with the one of its metadata. Never an entity ID of the tenant itself |
-| `metadata` | required | Where its metadata are read from: an `https` URL, no redirect followed, or the absolute path of a file of the deployment |
+| `metadata` | required | Where its metadata are read from: an `https` URL, no redirect followed. The declaration takes the absolute path of a file as well, and the image carries no file of a peer, so a deployment of the image names a URL |
 | `metadata_signers` | none | The certificates its metadata are signed by, each the base64 of its DER. Named, the metadata are verified under them and must carry a `validUntil` |
 | `domains` | required | The e-mail domains it answers for, one at least and 256 at most |
 | `email_attribute` | required | The name of the attribute that carries the e-mail address of a person |
@@ -85,12 +90,12 @@ beffroi:
 | `require_encrypted_assertions` | `false` | An assertion arrives encrypted, or it is refused |
 | `address_parameter` | none | The parameter of its single sign-on service that takes the address the person typed, which it prefills its sign-in with |
 
-A declaration is refused while the service provider of the tenant is written off, `enabled: false` or the
-block left out. One kept while an environment variable turns the role off is served by nothing until the
-variable turns it on again. A declaration that does not hold
-together fails the build of the deployment, the claims of `profile` included, which are checked right after
-the container is compiled. A declaration holding an environment variable is held to the same rules at its
-first use.
+The list is read when a process first needs it, and held there to the rules of its members, those below and
+the claims of `profile` included: a declaration that does not hold together is refused, naming its identity
+provider. The whole list is refused, wherever it is read, the login page among them, when it declares an
+identity provider while `BEFFROI_SAML_SERVICE_PROVIDER` turns the role off, so a deployment that turns the
+role off empties the list in the same change. The reading below is a first one, so a declaration that does not
+hold is refused there rather than at a login.
 
 **Domains.** A domain is a name of the DNS, read without regard to case, a name outside ASCII written as its
 A-label. It is the whole part of an address after its `@` and nothing under it: `example.org` does not answer
@@ -98,11 +103,11 @@ for `eu.example.org`, which a provider that answers for it declares too. A domai
 provider of the tenant, and a domain two of them declare is refused, naming it and both providers: which
 provider answers for an address is never a choice.
 
-**The profile.** One attribute per claim, among the claims a person can describe themselves with in this
-deployment: `name`, `given_name`, `family_name`, `middle_name`, `nickname`, `preferred_username`,
-`birthdate`, `gender`, `locale`, `zoneinfo`, `profile`, `picture`, `website` and `phone_number`, or whatever
-claims the deployment wires. `email` is not among them, since `email_attribute` carries it. A telephone number
-is written unverified: the provider filling it is not a proof that anybody verified it.
+**The profile.** One attribute per claim, among the fourteen claims of a profile the application wires,
+whatever the tenant lets its people change of themselves: `name`, `given_name`, `family_name`, `middle_name`,
+`nickname`, `preferred_username`, `birthdate`, `gender`, `locale`, `zoneinfo`, `profile`, `picture`,
+`website` and `phone_number`. `email` is not among them, since `email_attribute` carries it. A telephone
+number is written unverified: the provider filling it is not a proof that anybody verified it.
 
 **The subject.** A person is named at their identity provider by a persistent `NameID`, a value it keeps for
 them. For an identity provider that sends another format, `subject_attribute` names the attribute that does
@@ -146,7 +151,7 @@ bin/console beffroi:keys:generate --algorithm='SAML-ENCRYPTION:https://idp.examp
 
 It is an RSA key of the tenant like the others, sealed by the key management service, absent from the JWK Set
 so that no OpenID Connect client encrypts to it, and rotated with the commands and the timed step of every
-key, by the figures of the SAML signing key: seven days staged, a year of work.
+key, by the figures of the SAML signing key: seven days staged and a year of work in the image.
 
 **Its certificate goes to that provider alone.** The metadata of the service provider for one identity
 provider are served at `/saml/sp/metadata/` followed by the entity ID of that provider in base64url, without
@@ -175,7 +180,7 @@ is one key per provider.
 | AES-CBC, in a response whose own signature verifies | Decrypted, the signature covering the ciphertext. Entra, AD FS and SimpleSAMLphp encrypt under CBC |
 | AES-CBC, in a response that is not signed | Refused by name: CBC authenticates nothing, so it is opened only under a signature |
 | An encrypted assertion from a provider the tenant holds no key for | Refused by name |
-| An assertion in clear from a provider declared with `require_encrypted_assertions: true` | Refused before anything of it is read |
+| An assertion in clear from a provider declared with `require_encrypted_assertions` set to `true` | Refused before anything of it is read |
 
 Every cryptographic failure of a decryption is one and the same refusal, so that nothing in the answer tells
 a padding from a key.

@@ -5,39 +5,47 @@ description: The tenant as a SAML identity provider, its signing key held by the
 
 # The identity provider
 
-The tenant is the SAML identity provider of the service providers it declares: they send it an
+The tenant is the SAML identity provider of the service providers its deployment declares: they send it an
 `AuthnRequest`, and it answers with a signed assertion about the person signed in. This page is the role
 itself, its key and the document that describes it. [Service providers](service-providers.md) is how one is
 declared, and [single sign-on](single-sign-on.md) what a request gets.
 
 ## Turning it on
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    saml:
-        identity_provider:
-            enabled: true
+The image is an identity provider, and a deployment that does not set `BEFFROI_SAML_IDENTITY_PROVIDER` keeps
+the role on. Its five variables, with the values of the image:
+
+``` dotenv
+BEFFROI_SAML_IDENTITY_PROVIDER=true
+BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED=true
+BEFFROI_SAML_KEY_STAGING_DELAY=604800
+BEFFROI_SAML_KEY_AGE=31536000
+BEFFROI_SAML_METADATA_CACHE_DURATION=86400
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `enabled` | `false` | Whether the role is on. Off, its metadata answer `404`, it serves none of the service providers declared, and every message at its single sign-on and single logout services is refused. Written `false`, or with the block left out, no service provider may be declared at all. It may be an environment variable, read when the container builds what the role changes, so turning the role on or off asks for a restart and not for a new build of the container |
-| `want_authn_requests_signed` | `true` | What the metadata say in `WantAuthnRequestsSigned` (SAML Metadata §2.4.3) |
-| `staging_delay` | `604800`, seven days | How long a new SAML signing key is published in the metadata before it signs, in seconds |
-| `age` | `31536000`, 365 days | How long a SAML signing key works before a successor is staged behind it, in seconds, counted from its activation |
-| `cache_duration` | `86400`, one day | The `cacheDuration` of the metadata (SAML Metadata §2.3.2), in seconds: how long a service provider keeps them before it fetches them again. One second at least, and strictly shorter than `staging_delay`, which the configuration refuses otherwise |
+| `BEFFROI_SAML_IDENTITY_PROVIDER` | `true` | Whether the role is on, `true` or `false`, an empty variable reading `false`. Off, its metadata answer `404`, and every message at its single sign-on and single logout services is refused, as one of an issuer nobody declared. It is read when a process builds what the role changes, so turning the role on or off asks for a restart and not for a new image |
+| `BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED` | `true` | What the metadata say in `WantAuthnRequestsSigned` (SAML Metadata §2.4.3), `true` or `false` |
+| `BEFFROI_SAML_KEY_STAGING_DELAY` | `604800`, seven days | How long a new SAML signing key is published in the metadata before it signs, in seconds, none at least |
+| `BEFFROI_SAML_KEY_AGE` | `31536000`, 365 days | How long a SAML signing key works before a successor is staged behind it, in seconds, counted from its activation, one at least |
+| `BEFFROI_SAML_METADATA_CACHE_DURATION` | `86400`, one day | The `cacheDuration` of the metadata (SAML Metadata §2.3.2), in seconds: how long a service provider keeps them before it fetches them again. One second at least, and strictly shorter than the staging delay |
 
-The three figures belong to the deployment and not to a tenant, as those of `beffroi.keys` do, and they are
+A role that is off serves no service provider, so `BEFFROI_SAML_SERVICE_PROVIDERS` declares none then: a list
+that declares one while the role is off is refused whole wherever it is read, single sign-on and the end of a
+session among them, and a deployment that turns the role off empties the list in the same change.
+
+The three figures belong to the deployment and not to a tenant, as those of the other keys do, and they are
 the figures of the SAML key whichever role draws it: the [service provider](upstream-identity-providers.md)
-of the tenant signs with the same key. Each of the four options under `enabled` may be an environment variable
-too. Its value is then held to the same rules, `cache_duration` shorter than `staging_delay` included, when
-the service that reads it is built: the first request or command that needs it refuses a value out of bounds,
-not the build of the container.
+of the tenant signs with the same key, and its metadata carry the same `cacheDuration`. A figure is read when
+the service that needs it is built, and held there to its bounds and to the others, the cache duration
+shorter than the staging delay included: a value out of bounds is refused by the first request or command
+that needs it, and not when the image is built.
 
-`want_authn_requests_signed` is an announcement, and nothing more. It tells a service provider configured
-from the metadata to sign its requests, which is what a broker such as SimpleSAMLphp does when it reads
-`true`. Whether a request that arrives needs a signature is decided per service provider, by its declaration
-and its own metadata, and the setting neither adds a signature to that rule nor takes one from it:
+`BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED` is an announcement, and nothing more. It tells a service provider
+configured from the metadata to sign its requests, which is what SimpleSAMLphp does when it reads `true`.
+Whether a request that arrives needs a signature is decided per service provider, by its declaration and its
+own metadata, and the variable neither adds a signature to that rule nor takes one from it:
 [the signature a request needs](service-providers.md#the-signature-a-request-needs) says how.
 
 ## The key
@@ -80,7 +88,7 @@ half it carries before it is published.
 
 Its bytes are a function of the key and of the tenant, so every process of the deployment publishes the
 same certificate for the same key. The ten years are not how long the key works: the key signs for its
-age, one year by default, and its status is what retires it. A certificate in metadata is how a key is
+age, one year in the image, and its status is what retires it. A certificate in metadata is how a key is
 written down, and a service provider that follows the SAML V2.0 Metadata Interoperability Profile does not
 evaluate its validity period (§2.6.1). Ten years is what hosted identity providers issue theirs for, and
 Microsoft Entra ID refused a certificate valid until the year 9999, written in the `GeneralizedTime` RFC 5280
@@ -97,24 +105,25 @@ old one.
 https://op.example.com/saml/metadata
 ```
 
-What they hold is read from the configuration of the tenant, never from the request that asked for them:
+What they hold is built from the issuer of the tenant, its keys and the variables above, never from the
+request that asked for them:
 
 - one `md:EntityDescriptor` holding one `md:IDPSSODescriptor` of SAML 2.0;
 - one `KeyDescriptor use="signing"` per SAML key in service, staged, active and retiring, in the order they
   were created;
 - the single sign-on service at `/saml/sso` and the single logout service at `/saml/slo`, each listed with
   HTTP-Redirect and then HTTP-POST at the same URL;
-- `WantAuthnRequestsSigned`, as the configuration says;
+- `WantAuthnRequestsSigned`, as `BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED` says;
 - one `NameIDFormat`, `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`, the only format the identity
   provider writes;
-- the `cacheDuration` of the configuration, and no `validUntil`.
+- the `cacheDuration` of `BEFFROI_SAML_METADATA_CACHE_DURATION`, and no `validUntil`.
 
 They carry no encryption certificate, since the identity provider decrypts nothing a service provider sends
 it, and they are not signed: the key that would sign them is the key they publish, so a service provider
 trusts them by the channel it read them through, the URL over TLS or the file an administrator gave it.
 They are served as `application/samlmetadata+xml`, with `Cache-Control: public` and the `max-age` of the
-JWK Set, five minutes unless `beffroi.keys.jwks_max_age` says otherwise, so a cache on the way never holds a
-copy older than that.
+JWK Set, `BEFFROI_JWKS_MAX_AGE`, five minutes in the image, so a cache on the way never holds a copy older
+than that.
 
 The routes are served under the issuer, as the discovery document's are: the application refuses to write
 metadata whose endpoints would not be.
@@ -144,8 +153,8 @@ minute the administrator chooses.
 **A year of work.** Every rotation is a step for whoever pinned a certificate, so a successor is staged
 behind the SAML key once it has worked 365 days, and takes over a week later. A year is inside the one to
 three years NIST SP 800-57 Part 1 Rev. 5 §5.3.6 gives a private signature key, where the other keys of the
-tenant work ninety days. Those keep the figures of `beffroi.keys`, and a rotation of one of them is not slowed
-by the SAML key.
+tenant work ninety days. Those keep their own figures, `BEFFROI_KEY_STAGING_DELAY` and `BEFFROI_KEY_AGE`, and
+a rotation of one of them is not slowed by the SAML key.
 
 The key management service is not asked at every login: a process opens the active key once to sign and
 keeps it open, as it does the keys that sign tokens.

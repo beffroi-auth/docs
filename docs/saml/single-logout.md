@@ -89,8 +89,8 @@ first signed in. Each is sent a signed `LogoutRequest`: a new `ID`, valid five m
 Its `LogoutResponse` is read before the next one is told: signed, from that service provider, for that
 request. A status other than `Success` is an answer and not a refusal, and the chain goes on.
 
-**Passed over**, and counted as a service provider that did not log out: one the configuration no longer
-declares, one whose metadata no longer read, one with no single logout service on HTTP-Redirect or
+**Passed over**, and counted as a service provider that did not log out: one `BEFFROI_SAML_SERVICE_PROVIDERS`
+no longer declares, one whose metadata no longer read, one with no single logout service on HTTP-Redirect or
 HTTP-POST, one whose request cannot be written.
 
 **Kept by the provider, played once, by the browser that began it.** Where the chain stands is a row of the

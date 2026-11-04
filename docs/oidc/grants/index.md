@@ -46,7 +46,8 @@ refusal:
 
     A client registered with `require_sender_constrained_tokens` whose request binds nothing, and a client
     registered with `tls_client_certificate_bound_access_tokens` whose request presents no certificate, are
-    refused with `invalid_request` before anything the request came to spend is read.
+    refused with `invalid_request` before anything the request came to spend is read. The first is a member
+    no client of the image carries ([what the image does not set](../clients.md#what-the-image-does-not-set)).
 
 3. **The grant type.** `grant_type` is looked up among the grants the provider is wired with, and a name
    none of them gives itself is `unsupported_grant_type`.
@@ -83,8 +84,8 @@ holds the tokens.
 | Client credentials | Never, `openid` being refused | Never | Refused at registration |
 | Device code | With `openid` | When one is due | Served |
 | Backchannel authentication | Always, `openid` being required | When one is due | Served |
-| Token exchange | Never | Never | Its request fails: no token is issued |
-| JWT bearer | Never, `openid` being refused | Never | Its request fails: no token is issued |
+| Token exchange | Never | Never | Refused at registration |
+| JWT bearer | Never, `openid` being refused | Never | Refused at registration |
 
 A refresh token is due when the client is registered for `refresh_token` and either `offline_access` is
 among the scopes or the client is confidential. [Refresh token](refresh-token.md) says what spending one
@@ -92,10 +93,9 @@ does.
 
 ## What a registration carries
 
-A client declared in the configuration that names no `grant_types` is registered for `authorization_code`
-and `refresh_token`; a client that registers itself and names none is registered for `authorization_code`
-alone, which is what RFC 7591 §2 gives it. What a client names is read against the grants the provider is
-wired with, and against what each of them does:
+A client of a deployment of the image [registers itself](../dynamic-registration.md), and one that names no
+`grant_types` is registered for `authorization_code` alone, which is what RFC 7591 §2 gives it. What a client
+names is read against the grants the provider is wired with, and against what each of them does:
 
 - **A name no wired grant gives itself** is refused.
 - **`refresh_token`** needs, beside it, a grant that issues refresh tokens: `authorization_code`, the device
@@ -103,14 +103,22 @@ wired with, and against what each of them does:
 - **`authorization_code`** needs at least one redirect URI. A client registered for no grant that sends a
   browser back to it registers no redirect URI and no `response_types`: a redirect URI nothing would ever
   use is refused.
-- **`client_credentials`** needs an authentication method that proves something, so `none` is refused, and
-  a `client_id` that can be a `sub`: one to 255 visible ASCII characters, and no space.
-- **Token exchange** needs a `token_exchange` declaration, and a `token_exchange` declaration needs the
-  grant. The `client_id` is held to the same rule as for `client_credentials`.
+- **`client_credentials`, the JWT bearer grant and token exchange** need an authentication method that
+  proves something, so `none` is refused with any of them. A client of `client_credentials` or of token
+  exchange also needs a `client_id` that can be a `sub`, one to 255 visible ASCII characters and no space,
+  which the identifier the provider draws for a client that registers itself always is.
+- **Token exchange** needs the `token_exchange` member, and the member needs the grant. `token_exchange` is a
+  member of the deployment, refused in a registration, so no client of the image is registered for the
+  grant.
 
-A declared client that breaks one of these rules is an error of the configuration, raised with the name of
-the client as soon as the clients are read. A registration request that breaks one is answered
-`invalid_redirect_uri` for the two rules on redirect URIs and `invalid_client_metadata` for the others.
+A registration that breaks one of these rules is answered `invalid_redirect_uri` for the two rules on
+redirect URIs and `invalid_client_metadata` for the others.
+
+**Three grants issue no token on a deployment of the image.** No client of it is registered for token
+exchange, above. The client credentials and JWT bearer grants answer only a request that names a resource
+the client registered, and `resources` is a member of the deployment too: a client of the image registers
+none, so a request of either grant that gets as far as its resources is refused with `invalid_target` ([what
+the image does not set](../clients.md#what-the-image-does-not-set)).
 
 One more condition is read at the endpoint and not at registration: a client of backchannel authentication
 is served only once it registered a `backchannel_token_delivery_mode`, a member with no default. A client
@@ -120,10 +128,11 @@ with `unauthorized_client`. [Clients](../clients.md) has every other member of a
 ## What is announced
 
 `grant_types_supported`, in the [discovery document](../discovery-and-jwks.md), is the list of the wired
-grants in the order they are wired, which is the order of the table at the top of this page. The members
-that go with a grant follow it: the backchannel authentication endpoint and its metadata are announced only
-while a grant of that flow is wired, and `offline_access` is offered only while a wired grant issues refresh
-tokens and another spends them.
+grants in the order they are wired, which is the order of the table at the top of this page. The image is
+wired with the seven, and announces them all, the three that issue no token to a client of the image included.
+The members that go with a grant follow it: the backchannel authentication endpoint and its metadata are
+announced only while a grant of that flow is wired, and `offline_access` is offered only while a wired grant
+issues refresh tokens and another spends them.
 
 ## Adding a grant
 
@@ -142,7 +151,8 @@ namespace, and never by a rule written about its name:
 | `IssuesRefreshTokensInterface` | Its answer may carry a refresh token | The rule on `refresh_token`, and the offer of `offline_access` |
 | `SpendsRefreshTokensInterface` | It spends a refresh token | Whether a refresh token is due, the rule on `refresh_token`, and the offer of `offline_access` |
 | `SendsTheUserToTheClientInterface` | Its flow sends a browser back to the client | The rule on redirect URIs and response types |
-| `ActsForTheClientItselfInterface` | Nobody is signed in behind it | The rule on public clients and on the `client_id` |
+| `RequiresClientAuthenticationInterface` | The client that uses it proves who it is | The rule on public clients, at the registration and at the token endpoint |
+| `ActsForTheClientItselfInterface` | Nobody is signed in behind it, and it requires client authentication | The rule on the `client_id`, which names the client where a subject is expected |
 | `AsksTheUserOnAnotherDeviceInterface` | Its flow starts at the device authorization endpoint | That endpoint, which refuses a client of no such grant |
 | `AsksTheUserThroughABackchannelInterface` | Its flow starts at the backchannel authentication endpoint | That endpoint, its metadata, and the audiences a client assertion may name |
 | `ExchangesATokenInterface` | It takes a token and gives one back | The rule on `token_exchange` |

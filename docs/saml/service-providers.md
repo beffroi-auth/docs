@@ -12,41 +12,44 @@ edits one: a peer that may obtain an assertion about anybody is a decision of wh
 
 ## Declaring one
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    saml:
-        identity_provider: true
-        service_providers:
-            'https://sp.example.com/saml/metadata':
-                metadata: 'https://sp.example.com/saml/metadata'
-                attributes:
-                    'urn:oid:0.9.2342.19200300.100.1.1':
-                        claim: preferred_username
-                        friendly_name: uid
-                    'urn:oid:0.9.2342.19200300.100.1.3':
-                        claim: email
-                        friendly_name: mail
-                    'urn:oid:2.16.840.1.113730.3.1.241':
-                        claim: name
-                        friendly_name: displayName
+A service provider is declared in `BEFFROI_SAML_SERVICE_PROVIDERS`, a JSON document keyed by entity ID, `{}`
+in the image, beside the variable of the role, which the image already turns on:
+
+``` dotenv
+BEFFROI_SAML_IDENTITY_PROVIDER=true
 ```
 
-| Option | Default | What it decides |
+``` json title="BEFFROI_SAML_SERVICE_PROVIDERS"
+{
+    "https://sp.example.com/saml/metadata": {
+        "metadata": "https://sp.example.com/saml/metadata",
+        "attributes": {
+            "urn:oid:0.9.2342.19200300.100.1.1": {"claim": "preferred_username", "friendly_name": "uid"},
+            "urn:oid:0.9.2342.19200300.100.1.3": {"claim": "email", "friendly_name": "mail"},
+            "urn:oid:2.16.840.1.113730.3.1.241": {"claim": "name", "friendly_name": "displayName"}
+        }
+    }
+}
+```
+
+The document is the value of the variable, written on one line or over several as [lists in
+JSON](../application/examples.md#lists-in-json) are.
+
+| Member | Default | What it decides |
 |---|---|---|
 | The key | | The entity ID of the service provider, compared exactly with the one its metadata carry: at most 1024 characters, no whitespace |
-| `metadata` | required | Where its metadata are read from: an `https` URL, or the absolute path of a file of the deployment. Nothing else, a plain `http` URL included |
+| `metadata` | required | Where its metadata are read from: an `https` URL. The declaration takes the absolute path of a file as well, and the image carries no file of a peer, so a deployment of the image names a URL. Nothing else is read, a plain `http` URL included |
 | `metadata_signers` | none | The certificates the metadata are signed by, each the base64 of its DER as an `X509Certificate` carries it, sixteen at most. Named, the metadata are verified under them; left empty, they are trusted by the channel they come through |
 | `attributes` | none | The claims sent to this service provider, keyed by the name of the attribute each one is sent as, 256 at most |
 | `encrypt_assertions` | `false` | Its assertions are encrypted for a key of its metadata |
 | `signs_authn_requests` | `true` | It signs its authentication requests |
 
-A declaration is refused while the identity provider of the tenant is written off, `enabled: false` or the
-block left out. One kept while an environment variable turns the role off is served by nothing until the
-variable turns it on again. A declaration that
-does not hold together fails the build of the deployment rather than its first login: when the container is
-compiled for every rule, and right after it, in the same build, for the claims the attributes name. A
-declaration that holds an environment variable, whose value only the running deployment knows, is held to
-the same rules at its first use.
+The list is read when a process first needs it, and held there to the rules of its members, the claims the
+attributes name included: a declaration that does not hold together is refused, naming its service provider.
+The whole list is refused, wherever it is read, single sign-on and the end of a session among them, when it
+declares a service provider while `BEFFROI_SAML_IDENTITY_PROVIDER` turns the role off. The reading below is a
+first one, so a declaration that does not hold is refused there rather than at a login. Changing the list
+asks for a restart of the processes, as every [variable](../application/configuration.md) does.
 
 ## Its metadata
 
@@ -63,12 +66,12 @@ bin/console beffroi:saml:service-provider:refresh
 bin/console beffroi:saml:service-provider:refresh 'https://sp.example.com/saml/metadata'
 ```
 
-Without an argument it reads every service provider the configuration declares. Each one is reported as
-registered, registered by another process meanwhile, refreshed, unchanged, refused or failed, and a refusal
-names the rule it broke and never a value of the document. A timed step does the same every hour, for the
-service providers and the [upstream identity providers](upstream-identity-providers.md) alike, and writes a
-refusal to the log as an error: the refused document comes back at every hour while the accepted one goes
-on serving, which is something an operator wants to be alerted on.
+Without an argument it reads every service provider `BEFFROI_SAML_SERVICE_PROVIDERS` declares. Each one is
+reported as registered, registered by another process meanwhile, refreshed, unchanged, refused or failed, and
+a refusal names the rule it broke and never a value of the document. A timed step does the same every hour,
+for the service providers and the [upstream identity providers](upstream-identity-providers.md) alike, and
+writes a refusal to the log as an error: the refused document comes back at every hour while the accepted one
+goes on serving, which is something an operator wants to be alerted on.
 
 **How they are fetched.** A URL is fetched with one `GET`, no redirect followed, ten seconds at most, and any
 status but `2xx` refused. A file or a body is refused as soon as it passes one mebibyte, which no metadata
@@ -103,8 +106,8 @@ bin/console beffroi:saml:service-provider:forget 'https://sp.example.com/saml/me
 ```
 
 An entity ID for which nothing is accepted is answered so, and the command fails, so a mistyped entity ID is
-never taken for a forgotten one. A declaration removed from the configuration leaves its accepted document
-where it is, read by nothing, until an operator forgets it.
+never taken for a forgotten one. A service provider taken out of `BEFFROI_SAML_SERVICE_PROVIDERS` leaves its
+accepted document where it is, read by nothing, until an operator forgets it.
 
 **Sealed where it sits.** The document is kept as the bytes that were read and sealed under the data key of
 the tenant, since an `md:ContactPerson` names people.
@@ -116,7 +119,7 @@ format and the friendly name the mapping gives, and nothing else. A claim may be
 
 | Key | Default | What it is |
 |---|---|---|
-| `claim` | required | The name of the claim, as OpenID Connect names it (OIDC Core §5.1). The claims are the ones the provider serves to OpenID Connect, so a claim a deployment adds can be mapped the day its class is wired |
+| `claim` | required | The name of the claim, as OpenID Connect names it (OIDC Core §5.1). The claims are the ones the provider serves to OpenID Connect, and a claim it does not serve refuses the declaration |
 | `name_format` | `uri` | The name format of the attribute (SAML Core §8.2): `uri`, under which the name is an absolute URI, as the SAML V2.0 interoperability profiles ask; `basic`; or `unspecified` |
 | `friendly_name` | none | A name a person reads (SAML Core §2.7.3.1), which nothing compares |
 
@@ -143,17 +146,17 @@ Nothing else decides it, neither the `WantAuthnRequestsSigned` the identity prov
 setting of the tenant or of the deployment. A signature a request does carry is verified whatever the rule
 says, under the keys of the metadata and never under a key the message names.
 
-`signs_authn_requests: false` exists for the service providers that cannot sign, [Microsoft Entra
+`signs_authn_requests` set to `false` exists for the service providers that cannot sign, [Microsoft Entra
 ID](microsoft-entra-id.md) federating its guests among them. A logout request is another matter: it is
 always signed, whatever the declaration says of the sign-on.
 
 ## The encryption it asks for
 
-`encrypt_assertions: true` has every assertion of that service provider sent as a `saml:EncryptedAssertion`,
-never in clear. The declaration decides whether the assertions are encrypted; the metadata only decide which
-key they are encrypted for, which is the first certificate for encryption they list, read again when the
-response is written so that a key a refresh put in place meanwhile is the one used. A service provider that
-does not ask gets its assertions in clear, whatever keys its metadata hold.
+`encrypt_assertions` set to `true` has every assertion of that service provider sent as a
+`saml:EncryptedAssertion`, never in clear. The declaration decides whether the assertions are encrypted; the
+metadata only decide which key they are encrypted for, which is the first certificate for encryption they
+list, read again when the response is written so that a key a refresh put in place meanwhile is the one used.
+A service provider that does not ask gets its assertions in clear, whatever keys its metadata hold.
 
 | What | Value |
 |---|---|

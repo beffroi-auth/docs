@@ -34,25 +34,25 @@ The SHA-256 of the value, never the value, and beside it:
 
 ## How long it lives
 
-| Option | Default | What it bounds |
+| Variable | In the image | What it bounds |
 |---|---|---|
-| `tokens.refresh_token_ttl` | `2592000` seconds, 30 days | One token, from the moment it was issued |
-| `tokens.refresh_token_absolute_ttl` | `7776000` seconds, 90 days | Its family, from the authorization that started it. No rotation extends it, and no token of the family outlives it |
+| `BEFFROI_REFRESH_TOKEN_TTL` | `2592000` seconds, 30 days | One token, from the moment it was issued |
+| `BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL` | `7776000` seconds, 90 days | Its family, from the authorization that started it. No rotation extends it, and no token of the family outlives it |
 
-The first cannot exceed the second, and a configuration where it does fails to load.
+The first cannot exceed the second, and a value that does is refused by the first request or command that
+needs it. A deployment sets both in its environment
+([configuration](../../application/configuration.md#keys-and-lifetimes)), here at the values of the image:
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    tokens:
-        refresh_token_ttl: 2592000
-        refresh_token_absolute_ttl: 7776000
+``` dotenv
+BEFFROI_REFRESH_TOKEN_TTL=2592000
+BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL=7776000
 ```
 
 **A token that is not replaced keeps the expiry it was issued with.** The refresh token of a confidential
 client, and of a public client whose token is bound, is never replaced, so it stops working
-`refresh_token_ttl` after it was issued, and the client then obtains a new authorization the way it obtained
-the first. Only a token that rotates starts a new `refresh_token_ttl` at each rotation, until the family
-ends.
+`BEFFROI_REFRESH_TOKEN_TTL` after it was issued, and the client then obtains a new authorization the way it
+obtained the first. Only a token that rotates starts a new `BEFFROI_REFRESH_TOKEN_TTL` at each rotation, until
+the family ends.
 
 ## Rotation and reuse
 

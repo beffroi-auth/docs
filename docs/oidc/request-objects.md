@@ -72,21 +72,22 @@ object, and remembers the `jti` until the `exp` of the object, so one signed bac
 (CIBA Core §7.1.1): an object without them, or with a `jti` already used, is refused there with
 `invalid_request`.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    request_objects:
-        max_lifetime: 3600
-        leeway: 30
-        timeout: 3.0
-        max_size: 65536
+Four variables bound an object and the read of one, here at the values of the image
+([configuration](../application/configuration.md#clients-and-their-requests)):
+
+``` dotenv
+BEFFROI_REQUEST_OBJECT_MAX_LIFETIME=3600
+BEFFROI_REQUEST_OBJECT_LEEWAY=30
+BEFFROI_REQUEST_OBJECT_TIMEOUT=3
+BEFFROI_REQUEST_OBJECT_MAX_SIZE=65536
 ```
 
-| Option | Default | What it decides |
+| Variable | In the image | What it decides |
 |---|---|---|
-| `max_lifetime` | `3600` | Seconds an object may stand, from its `nbf` to its `exp` |
-| `leeway` | `30` | Seconds allowed of the clock of the client, both ways |
-| `timeout` | `3.0` | Seconds one read of a `request_uri` is given, connection included |
-| `max_size` | `65536` | Bytes a `request_uri` may answer before the read stops |
+| `BEFFROI_REQUEST_OBJECT_MAX_LIFETIME` | `3600` | Seconds an object may stand, from its `nbf` to its `exp`, a second at least |
+| `BEFFROI_REQUEST_OBJECT_LEEWAY` | `30` | Seconds allowed of the clock of the client, both ways |
+| `BEFFROI_REQUEST_OBJECT_TIMEOUT` | `3` | Seconds one read of a `request_uri` is given, connection included, a tenth of a second at least |
+| `BEFFROI_REQUEST_OBJECT_MAX_SIZE` | `65536` | Bytes a `request_uri` may answer before the read stops |
 
 ## What an object may carry
 
@@ -115,8 +116,9 @@ client did not register is refused before any request leaves the provider, which
 
 The fragment, which OIDC Core §6.2 defines as the hash of the content, is not sent: the URL is read without
 it, with one `GET` that sends `Accept: application/oauth-authz-req+jwt, application/jwt`, follows no redirect,
-and refuses any status but `2xx`, an answer longer than `max_size` and a read longer than `timeout`. What comes
-back is read as an object sent by value would be. The hash in the fragment is not compared with it.
+and refuses any status but `2xx`, an answer longer than `BEFFROI_REQUEST_OBJECT_MAX_SIZE` bytes and a read
+longer than `BEFFROI_REQUEST_OBJECT_TIMEOUT` seconds. What comes back is read as an object sent by value would
+be. The hash in the fragment is not compared with it.
 
 ## An encrypted object
 

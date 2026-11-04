@@ -1,77 +1,77 @@
 ---
 title: Clients
-description: What a client is, the two places it comes from, every member it registers, and what the provider refuses when it reads one.
+description: What a client is, how it registers, every member it registers, what the image gives every client, and what the provider refuses when it reads one.
 ---
 
 # Clients
 
 A client is an application the provider answers, known by its `client_id`. It holds the addresses a browser
-may be sent back to, the one method it authenticates with, the scopes and resources it may ask for, and how
-it wants the documents written for it. A client comes from one of two places: the configuration of the
-deployment declares it, or it registered itself at the [registration endpoint](dynamic-registration.md). Both
-are read by the same reader under the same rules, so the same members mean the same thing wherever they were
-written; the source decides what a member left out stands for, who may change the client and how it goes
-away. A registration is held to two rules more, when it is written: the scopes it names are ones its tenant
-hands out, and a `sector_identifier_uri` it names is backed by the document behind it ([pairwise
-subjects](pairwise-subjects.md)).
+may be sent back to, the one method it authenticates with, the scopes and resources it may ask for, and how it
+wants the documents written for it. A client of a deployment of the image registers itself at the
+[registration endpoint](dynamic-registration.md): the image declares none. The configuration of the
+application can declare clients too, and only the configurations of its development stack and of its own suite
+do, for the conformance suite, the demonstrations and the tests. Every client is read by the same reader under
+the same rules, so a member means the same thing wherever it was written. A registration is held to two rules
+more, when it is written: the scopes it names are ones its tenant hands out, and a `sector_identifier_uri` it
+names is backed by the document behind it ([pairwise subjects](pairwise-subjects.md)).
 
-## Declaring one
+## Registering one
 
-Clients a deployment knows in advance are declared under `beffroi.clients`, keyed by their `client_id`.
+A deployment opens registration and names the scopes of the APIs its tenant protects
+([configuration](../application/configuration.md)):
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        billing:
-            client_name: 'Billing'
-            logo_uri: 'https://billing.example.com/logo.svg'
-            policy_uri: 'https://billing.example.com/privacy'
-            redirect_uris: ['https://billing.example.com/oidc/callback']
-            post_logout_redirect_uris: ['https://billing.example.com/']
-            token_endpoint_auth_method: private_key_jwt
-            jwks_uri: 'https://billing.example.com/.well-known/jwks.json'
-            scope: 'openid profile email offline_access invoices.read'
-            resources: ['https://api.example.com/']
+``` dotenv
+BEFFROI_REGISTRATION_MODE=initial_access_token
+BEFFROI_TENANT_SCOPES='["invoices.read"]'
 ```
 
-The declarations are read as a whole, the first time the provider reads a client, and one that does not hold
-together is refused there with the client and the rule it broke, before anything is served under it:
-`bin/console beffroi:client:list` reads them, and is the quickest way to see a mistake. The same refusal
-reaches a client that registers itself, as the `400` of RFC 7591 §3.2.2.
+The client registers with an initial access token the console issues ([your first
+client](../getting-started/your-first-client.md)), and this body:
 
-**What a member left out means depends on the source.** A declaration takes what an application that signs
-a person in comes for; a client that registers itself takes what RFC 7591 §2 says it gets.
+``` json
+{
+    "client_name": "Billing",
+    "logo_uri": "https://billing.example.com/logo.svg",
+    "policy_uri": "https://billing.example.com/privacy",
+    "redirect_uris": ["https://billing.example.com/oidc/callback"],
+    "post_logout_redirect_uris": ["https://billing.example.com/"],
+    "grant_types": ["authorization_code", "refresh_token"],
+    "token_endpoint_auth_method": "private_key_jwt",
+    "jwks_uri": "https://billing.example.com/.well-known/jwks.json",
+    "scope": "openid profile email offline_access invoices.read"
+}
+```
 
-| Member | Declared and left out | Registered and left out |
-|---|---|---|
-| `grant_types` | `authorization_code` and `refresh_token` | `authorization_code` |
-| `scope` | `openid profile email` | `openid`, or the default set the policy of the tenant names |
-| `token_endpoint_auth_method` | The first method wired, `client_secret_basic` | `client_secret_basic` |
-| `access_token_format` | The first shape wired, `jwt` | `jwt`, a client that registers itself never naming this member |
-| `subject_type` | The first kind wired, `public` | The same |
+A registration that does not hold together is refused with the rule it broke, as the `400` of RFC 7591
+§3.2.2, before anything is served under it.
 
-**A secret is chosen by the deployment for a declared client, and drawn by the provider for a registered
-one.** A declared `secret` is at least 32 visible ASCII characters (RFC 6749 appendix A.2), a value to
-generate and put in an environment variable, never in the file. It is hashed with the password hasher of the
-core the first time the client is looked up in a process, and kept as a hash, except for a client that
-authenticates with `client_secret_jwt`: that method computes a MAC with the secret, so the provider keeps the
-secret itself. A client registers a secret exactly when the method it registered proves one, and a
-declaration that carries a secret for any other method is refused.
+**What a member left out means is what RFC 7591 §2 says a client that registers itself gets.**
+
+| Member | Left out |
+|---|---|
+| `grant_types` | `authorization_code` |
+| `scope` | `BEFFROI_REGISTRATION_DEFAULT_SCOPE`, or `openid` alone |
+| `token_endpoint_auth_method` | `client_secret_basic` |
+| `subject_type` | The first kind wired, `public` |
+
+**A secret is drawn by the provider**, for a client whose method proves one, and said once, in the answer to
+its registration. The provider keeps a hash of it, except for a client that authenticates with
+`client_secret_jwt`: that method computes a MAC with the secret, so the provider keeps the secret itself,
+sealed.
 
 ## What a client registers
 
-Every member below is spelled the same in the configuration and in a registration request, under the name
-RFC 7591 §2, OIDC Registration §2 or the specification of its feature gives it, the members marked
-*deployment* being this provider's own. `secret` is written in the configuration alone, and `software_id`,
-`software_version` and `software_statement` in a registration request alone: the configuration has no such
-option and refuses it. A member this provider does not read is refused rather than ignored, and a value of the
-wrong kind is refused rather than converted: a string where a list is expected, or `"true"` where a boolean
-is.
+Every member below is spelled in a registration request under the name RFC 7591 §2, OIDC Registration §2 or
+the specification of its feature gives it, the members marked *deployment* being this provider's own.
+`software_id`, `software_version` and `software_statement` are read in a registration request alone. A
+member this provider does not read is refused rather than ignored, and a value of the wrong kind is refused
+rather than converted: a string where a list is expected, or `"true"` where a boolean is.
 
-The members marked *deployment* are written by whoever declares a client, or by the [registration
-policy](dynamic-registration.md) of the tenant. They are exceptions to a rule, or privileges, and a client
-that registers itself never obtains one: one in the body of its registration request is refused with
-`invalid_client_metadata`, and a software statement does not grant one either.
+The members marked *deployment* are exceptions to a rule, or privileges, written by whoever declares a client
+or by the [registration policy](dynamic-registration.md) of the tenant. A client that registers itself never
+obtains one: one in the body of its registration request is refused with `invalid_client_metadata`, and a
+software statement does not grant one either. A deployment of the image gives none of them to its clients:
+[what the image does not set](#what-the-image-does-not-set) says what every client of the image has instead.
 
 ### Who is asking
 
@@ -105,7 +105,6 @@ that registers itself never obtains one: one in the body of its registration req
 | Member | What it decides |
 |---|---|
 | `token_endpoint_auth_method` | The one method it authenticates with, among those the provider is wired with. See [client authentication](client-authentication.md) |
-| `secret` | Configuration only: the shared secret of a declared client whose method proves one |
 | `jwks`, `jwks_uri` | Its public keys, inline or behind a URL, one or the other and never both. A symmetric key (`kty: oct`) is refused |
 | `tls_client_auth_subject_dn`, `tls_client_auth_san_dns`, `tls_client_auth_san_uri`, `tls_client_auth_san_ip`, `tls_client_auth_san_email` | What names it in its certificate (RFC 8705 §2.1.2), exactly one of the five, for `tls_client_auth` and for no other method |
 
@@ -162,6 +161,25 @@ about encryption](tokens/encryption.md).
 | `software_id`, `software_version` | Registration only: what the software the client is an instance of calls itself, and its version (RFC 7591 §2) |
 | `software_statement` | Registration only: read by the registration mode that takes one, never as metadata. See [dynamic registration](dynamic-registration.md) |
 
+## What the image does not set
+
+A deployment of the image declares no client, and no variable gives the registration policy of its tenant a
+member of the deployment, so every client of the image has each of them at the value the reader takes when it
+is left out:
+
+| Member | What every client of the image has |
+|---|---|
+| `requires_consent` | `true`: the [consent page](consent.md) is shown for every client |
+| `requires_pkce` | `true`: every authorization request carries a `code_challenge`, the ones of confidential clients included |
+| `access_token_format` | The first shape wired, `jwt`: every access token is an `at+jwt` ([access tokens](tokens/access-tokens.md)) |
+| `resources` | None: a client asks a token for no resource, a `resource` parameter is refused with `invalid_target`, and its access tokens are addressed to itself ([resources](resources.md)). The grants that issue a token for a resource only, [`client_credentials`](grants/client-credentials.md), the [JWT bearer grant](grants/jwt-bearer.md) and the token exchange, issue none |
+| `token_exchange`, `may_act` | None: no client is registered for the [token exchange](grants/token-exchange.md) grant |
+| `require_sender_constrained_tokens` | `false`: a client that proves neither a certificate nor a key is answered with bearer tokens, unless it registered `tls_client_certificate_bound_access_tokens`, for which a request without a certificate is refused |
+
+The PKCE exemption of the registration policy, `client_registration.exempt_confidential_clients_from_pkce`,
+is not set either. The development configuration writes some of these members on the clients it declares,
+and the exemption in its registration policy.
+
 ## The addresses a client registers
 
 Every URL a client registers, whatever the provider does with it, is held to one rule: an absolute URI, with
@@ -185,11 +203,10 @@ the port it registered. The same holds for `post_logout_redirect_uris`.
 
 ## What a registration has to hold
 
-Each rule below is checked where the client is read, so a declaration that breaks one is refused when the
-declarations are read, and a registration that breaks one is refused with `invalid_client_metadata`. A
-registration is refused with `invalid_redirect_uri` instead for a value of `redirect_uris` or
-`post_logout_redirect_uris` that the rule of every address refuses, and for redirect URIs its grants do not
-call for, or call for and lack; the rule a public client's loopback addresses follow answers
+Each rule below is checked where the client is read, and a registration that breaks one is refused with
+`invalid_client_metadata`. A registration is refused with `invalid_redirect_uri` instead for a value of
+`redirect_uris` or `post_logout_redirect_uris` that the rule of every address refuses, and for redirect URIs
+its grants do not call for, or call for and lack; the rule a public client's loopback addresses follow answers
 `invalid_client_metadata`, as every other one does.
 
 - The `client_id` is printable ASCII with no space at either end (RFC 6749 appendix A.1). A client of
@@ -206,7 +223,8 @@ call for, or call for and lack; the rule a public client's loopback addresses fo
   `authorization_code`, the device code or the backchannel grant.
 - A client of `authorization_code` registers at least one redirect URI, and a client of no grant that sends a
   browser back registers none, and no `response_types` either.
-- `client_credentials` is refused to a public client, which proves nothing.
+- A grant that requires client authentication, `client_credentials`, the JWT bearer grant or the token
+  exchange, is refused to a public client, which proves nothing.
 - The token exchange grant and the `token_exchange` member come together or not at all, and the token types
   it names are ones the provider reads.
 - `requires_pkce: false` is refused to a public client.
@@ -227,16 +245,17 @@ A client is **public** when it registered `token_endpoint_auth_method: none`: it
 nothing, as a native or a browser application cannot keep a secret. Everything else is **confidential**.
 What protects the code of a public client is PKCE, which is mandatory for it, and the exact redirect URI.
 Besides the loopback exception above, the difference shows where a rule asks for a client that proves
-itself: `requires_pkce: false` and `client_credentials` are refused to a public client at its registration,
-the [introspection endpoint](introspection-and-revocation.md) refuses it, and a refresh token reaches it only
-when it asks for `offline_access` ([refresh tokens](tokens/refresh-tokens.md)).
+itself: the grants that require client authentication, `client_credentials`, the JWT bearer grant and the
+token exchange, are refused to a public client at its registration, the [introspection
+endpoint](introspection-and-revocation.md) refuses it, and a refresh token reaches it only when it asks for
+`offline_access` ([refresh tokens](tokens/refresh-tokens.md)).
 
 ## Reading what exists
 
 ``` bash
 bin/console beffroi:client:list
-bin/console beffroi:client:show billing
-bin/console beffroi:client:delete 3x4mpl3Cl13nt1d3nt1f13rDr4wnByTh3Pr0v1d3rXX
+bin/console beffroi:client:show s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg
+bin/console beffroi:client:delete s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg
 ```
 
 `beffroi:client:list` prints every client of the tenant with its name and its source, `configuration` or
@@ -244,7 +263,7 @@ bin/console beffroi:client:delete 3x4mpl3Cl13nt1d3nt1f13rDr4wnByTh3Pr0v1d3rXX
 `beffroi:client:show` prints the same for one client, and for a registered one the members it registered and
 the ones the registration policy of the tenant wrote on it; for a declared one it points at the
 configuration, which is the whole of what it is. `beffroi:client:delete` deletes a client that registered
-itself, and refuses a declared one, which goes away with its block in the configuration.
+itself, and refuses a declared one.
 
 A registered client whose stored registration the reader refuses, a row naming a member this version does not
 read or breaking a rule it holds, is answered as no client at all, and the reason is written to the log as an

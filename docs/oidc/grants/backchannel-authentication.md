@@ -28,18 +28,30 @@ sequenceDiagram
 
 ## Registering a client
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    clients:
-        branch-terminal:
-            client_name: 'Branch terminal'
-            token_endpoint_auth_method: private_key_jwt
-            jwks_uri: 'https://terminal.example.com/jwks.json'
-            grant_types: ['urn:openid:params:grant-type:ciba', refresh_token]
-            scope: 'openid profile'
-            backchannel_token_delivery_mode: ping
-            backchannel_client_notification_endpoint: 'https://terminal.example.com/ciba/notify'
+A client of this flow reaches a deployment of the image by [registering itself](../dynamic-registration.md),
+which the deployment opens in its environment
+([configuration](../../application/configuration.md#registration)):
+
+``` dotenv
+BEFFROI_REGISTRATION_MODE=initial_access_token
 ```
+
+The client registers with:
+
+``` json
+{
+    "client_name": "Branch terminal",
+    "token_endpoint_auth_method": "private_key_jwt",
+    "jwks_uri": "https://terminal.example.com/jwks.json",
+    "grant_types": ["urn:openid:params:grant-type:ciba", "refresh_token"],
+    "scope": "openid profile",
+    "backchannel_token_delivery_mode": "ping",
+    "backchannel_client_notification_endpoint": "https://terminal.example.com/ciba/notify"
+}
+```
+
+The answer carries the `client_id` the provider drew, and no secret, `private_key_jwt` proving no shared
+secret.
 
 | Member | What it decides |
 |---|---|
@@ -73,7 +85,7 @@ endpoint, then:
 | `acr_values` | Optional: the classes the client would like the authentication to reach, in its order of preference |
 | `requested_expiry` | Optional: a positive number of seconds the request should live. More than the ceiling is served the ceiling, not refused |
 | `client_notification_token` | Required of a `ping` client and refused from a `poll` one: what the provider presents when it pings, a bearer token (RFC 6750 §2.1) of 22 to 1024 characters |
-| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2) |
+| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client of the image registers none, so a `resource` it names is `invalid_target` |
 | `user_code` | Refused: the provider takes none, and says so in `backchannel_user_code_parameter_supported` |
 | `request` or `request_uri` | The request as a signed request object (CIBA Core §7.1.1), whose parameters are then the request |
 
@@ -111,37 +123,40 @@ base64url, 43 characters, of which the provider keeps the SHA-256 and, for a `pi
 itself sealed by the key management service of the tenant, together with the `client_notification_token`,
 since it has to present both when it pings.
 
-| Option | Default | At most | What it is |
+| Variable | In the image | At most | What it is |
 |---|---|---|---|
-| `tokens.backchannel_authentication_ttl` | `300` seconds | `3600` | How long a request lives when it asks for no `requested_expiry`, never longer than the option below |
-| `tokens.backchannel_authentication_max_requested_expiry` | `1800` seconds | `3600` | The longest a request lives, whatever it asks for |
-| `tokens.backchannel_authentication_interval` | `5` seconds | `30` | How long the client waits between two polls |
+| `BEFFROI_BACKCHANNEL_AUTHENTICATION_TTL` | `300` seconds | `3600` | How long a request lives when it asks for no `requested_expiry`, never longer than the variable below |
+| `BEFFROI_BACKCHANNEL_AUTHENTICATION_MAX_REQUESTED_EXPIRY` | `1800` seconds | `3600` | The longest a request lives, whatever it asks for |
+| `BEFFROI_BACKCHANNEL_AUTHENTICATION_INTERVAL` | `5` seconds | `30` | How long the client waits between two polls |
 
 ## Naming the person
 
 | Hint | How it is read |
 |---|---|
-| `login_hint` | As `backchannel_authentication.login_hint` says, below |
+| `login_hint` | As `BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT` says, below |
 | `id_token_hint` | An ID token this provider issued to this very client, whose `sub` names the person; its `exp` is not looked at, a hint describing a past sign-in being the ordinary case. A token of another issuer, or issued to another client, is `invalid_request` |
 | `login_hint_token` | Read by nothing the application wires, so `invalid_request` |
 
-| `login_hint` | What the hint is |
-|---|---|
-| `sub`, the default | The subject this provider gives the person for this client, public or pairwise |
-| `username` | The name the person signs in with |
-| `none` | Nothing the application reads: the deployment tags a reader of its own, and without one a `login_hint` is `invalid_request` |
+`BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT` names what a `login_hint` is, one of three values:
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    backchannel_authentication:
-        login_hint: sub
+| Value | What the hint is |
+|---|---|
+| `sub`, in the image | The subject this provider gives the person for this client, public or pairwise |
+| `username` | The name the person signs in with |
+| `none` | Nothing the image reads: a `login_hint` is `invalid_request`, and a request names the person with an `id_token_hint` |
+
+A deployment names one in its environment, here the value of the image:
+
+``` dotenv
+BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT=sub
 ```
 
 CIBA Core §15 asks for an identifier that says nothing outside this provider, which the subject is and a
-username is not, hence the default. A reader of its own is a class implementing
-`Beffroi\Oidc\Application\Hint\UserHintInterface`, tagged `beffroi.oidc.ciba_user_hint`; two readers of the
-same parameter are refused, a parameter being read one way. The `login_hint` of an authorization request,
-read on the login page, is set apart with `interaction.login_hint`, which takes the same three values.
+username is not, hence the value of the image. `none` leaves the parameter to a reader the application tags of
+its own, a class implementing `Beffroi\Oidc\Application\Hint\UserHintInterface`, tagged
+`beffroi.oidc.ciba_user_hint`, and the image tags none that reads a `login_hint`; two readers of the same
+parameter are refused, a parameter being read one way. The `login_hint` of an authorization request, read on
+the login page, is set apart with `BEFFROI_INTERACTION_LOGIN_HINT`, which takes the same three values.
 
 **Nobody is told whether the person exists.** A hint that names nobody is answered with an `auth_req_id` like
 any other, and the request then goes the way of every request nobody answers, to `expired_token`. CIBA Core
@@ -157,12 +172,12 @@ name of the provider, the name of the client, the binding message when there is 
 address of the page where requests are answered. It carries no identifier of the request and no link that
 answers one, so that nothing reaching the person from outside can carry them to an approval.
 
-What carries it to the person is a channel the deployment wires: a class implementing
-`App\Ciba\PendingApprovalChannelInterface`, tagged `beffroi.pending_approval_channel`. The application ships
-one, [web push](../../application/web-push.md) to the browsers the person subscribed on the notifications page
-of their account, in the lane while `web_push.subject` names a subject. A deployment that wires no channel
-still serves this flow: the person finds the request on the page where requests are answered, which is where
-any channel sends them anyway.
+What carries it to the person is a channel: a class implementing `App\Ciba\PendingApprovalChannelInterface`,
+tagged `beffroi.pending_approval_channel`. The image carries one, [web push](../../application/web-push.md) to
+the browsers the person subscribed on the notifications page of their account, in the lane while
+`BEFFROI_WEB_PUSH_SUBJECT` names a subject. A deployment that sets that variable empty still serves this
+flow: the person finds the request on the page where requests are answered, which is where any channel sends
+them anyway.
 
 ## Answering: `/account/approvals`
 
@@ -202,17 +217,19 @@ Content-Type: application/json
 - **No token travels there.** The ping says there is something to collect, and the client collects it at the
   token endpoint.
 - **It leaves on the notifications lane**, never in the request of the person, with no cookie and no
-  redirect followed. Each call is given `backchannel_authentication.client_notification_timeout` seconds,
-  `3.0` by default, connection included.
+  redirect followed. Each call is given `BEFFROI_CLIENT_NOTIFICATION_TIMEOUT` seconds, `3` in the image,
+  connection included.
 - **A `2xx` is done.** A redirection and a `400`, `401`, `403`, `404`, `405` or `501` are given up at once, the
   same answer coming back at every try. Any other answer, or none, is tried again under the retry policy of
-  the lane.
+  the lane, which `BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES`, `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY`,
+  `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER` and `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY` set for every
+  notification ([configuration](../../application/configuration.md#notifications)).
 - **A client that cannot be reached holds nothing up**: it finds the same answer by polling.
 
-``` yaml title="config/packages/beffroi.yaml"
-beffroi:
-    backchannel_authentication:
-        client_notification_timeout: 3.0
+A deployment sets the timeout of a call in its environment, here at the value of the image:
+
+``` dotenv
+BEFFROI_CLIENT_NOTIFICATION_TIMEOUT=3
 ```
 
 ## Collecting the tokens
@@ -235,10 +252,10 @@ it is asked, which is what a `ping` client needs, the ping coming sooner than it
 is spent once, atomically.
 
 The tokens are those of an ordinary authorization, descending from the session the person approved with: an
-access token addressed to the resources of the request, or to the client itself when it named none; an ID
-token, always, `openid` being required of the request, without a `nonce`; and a refresh token when one is
-due. They are bound to what the token request binds them to ([grants](index.md#what-the-token-endpoint-does)),
-never to anything the browser that approved proved.
+access token addressed to the resources of the request, or to the client itself when it named none, as every
+client of the image does; an ID token, always, `openid` being required of the request, without a `nonce`; and
+a refresh token when one is due. They are bound to what the token request binds them to
+([grants](index.md#what-the-token-endpoint-does)), never to anything the browser that approved proved.
 
 ## What is announced
 

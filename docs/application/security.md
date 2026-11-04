@@ -75,7 +75,7 @@ account answers like a wrong password.
 | `TotpLoginAuthenticator` | `_code`, a code of the authenticator application or a backup code | `POST /login/code` | What the first step proved, and `otp` |
 | `UpstreamAssertionAuthenticator` | The response an upstream SAML identity provider posted, and its `RelayState` | `POST /saml/sp/acs` | `fed`, and the method its `AuthnContextClassRef` names exactly, when it names one |
 
-The first three read the form token of the page, `_csrf_token` under the identifier `authenticate`. Each of
+The first three read the form token of the page, `_csrf_token` under the identifier `beffroi_login`. Each of
 the four hands what it read to the use cases of the core, or of the SAML package for the fourth, where the
 order of a login is written once. Symfony's form login is not wired: it would verify a hash the core has
 verified.
