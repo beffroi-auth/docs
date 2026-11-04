@@ -1,6 +1,6 @@
 ---
 title: Events
-description: Every event the core, the protocol and the SAML package dispatch, what each one carries, what listens to it, and how it crosses the broker.
+description: Every event the core, the protocol and the SAML package dispatch, what each one carries, what listens to it, and how it leaves the process.
 ---
 
 # Events
@@ -15,13 +15,13 @@ say what each one carries beyond those four, and who it concerns:
 - **a client**, when it implements `ConcernsAClientInterface` and names the client by the identifier it was
   registered under, never the client itself.
 
-## Every event crosses the broker
+## Every event leaves the process
 
-An event is routed to the transport `async_priority_low`, the database unless the deployment names a broker,
-every one of them by the interface they all implement, so an event added to a package leaves the process without
-a line of configuration. Its body is a JWE to the message key of the tenant; what stays readable on the transport
-is the class of the event, its stamps and the slug of its tenant. Nothing listens in the process that raised it,
-and an event nothing listens to is announced all the same.
+An event is routed to the transport `async_priority_low`, a queue of the database, every one of them by the
+interface they all implement, so an event added to a package leaves the process without a line of
+configuration. Its body is a JWE to the message key of the tenant; what stays readable on the transport is the
+class of the event, its stamps and the slug of its tenant. Nothing listens in the process that raised it, and
+an event nothing listens to is announced all the same.
 
 ## What listens
 

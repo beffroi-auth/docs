@@ -352,7 +352,8 @@ beffroi:
             required: true
 ```
 
-`nonce.required` decides which class the container wires, so it is written as `true` or `false` in the file.
+`nonce.required` is read once, when the port that checks the proofs is built: the application's file reads it
+from `BEFFROI_DPOP_NONCE_REQUIRED`.
 
 [:beffroi-arrow-right: DPoP](../oidc/sender-constrained/dpop.md)
 

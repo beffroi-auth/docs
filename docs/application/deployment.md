@@ -19,15 +19,16 @@ root of the monorepo, because the application installs the packages beside it th
 |---|---|
 | `frankenphp_base` | The extensions, the PHP settings of the application, the entrypoint and the Caddy configuration |
 | `frankenphp_dev` | The development image, into which the stack mounts the monorepo, running FrankenPHP with `--watch` |
-| `frankenphp_prod` | The production image: the packages are copied to `/src` and the application to `/app`, installed without the development dependencies, with an authoritative class map, `.env` and any `.env.local` beside it compiled for production, the stylesheet built and the assets compiled |
+| `frankenphp_prod` | The production image: the packages are copied to `/src` and the application to `/app`, installed without the development dependencies, with an authoritative class map, the `.env` of the repository compiled for production, the stylesheet built and the assets compiled |
 
 ``` bash
 docker build --file apps/op/Dockerfile --target frankenphp_prod .
 ```
 
-`apps/op/` is copied as the working copy holds it, and `composer dump-env prod` compiles a `.env.local` it
-finds there. The one the development stack writes holds its key management service, the secrets of its clients
-and the password of its user, so the image is built from a checkout that holds no `.env.local`.
+`apps/op/` is copied without what a working copy holds beside the repository: `Dockerfile.dockerignore` leaves
+out its `.env.local`, where the development stack writes its key management service, the secrets of its
+clients and the password of its user, and its `var/` and `vendor/`. The image compiles the environment the
+repository holds, and a deployment sets its own: [configuration](configuration.md).
 
 The production image sets `APP_ENV=prod`, reads `php.ini-production`, preloads `config/preload.php` into
 OPcache, and turns worker mode on: the kernel is booted once per worker and serves every request that worker
@@ -46,7 +47,10 @@ entrypoint does two things when `.env` names a `DATABASE_URL`, which the one of 
    any other platform.
 
 The health check of the image asks the metrics endpoint of the Caddy admin API inside the container,
-`curl -f http://localhost:2019/metrics`, after a start period of sixty seconds.
+`http://localhost:2019/metrics`, with PHP, the image carrying no `curl`, after a start period of sixty
+seconds. Only the server runs Caddy, so a container that runs the worker turns that check off or replaces it.
+The Compose file of the image gives its worker a check of its own, that the consumer is the first process of
+its container.
 
 ### The two planes
 
@@ -89,12 +93,13 @@ starts it again.
 | `async_priority_low` | The events of the core and of the protocol, which the journal writes down and the enrichment of a provenance reads |
 
 The worker is therefore the one process that calls a client back, and the one that writes the
-[journal](observability.md). A provider whose worker stops goes on answering requests, and the database keeps
-the messages until a worker consumes them.
+[journal](observability.md). A provider whose worker stops goes on answering requests, and the lanes keep the
+messages until a worker consumes them.
 
-Each lane is a queue of its own in the table `messenger_messages`: `.env` names
-`doctrine://default?queue_name={lane}` in `BEFFROI_MESSENGER_DSN`, and the image carries the transport of no
-broker. What fails for good lands in the failure transport, `failed`, a queue of the same table.
+The lanes are four queues of the table `messenger_messages` of the database, one per lane, which the transport
+creates the first time it reaches it. The application requires the transport of no broker, and the image
+carries the PHP extension of none. What fails for good lands in the failure transport, `failed`, a queue of the
+same table.
 
 ## What the processes share
 
@@ -104,13 +109,14 @@ so some state has to be the same for all of them.
 | What | Where | Written by | Read by |
 |---|---|---|---|
 | The sealed keys of the tenant, and its pairwise salt | `var/keys` | `beffroi:keys:*`, the timed step of the key lifecycle, and the first process that needs the salt | Every process that signs, decrypts or seals |
-| The key of the file backend, when that is the key management service | `var/kms` | Whoever provisions it | Every process |
+| The key of the file backend, when that is the key management service | The directory its DSN names, `var/kms` on the development stack and in the Compose file of the image | Whoever provisions it | Every process |
 | The GeoLite2 databases of addresses | `var/geoip` | `beffroi:geoip:refresh`, the weekly step | The worker, which enriches a provenance |
 | The FIDO metadata | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import` | The passkey ceremonies, which check an attestation against it |
 
-The development stack gives `var/keys`, `var/kms` and `var/geoip` a volume each, mounted on the server and on
-the worker alike: a rotation done by one process changes nothing for another that does not see the same
-directory.
+The development stack gives `var/keys`, `var/kms` and `var/geoip` a volume each, and the Compose file of the
+image, [`compose.prod.yaml`](../getting-started/the-standalone-application.md#the-compose-file-of-the-image),
+adds `var/webauthn` and `var/share` to them, mounted on the server and on the worker alike: a rotation done by
+one process changes nothing for another that does not see the same directory.
 
 The application keeps eight caches in pools of their own, so that a deployment can point them at a shared
 store without touching the rest of its cache:
@@ -138,11 +144,12 @@ keeps it, in the container that served it.
 
 ## TLS and the two hosts
 
-Caddy terminates TLS for the host of `SERVER_NAME`. Both hosts of the image use one snippet of its
-`Caddyfile`, which is the TLS a FAPI 1.0 plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two
-suites of FAPI 1.0 Advanced Final §8.5 a listener built on Go can offer,
-`TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` and `TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384`. TLS 1.2 is the floor
-Caddy already holds.
+Caddy terminates TLS for the host of `SERVER_NAME`, unless a proxy in front of the image does
+([below](#behind-a-proxy)), and for the host that asks for a client certificate in every deployment. On the
+hosts of the image whose TLS it terminates, it serves one snippet of its `Caddyfile`, which is the TLS a
+FAPI 1.0 plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two suites of FAPI 1.0 Advanced Final
+§8.5 a listener built on Go can offer, `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` and
+`TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384`. TLS 1.2 is the floor Caddy already holds.
 
 **The host that asks for a client certificate is a host of its own** (RFC 8705 §5). It is served when
 `CADDY_EXTRA_CONFIG` imports `mtls.Caddyfile`, under the name `MTLS_SERVER_NAME` gives it, and announced to
@@ -164,11 +171,35 @@ for nothing.
 
 ## Behind a proxy
 
-The address of a request is read by Symfony behind the proxies it trusts, and the application names none:
-`framework.trusted_proxies` reads `SYMFONY_TRUSTED_PROXIES`. That address is what the load budget of an origin
-is counted under, 2400 requests a minute by default before a `429`, and what every session and every act of
-the journal records as where it came from. Behind a proxy that is not named there, every request has the
-address of the proxy.
+**A proxy that terminates TLS sends the server plain HTTP.** With `TLS_TERMINATION` set to `proxy`, the site of
+`SERVER_NAME` is `http://` followed by `SERVER_NAME`, which then names one host, the one the proxy asks for, or
+`:<port>` for any host. It is served on port 80 unless `SERVER_NAME` names another, and never with the TLS
+Caddy would choose by itself for a host: a list of hosts is refused, or read as one address. A scheme written
+there, `http://op.example.com`, gives a site no request of the proxy reaches. Under `caddy`, the value the
+variable takes when it is not set, the site carries the TLS above, and Caddy refuses a plain HTTP address. A
+misspelt value, `Proxy` or an empty one, stops Caddy as it starts without a word in its log, and
+`frankenphp adapt --config /etc/frankenphp/Caddyfile`, run in the image with the same environment, says why.
+The TLS a client meets on the host of `SERVER_NAME` is then the one of the proxy.
+
+The scheme and the address of a request are read by Symfony behind the proxies it trusts, and the application
+names none: `framework.trusted_proxies` reads `SYMFONY_TRUSTED_PROXIES`. That address is what the load budget
+of an origin is counted under, 2400 requests a minute by default before a `429`, and what every session and
+every act of the journal records as where it came from. Behind a proxy that is not named there, every request
+reads as plain HTTP and has the address of the proxy: a request of a safe method, a `GET` or a `HEAD` among
+them, is sent to the same address over HTTPS, without end, and the others, a `POST` among them, are
+served as they came, under the address of the proxy.
+
+A proxy that names the client in a header Symfony does not read, `CF-Connecting-IP` behind Cloudflare, has
+Caddy read it, with `client_ip_headers` and `trusted_proxies` in the `servers` block of `CADDY_GLOBAL_OPTIONS`,
+and write it into `X-Forwarded-For`, with `request_header X-Forwarded-For {client_ip}` in
+`CADDY_SERVER_EXTRA_DIRECTIVES`: FrankenPHP hands PHP the address of its peer and the headers as they arrived,
+whatever Caddy read.
+
+The host that asks for a client certificate terminates its TLS in Caddy whatever `TLS_TERMINATION` says. A
+client presents its certificate in the handshake, so a proxy in front of that host passes its connections
+through without terminating them.
+
+[:beffroi-arrow-right: Behind a proxy that terminates TLS](examples.md#behind-a-proxy-that-terminates-tls)
 
 ## The headers
 

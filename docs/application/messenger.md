@@ -68,8 +68,8 @@ would show it.
 | `async_notifications` | The same | On the schedule of `App\Messenger\NotificationRetryPolicy`, which `beffroi.back_channel_logout` sets: by default two seconds before the first, each wait three times the one before, sixty seconds at most, the waits exact |
 | `failed`, the failure transport | `doctrine://default?queue_name=failed` | |
 
-The failure transport is the database whatever the lanes are on, a failure transport kept on the broker that
-failed being one nobody reads. The contract routes no message to `async_priority_high`.
+The failure transport is a queue of the same table as the lanes. The contract routes no message to
+`async_priority_high`.
 
 **The serializer.** `beffroi.messenger.serializer` is the default serializer of every transport, the failure
 transport included: what it writes is the subject of [the last section](#what-leaves-the-process-is-sealed).

@@ -15,22 +15,22 @@ them is its own integration.
 | What | Why |
 |---|---|
 | Database | PostgreSQL, through Doctrine ORM |
-| A key management service | To seal the signing keys and the data keys. For development, a local file-backed client is enough; a deployment uses Vault, AWS KMS or another provider `symfony/key-management` supports |
+| A key management service | To seal the signing keys and the data keys. A key in a file of its own is the floor where no service is at hand, and holds against a dump of the storage, not against a compromise of the host; Vault, AWS KMS or another provider `symfony/key-management` supports keeps the key off the host |
 | TLS | The provider serves nothing useful over plain HTTP, and the specifications require HTTPS on every endpoint |
 
 The image of the application carries the rest: PHP with the extensions the provider needs, and FrankenPHP to
 serve it.
 
-A message broker is not required to start. The writes the protocol does not need the result of are
-dispatched asynchronously, to transports that default to the database, `doctrine://default`, where they wait
-for a worker that consumes them (`messenger:consume`). A broker takes their place by its DSN in
-`BEFFROI_MESSENGER_DSN`.
+No message broker is needed. The writes the protocol does not need the result of are dispatched
+asynchronously, to four lanes that are queues of the database, `doctrine://default?queue_name={lane}` in
+`BEFFROI_MESSENGER_DSN`, where they wait for a worker that consumes them (`messenger:consume`).
 
-!!! info "Nothing is published yet"
+!!! info "Not public yet"
 
-    The `beffroi/*` packages are not on Packagist at this point. The application is built from a working copy
-    of the monorepo, [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi), which is how the pages
-    that follow run it.
+    The `beffroi/*` packages are not on Packagist at this point, and the monorepo,
+    [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi), and its image, `ghcr.io/beffroi-auth/op`,
+    are private. The pages that follow run the application from a working copy of the monorepo, and from that
+    image.
 
 ## The application
 

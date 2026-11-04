@@ -101,13 +101,12 @@ The page of the account that reads the journal of a person shows every act of th
 
 ## How they leave
 
-In the application, the dispatcher the core is handed is `EventBusDispatcher`, which replays every event on the
-`event.bus` of Messenger; an event raised by the handler of a message leaves once that handler has committed
-its work. Every event is routed by the
-interface they all implement to the transport `async_priority_low`, the database unless the deployment names a
-broker, and its body is sealed to the message key of the tenant on its way out. Nothing listens in the process
-that raised it: a worker that consumes the transport is where every listener runs, and an event nothing listens to
-is announced all the same.
+In the application, the dispatcher the core is handed is `EventBusDispatcher`, which replays every event on
+the `event.bus` of Messenger; an event raised by the handler of a message leaves once that handler has
+committed its work. Every event is routed by the interface they all implement to the transport
+`async_priority_low`, a queue of the database, and its body is sealed to the message key of the tenant on its
+way out. Nothing listens in the process that raised it: a worker that consumes the transport is where every
+listener runs, and an event nothing listens to is announced all the same.
 
 What listens is a message handler of `event.bus`. The handlers of the application are classes marked
 `#[AsMessageHandler(bus: 'event.bus')]` whose `__invoke()` is typed on an event, or on an interface every event of

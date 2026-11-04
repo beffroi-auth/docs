@@ -11,15 +11,38 @@ configuration files hold what stays the same from one deployment to the next, an
 
 `apps/op/.env` holds the value an image takes when the deployment names none, and the production image
 compiles it with `composer dump-env prod`. A real environment variable wins over it, which is how a deployment
-says its own. `.env` carries no secret of a deployment: the key management service, the key it seals under and
-the secret of the kernel are empty there, and the database is the one of the development stack. That stack
-writes its own secrets into `.env.local`, which is never committed and never reaches an image.
+says its own, and an empty one wins too: an empty `BEFFROI_SAML_IDENTITY_PROVIDER` turns off the identity
+provider `.env` turns on. `.env` carries no secret of a deployment: the key management service, the key it
+seals under and the secret of the kernel are empty there, and the database is the one of the development
+stack. That stack writes its own secrets into `.env.local`, which is never committed and never reaches an image.
 
 Each variable that fills the `beffroi:` tree is read when the container builds the service it reaches, not when the container is compiled,
 so changing one asks for a restart of the processes and not for a new image. A value is held there to the
 bounds the [configuration tree](../reference/configuration.md) sets for the option it fills, and to the rules
 between options: a value out of bounds is refused by the first request or command that needs it, not when the
 image is built.
+
+[:beffroi-arrow-right: Whole deployments written with these variables](examples.md)
+
+## What a deployment sets
+
+`.env` carries the values of the development stack, and every deployment replaces these:
+
+| Variable | Why |
+|---|---|
+| `APP_SECRET` | `.env` names none |
+| `DATABASE_URL` | `.env` names the database of the development stack |
+| `BEFFROI_ISSUER` and `DEFAULT_URI` | `.env` names the issuer of the development stack, `https://op.localhost` |
+| `BEFFROI_KMS_DSN` and `BEFFROI_KMS_KEY_ID` | `.env` names no key management service, and nothing is sealed or signed without one |
+| `SERVER_NAME` | The host Caddy serves, `localhost` when it is not set. Behind a proxy that terminates TLS, the host the proxy asks for, which `TLS_TERMINATION` serves over plain HTTP: [behind a proxy](deployment.md#behind-a-proxy) |
+
+Three more decide what a deployment of real people does:
+
+- `BEFFROI_REGISTRATION_MODE`, without which no client can exist: the image declares none, and a client
+  reaches a deployment by registering itself.
+- `BEFFROI_WEB_PUSH_SUBJECT`, the contact a push service is given, which `.env` sets to the one of the
+  development stack.
+- `SYMFONY_TRUSTED_PROXIES`, behind a proxy, without which every request has the address of the proxy.
 
 ## The provider
 
@@ -47,12 +70,20 @@ is no JSON document, and is refused.
 | Variable | In `.env` | What it decides |
 |---|---|---|
 | `BEFFROI_TENANT_NAME` | empty | What the pages and the consent call the tenant. Empty, the host of the issuer |
-| `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. A logo served from another host needs that origin in the `img-src` of `config/packages/nelmio_security.yaml`, and the host to answer `Cross-Origin-Resource-Policy: cross-origin`, the pages of the account requiring it |
+| `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. Every page that shows the logo names its origin in its `img-src`. A logo served from another host shows on the account and the other pages outside the flows of the protocol only when that host answers `Cross-Origin-Resource-Policy: cross-origin`, which those pages require of an image of another origin |
 | `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons and the links of the pages are drawn in: `#` and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour |
 | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | `#ffffff` | The colour of what is written on it, in the same notation |
 | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the application lets a person change, from `name` to `phone_number` | What a person may change of themselves on the page of their account. A tenant whose directory owns the data names `[]` |
 | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | `{}` | The `acr` vocabulary of the tenant, class name to predicate, in order. `{}` is the default policy of the core |
 | `BEFFROI_TENANT_SCOPES` | `[]` | The scopes of the APIs the tenant protects, as `["invoices.read","invoices.pay"]`. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them, and a client that registers itself may register them |
+
+**Six of them are written in the row of the tenant**, with its issuer: its name, its logo and its two colours,
+the claims a person changes and its `acr` classes. `beffroi:tenant:synchronize` writes them, and every request
+and every message compares the row with the environment of its process: while the two differ, each one that
+reads the tenant fails, and the log names the setting that differs, `look` for the logo and the colours,
+while the timed steps wait. Changing one of them is therefore a restart of
+every process with the new value, and `bin/console beffroi:tenant:synchronize` run in one of them; a process
+still on the previous value stops serving from that moment.
 
 ## Keys and lifetimes
 
@@ -62,7 +93,7 @@ say what each one decides.
 | Variable | In `.env` | What it decides |
 |---|---|---|
 | `BEFFROI_JWKS_MAX_AGE` | `300` | How long a relying party may cache the JWK Set (RFC 7517 §5) |
-| `BEFFROI_KEY_STAGING_DELAY` | empty | How long a new key is published before it signs. Empty, `BEFFROI_JWKS_MAX_AGE` plus sixty seconds, 360 with the values of `.env`. The SAML signing key has [its own](#saml) |
+| `BEFFROI_KEY_STAGING_DELAY` | empty | How long a new key is published before it signs. Empty, `BEFFROI_JWKS_MAX_AGE` plus sixty seconds, the delay after which Symfony's `oidc_login` reads the set again for a `kid` it does not hold: 360 with the values of `.env`. The SAML signing key has [its own](#saml) |
 | `BEFFROI_KEY_AGE` | `7776000`, ninety days | How long a key signs before a successor is staged behind it |
 | `BEFFROI_ACCESS_TOKEN_TTL` | `600` | The lifetime of an access token, whether it is an `at+jwt` or an opaque reference |
 | `BEFFROI_ID_TOKEN_TTL` | `600` | The lifetime of an ID token |
@@ -167,12 +198,22 @@ on what its own clients send.
 | Variable | In `.env` | What it decides |
 |---|---|---|
 | `APP_ENV` | `dev` | The environment of the kernel. The production image sets `prod` |
+| `APP_DEBUG` | not set | Whether the kernel runs in debug mode, off in `prod` when it is not set. The image compiles its container with debug off |
 | `APP_SECRET` | empty | The secret of the kernel, `framework.secret`. `.env.dev` and `.env.test` give one each, for their own environment, so a production environment names its own. While `BEFFROI_DATA_KEY_SECRETS` is not set, it is also the secret every data key of personal data is bound to its row under: the store of the data keys refuses an empty one the first time it is used, and changing it alone leaves the personal data unreadable: [operating it](operating.md#data-keys) says how it is replaced |
-| `APP_SHARE_DIR` | `var/share` | The share directory of Symfony, one per environment beneath it, `var/share/prod` for a production kernel. It holds the filesystem pool of `cache.app`, and with it the [caches the processes share](deployment.md#what-the-processes-share) |
-| `DEFAULT_URI` | `https://op.localhost` | The URL Symfony generates absolute URLs under outside a request, `framework.router.default_uri` |
+| `APP_SHARE_DIR` | `var/share` | The share directory of Symfony, one per environment beneath it, `var/share/prod` for a production kernel. It holds the filesystem pool of `cache.app`, and with it the [caches the processes share](deployment.md#what-the-processes-share). It is compiled into the container when the image is built: set when a container starts, it moves nothing |
+| `DEFAULT_URI` | `https://op.localhost` | The URL Symfony generates absolute URLs under outside a request, in the console and in the worker, `framework.router.default_uri`: the issuer |
 | `DEFAULT_LOCALE` | `en` | The language a page falls back to, among the two the application serves, `en` and `fr` |
 | `DATABASE_URL` | `postgresql://beffroi:beffroi@127.0.0.1:5432/beffroi?serverVersion=16&charset=utf8` | The PostgreSQL database. The entrypoint of the image waits for it, and the migrations refuse any other platform |
-| `SYMFONY_TRUSTED_PROXIES` | not set | The proxies whose forwarded address and scheme Symfony reads, `framework.trusted_proxies`. The application names none. Behind a proxy that terminates TLS, a deployment names it: without it, every request reads as plain HTTP from the address of the proxy |
+| `SYMFONY_TRUSTED_PROXIES` | not set | The proxies whose forwarded address and scheme Symfony reads, `framework.trusted_proxies`. The application names none. Behind a proxy that terminates TLS, a deployment names it: without it, every request reads as plain HTTP from the address of the proxy. Addresses or networks separated by commas, `private_ranges` standing for every private network |
+| `SYMFONY_TRUSTED_HEADERS` | not set | The headers Symfony reads from those proxies, separated by commas. Not set, `x-forwarded-for`, `x-forwarded-port` and `x-forwarded-proto` |
+| `SYMFONY_TRUSTED_HOSTS` | not set | The hosts a request may name, as regular expressions separated by commas, `framework.trusted_hosts`. A request that names another is refused with `400`. Not set, every host |
+| `SYMFONY_TRUST_X_SENDFILE_TYPE_HEADER` | not set | Whether a file Symfony answers with, a script of the provider, is handed to a proxy that asks for it with `X-Sendfile-Type`. Not set, never |
+| `FRANKENPHP_LOOP_MAX` | not set | The requests a PHP worker of the server serves before it restarts, read by the runtime of Symfony: 500 when it is not set, never with `0` or a negative number |
+
+The kernel and the runtime of Symfony read others, which a deployment leaves unset, among them `APP_RUNTIME`,
+`APP_RUNTIME_OPTIONS`, `APP_RUNTIME_ENV` and `APP_RUNTIME_MODE`, which choose and describe the runtime the
+image ships with, `APP_CACHE_DIR` and `APP_BUILD_DIR`, which move the directories the image compiled its
+container into, and `APP_LOG_DIR`, which moves its logs.
 
 ## The web server
 
@@ -180,7 +221,7 @@ These are read by Caddy and FrankenPHP, not by the kernel.
 
 | Variable | What it decides |
 |---|---|
-| `SERVER_NAME` | The host Caddy serves the provider on, `localhost` when it is not set |
+| `SERVER_NAME` | The host Caddy serves the provider on, `localhost` when it is not set. When Caddy terminates TLS, it obtains the certificate of that host itself, from a public authority for a public name and from its internal authority for `localhost`, and keeps it under `/data` |
 | `TLS_TERMINATION` | Who terminates the TLS of the site of `SERVER_NAME`. `caddy`, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. `proxy`: a proxy in front of the image, which sends the site plain HTTP, `SERVER_NAME` then naming the one host the proxy asks for, or `:<port>` for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way |
 | `MTLS_SERVER_NAME` | The host of the listener that asks for a client certificate, in `mtls.Caddyfile` |
 | `CADDY_EXTRA_CONFIG` | Configuration added to the `Caddyfile` beside the site of `SERVER_NAME`. `import mtls.Caddyfile` is what serves the host that asks for a client certificate |
@@ -222,6 +263,11 @@ the same. An envelope sealed by one backend does not open with another.
     ``` bash
     umask 077 && mkdir -p /app/var/kms && chmod 700 /app/var/kms && head -c 32 /dev/urandom > /app/var/kms/beffroi-default.key
     ```
+
+    It is the backend of a deployment that has no key management service.
+    [The Compose file of the image](../getting-started/the-standalone-application.md#the-compose-file-of-the-image)
+    keeps that directory in a volume of its own, mounted on the server and on the worker, and its header gives
+    the same command, run in the image, to draw the key into it once before anything is sealed.
 
 === "HashiCorp Vault"
 
@@ -280,7 +326,11 @@ deployment chooses, and compiles only what is the same for every deployment of t
 |---|---|---|
 | `keys.kms` | `op` | The client of `config/packages/key_management.yaml` the keys are sealed with, built from `BEFFROI_KMS_DSN` |
 | `keys.storage`, `webauthn.metadata_storage`, `geoip.storage` | `var/keys`, `var/webauthn` and `var/geoip` under the application | The directories of the sealed keys, of the FIDO metadata and of the GeoLite2 databases |
-| `clients` | None | The clients of the deployment, declared as [your first client](../getting-started/your-first-client.md) is |
+| `clients` | None | The image declares no client: a client registers itself, as [your first client](../getting-started/your-first-client.md) does |
+
+No variable sets the exemption of confidential clients from PKCE either: the application leaves
+`client_registration.exempt_confidential_clients_from_pkce` at `false`, so every client registers with PKCE
+required.
 
 [:beffroi-arrow-right: The whole configuration tree](../reference/configuration.md)
 

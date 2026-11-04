@@ -31,6 +31,7 @@ machine to the next through its environment.
 |---|---|
 | [Deployment](deployment.md) | The image, FrankenPHP in worker mode, and the two planes |
 | [Configuration](configuration.md) | The environment the application reads, and what each variable decides |
+| [Examples](examples.md) | Whole deployments written with those variables: one host, behind a proxy, lists in JSON |
 | [Console commands](console-commands.md) | Tenant, users, groups, clients, keys, data keys, SAML metadata, FIDO metadata |
 | [Operating it](operating.md) | Rotating keys, rewrapping data keys, migrations, backups |
 | [Observability](observability.md) | What the provider records of a request, a session and a token |
