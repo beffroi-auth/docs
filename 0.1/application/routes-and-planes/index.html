@@ -4022,12 +4022,18 @@ provider can serve the protocol on machines a browser never reaches, from the sa
 </span></code></pre></div>
 <p><code>config/beffroi/routes.php</code> routes the controllers of <code>src/Controller/</code> by their attributes, and the
 application imports it with no prefix.</p>
-<p><strong>The routes are served under the path of the issuer.</strong> Every endpoint the provider announces is located
-under the origin of the issuer and the path the router gives it, never under the <code>Host</code> of the request. The
-application imports its routes at the root, so its issuer is an origin with no path: an issuer with a path,
-which makes clients look for the endpoints under it, is refused at the first request that needs the
-endpoints, the discovery document among them. The issuer <code>https://example.com/idp</code> gives:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>The discovery document is served at "https://example.com/.well-known/openid-configuration" but the issuer "https://example.com/idp" makes clients look for it at "https://example.com/idp/.well-known/openid-configuration" (OIDC Discovery section 4.1): mount the routes of the provider under the path of the issuer.
+<p><strong>The issuer is an origin.</strong> Every endpoint the provider announces is located under the origin of the issuer
+and the path the router gives it, never under the <code>Host</code> of the request. The application imports its routes at
+the root, and the issuer of its tenant is an origin with no path. An issuer with a path is refused where the
+application reads the tenant of its configuration: <code>beffroi:tenant:synchronize</code> refuses it, and so does every
+request that reads the tenant. The issuer <code>https://example.com/idp</code> gives:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>The issuer "https://example.com/idp" carries a path: the issuer of a tenant is an origin, the routes of the provider being served at its root.
+</span></code></pre></div>
+<p>A proxy that serves the provider under a path does not change that. Symfony reads the prefix a proxy forwards in
+<code>X-Forwarded-Prefix</code> only when <code>SYMFONY_TRUSTED_HEADERS</code> names it, and the router then writes every path under
+that prefix, where an issuer that is an origin does not make clients look: the first request that needs the
+endpoints is refused. Behind such a proxy, the issuer <code>https://example.com</code> gives:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>The discovery document is served at "https://example.com/idp/.well-known/openid-configuration" but the issuer "https://example.com" makes clients look for it at "https://example.com/.well-known/openid-configuration" (OIDC Discovery section 4.1): mount the routes of the provider under the path of the issuer.
 </span></code></pre></div>
 <p>The metadata of both SAML roles are held to the same rule, and refused the same way.</p>
 <p><strong>The root is not a route of the provider.</strong> No route of <code>config/beffroi/routes.php</code> is <code>/</code>. The application,
@@ -4037,8 +4043,8 @@ that serves the protocol alone answers it <code>404</code> like every page meant
 <div class="admonition warning">
 <p class="admonition-title">The routes are imported by name, never through <code>routing.controllers</code></p>
 <p>The <code>routing.controllers</code> resource Symfony 8.2 offers routes every service that carries a <code>#[Route]</code>
-attribute, whatever file imports it and with no prefix. It would put the routes of the provider at the
-root of an issuer that has a path, and the endpoints of the conformance tools below in every environment.
+attribute, whatever file imports it and with no prefix. It would put the endpoints of the conformance
+tools below in every environment.
 The application does not use it: each file of <code>config/routes/</code> names the resource it imports.</p>
 </div>
 <h3 id="two-files-for-development-only">Two files for development only<a class="headerlink" href="#two-files-for-development-only" title="Link to this section">&para;</a></h3>
@@ -4046,15 +4052,15 @@ The application does not use it: each file of <code>config/routes/</code> names 
 endpoints the FIDO Conformance Tools drive, and the endpoint the OpenID conformance suite answers a backchannel
 request with when nobody is there to answer it. They are not an API of the product. The application imports
 them in development only, each under a prefix of its own, and its image carries neither:</p>
-<div class="language-yaml highlight"><span class="filename">config/routes/fido_conformance.yaml</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">when@dev</span><span class="p">:</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">beffroi_fido_conformance</span><span class="p">:</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'../beffroi/routes/fido-conformance.php'</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/fido/conformance</span>
+<div class="language-yaml highlight"><span class="filename">config/routes/fido_conformance.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">when@dev</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">beffroi_fido_conformance</span><span class="p">:</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'../beffroi/routes/fido-conformance.php'</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/fido/conformance</span>
 </span></code></pre></div>
-<div class="language-yaml highlight"><span class="filename">config/routes/ciba_conformance.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">when@dev</span><span class="p">:</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">beffroi_ciba_conformance</span><span class="p">:</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'../beffroi/routes/ciba-conformance.php'</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/ciba/conformance</span>
+<div class="language-yaml highlight"><span class="filename">config/routes/ciba_conformance.yaml</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">when@dev</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">beffroi_ciba_conformance</span><span class="p">:</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'../beffroi/routes/ciba-conformance.php'</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">        </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/ciba/conformance</span>
 </span></code></pre></div>
 <p>Their names, <code>beffroi_fido_conformance_*</code> and <code>beffroi_ciba_conformance_approval</code>, carry no plane.</p>
 <h2 id="the-two-planes">The two planes<a class="headerlink" href="#the-two-planes" title="Link to this section">&para;</a></h2>
@@ -4078,7 +4084,7 @@ them in development only, each under a prefix of its own, and its image carries 
 <td>Interaction</td>
 <td><code>beffroi_interaction_*</code></td>
 <td>A browser, with a person in front of it</td>
-<td>The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the enrolment of a first passkey, the choice of a language, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to</td>
+<td>The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the enrolment of a first passkey, the choice of a language and of a theme, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to</td>
 </tr>
 </tbody>
 </table>
@@ -4086,7 +4092,8 @@ them in development only, each under a prefix of its own, and its image carries 
 </span> Every route, with its method and path</a></p>
 <p>What tells the planes apart is the name and nothing else. A route is of the protocol plane because its name
 starts <code>beffroi_protocol_</code>, so a route the provider gains is in its plane by being routed, and a route whose
-name starts with neither, as <code>app_theme</code>, where a visitor chooses the theme of the pages, belongs to no plane.</p>
+name starts with neither belongs to no plane. Every route the image serves carries one; the routes of no plane
+are the ones a development stack adds, the endpoints of the conformance tools above among them.</p>
 <h2 id="restricting-a-process-to-one-plane">Restricting a process to one plane<a class="headerlink" href="#restricting-a-process-to-one-plane" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4114,14 +4121,14 @@ name starts with neither, as <code>app_theme</code>, where a visitor chooses the
 Every process imports the same routes and declares the same firewalls; what differs between the process that
 serves the browsers and the one that serves the clients is one variable of its environment, which the second
 sets to:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>BEFFROI_PLANE=protocol
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>BEFFROI_PLANE=protocol
 </span></code></pre></div>
 <p><strong>A route of the other plane answers <code>404</code></strong>, the answer an unknown path gets, and the exception says why:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>The route "beffroi_interaction_login" belongs to a plane this process does not serve (BEFFROI_PLANE=protocol).
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>The route "beffroi_interaction_login" belongs to a plane this process does not serve (BEFFROI_PLANE=protocol).
 </span></code></pre></div>
 <p>The refusal is made once the router has named the route and before the firewall reads anything, so a
 request refused for its plane opens no session and is not counted against the load budget of its origin. A
-route of no plane, the choice of a theme or an endpoint of the conformance tools, is never refused.</p>
+route of no plane, an endpoint of the conformance tools on a development stack, is never refused.</p>
 <p><strong>A value that is none of the three refuses every request of the process</strong>, the routes of no plane included.
 A plane nobody spelled right is not <code>all</code>.</p>
 <h2 id="what-every-route-of-the-two-planes-carries">What every route of the two planes carries<a class="headerlink" href="#what-every-route-of-the-two-planes-carries" title="Link to this section">&para;</a></h2>
@@ -4145,7 +4152,7 @@ origin and never with credentials. No other route carries a CORS header.</p>
 <p>A deployment whose TLS listener asks for a client certificate on a host of its own names that host in
 <code>BEFFROI_MTLS_ORIGIN</code>, which the application reads into <code>mutual_tls.origin</code>, and the endpoints are located a
 second time under it, with the same paths (RFC 8705 §5):</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>BEFFROI_MTLS_ORIGIN=https://mtls.op.example.com
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>BEFFROI_MTLS_ORIGIN=https://mtls.op.example.com
 </span></code></pre></div>
 <p>The discovery document announces them in <code>mtls_endpoint_aliases</code>. The issuer does not change: an alias is
 another way to the same provider, not another provider. With no origin named, the document announces no
@@ -4172,7 +4179,7 @@ alias, and a client that authenticates by mutual TLS reaches the ordinary endpoi
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 10:26:34 UTC">November 4, 2026</span>
   </span>
 
     

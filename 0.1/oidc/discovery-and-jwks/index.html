@@ -4013,8 +4013,9 @@ document an hour.</p>
 <p><strong>The routes are where the issuer says they are.</strong> OIDC Discovery 1.0 §4.1 appends the well-known path to the
 issuer, and the application mounts its routes at the root, so its issuer is an origin: a deployment whose
 issuer is <code>https://op.example.com</code> serves <code>https://op.example.com/.well-known/openid-configuration</code>. An issuer
-that carries a path makes every endpoint that locates the others fail at the first request, with an error that
-names both URLs, rather than publish endpoints a client would not find. RFC 8414 §3 inserts its well-known
+that carries a path is refused, by the synchronisation of the tenant and by every request that reads it, rather
+than publish endpoints a client would not find (<a href="../../application/routes-and-planes/">routes and planes</a>).
+RFC 8414 §3 inserts its well-known
 segment between the host and the path of the issuer instead, and under an issuer that is an origin the two
 locations are the same URL.</p>
 <p><strong>Every URL is built from the issuer</strong>, never from the <code>Host</code> header of the request that asked.</p>
@@ -4237,7 +4238,7 @@ stages a successor once a key has worked its age.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 10:26:34 UTC">November 4, 2026</span>
   </span>
 
     
