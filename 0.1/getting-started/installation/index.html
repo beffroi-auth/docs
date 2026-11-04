@@ -2963,6 +2963,8 @@
       
         
       
+        
+      
     
     
     
@@ -3055,6 +3057,34 @@
     
   
     Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
   
 
     
@@ -3923,7 +3953,7 @@ them is its own integration.</p>
 </tr>
 <tr>
 <td>A key management service</td>
-<td>To seal the signing keys and the data keys. For development, a local file-backed client is enough; a deployment uses Vault, AWS KMS or another provider <code>symfony/key-management</code> supports</td>
+<td>To seal the signing keys and the data keys. A key in a file of its own is the floor where no service is at hand, and holds against a dump of the storage, not against a compromise of the host; Vault, AWS KMS or another provider <code>symfony/key-management</code> supports keeps the key off the host</td>
 </tr>
 <tr>
 <td>TLS</td>
@@ -3933,15 +3963,15 @@ them is its own integration.</p>
 </table>
 <p>The image of the application carries the rest: PHP with the extensions the provider needs, and FrankenPHP to
 serve it.</p>
-<p>A message broker is not required to start. The writes the protocol does not need the result of are
-dispatched asynchronously, to transports that default to the database, <code>doctrine://default</code>, where they wait
-for a worker that consumes them (<code>messenger:consume</code>). A broker takes their place by its DSN in
-<code>BEFFROI_MESSENGER_DSN</code>.</p>
+<p>No message broker is needed. The writes the protocol does not need the result of are dispatched
+asynchronously, to four lanes that are queues of the database, <code>doctrine://default?queue_name={lane}</code> in
+<code>BEFFROI_MESSENGER_DSN</code>, where they wait for a worker that consumes them (<code>messenger:consume</code>).</p>
 <div class="admonition info">
-<p class="admonition-title">Nothing is published yet</p>
-<p>The <code>beffroi/*</code> packages are not on Packagist at this point. The application is built from a working copy
-of the monorepo, <a href="https://github.com/beffroi-auth/beffroi">beffroi-auth/beffroi</a>, which is how the pages
-that follow run it.</p>
+<p class="admonition-title">Not public yet</p>
+<p>The <code>beffroi/*</code> packages are not on Packagist at this point, and the monorepo,
+<a href="https://github.com/beffroi-auth/beffroi">beffroi-auth/beffroi</a>, and its image, <code>ghcr.io/beffroi-auth/op</code>,
+are private. The pages that follow run the application from a working copy of the monorepo, and from that
+image.</p>
 </div>
 <h2 id="the-application">The application<a class="headerlink" href="#the-application" title="Link to this section">&para;</a></h2>
 <p><code>beffroi/op</code> is a Symfony application served by FrankenPHP in worker mode. It holds the protocols, the
@@ -3984,7 +4014,7 @@ refused rather than served: another issuer is another tenant, under another slug
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
   </span>
 
     

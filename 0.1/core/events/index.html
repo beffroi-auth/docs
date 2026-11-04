@@ -3024,6 +3024,8 @@
       
         
       
+        
+      
     
     
     
@@ -3116,6 +3118,34 @@
     
   
     Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
   
 
     
@@ -4323,13 +4353,12 @@ page of a code says apart when too many codes have been tried.</p>
 <p>The page of the account that reads the journal of a person shows every act of this list that concerns a person,
 <code>password.rehashed</code> excepted, which is this provider storing a hash again and nothing the person did.</p>
 <h2 id="how-they-leave">How they leave<a class="headerlink" href="#how-they-leave" title="Link to this section">&para;</a></h2>
-<p>In the application, the dispatcher the core is handed is <code>EventBusDispatcher</code>, which replays every event on the
-<code>event.bus</code> of Messenger; an event raised by the handler of a message leaves once that handler has committed
-its work. Every event is routed by the
-interface they all implement to the transport <code>async_priority_low</code>, the database unless the deployment names a
-broker, and its body is sealed to the message key of the tenant on its way out. Nothing listens in the process
-that raised it: a worker that consumes the transport is where every listener runs, and an event nothing listens to
-is announced all the same.</p>
+<p>In the application, the dispatcher the core is handed is <code>EventBusDispatcher</code>, which replays every event on
+the <code>event.bus</code> of Messenger; an event raised by the handler of a message leaves once that handler has
+committed its work. Every event is routed by the interface they all implement to the transport
+<code>async_priority_low</code>, a queue of the database, and its body is sealed to the message key of the tenant on its
+way out. Nothing listens in the process that raised it: a worker that consumes the transport is where every
+listener runs, and an event nothing listens to is announced all the same.</p>
 <p>What listens is a message handler of <code>event.bus</code>. The handlers of the application are classes marked
 <code>#[AsMessageHandler(bus: 'event.bus')]</code> whose <code>__invoke()</code> is typed on an event, or on an interface every event of
 a kind implements, which is how the one that writes the journal hears every event of the three packages.
@@ -4354,7 +4383,7 @@ a kind implements, which is how the one that writes the journal hears every even
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
   </span>
 
     

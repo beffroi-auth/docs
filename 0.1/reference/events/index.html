@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Every event the core, the protocol and the SAML package dispatch, what each one carries, what listens to it, and how it crosses the broker.">
+        <meta name="description" content="Every event the core, the protocol and the SAML package dispatch, what each one carries, what listens to it, and how it leaves the process.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -73,7 +73,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Events">
-  <meta property="og:description" content="Every event the core, the protocol and the SAML package dispatch, what each one carries, what listens to it, and how it crosses the broker.">
+  <meta property="og:description" content="Every event the core, the protocol and the SAML package dispatch, what each one carries, what listens to it, and how it leaves the process.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -2879,6 +2879,8 @@
       
         
       
+        
+      
     
     
     
@@ -2971,6 +2973,34 @@
     
   
     Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
   
 
     
@@ -3669,10 +3699,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#every-event-crosses-the-broker" class="md-nav__link">
+  <a href="#every-event-leaves-the-process" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Every event crosses the broker
+        Every event leaves the process
       
     </span>
   </a>
@@ -3868,10 +3898,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#every-event-crosses-the-broker" class="md-nav__link">
+  <a href="#every-event-leaves-the-process" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Every event crosses the broker
+        Every event leaves the process
       
     </span>
   </a>
@@ -3958,12 +3988,12 @@ say what each one carries beyond those four, and who it concerns:</p>
 <li><strong>a client</strong>, when it implements <code>ConcernsAClientInterface</code> and names the client by the identifier it was
   registered under, never the client itself.</li>
 </ul>
-<h2 id="every-event-crosses-the-broker">Every event crosses the broker<a class="headerlink" href="#every-event-crosses-the-broker" title="Link to this section">&para;</a></h2>
-<p>An event is routed to the transport <code>async_priority_low</code>, the database unless the deployment names a broker,
-every one of them by the interface they all implement, so an event added to a package leaves the process without
-a line of configuration. Its body is a JWE to the message key of the tenant; what stays readable on the transport
-is the class of the event, its stamps and the slug of its tenant. Nothing listens in the process that raised it,
-and an event nothing listens to is announced all the same.</p>
+<h2 id="every-event-leaves-the-process">Every event leaves the process<a class="headerlink" href="#every-event-leaves-the-process" title="Link to this section">&para;</a></h2>
+<p>An event is routed to the transport <code>async_priority_low</code>, a queue of the database, every one of them by the
+interface they all implement, so an event added to a package leaves the process without a line of
+configuration. Its body is a JWE to the message key of the tenant; what stays readable on the transport is the
+class of the event, its stamps and the slug of its tenant. Nothing listens in the process that raised it, and
+an event nothing listens to is announced all the same.</p>
 <h2 id="what-listens">What listens<a class="headerlink" href="#what-listens" title="Link to this section">&para;</a></h2>
 <p><strong>Every event is written to the journal.</strong> <code>WriteTheActDownHandler</code> hears every event of the three packages and
 writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person and the
@@ -4417,7 +4447,7 @@ is. The reason of <code>pushed_request.refused</code> is one of <code>unknown_re
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
   </span>
 
     

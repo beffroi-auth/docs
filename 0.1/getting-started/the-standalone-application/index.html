@@ -735,6 +735,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#the-compose-file-of-the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Compose file of the image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#the-first-start-in-order" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2991,6 +3002,8 @@
       
         
       
+        
+      
     
     
     
@@ -3083,6 +3096,34 @@
     
   
     Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
   
 
     
@@ -3908,6 +3949,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#the-compose-file-of-the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Compose file of the image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#the-first-start-in-order" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4027,7 +4079,8 @@ code and configuration, in its own directories.</p>
 <p><a href="../../application/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The application, page by page</a></p>
 <h2 id="on-your-machine">On your machine<a class="headerlink" href="#on-your-machine" title="Link to this section">&para;</a></h2>
-<p>The development stack runs the application in Docker beside PostgreSQL. It is driven from the
+<p>The development stack runs the application in Docker beside PostgreSQL, whose table <code>messenger_messages</code>
+holds the queues of the lanes as well. It is driven from the
 root of the monorepo by Castor, 0.23 or later, and asks the machine for Docker Compose and Composer besides.
 The two <code>composer install</code> below run on the machine and not in a container, so it also needs PHP 8.4 or later
 with the extensions the locked packages require, <code>intl</code>, <code>dom</code> and <code>zip</code> among them.</p>
@@ -4037,7 +4090,7 @@ with the extensions the locked packages require, <code>intl</code>, <code>dom</c
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>castor<span class="w"> </span>provision
 </span></code></pre></div>
 <p><code>castor start</code> brings up the provider on <code>https://op.localhost</code>, the host that asks for a client certificate
-on <code>https://mtls.op.localhost</code>, and PostgreSQL. On a machine with an mkcert authority, the stack
+on <code>https://mtls.op.localhost</code> and PostgreSQL. On a machine with an mkcert authority, the stack
 serves a certificate mkcert issues there for its names, which a browser that trusts mkcert accepts; on any
 other, Caddy issues one from its internal authority. On a stack that names no key management service yet, the
 worker is created and left stopped, because it refuses to start without one.</p>
@@ -4067,15 +4120,48 @@ conformance suite, and those of the demonstrations of the repository, among them
 expects:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>build<span class="w"> </span>--file<span class="w"> </span>apps/op/Dockerfile<span class="w"> </span>--target<span class="w"> </span>frankenphp_prod<span class="w"> </span>.
 </span></code></pre></div>
-<p>The build copies <code>apps/op/</code> of the working copy as it stands, installs the application without its
-development dependencies, compiles <code>.env</code> for production with <code>composer dump-env prod</code>, builds the stylesheet
-and compiles the assets. <code>composer dump-env</code> compiles a <code>.env.local</code> too when one is there, and the one the
-development stack writes holds its key management service, the secrets of its clients and the password of its
-user: the image is built from a checkout that holds no <code>.env.local</code>. What changes from one machine to the next
-is then read from the environment when the container starts: the issuer, the database, the key management
-service.</p>
+<p>The build copies <code>apps/op/</code> without what a working copy holds beside the repository, such as the <code>.env.local</code>
+the development stack writes, installs the application without its development dependencies, compiles
+the <code>.env</code> of the repository for production with <code>composer dump-env prod</code>, builds the stylesheet and compiles
+the assets. What a deployment chooses is then read from the environment when the container starts: the
+issuer, the database, the key management service, the lanes, and every other setting of the provider.</p>
 <p><a href="../../application/configuration/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
-</span> The environment the application reads</a></p>
+</span> The environment the application reads</a> and
+<a href="../../application/examples/">whole deployments written with it</a></p>
+<h3 id="the-compose-file-of-the-image">The Compose file of the image<a class="headerlink" href="#the-compose-file-of-the-image" title="Link to this section">&para;</a></h3>
+<p>The monorepo carries a deployment of the published image, <code>ghcr.io/beffroi-auth/op</code>, in one file at its root,
+<a href="https://github.com/beffroi-auth/beffroi/blob/0.0.x/compose.prod.yaml"><code>compose.prod.yaml</code></a>. It stands alone,
+so it is downloaded without the rest of the monorepo, and runs three services: the server, the worker and
+PostgreSQL, whose table <code>messenger_messages</code> holds the queues of the lanes. No broker runs beside them.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.prod.yaml<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--wait<span class="w"> </span>op
+</span></code></pre></div>
+<ul>
+<li><strong>It reads its environment from a <code>.env</code> beside it</strong>, and refuses to start without five variables, none of
+  which it gives a value: <code>SERVER_NAME</code>, the host Caddy serves and obtains a certificate for, which makes the
+  issuer <code>https://&lt;host&gt;</code>; <code>APP_SECRET</code>; <code>POSTGRES_PASSWORD</code>, written into a URL as it stands; and
+  <code>BEFFROI_KMS_DSN</code> with <code>BEFFROI_KMS_KEY_ID</code>.</li>
+<li><strong>The two processes mount the same five volumes</strong>, for <code>var/keys</code>, <code>var/kms</code>, <code>var/geoip</code>, <code>var/webauthn</code>
+  and <code>var/share</code>. Under the file backend, the master key of the tenant is drawn once into the volume of
+  <code>var/kms</code>, before anything is sealed, by the command the header of the file gives.</li>
+<li><strong>The processes run as <code>www-data</code>, uid 33.</strong> The volumes are theirs from their first mount, and what a
+  deployment mounts in their place, a directory of its own or the key of the file backend given as a secret,
+  is readable by that uid, and writable where it stands for one of these volumes.</li>
+<li><strong>The two processes read the six variables the file names</strong>, the issuer, <code>DEFAULT_URI</code>, <code>APP_SECRET</code>, the
+  database and the key management service, written once for both. Compose hands a container nothing else of
+  its <code>.env</code>, so any other variable is added to the environment of both processes:
+  <a href="../../application/examples/#one-host">one host</a>.</li>
+<li><strong>Only the server publishes ports</strong>, 80 and 443 over TCP and 443 over UDP. PostgreSQL is reached by the two
+  processes alone.</li>
+<li><strong>The worker has a health check of its own</strong>, that the consumer is the first process of its container: the
+  one of the image asks Caddy, which the worker does not run.</li>
+<li><strong>The host that asks for a client certificate is off</strong>, and three commented variables of the server turn it
+  on: <code>CADDY_EXTRA_CONFIG</code>, <code>MTLS_SERVER_NAME</code> and <code>BEFFROI_MTLS_ORIGIN</code>.</li>
+<li><strong>Caddy terminates TLS</strong>, and two commented variables of the server hand it to a proxy in front of the
+  image: <code>TLS_TERMINATION</code>, which serves the site of <code>SERVER_NAME</code> on plain HTTP, on port 80, to the proxy
+  that asks for that host, and <code>SYMFONY_TRUSTED_PROXIES</code>, which names the proxy to Symfony:
+  <a href="../../application/deployment/#behind-a-proxy">behind a proxy</a>.</li>
+</ul>
+<p>Its header gives the first start in the order below, the worker started last.</p>
 <h3 id="the-first-start-in-order">The first start, in order<a class="headerlink" href="#the-first-start-in-order" title="Link to this section">&para;</a></h3>
 <p>The order is the one of <code>castor provision</code>, and two of its constraints hold for every deployment: the tenant
 has a row before it has a key, and its first key is the one messages are sealed to.</p>
@@ -4084,9 +4170,9 @@ has a row before it has a key, and its first key is the one messages are sealed 
    FrankenPHP starts, every time it starts.</li>
 <li>
 <p><strong>The tenant and its keys</strong>, in a container of the image:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:tenant:synchronize
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>MESSAGE-SEAL
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>bin/console<span class="w"> </span>beffroi:keys:generate
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:tenant:synchronize
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>MESSAGE-SEAL
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>bin/console<span class="w"> </span>beffroi:keys:generate
 </span></code></pre></div>
 <p>Drawing a key announces it on a transport, and what goes on a transport is sealed to the key the tenant
 keeps for its messages. That key is therefore the first one: a tenant that does not hold it yet has
@@ -4097,8 +4183,8 @@ client that names no other algorithm.</p>
 <li>
 <p><strong>The keys of what this application turns on.</strong> Its configuration turns on web push and the SAML identity
    provider, each with a key of its own:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>VAPID
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>SAML-SIGNING
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>VAPID
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>SAML-SIGNING
 </span></code></pre></div>
 <p>The discovery document announces every algorithm the application is wired with, and a key is drawn for each
 one a client uses: a client that registers <code>ES256</code> for what the provider signs for it needs the key of
@@ -4107,8 +4193,8 @@ development stack draws both.</p>
 </li>
 <li>
 <p><strong>A person who can sign in</strong>:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:user:create<span class="w"> </span>alice<span class="w"> </span>--email<span class="w"> </span>alice@example.com
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bin/console<span class="w"> </span>beffroi:user:set-password<span class="w"> </span>alice
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bin/console<span class="w"> </span>beffroi:user:create<span class="w"> </span>alice<span class="w"> </span>--email<span class="w"> </span>alice@example.com
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>bin/console<span class="w"> </span>beffroi:user:set-password<span class="w"> </span>alice
 </span></code></pre></div>
 </li>
 <li>
@@ -4121,7 +4207,7 @@ development stack draws both.</p>
 <h2 id="then">Then<a class="headerlink" href="#then" title="Link to this section">&para;</a></h2>
 <ol>
 <li><a href="../tenant-and-keys/">The tenant and its keys</a>, for what each of those commands does.</li>
-<li><a href="../your-first-client/">Your first client</a>: outside development the application declares none.</li>
+<li><a href="../your-first-client/">Your first client</a>: the image declares none, and a client registers itself.</li>
 <li><a href="../a-symfony-relying-party/">A Symfony relying party</a>, to see a sign-in end to end.</li>
 </ol>
 
@@ -4144,7 +4230,7 @@ development stack draws both.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
   </span>
 
     

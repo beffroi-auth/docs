@@ -18,7 +18,7 @@
         <link rel="prev" href="../deployment/">
       
       
-        <link rel="next" href="../configuration-tree/">
+        <link rel="next" href="../examples/">
       
       
         
@@ -2881,6 +2881,8 @@
       
         
       
+        
+      
     
     
     
@@ -3025,6 +3027,17 @@
       On this page
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-deployment-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a deployment sets
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#the-provider" class="md-nav__link">
@@ -3173,6 +3186,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3956,6 +3997,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#what-a-deployment-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a deployment sets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4129,14 +4181,57 @@ database, the lifetimes, the look of the tenant, the roles it plays and the list
 configuration files hold what stays the same from one deployment to the next, and the clients.</p>
 <p><code>apps/op/.env</code> holds the value an image takes when the deployment names none, and the production image
 compiles it with <code>composer dump-env prod</code>. A real environment variable wins over it, which is how a deployment
-says its own. <code>.env</code> carries no secret of a deployment: the key management service, the key it seals under and
-the secret of the kernel are empty there, and the database is the one of the development stack. That stack
-writes its own secrets into <code>.env.local</code>, which is never committed and never reaches an image.</p>
+says its own, and an empty one wins too: an empty <code>BEFFROI_SAML_IDENTITY_PROVIDER</code> turns off the identity
+provider <code>.env</code> turns on. <code>.env</code> carries no secret of a deployment: the key management service, the key it
+seals under and the secret of the kernel are empty there, and the database is the one of the development
+stack. That stack writes its own secrets into <code>.env.local</code>, which is never committed and never reaches an image.</p>
 <p>Each variable that fills the <code>beffroi:</code> tree is read when the container builds the service it reaches, not when the container is compiled,
 so changing one asks for a restart of the processes and not for a new image. A value is held there to the
 bounds the <a href="../../reference/configuration/">configuration tree</a> sets for the option it fills, and to the rules
 between options: a value out of bounds is refused by the first request or command that needs it, not when the
 image is built.</p>
+<p><a href="../examples/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Whole deployments written with these variables</a></p>
+<h2 id="what-a-deployment-sets">What a deployment sets<a class="headerlink" href="#what-a-deployment-sets" title="Link to this section">&para;</a></h2>
+<p><code>.env</code> carries the values of the development stack, and every deployment replaces these:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>APP_SECRET</code></td>
+<td><code>.env</code> names none</td>
+</tr>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td><code>.env</code> names the database of the development stack</td>
+</tr>
+<tr>
+<td><code>BEFFROI_ISSUER</code> and <code>DEFAULT_URI</code></td>
+<td><code>.env</code> names the issuer of the development stack, <code>https://op.localhost</code></td>
+</tr>
+<tr>
+<td><code>BEFFROI_KMS_DSN</code> and <code>BEFFROI_KMS_KEY_ID</code></td>
+<td><code>.env</code> names no key management service, and nothing is sealed or signed without one</td>
+</tr>
+<tr>
+<td><code>SERVER_NAME</code></td>
+<td>The host Caddy serves, <code>localhost</code> when it is not set. Behind a proxy that terminates TLS, the host the proxy asks for, which <code>TLS_TERMINATION</code> serves over plain HTTP: <a href="../deployment/#behind-a-proxy">behind a proxy</a></td>
+</tr>
+</tbody>
+</table>
+<p>Three more decide what a deployment of real people does:</p>
+<ul>
+<li><code>BEFFROI_REGISTRATION_MODE</code>, without which no client can exist: the image declares none, and a client
+  reaches a deployment by registering itself.</li>
+<li><code>BEFFROI_WEB_PUSH_SUBJECT</code>, the contact a push service is given, which <code>.env</code> sets to the one of the
+  development stack.</li>
+<li><code>SYMFONY_TRUSTED_PROXIES</code>, behind a proxy, without which every request has the address of the proxy.</li>
+</ul>
 <h2 id="the-provider">The provider<a class="headerlink" href="#the-provider" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4230,7 +4325,7 @@ is no JSON document, and is refused.</p>
 <tr>
 <td><code>BEFFROI_TENANT_LOGO_URI</code></td>
 <td>empty</td>
-<td>The logo every page shows, an absolute <code>https</code> URL. Empty, the placeholder mark the image serves at <code>/tenant-logo.svg</code> under the issuer. A logo served from another host needs that origin in the <code>img-src</code> of <code>config/packages/nelmio_security.yaml</code>, and the host to answer <code>Cross-Origin-Resource-Policy: cross-origin</code>, the pages of the account requiring it</td>
+<td>The logo every page shows, an absolute <code>https</code> URL. Empty, the placeholder mark the image serves at <code>/tenant-logo.svg</code> under the issuer. Every page that shows the logo names its origin in its <code>img-src</code>. A logo served from another host shows on the account and the other pages outside the flows of the protocol only when that host answers <code>Cross-Origin-Resource-Policy: cross-origin</code>, which those pages require of an image of another origin</td>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
@@ -4259,6 +4354,13 @@ is no JSON document, and is refused.</p>
 </tr>
 </tbody>
 </table>
+<p><strong>Six of them are written in the row of the tenant</strong>, with its issuer: its name, its logo and its two colours,
+the claims a person changes and its <code>acr</code> classes. <code>beffroi:tenant:synchronize</code> writes them, and every request
+and every message compares the row with the environment of its process: while the two differ, each one that
+reads the tenant fails, and the log names the setting that differs, <code>look</code> for the logo and the colours,
+while the timed steps wait. Changing one of them is therefore a restart of
+every process with the new value, and <code>bin/console beffroi:tenant:synchronize</code> run in one of them; a process
+still on the previous value stops serving from that moment.</p>
 <h2 id="keys-and-lifetimes">Keys and lifetimes<a class="headerlink" href="#keys-and-lifetimes" title="Link to this section">&para;</a></h2>
 <p>In seconds. <a href="../../reference/configuration/#keys"><code>keys</code></a> and <a href="../../reference/configuration/#tokens"><code>tokens</code></a>
 say what each one decides.</p>
@@ -4279,7 +4381,7 @@ say what each one decides.</p>
 <tr>
 <td><code>BEFFROI_KEY_STAGING_DELAY</code></td>
 <td>empty</td>
-<td>How long a new key is published before it signs. Empty, <code>BEFFROI_JWKS_MAX_AGE</code> plus sixty seconds, 360 with the values of <code>.env</code>. The SAML signing key has <a href="#saml">its own</a></td>
+<td>How long a new key is published before it signs. Empty, <code>BEFFROI_JWKS_MAX_AGE</code> plus sixty seconds, the delay after which Symfony's <code>oidc_login</code> reads the set again for a <code>kid</code> it does not hold: 360 with the values of <code>.env</code>. The SAML signing key has <a href="#saml">its own</a></td>
 </tr>
 <tr>
 <td><code>BEFFROI_KEY_AGE</code></td>
@@ -4672,6 +4774,11 @@ on what its own clients send.</p>
 <td>The environment of the kernel. The production image sets <code>prod</code></td>
 </tr>
 <tr>
+<td><code>APP_DEBUG</code></td>
+<td>not set</td>
+<td>Whether the kernel runs in debug mode, off in <code>prod</code> when it is not set. The image compiles its container with debug off</td>
+</tr>
+<tr>
 <td><code>APP_SECRET</code></td>
 <td>empty</td>
 <td>The secret of the kernel, <code>framework.secret</code>. <code>.env.dev</code> and <code>.env.test</code> give one each, for their own environment, so a production environment names its own. While <code>BEFFROI_DATA_KEY_SECRETS</code> is not set, it is also the secret every data key of personal data is bound to its row under: the store of the data keys refuses an empty one the first time it is used, and changing it alone leaves the personal data unreadable: <a href="../operating/#data-keys">operating it</a> says how it is replaced</td>
@@ -4679,12 +4786,12 @@ on what its own clients send.</p>
 <tr>
 <td><code>APP_SHARE_DIR</code></td>
 <td><code>var/share</code></td>
-<td>The share directory of Symfony, one per environment beneath it, <code>var/share/prod</code> for a production kernel. It holds the filesystem pool of <code>cache.app</code>, and with it the <a href="../deployment/#what-the-processes-share">caches the processes share</a></td>
+<td>The share directory of Symfony, one per environment beneath it, <code>var/share/prod</code> for a production kernel. It holds the filesystem pool of <code>cache.app</code>, and with it the <a href="../deployment/#what-the-processes-share">caches the processes share</a>. It is compiled into the container when the image is built: set when a container starts, it moves nothing</td>
 </tr>
 <tr>
 <td><code>DEFAULT_URI</code></td>
 <td><code>https://op.localhost</code></td>
-<td>The URL Symfony generates absolute URLs under outside a request, <code>framework.router.default_uri</code></td>
+<td>The URL Symfony generates absolute URLs under outside a request, in the console and in the worker, <code>framework.router.default_uri</code>: the issuer</td>
 </tr>
 <tr>
 <td><code>DEFAULT_LOCALE</code></td>
@@ -4699,10 +4806,34 @@ on what its own clients send.</p>
 <tr>
 <td><code>SYMFONY_TRUSTED_PROXIES</code></td>
 <td>not set</td>
-<td>The proxies whose forwarded address and scheme Symfony reads, <code>framework.trusted_proxies</code>. The application names none. Behind a proxy that terminates TLS, a deployment names it: without it, every request reads as plain HTTP from the address of the proxy</td>
+<td>The proxies whose forwarded address and scheme Symfony reads, <code>framework.trusted_proxies</code>. The application names none. Behind a proxy that terminates TLS, a deployment names it: without it, every request reads as plain HTTP from the address of the proxy. Addresses or networks separated by commas, <code>private_ranges</code> standing for every private network</td>
+</tr>
+<tr>
+<td><code>SYMFONY_TRUSTED_HEADERS</code></td>
+<td>not set</td>
+<td>The headers Symfony reads from those proxies, separated by commas. Not set, <code>x-forwarded-for</code>, <code>x-forwarded-port</code> and <code>x-forwarded-proto</code></td>
+</tr>
+<tr>
+<td><code>SYMFONY_TRUSTED_HOSTS</code></td>
+<td>not set</td>
+<td>The hosts a request may name, as regular expressions separated by commas, <code>framework.trusted_hosts</code>. A request that names another is refused with <code>400</code>. Not set, every host</td>
+</tr>
+<tr>
+<td><code>SYMFONY_TRUST_X_SENDFILE_TYPE_HEADER</code></td>
+<td>not set</td>
+<td>Whether a file Symfony answers with, a script of the provider, is handed to a proxy that asks for it with <code>X-Sendfile-Type</code>. Not set, never</td>
+</tr>
+<tr>
+<td><code>FRANKENPHP_LOOP_MAX</code></td>
+<td>not set</td>
+<td>The requests a PHP worker of the server serves before it restarts, read by the runtime of Symfony: 500 when it is not set, never with <code>0</code> or a negative number</td>
 </tr>
 </tbody>
 </table>
+<p>The kernel and the runtime of Symfony read others, which a deployment leaves unset, among them <code>APP_RUNTIME</code>,
+<code>APP_RUNTIME_OPTIONS</code>, <code>APP_RUNTIME_ENV</code> and <code>APP_RUNTIME_MODE</code>, which choose and describe the runtime the
+image ships with, <code>APP_CACHE_DIR</code> and <code>APP_BUILD_DIR</code>, which move the directories the image compiled its
+container into, and <code>APP_LOG_DIR</code>, which moves its logs.</p>
 <h2 id="the-web-server">The web server<a class="headerlink" href="#the-web-server" title="Link to this section">&para;</a></h2>
 <p>These are read by Caddy and FrankenPHP, not by the kernel.</p>
 <table>
@@ -4715,7 +4846,7 @@ on what its own clients send.</p>
 <tbody>
 <tr>
 <td><code>SERVER_NAME</code></td>
-<td>The host Caddy serves the provider on, <code>localhost</code> when it is not set</td>
+<td>The host Caddy serves the provider on, <code>localhost</code> when it is not set. When Caddy terminates TLS, it obtains the certificate of that host itself, from a public authority for a public name and from its internal authority for <code>localhost</code>, and keeps it under <code>/data</code></td>
 </tr>
 <tr>
 <td><code>TLS_TERMINATION</code></td>
@@ -4773,6 +4904,10 @@ sealed keys: it holds against a dump of the storage, not against a compromise of
 mode <code>0600</code> in a directory <code>0700</code>, which the development stack writes this way when it is missing:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">umask</span><span class="w"> </span><span class="m">077</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/app/var/kms<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>/app/var/kms<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>head<span class="w"> </span>-c<span class="w"> </span><span class="m">32</span><span class="w"> </span>/dev/urandom<span class="w"> </span>&gt;<span class="w"> </span>/app/var/kms/beffroi-default.key
 </span></code></pre></div>
+<p>It is the backend of a deployment that has no key management service.
+<a href="../../getting-started/the-standalone-application/#the-compose-file-of-the-image">The Compose file of the image</a>
+keeps that directory in a volume of its own, mounted on the server and on the worker, and its header gives
+the same command, run in the image, to draw the key into it once before anything is sealed.</p>
 </div>
 <div class="tabbed-block">
 <p>The Transit engine wraps the data key of every envelope, and the private key never reaches Vault.</p>
@@ -4837,10 +4972,13 @@ deployment chooses, and compiles only what is the same for every deployment of t
 <tr>
 <td><code>clients</code></td>
 <td>None</td>
-<td>The clients of the deployment, declared as <a href="../../getting-started/your-first-client/">your first client</a> is</td>
+<td>The image declares no client: a client registers itself, as <a href="../../getting-started/your-first-client/">your first client</a> does</td>
 </tr>
 </tbody>
 </table>
+<p>No variable sets the exemption of confidential clients from PKCE either: the application leaves
+<code>client_registration.exempt_confidential_clients_from_pkce</code> at <code>false</code>, so every client registers with PKCE
+required.</p>
 <p><a href="../../reference/configuration/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The whole configuration tree</a></p>
 <h2 id="what-only-development-reads">What only development reads<a class="headerlink" href="#what-only-development-reads" title="Link to this section">&para;</a></h2>
@@ -4878,7 +5016,7 @@ fixtures. A production kernel reads none of them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
   </span>
 
     
@@ -4933,13 +5071,13 @@ fixtures. A production kernel reads none of them.</p>
         
         
           
-          <a href="../configuration-tree/" class="md-footer__link md-footer__link--next" aria-label="Next: Configuration tree">
+          <a href="../examples/" class="md-footer__link md-footer__link--next" aria-label="Next: Examples">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Configuration tree
+                Examples
               </div>
             </div>
             <div class="md-footer__button md-icon">

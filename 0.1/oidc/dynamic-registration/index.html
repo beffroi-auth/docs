@@ -3007,6 +3007,8 @@
       
         
       
+        
+      
     
     
     
@@ -3099,6 +3101,34 @@
     
   
     Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../application/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
   
 
     
@@ -4140,9 +4170,9 @@ nothing is read and nothing is refused before the metadata is, and everything el
 policy and the refusals, is the same. A credential presented anyway is read by nothing and spent by
 nothing.</p>
 <p>A client nobody vouched for chooses the name and the logo a person reads on the consent page, and a tenant
-that names this mode for its real users lets anybody write them. The application writes a
-<code>client_registration</code> in its development environment alone, where the mode is <code>open</code> unless the
-environment names another, for the conformance suite to register its clients.</p>
+that names this mode for its real users lets anybody write them. The application reads its mode from
+<code>BEFFROI_REGISTRATION_MODE</code>, empty in its image, which therefore registers nobody until a deployment names
+a mode; its development stack names <code>open</code>, for the conformance suite to register its clients.</p>
 </div>
 </div>
 </div>
@@ -4328,7 +4358,7 @@ declaration of the same member is refused.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
   </span>
 
     
