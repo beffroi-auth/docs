@@ -1,6 +1,6 @@
 ---
 title: Examples
-description: Whole deployments of the image written with its variables alone: one host with PostgreSQL, behind a proxy that terminates TLS, and the lists a deployment writes in JSON.
+description: 'Whole deployments of the image written with its variables alone: one host with PostgreSQL, behind a proxy that terminates TLS, and the lists a deployment writes in JSON.'
 ---
 
 # Examples
