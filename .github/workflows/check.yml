@@ -34,5 +34,10 @@ jobs:
 
             # --strict turns every warning into an error: a broken internal link, an anchor that does not
             # exist, a page absent from the navigation or a page in the navigation that does not exist.
+            # The front matter of a page is YAML: a description holding ": " or a backslash does not parse,
+            # and MkDocs then renders the block as the content of the page. --strict does not catch it.
+            - name: Check the front matter
+              run: python3 -I tools/front-matter.py docs
+
             - name: Build
               run: mkdocs build --strict

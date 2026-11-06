@@ -10,7 +10,7 @@ export NO_MKDOCS_2_WARNING := true
 export DISABLE_MKDOCS_2_WARNING := true
 
 .DEFAULT_GOAL := help
-.PHONY: help install serve build check versions clean
+.PHONY: help install serve build check front-matter versions clean
 
 help: ## Show this help
 	@grep -E '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -34,8 +34,13 @@ serve: install ## Serve the site on http://127.0.0.1:8000, rebuilt as you save
 build: install ## Build the site into site/
 	$(BIN)/mkdocs build
 
-check: install ## Build strictly: a broken link, a missing anchor or a page outside the navigation fails
+check: install front-matter ## Build strictly: a broken link, a missing anchor or a page outside the navigation fails
 	$(BIN)/mkdocs build --strict
+
+# A description holding ": " or a backslash is not a plain YAML scalar: the front matter is then rendered
+# as the content of the page, and --strict does not notice.
+front-matter: install ## Check that the front matter of every page parses as YAML
+	$(BIN)/python -I tools/front-matter.py docs
 
 versions: install ## List the versions published on gh-pages
 	$(BIN)/mike list
