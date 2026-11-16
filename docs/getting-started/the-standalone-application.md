@@ -76,7 +76,7 @@ browser to the home of the account, which asks it to sign in.
 
 The clients of the stack are declared for the development environment only: the clients of the OpenID
 conformance suite, and those of the demonstrations of the repository, among them
-[oidc-demo](a-symfony-relying-party.md#the-reference-relying-party). `castor stop` takes the stack down,
+[oidc-demo](symfony.md#the-reference-application). `castor stop` takes the stack down,
 `castor logs` follows its logs and `castor console` runs a console command in the container that serves it.
 
 ## As a deployment of its own
@@ -185,4 +185,4 @@ has a row before it has a key, and its first key is the one messages are sealed 
 
 1. [The tenant and its keys](tenant-and-keys.md), for what each of those commands does.
 2. [Your first client](your-first-client.md): the image declares none, and a client registers itself.
-3. [A Symfony relying party](a-symfony-relying-party.md), to see a sign-in end to end.
+3. [Add sign-in to a Symfony application](symfony.md), to see a sign-in end to end.

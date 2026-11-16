@@ -54,4 +54,4 @@ refused rather than served: another issuer is another tenant, under another slug
 1. [The application](the-standalone-application.md), on your machine or as a deployment of its own.
 2. [The tenant and its keys](tenant-and-keys.md), without which nothing can be signed.
 3. [Your first client](your-first-client.md), so something can ask for a token.
-4. [A Symfony relying party](a-symfony-relying-party.md), to see a sign-in end to end.
+4. [Add sign-in to a Symfony application](symfony.md), to see a sign-in end to end.
