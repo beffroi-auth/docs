@@ -1,16 +1,9 @@
 {% extends "base.html" %}
 
 {#-
-  The audience, counted by Plausible, which sets no cookie. Its script follows the history of the browser, so
-  the pages instant navigation opens without a reload are counted too.
+  The audience, counted by OpenPanel: its pages, its outgoing links and its tracked attributes.
 -#}
 {% block analytics %}
-  <script async src="https://plausible.coolify.kloude.fr/js/pa-jebRWwFHmq2R7pgJHl5Dm.js"></script>
-  <script>
-    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-    plausible.init()
-  </script>
-  {#- The audience counted by OpenPanel too, its pages, its outgoing links and its tracked attributes. -#}
   <script>
     window.op=window.op||function(){var n=[];return new Proxy(function(){arguments.length&&n.push([].slice.call(arguments))},{get:function(t,r){return"q"===r?n:function(){n.push([r].concat([].slice.call(arguments)))}} ,has:function(t,r){return"q"===r}}) }();
     window.op('init', {
