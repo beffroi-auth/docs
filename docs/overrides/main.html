@@ -10,6 +10,21 @@
     window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
     plausible.init()
   </script>
+  {#- The audience counted by OpenPanel too, its pages, its outgoing links and its tracked attributes. -#}
+  <script>
+    window.op=window.op||function(){var n=[];return new Proxy(function(){arguments.length&&n.push([].slice.call(arguments))},{get:function(t,r){return"q"===r?n:function(){n.push([r].concat([].slice.call(arguments)))}} ,has:function(t,r){return"q"===r}}) }();
+    window.op('init', {
+      apiUrl: 'https://opapi-lxpbmuuveqhdtlx4cxyr00fy.coolify.kloude.fr',
+      clientId: '524fe6e1-582c-4796-9e63-419b0fc665ae',
+      trackScreenViews: true,
+      trackOutgoingLinks: true,
+      trackAttributes: true,
+      // sessionReplay: {
+      //   enabled: true,
+      // },
+    });
+  </script>
+  <script src="https://openpanel.dev/op1.js" defer async></script>
 {% endblock %}
 
 {#-
