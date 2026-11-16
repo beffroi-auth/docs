@@ -137,11 +137,15 @@
          <lastmod>2026-11-16</lastmod>
     </url>
     <url>
-         <loc>https://doc.beffroi.tech/0.1/getting-started/a-symfony-relying-party/</loc>
+         <loc>https://doc.beffroi.tech/0.1/getting-started/installation/</loc>
          <lastmod>2026-11-16</lastmod>
     </url>
     <url>
-         <loc>https://doc.beffroi.tech/0.1/getting-started/installation/</loc>
+         <loc>https://doc.beffroi.tech/0.1/getting-started/laravel/</loc>
+         <lastmod>2026-11-16</lastmod>
+    </url>
+    <url>
+         <loc>https://doc.beffroi.tech/0.1/getting-started/symfony/</loc>
          <lastmod>2026-11-16</lastmod>
     </url>
     <url>
