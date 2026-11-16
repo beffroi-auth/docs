@@ -59,11 +59,10 @@ extra_css:
 plugins:
   - search
   # Any external asset the theme asks for is downloaded at build time and served from this site, except the
-  # scripts of Plausible and OpenPanel: each is loaded from where it is published, which serves its current
-  # version, and the two of them are the only third parties a reader reaches.
+  # script of OpenPanel: it is loaded from where it is published, which serves its current version, and
+  # OpenPanel is the one third party a reader reaches.
   - privacy:
       assets_exclude:
-        - plausible.coolify.kloude.fr/*
         - openpanel.dev/*
   - git-revision-date-localized:
       enable_creation_date: false
