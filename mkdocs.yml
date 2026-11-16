@@ -69,7 +69,8 @@ plugins:
       type: date
       fallback_to_build_date: true
   - redirects:
-      redirect_maps: {}
+      redirect_maps:
+        getting-started/a-symfony-relying-party.md: getting-started/symfony.md
 
 markdown_extensions:
   - abbr
@@ -154,7 +155,8 @@ nav:
       - getting-started/the-standalone-application.md
       - getting-started/tenant-and-keys.md
       - getting-started/your-first-client.md
-      - getting-started/a-symfony-relying-party.md
+      - getting-started/symfony.md
+      - getting-started/laravel.md
   - Identity core:
       - core/index.md
       - core/tenants.md

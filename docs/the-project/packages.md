@@ -34,7 +34,7 @@ history of one part without the rest.
     authenticator of Symfony. Your application is a client of the provider: nothing of the provider is
     installed in it.
 
-    [:beffroi-arrow-right: A Symfony relying party](../getting-started/a-symfony-relying-party.md)
+    [:beffroi-arrow-right: Add sign-in to a Symfony application](../getting-started/symfony.md)
 
 === "I want it inside code of my own"
 
