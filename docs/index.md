@@ -20,10 +20,12 @@ Beffroi paints that last box the same colour as the other two.</p>
 
 </div>
 
-!!! warning "Development version"
+!!! info "Beffroi is 0.x"
 
-    These pages document `0.1.x`, where the next minor version is written. The released versions and their
-    support are on [the versions page](the-project/versions.md).
+    This documentation follows `0.0.x`, released as `0.0.0`. Until `1.0` the public API may change between
+    minor versions, and only the latest release is supported ([versions](the-project/versions.md)). Every
+    page here states what the code does in that branch. What is not written yet is marked as a stub rather
+    than guessed at.
 
 <div class="grid cards" markdown>
 
@@ -96,7 +98,3 @@ The code is one monorepo, [`beffroi-auth/beffroi`](https://github.com/beffroi-au
 into one repository per package. This site is written in
 [`beffroi-auth/docs`](https://github.com/beffroi-auth/docs), one branch per version of the packages it
 describes.
-
-The website of the project is [beffroi.tech](https://beffroi.tech), and the project has an account on
-[Bluesky](https://bsky.app/profile/beffroi.tech) and a page on
-[LinkedIn](https://www.linkedin.com/company/beffroi-auth).
