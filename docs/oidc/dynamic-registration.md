@@ -159,6 +159,10 @@ What a client may register is what the specifications define, and what the tenan
 - **What a member names is one the provider is wired with**: a grant, a method, an algorithm, a mode of
   delivery, a kind of subject, a type of authorization detail.
 - **A scope is one the tenant hands out**, the ones its discovery document lists in `scopes_supported`.
+- **What the provider signs for the client, it holds a key for**: an algorithm named in
+  `id_token_signed_response_alg`, `authorization_signed_response_alg` or `userinfo_signed_response_alg` is one
+  the tenant holds an active key for, at the registration and at every replacement. An algorithm left out is
+  the default one, whose key is the deployment's to draw and never a reason to refuse the client.
 - **A `sector_identifier_uri` is proven**: the provider reads the document behind it once, with one `GET`,
   no redirect followed, within the seconds and the bytes the two `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_*`
   variables give it, and the document

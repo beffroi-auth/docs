@@ -169,18 +169,26 @@ before it answers, prints one line per point, explains the ones it does not answ
 red, so a deployment pipeline can ask the question. A point is a class tagged `beffroi.doctor_check`, so a
 point added is a class added; a run with nothing tagged fails rather than answering for nothing.
 
-The application tags one point, `App\Doctor\NotificationsLanePatience`: whether the lane a logout token is sent
-on is retried on the schedule the token is written for, the one `beffroi.back_channel_logout` sets. On a
-deployment that keeps the lane of notifications the application declares, `async_notifications`, with the
-defaults of that section, the run reads:
+The application tags two points. `App\Doctor\ClientsSignedWithHeldKeys` reads every client of the tenant,
+declared or registered, and is red when one receives its ID tokens, its authorization responses or its UserInfo
+responses signed with an algorithm the tenant holds no active key for, the default one counting for a client
+that names none: the first of them it asks for would fail with a server error. Its finding names the client,
+the documents and the algorithm, and says that `bin/console beffroi:keys:generate --algorithm=<algorithm>` draws
+the missing key. `App\Doctor\NotificationsLanePatience` says whether the lane a logout token is sent on is
+retried on the schedule the token is written for, the one `beffroi.back_channel_logout` sets. On a deployment
+that holds a key for every algorithm its clients are signed with, and keeps the lane of notifications the
+application declares, `async_notifications`, with the defaults of that section, the run reads:
 
 ``` text
+ [ok] Clients: the keys their documents are signed with
+      The tenant "default" holds an active key for every algorithm it signs the documents of its clients with.
+
  [ok] Back-channel logout: how long a logout token is retried
       A logout token is retried on "async_notifications" for 3 minutes 20 seconds and stops being verifiable after 3 minutes 55 seconds, both read from the schedule this provider publishes (App\Messenger\NotificationRetryPolicy): a client that is restarting is reached, and nothing arrives after the "exp" of the token has passed or after the key that signed it has left the JWK Set.
 ```
 
 The two figures are the budget a logout token is written for; [Messenger](messenger.md#what-the-application-writes)
-says what that budget bounds. The point is red when the notifications are routed to a lane retried on another
-schedule, or to no lane at all.
+says what that budget bounds. The second point is red when the notifications are routed to a lane retried on
+another schedule, or to no lane at all.
 
 [:beffroi-arrow-right: Messenger](messenger.md)

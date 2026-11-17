@@ -71,8 +71,9 @@ instead (OIDC Core §5.3.2), served as `application/jwt` with the same two cachi
 
 Signed then encrypted, never the other way round: with both, the payload of the JWE is the JWS, and its
 header says `"cty": "JWT"` (RFC 7519 §5.2). Encrypted without a signature, the payload is the JSON of the
-claims, `iss` and `aud` included. Each algorithm is one the provider is wired with, which the discovery
-document announces in `userinfo_signing_alg_values_supported`, `userinfo_encryption_alg_values_supported` and
+claims, `iss` and `aud` included. Each algorithm is one the provider is wired with, a signature algorithm one
+the tenant holds an active key for as well, which the discovery document announces in
+`userinfo_signing_alg_values_supported`, `userinfo_encryption_alg_values_supported` and
 `userinfo_encryption_enc_values_supported`; a registration naming another is refused.
 [Encryption](tokens/encryption.md) says what the provider encrypts with.
 

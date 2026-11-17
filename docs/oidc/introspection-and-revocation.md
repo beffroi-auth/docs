@@ -81,9 +81,9 @@ type (RFC 9701 §4, §5), whatever the client registered:
 | Claims | `token_introspection` | The members above, `{"active": false}` included |
 
 The answer is signed and not encrypted. A resource server verifies it against the JWK Set of the provider,
-whose URL it reads in the `jwks_uri` of the discovery document. The document announces the signing
-algorithms the provider is wired with in `introspection_signing_alg_values_supported`, and the answer is
-signed with the default one among them.
+whose URL it reads in the `jwks_uri` of the discovery document. The document announces in
+`introspection_signing_alg_values_supported` the one algorithm the answer is signed with, the default one, and
+only while the tenant holds an active key for it.
 
 Either answer is served with `Cache-Control: no-store` and `Pragma: no-cache`, as `application/json` or as
 `application/token-introspection+jwt`.

@@ -123,10 +123,11 @@ blind index with them.
 ## When something fails
 
 **`beffroi:doctor` is what to ask first.** It reads, writes nothing, and is safe on a provider serving
-traffic. What it looks at is what is wired, and in this application that is one point: whether a logout
-token is retried for as long as it stays verifiable. No variable sends the notifications to another transport
-or retries them on another schedule, so the point holds on a deployment of the image; a configuration of the
-application that did either would keep a provider that works and logout tokens a client may refuse when they
+traffic. What it looks at is what is wired, and in this application that is two points: whether every client
+is signed for with an algorithm the tenant holds an active key for, and whether a logout token is retried for as
+long as it stays verifiable. No variable sends the notifications to another transport or retries them on
+another schedule, so the second point holds on a deployment of the image; a configuration of the application
+that did either would keep a provider that works and logout tokens a client may refuse when they
 arrive late, after a rotation or after the client restarts, which nothing else shows.
 
 **A message that fails is tried again, then kept.** The three lanes of the provider's own writes retry it on
