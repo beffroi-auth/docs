@@ -3714,6 +3714,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#the-administration-plane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The administration plane
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4003,6 +4014,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#the-administration-plane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The administration plane
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4029,13 +4051,15 @@
 
 
 <h1 id="endpoints">Endpoints<a class="headerlink" href="#endpoints" title="Link to this section">&para;</a></h1>
-<p>Paths are relative to the issuer, at whose root the application imports the routes of the provider. A
+<p>Paths are relative to the issuer, at whose root the application imports the routes of the provider, and the
+paths of the <a href="#the-administration-plane">administration plane</a> to the host of the administration API. A
 deployment whose issuer is <code>https://op.example.com</code> serves the token endpoint at
 <code>https://op.example.com/token</code>. The root itself, <code>/</code>, is <code>beffroi_interaction_home</code>, a route of the application
 that sends a browser to the home of its account.</p>
 <p>Every route name of the provider carries its plane. <code>beffroi_protocol_*</code> is server to server, called by a
-client or a resource server; <code>beffroi_interaction_*</code> is a browser, where a person reads a page and answers. The
-<code>BEFFROI_PLANE</code> environment variable restricts a process to one plane, so an interaction never reaches a
+client or a resource server; <code>beffroi_interaction_*</code> is a browser, where a person reads a page and answers;
+<code>beffroi_administration_*</code> is the administration API of the tenant, served on a host of its own. The
+<code>BEFFROI_PLANE</code> environment variable restricts a process to its planes, so an interaction never reaches a
 machine that only serves the protocol, and the other way round. One more route of the application carries the
 interaction plane, as the root does: <code>POST /theme</code>, <code>beffroi_interaction_theme</code>, where a visitor chooses the
 theme of the pages.</p>
@@ -4215,7 +4239,7 @@ advertised.</p>
 <td><code>GET</code></td>
 <td><code>/enrol/{ticket}/{value}</code></td>
 <td><code>beffroi_interaction_enrolment_ticket</code></td>
-<td>The page an enrolment ticket opens, where a person poses their first passkey without a session</td>
+<td>The page an enrolment ticket opens, where a person poses a passkey without a session</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
@@ -4228,6 +4252,30 @@ advertised.</p>
 <td><code>/enrol/{ticket}/{value}</code></td>
 <td><code>beffroi_interaction_enrolment_ticket_enrol</code></td>
 <td>The passkey itself, which spends the ticket</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/password/{ticket}/{value}</code></td>
+<td><code>beffroi_interaction_password_ticket</code></td>
+<td>The page a password ticket opens, where a person poses a new password without the one in use and without a session</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/password/{ticket}/{value}</code></td>
+<td><code>beffroi_interaction_password_ticket_set</code></td>
+<td>The password, typed twice, which spends the ticket and ends every session of the person</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/two-factor/{ticket}/{value}</code></td>
+<td><code>beffroi_interaction_totp_ticket</code></td>
+<td>The page a ticket for an authenticator application opens, where a person sets one up in place of the one they hold, without a session</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/two-factor/{ticket}/{value}</code></td>
+<td><code>beffroi_interaction_totp_ticket_enrol</code></td>
+<td>The first code of that application, which spends the ticket, revokes the application held and ends every session of the person</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
@@ -4273,7 +4321,7 @@ session rather than sending it to a login.</p>
 <td><code>GET</code></td>
 <td><code>/account/profile/changes</code></td>
 <td><code>beffroi_interaction_account_profile_changes</code></td>
-<td>What those claims said before, and when they changed</td>
+<td>What those claims said before, when they changed, and whether the person or an administrator changed them</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
@@ -4321,7 +4369,7 @@ session rather than sending it to a login.</p>
 <td><code>GET</code></td>
 <td><code>/account/acts</code></td>
 <td><code>beffroi_interaction_account_acts</code></td>
-<td>What happened to the account: who signed in and how, the refused attempts, what signed out, what changed of the means of signing in, and what the person did of their own record</td>
+<td>What happened to the account: who signed in and how, the refused attempts, what signed out, what changed of the account and of its means of signing in, the consents given and taken back, what the person did of their own record, and what an administrator of their organisation consulted or changed of them</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
@@ -4569,6 +4617,176 @@ logout services of the identity provider refuse every message, nobody being decl
 </table>
 <p><a href="../../saml/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> SAML 2.0</a></p>
+<h2 id="the-administration-plane">The administration plane<a class="headerlink" href="#the-administration-plane" title="Link to this section">&para;</a></h2>
+<p>The paths are relative to the host of the administration API, the URL <code>BEFFROI_TENANT_ADMINISTRATION_RESOURCE</code>
+names, which a deployment serves by importing <code>administration.Caddyfile</code>
+(<a href="../../application/deployment/#the-host-of-the-administration-api">deployment</a>). Every request is held to its
+access token before its controller runs, whatever its path: a token of this provider addressed to that API,
+bound to a key and presented with its proof, for a person who administers the tenant at that moment (<a href="../../oidc/resources/#the-administration-api">the
+administration API</a>). An answer is JSON, but for a request that
+presents no token, answered with the bare challenge (RFC 6750 §3.1), and a path the API does not serve is
+answered <code>404</code> once the token has been read.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Route</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/tenant</code></td>
+<td><code>beffroi_administration_tenant</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/keys</code></td>
+<td><code>beffroi_administration_keys</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/statistics</code></td>
+<td><code>beffroi_administration_statistics</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/health</code></td>
+<td><code>beffroi_administration_health</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/clients</code></td>
+<td><code>beffroi_administration_clients</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/clients/{clientId}</code></td>
+<td><code>beffroi_administration_client</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/clients/{clientId}</code></td>
+<td><code>beffroi_administration_client_removal</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/initial-access-tokens</code></td>
+<td><code>beffroi_administration_initial_access_tokens</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/initial-access-tokens</code></td>
+<td><code>beffroi_administration_initial_access_token_issuance</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/initial-access-tokens/{id}</code></td>
+<td><code>beffroi_administration_initial_access_token_revocation</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/users?username=</code></td>
+<td><code>beffroi_administration_user</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/users</code></td>
+<td><code>beffroi_administration_user_creation</code></td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/users/{id}</code></td>
+<td><code>beffroi_administration_user_description</code></td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/users/{id}/disabled</code></td>
+<td><code>beffroi_administration_user_disabling</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/users/{id}/disabled</code></td>
+<td><code>beffroi_administration_user_enabling</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/users/{id}/sessions</code></td>
+<td><code>beffroi_administration_user_sessions</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/users/{id}/sessions/{session}</code></td>
+<td><code>beffroi_administration_user_session_end</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/users/{id}/credentials/{credential}</code></td>
+<td><code>beffroi_administration_user_credential_revocation</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/users/{id}/journal</code></td>
+<td><code>beffroi_administration_user_journal</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/users/{id}/consents</code></td>
+<td><code>beffroi_administration_user_consents</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/users/{id}/consents/{consent}</code></td>
+<td><code>beffroi_administration_user_consent_revocation</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/users/{id}/enrolment-ticket</code></td>
+<td><code>beffroi_administration_user_enrolment_ticket</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/users/{id}/password-ticket</code></td>
+<td><code>beffroi_administration_user_password_ticket</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/users/{id}/totp-ticket</code></td>
+<td><code>beffroi_administration_user_totp_ticket</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/groups</code></td>
+<td><code>beffroi_administration_groups</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/groups</code></td>
+<td><code>beffroi_administration_group_creation</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/groups/{id}/members</code></td>
+<td><code>beffroi_administration_group_members</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/groups/{id}/members</code></td>
+<td><code>beffroi_administration_group_member_addition</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/groups/{id}/members/{person}</code></td>
+<td><code>beffroi_administration_group_member_removal</code></td>
+</tr>
+<tr>
+<td>any</td>
+<td>Any other path</td>
+<td><code>beffroi_administration_unknown_path</code></td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -4589,7 +4807,7 @@ logout services of the identity provider refuse every message, nobody being decl
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 10:26:34 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:37:58 UTC">November 17, 2026</span>
   </span>
 
     

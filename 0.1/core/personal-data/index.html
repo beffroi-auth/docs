@@ -4113,7 +4113,7 @@ the key of another table than its own.</p>
 </tr>
 <tr>
 <td><code>passkey_credential</code></td>
-<td>The name a person gave a passkey</td>
+<td>The name a person gave a passkey, and the serial number of its authenticator an enterprise attestation carried, which designates one device</td>
 </tr>
 <tr>
 <td><code>push_subscription</code></td>
@@ -4125,7 +4125,7 @@ the key of another table than its own.</p>
 </tr>
 <tr>
 <td><code>claim_change</code></td>
-<td>What a claim said before a person changed it, what it says after, and where the change came from</td>
+<td>What a claim said before a person or an administrator changed it, what it says after, and where the change came from</td>
 </tr>
 <tr>
 <td><code>journal</code></td>
@@ -4264,6 +4264,11 @@ under a master key the provider may use. The secrets are those of <code>BEFFROI_
 the kernel, <code>APP_SECRET</code>, while that variable is not set, one list for the whole deployment: the first one
 binds a new row, and a row bound under any of them opens. A row bound under a secret that is no longer listed
 opens nothing, and neither does any value sealed under its key.</p>
+<p>The key management service binds the wrapping of each data key to the same reference and scope, which it
+authenticates beside the key: a wrapped key presented under another reference or scope is refused by the
+service before the key leaves it. Nothing turns this off, and a backend that cannot authenticate that context,
+a Vault Transit key that is not derived, refuses to wrap a data key at all. A row wrapped under no context opens
+nothing until <code>beffroi:data-keys:rewrap --accept-unbound</code> wraps it again under its reference and its scope.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:data-keys:list
 </span></code></pre></div>
 <p>It lists the keys of the tenant by scope, each with its reference, when it was minted, the master key that wraps
@@ -4292,6 +4297,10 @@ never opens a key. A tenant that holds none has sealed nothing yet, and the comm
 <tr>
 <td><code>--dry-run</code></td>
 <td>List what would move, and write nothing</td>
+</tr>
+<tr>
+<td><code>--accept-unbound</code></td>
+<td>Move as well the keys wrapped under no context, which open nothing until they are wrapped again under their reference and their scope</td>
 </tr>
 </tbody>
 </table>
@@ -4395,7 +4404,7 @@ at the least.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
   </span>
 
     

@@ -4034,7 +4034,9 @@ rather than something to trust. A signed document inside a JWE is a nested JWT, 
 says so with <code>cty</code> <code>JWT</code> (RFC 7519 §5.2).</p>
 <h2 id="registering-it">Registering it<a class="headerlink" href="#registering-it" title="Link to this section">&para;</a></h2>
 <p>A client names the pairs it wants in its <a href="../../dynamic-registration/">registration</a>, beside the keys it
-publishes:</p>
+publishes. The registration below also has its UserInfo answer signed with <code>ES256</code>, which the tenant accepts
+only while it holds an active <code>ES256</code> key, as <code>beffroi:keys:generate --algorithm=ES256</code> draws one (<a href="../id-tokens/#signing">ID
+tokens</a>):</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My application"</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">"redirect_uris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://app.example.com/oidc/callback"</span><span class="p">],</span>
@@ -4131,7 +4133,7 @@ code or the <code>auth_req_id</code> it presented has been spent, the UserInfo r
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:08:14 UTC">November 17, 2026</span>
   </span>
 
     

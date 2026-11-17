@@ -4125,13 +4125,13 @@ them in development only, each under a prefix of its own, and its image carries 
 <td>Interaction</td>
 <td><code>beffroi_interaction_*</code></td>
 <td>A browser, with a person in front of it</td>
-<td>The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the enrolment of a first passkey, the choice of a language and of a theme, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to</td>
+<td>The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the pages a ticket opens, where a person poses a passkey, a new password or an authenticator application without a session, the choice of a language and of a theme, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to</td>
 </tr>
 <tr>
 <td>Administration</td>
 <td><code>beffroi_administration_*</code></td>
 <td>A client of the administration API, with the token of an administrator of the tenant</td>
-<td>The tenant, its clients and its signing keys, the statistics and the health of the instance, and the people of the tenant: finding and creating one, their open sessions and ending one, revoking a credential, their journal, and the ticket that lets a person enrol a passkey</td>
+<td>The tenant, its clients and deleting one that registered itself, its initial access tokens, its signing keys, the statistics and the health of the instance, its groups and their members, and the people of the tenant: finding, creating, changing, disabling and enabling one, their open sessions and ending one, revoking a credential, their journal, the applications they agreed to and taking a consent back, and the tickets that let a person pose a passkey, a new password or an authenticator application</td>
 </tr>
 </tbody>
 </table>
@@ -4164,7 +4164,7 @@ are the ones a development stack adds, the endpoints of the conformance tools ab
 </tr>
 <tr>
 <td><code>administration</code></td>
-<td>The administration API alone: the process routes a request to the API and to nothing else. It is the value the worker of <code>/etc/frankenphp/administration.Caddyfile</code> sets</td>
+<td>The administration API alone: the process routes a request to the API and to nothing else. It is the value the worker of <code>/etc/frankenphp/administration.Caddyfile</code> sets, and that worker keeps it whatever <code>BEFFROI_PLANE</code> the container sets</td>
 </tr>
 </tbody>
 </table>
@@ -4234,7 +4234,7 @@ alias, and a client that authenticates by mutual TLS reaches the ordinary endpoi
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 09:59:48 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:21:58 UTC">November 17, 2026</span>
   </span>
 
     

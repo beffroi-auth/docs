@@ -3970,9 +3970,9 @@ key the earlier tokens were not bound to.</p>
 <p><a href="../tokens/refresh-tokens/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Refresh tokens</a></p>
 <h2 id="a-client-that-must-bind">A client that must bind<a class="headerlink" href="#a-client-that-must-bind" title="Link to this section">&para;</a></h2>
-<p>Two members of a registration refuse a token request rather than answer it with bearer tokens. Both are read
-at the token endpoint, after the client has authenticated and before the grant is read, and both refuse with
-<code>invalid_request</code>, status <code>400</code>.</p>
+<p>Three members of a registration refuse a token request rather than answer it with bearer tokens. All three are
+read at the token endpoint, after the client has authenticated and before the grant is read, and all three
+refuse with <code>invalid_request</code>, status <code>400</code>.</p>
 <table>
 <thead>
 <tr>
@@ -3985,17 +3985,22 @@ at the token endpoint, after the client has authenticated and before the grant i
 <tr>
 <td><code>require_sender_constrained_tokens</code></td>
 <td>A certificate its tokens are bound to, or a DPoP key, whichever (FAPI 2.0 Security Profile §5.3.2.1)</td>
-<td>Nobody on a deployment of the image. It is a member of the deployment: a client that registers itself and sends it is refused with <code>invalid_client_metadata</code>, and no client of the image holds it (<a href="../clients/#what-the-image-does-not-set">what the image does not set</a>)</td>
+<td>The initial access token the client registered with, issued with <code>--require-sender-constrained-tokens</code>. It is a member of the deployment: a client that registers itself and sends it is refused with <code>invalid_client_metadata</code> (<a href="../clients/#what-the-image-does-not-set">what the image does not set</a>)</td>
 </tr>
 <tr>
 <td><code>tls_client_certificate_bound_access_tokens</code></td>
 <td>The certificate of its connection, whatever way it authenticates (RFC 8705 §3.4)</td>
 <td>The client, when it registers, RFC 8705 §3.4 making it a member of a registration</td>
 </tr>
+<tr>
+<td><code>dpop_bound_access_tokens</code></td>
+<td>A DPoP key (RFC 9449 §5.2)</td>
+<td>The client, when it registers. It is refused beside <code>tls_client_certificate_bound_access_tokens</code> and beside a method that authenticates with a certificate, whose tokens are bound to the certificate</td>
+</tr>
 </tbody>
 </table>
-<p>A client of the image that must bind therefore registers the second (<a href="../dynamic-registration/">dynamic
-registration</a>):</p>
+<p>A client that registers itself and must bind registers one of the last two, or is given the first by its
+initial access token (<a href="../dynamic-registration/">dynamic registration</a>):</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">"client_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Payments"</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">"redirect_uris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"https://payments.example.com/oidc/callback"</span><span class="p">],</span>
@@ -4008,11 +4013,12 @@ registration</a>):</p>
 for none (<a href="mutual-tls/#the-endpoint-aliases">mutual TLS</a>). The image serves that host once a deployment
 turns it on, with <code>CADDY_EXTRA_CONFIG</code> and <code>MTLS_SERVER_NAME</code>: until then no host asks for a certificate, and
 every token request of such a client is refused with <code>invalid_request</code>.
-<code>tls_client_certificate_bound_access_tokens</code> defaults to <code>false</code>, and no variable binds the tokens of every
-client. Nothing holds a client to DPoP either: the provider reads no <code>dpop_bound_access_tokens</code> (RFC 9449
-§5.2), and a registration that carries it is refused with <code>invalid_client_metadata</code>, as one carrying any
-member the provider does not read is. A client binds its tokens to a key by sending a proof with its token
-requests.</p>
+<code>tls_client_certificate_bound_access_tokens</code> and <code>dpop_bound_access_tokens</code> default to <code>false</code>, and no
+variable binds the tokens of every client. A client that registers <code>dpop_bound_access_tokens: true</code> has every
+token request that carries no DPoP proof refused with <code>invalid_request</code> (RFC 9449 §5.2). A registration that
+names it beside <code>tls_client_certificate_bound_access_tokens</code>, or beside a method that authenticates with a
+certificate, is refused with <code>invalid_client_metadata</code>: a token is bound to one thing. A client binds its
+tokens to a key by sending a proof with its token requests.</p>
 <h2 id="where-the-binding-is-checked">Where the binding is checked<a class="headerlink" href="#where-the-binding-is-checked" title="Link to this section">&para;</a></h2>
 <p>At a resource of the provider, which is <a href="../userinfo/">UserInfo</a>: a bound token is honoured only when the
 request proves again what it is bound to, and refused with <code>invalid_token</code>, status <code>401</code>, otherwise. A
@@ -4044,7 +4050,7 @@ is read from the bindings themselves, both wired in the application: <code>WWW-A
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:07:58 UTC">November 17, 2026</span>
   </span>
 
     

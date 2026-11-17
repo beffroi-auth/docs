@@ -4146,6 +4146,10 @@ table below is the map.</p>
 <td>Say whether this deployment holds together: one line per point looked at, and what to do about the ones it does not answer for. Reads and writes nothing, so it is safe on a provider serving traffic, and it fails when a point is red so a deployment pipeline can ask the question too.</td>
 </tr>
 <tr>
+<td><code>beffroi:statistics</code></td>
+<td>Say what the instance knows of itself now: its people, clients and open sessions, its keys by state, its acts by name over what the journal keeps, and the messages waiting in each lane. Reads and writes nothing.</td>
+</tr>
+<tr>
 <td><code>beffroi:tenant:login-floor</code></td>
 <td>Name the floor of every login of the tenant, and forget the credentials it forbids.</td>
 </tr>
@@ -4182,16 +4186,28 @@ was forgotten. <a href="../../core/tenants/#the-floor-of-its-logins">The floor o
 <td>Create a user of the tenant; give them a password with beffroi:user:set-password.</td>
 </tr>
 <tr>
+<td><code>beffroi:user:disable</code></td>
+<td>Disable a person: they can no longer sign in, and every session of theirs ends, its applications told by back-channel logout. To let them sign in again, see beffroi:user:enable.</td>
+</tr>
+<tr>
+<td><code>beffroi:user:enable</code></td>
+<td>Enable a person beffroi:user:disable disabled: they may sign in again, every session of theirs having ended with the disabling.</td>
+</tr>
+<tr>
 <td><code>beffroi:user:enrolment-ticket</code></td>
-<td>Issue the link that lets a person pose their first passkey, and print it.</td>
+<td>Issue the link that lets a person pose a passkey, and print it.</td>
 </tr>
 <tr>
 <td><code>beffroi:user:journal</code></td>
-<td>List the acts of a user over a period, with the application each one was done on behalf of; for answering a request about what happened in their name.</td>
+<td>List the acts of a user over a period, with the application each one was done on behalf of and the administrator who did one to them; for answering a request about what happened in their name.</td>
 </tr>
 <tr>
 <td><code>beffroi:user:link</code></td>
 <td>Say that a user of the tenant is a given subject at an upstream provider; run again to refresh it.</td>
+</tr>
+<tr>
+<td><code>beffroi:user:password-ticket</code></td>
+<td>Issue the link that lets a person pose a new password without the one in use, and print it; spending it ends every session of theirs.</td>
 </tr>
 <tr>
 <td><code>beffroi:user:profile</code></td>
@@ -4223,15 +4239,24 @@ was forgotten. <a href="../../core/tenants/#the-floor-of-its-logins">The floor o
 </tr>
 <tr>
 <td><code>beffroi:user:show</code></td>
-<td>Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name, authenticator and dates, and the groups with the source of each membership.</td>
+<td>Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name, authenticator, what their enrolment proved of it and dates, and the groups with the source of each membership.</td>
+</tr>
+<tr>
+<td><code>beffroi:user:totp-ticket</code></td>
+<td>Issue the link that lets a person set up an authenticator app in place of the one they hold, and print it; spending it ends every session of theirs.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>An enrolment ticket</strong> is for a person who has nothing to sign in with yet, on a tenant that signs its people
-in by passkey and holds no password of theirs to give them. The link opens one enrolment of a passkey, once,
-for seventy-two hours, and it is printed once: the row holds a hash of what it carries. Issuing another one
-for the same person takes the first one away, and a disabled account gets none. It proves no login either:
-the session that follows comes from the passkey that was just posed.</p>
+<p><strong>A ticket</strong> is a link that lets one person act once on their account without a session: pose a passkey,
+<code>beffroi:user:enrolment-ticket</code>; pose a new password without the one in use, <code>beffroi:user:password-ticket</code>;
+or set up an authenticator application in place of the one they hold, <code>beffroi:user:totp-ticket</code>. It opens
+once, for seventy-two hours, and it is printed once: the row holds a hash of what it carries. Issuing another
+of the same kind for the same person takes the first one away, and a disabled account gets none. A password or
+an authenticator application ticket is refused where the floor of the tenant or the domain of the person
+admits no such credential. A ticket proves no login, and spending a password or an authenticator application
+ticket ends every session of the person.</p>
+<p><strong>Disabling a person</strong> ends every session of theirs, and enabling them again gives nothing back: <a href="../../core/users/#a-disabled-user">a disabled
+user</a> says where they are refused.</p>
 <p><strong>The journal of a person</strong> is read over <code>--from</code> and <code>--to</code>, two days in UTC, both included, narrowed with
 <code>--act</code>, repeatable, and <code>--client</code>, and written as a table or, with <code>--format=json</code>, as the document a
 request under article 15 of the GDPR is answered with. A period that reaches past what the deployment keeps is
@@ -4247,13 +4272,25 @@ complete.</p>
 </thead>
 <tbody>
 <tr>
+<td><code>beffroi:group:add-member</code></td>
+<td>Make a user a member of a group of the tenant, a membership the tenant holds itself.</td>
+</tr>
+<tr>
 <td><code>beffroi:group:create</code></td>
 <td>Create a group of the tenant, which the declaration of an upstream provider may map the groups it asserts to.</td>
+</tr>
+<tr>
+<td><code>beffroi:group:remove-member</code></td>
+<td>Take a user out of a group of the tenant, a membership the tenant holds itself.</td>
 </tr>
 </tbody>
 </table>
 <p>No upstream provider creates a group: the declaration of one maps the values it asserts to groups that exist
-already, by their name, and a value naming a group the tenant does not hold is no group.</p>
+already, by their name, and a value naming a group the tenant does not hold is no group. <code>beffroi:group:add-member</code>
+and <code>beffroi:group:remove-member</code> take the name of the group, exactly as the tenant holds it, then the username,
+and take back no membership a provider or a directory gave. A person added to or taken out of a group
+<code>tenant.administrators</code> names starts or stops <a href="../../core/groups/#who-administers-the-tenant">administering the
+tenant</a> at once.</p>
 <h2 id="clients-and-initial-access-tokens">Clients and initial access tokens<a class="headerlink" href="#clients-and-initial-access-tokens" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4277,7 +4314,7 @@ already, by their name, and a value naming a group the tenant does not hold is n
 </tr>
 <tr>
 <td><code>beffroi:client:token:issue</code></td>
-<td>Issue an initial access token for the tenant; the value is printed once and never again.</td>
+<td>Issue an initial access token for the tenant, and what it gives the clients it registers; the value is printed once and never again.</td>
 </tr>
 <tr>
 <td><code>beffroi:client:token:list</code></td>
@@ -4464,7 +4501,7 @@ before it runs, <code>beffroi:tenant:login-floor</code> asks before it forgets t
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:17:15 UTC">November 17, 2026</span>
   </span>
 
     

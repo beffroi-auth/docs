@@ -4122,7 +4122,7 @@ it belongs to, by a foreign key on <code>tenant_id</code>.</p>
 <tbody>
 <tr>
 <td><code>beffroi_tenant</code></td>
-<td>The tenant: its issuer, its slug, its name, its look, the claims its people may change, its <code>acr</code> vocabulary and the floor of its logins</td>
+<td>The tenant: its issuer, its slug, its name, its look, the claims its people may change, its <code>acr</code> vocabulary, the floor of its logins and what the enrolment of its passkeys asks</td>
 </tr>
 <tr>
 <td><code>beffroi_user</code></td>
@@ -4134,15 +4134,15 @@ it belongs to, by a foreign key on <code>tenant_id</code>.</p>
 </tr>
 <tr>
 <td><code>beffroi_passkey_credential</code></td>
-<td>A passkey: the credential record of WebAuthn, its name and its revocation</td>
+<td>A passkey: the credential record of WebAuthn, its name, what its enrolment proved of the model of its authenticator, the serial number an enterprise attestation carried, whether the model was under a security alert the tenant admitted, and its revocation</td>
 </tr>
 <tr>
 <td><code>beffroi_totp_credential</code></td>
 <td>An authenticator application: its secret, the last time step accepted and the hashed backup codes</td>
 </tr>
 <tr>
-<td><code>beffroi_enrolment_ticket</code></td>
-<td>The ticket that opens one enrolment of a first passkey, by a hash of its value</td>
+<td><code>beffroi_enrolment_ticket</code>, <code>beffroi_password_ticket</code>, <code>beffroi_totp_ticket</code></td>
+<td>A ticket that opens once, without a session, the enrolment of a passkey, the setting of a password, or the set-up of an authenticator application in place of the one held, by a hash of its value</td>
 </tr>
 <tr>
 <td><code>beffroi_linked_identity</code></td>
@@ -4166,7 +4166,7 @@ it belongs to, by a foreign key on <code>tenant_id</code>.</p>
 </tr>
 <tr>
 <td><code>beffroi_claim_change</code></td>
-<td>What a claim of a person said before they changed it, and what it says now</td>
+<td>What a claim of a person said before they or an administrator changed it, what it says now, and the administrator who changed it when one did</td>
 </tr>
 <tr>
 <td><code>beffroi_personal_archive</code></td>
@@ -4301,7 +4301,7 @@ to restart what serves requests and what consumes the buses once it has run, bec
 before it reads those columns with the type they had.</p>
 <h2 id="a-value-object-in-one-column">A value object in one column<a class="headerlink" href="#a-value-object-in-one-column" title="Link to this section">&para;</a></h2>
 <p><strong>A value object a column holds whole goes in one column</strong>, with a DBAL type of the application: the tree
-declares thirty-four of them, <code>beffroi_subject</code>, <code>beffroi_scopes</code>, <code>beffroi_request_context</code> or
+declares thirty-six of them, <code>beffroi_subject</code>, <code>beffroi_scopes</code>, <code>beffroi_request_context</code> or
 <code>beffroi_password_hash</code> among them. What the column holds is written by the object itself, in the package
 that owns it, and read back through its constructor, so a row edited by hand into something the object
 refuses fails when it is loaded, as a conversion error naming the type, and never further down.</p>
@@ -4320,7 +4320,7 @@ tables keep <code>client_id</code>, and the client is put back on a row once it 
 the application wires. A row whose client is no longer registered, removed from the configuration or deleted,
 is treated as absent: a token or a consent of a client that does not exist is not one.</p>
 <h2 id="sealed-columns">Sealed columns<a class="headerlink" href="#sealed-columns" title="Link to this section">&para;</a></h2>
-<p>Thirty-three columns hold a personal datum, or the secret of a client, sealed under a data key of their
+<p>Thirty-six columns hold a personal datum, or the secret of a client, sealed under a data key of their
 tenant. A data key is minted per tenant and per family of columns, the family being the name of the table
 without its prefix, so the key that opens one table of a tenant opens no other table and no other tenant.</p>
 <table>
@@ -4341,7 +4341,7 @@ without its prefix, so the key that opens one table of a tenant opens no other t
 </tr>
 <tr>
 <td><code>passkey_credential</code></td>
-<td><code>name</code></td>
+<td><code>name</code>, <code>serial_number</code></td>
 </tr>
 <tr>
 <td><code>push_subscription</code></td>
@@ -4369,7 +4369,7 @@ without its prefix, so the key that opens one table of a tenant opens no other t
 </tr>
 <tr>
 <td><code>client</code></td>
-<td><code>metadata</code>, <code>assigned_metadata</code>, <code>secret</code></td>
+<td><code>metadata</code>, <code>assigned_metadata</code>, <code>attested_metadata</code>, <code>granted_metadata</code>, <code>secret</code></td>
 </tr>
 <tr>
 <td><code>journal</code></td>
@@ -4442,7 +4442,7 @@ taking what it left.</p>
 <tr>
 <td>The rows that are dead</td>
 <td>Hour</td>
-<td>Interactions, pushed requests, codes, device and backchannel requests, refresh tokens, opaque access tokens, enrolment tickets and sessions that nothing alive needs any more</td>
+<td>Interactions, pushed requests, codes, device and backchannel requests, refresh tokens, opaque access tokens, tickets of every kind and sessions that nothing alive needs any more</td>
 </tr>
 <tr>
 <td>The journal</td>
@@ -4489,7 +4489,7 @@ and the logout chains drop their closed rows before each insertion.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:14:59 UTC">November 17, 2026</span>
   </span>
 
     

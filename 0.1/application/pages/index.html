@@ -4166,7 +4166,7 @@ like everything else it sets:</p>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
-<td>The colour the buttons and the links are drawn in</td>
+<td>The colour the buttons are drawn in, and the links mixed with the colour of the text</td>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code></td>
@@ -4206,7 +4206,7 @@ DaisyUI built from <code>assets/styles/app.css</code>.</p>
 </tr>
 <tr>
 <td><code>head</code></td>
-<td>The script a page needs: <code>passkey.js</code> on the login page, the page of passkeys and the enrolment by ticket, <code>push.js</code> on the page of notifications, <code>copy.js</code> where a value is handed over to copy, <code>password-strength.js</code> on the page of the password</td>
+<td>The script a page needs: <code>passkey.js</code> on the login page, the page of passkeys and the enrolment by ticket, <code>push.js</code> on the page of notifications, <code>copy.js</code> where a value is handed over to copy, <code>password-strength.js</code> on the page of the password and on the page of a password ticket</td>
 </tr>
 <tr>
 <td><code>heading</code></td>
@@ -4256,6 +4256,10 @@ and the two controls of their bar, the language, <code>_locale_switcher.html.twi
 <td>Where a request came from, and the browser it named</td>
 </tr>
 <tr>
+<td><code>trans_with_client</code></td>
+<td>A message translated with the name a client gave itself (OIDC Registration §2) set apart in it, in <code>&lt;b data-client-name&gt;</code>: the sentence, the name and every parameter are escaped, so nothing a client writes reaches the page as markup, and a reader tells what the client says of itself from what the provider says</td>
+</tr>
+<tr>
 <td><code>beffroi_authenticator</code></td>
 <td>The make and model of the authenticator a passkey declared, as the first source that knows its AAGUID gives them, the FIDO metadata before the list of the community: a name, a logo when the source has one, a FIDO certification from the metadata alone, and the source. Nothing when no source knows the AAGUID, or when it is sixteen zero bytes. The page of the passkeys reads it from what the console stored, so it fetches nothing</td>
 </tr>
@@ -4272,18 +4276,18 @@ of those pages on the home of the account.</p>
 stands in for it, so a reader who does not see the image is told who they came for. It is loaded by the
 browser of the visitor, never by the provider, and with no referrer. A deployment that names no logo shows the
 placeholder mark of the application.</p>
-<p>The two colours the tenant declares, the one the buttons and the links are drawn in and the one of what is
-written on them, are written by <code>document.html.twig</code> as the two custom properties DaisyUI draws a primary
-surface from, <code>--color-primary</code> and <code>--color-primary-content</code>, for both themes, in a <code>style</code> element that
-carries the nonce of the response and comes after the stylesheet. A tenant that declares no colour leaves the
-element off, and the theme answers.</p>
+<p>The two colours the tenant declares, the one the buttons are drawn in and the one of what is written on them,
+are written by <code>document.html.twig</code> as the two custom properties DaisyUI draws a primary surface from,
+<code>--color-primary</code> and <code>--color-primary-content</code>, for both themes, in a <code>style</code> element that carries the nonce
+of the response and comes after the stylesheet. A tenant that declares no colour leaves the element off, and
+the theme answers.</p>
 <p>Reading the tenant names the origin its logo is served from: every page that reads <code>beffroi_tenant()</code>, which
 every page that extends the layout does, adds that origin to the <code>img-src</code> of the policy its answer carries,
 and the consent page adds the origin of the logo of the asking client beside it. A deployment names neither
 origin anywhere, and the placeholder mark is served from the origin of the application, which <code>img-src 'self'</code>
 allows already.</p>
 <p>Every page but those of <code>/authorize</code>, <code>/login</code>, <code>/consent</code>, <code>/logout</code>, <code>/device</code> and <code>/initiate-login</code>, the
-pages of the account, the enrolment of a first passkey and the pages a SAML flow answers with among them, is
+pages of the account, the pages a ticket opens and the pages a SAML flow answers with among them, is
 also served <code>Cross-Origin-Embedder-Policy: require-corp</code>, under which a browser refuses an image of another
 origin whose answer does not let it in. A logo served from another host shows there when that host answers
 <code>Cross-Origin-Resource-Policy: cross-origin</code>. The pages of those six paths carry no
@@ -4343,7 +4347,17 @@ origin whose answer does not let it in. A logo served from another host shows th
 <tr>
 <td><code>enrolment_ticket.html.twig</code></td>
 <td><code>/enrol/{ticket}/{value}</code></td>
-<td>The first passkey of a person, posed without a session</td>
+<td>A passkey, posed without a session</td>
+</tr>
+<tr>
+<td><code>password_ticket.html.twig</code></td>
+<td><code>/password/{ticket}/{value}</code></td>
+<td>A new password, posed without the one in use and without a session</td>
+</tr>
+<tr>
+<td><code>totp_ticket.html.twig</code>, <code>totp_ticket_enrolled.html.twig</code></td>
+<td><code>/two-factor/{ticket}/{value}</code></td>
+<td>An authenticator application set up in place of the one held, without a session, and the backup codes of the new one</td>
 </tr>
 <tr>
 <td><code>error.html.twig</code></td>
@@ -4485,11 +4499,11 @@ names <code>default-src</code> and no <code>img-src</code> gets an <code>img-src
 </tr>
 <tr>
 <td><code>/copy.js</code></td>
-<td>The pages that hand over a value to copy, the key of an authenticator application and the backup codes</td>
+<td>The pages that hand over a value to copy, the key of an authenticator application and the backup codes, on the account and from a ticket</td>
 </tr>
 <tr>
 <td><code>/password-strength.js</code></td>
-<td>The page of the password</td>
+<td>The page of the password, and the page of a password ticket</td>
 </tr>
 </tbody>
 </table>
@@ -4572,7 +4586,7 @@ or the <code>interaction</code> field of the consent form, which is how a post f
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:14:59 UTC">November 17, 2026</span>
   </span>
 
     

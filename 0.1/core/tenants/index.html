@@ -4045,7 +4045,7 @@ well writes:</p>
 <tr>
 <td><code>BEFFROI_ISSUER</code></td>
 <td><code>https://op.localhost</code></td>
-<td>The issuer identifier (OIDC Discovery 1.0 §3): an absolute <code>https</code> URL with no query, no fragment and no trailing slash, plain HTTP on a loopback host only. Every endpoint is served under it, the SAML metadata included</td>
+<td>The issuer identifier (OIDC Discovery 1.0 §3): an absolute <code>https</code> URL with no query, no fragment, no trailing slash and no path, plain HTTP on a loopback host only. The application serves the provider at the root, so the issuer is an origin, and every endpoint is served under it, the SAML metadata included</td>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_SLUG</code></td>
@@ -4065,7 +4065,7 @@ well writes:</p>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
 <td><code>#1f6feb</code></td>
-<td>The colour the buttons and the links of the pages are drawn in: <code>#</code> and three or six hexadecimal digits</td>
+<td>The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: <code>#</code> and three or six hexadecimal digits</td>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code></td>
@@ -4087,25 +4087,57 @@ well writes:</p>
 <td><code>[]</code></td>
 <td>The <a href="../../oidc/scopes-and-claims/#scopes">scopes</a> of the APIs the tenant protects, a JSON list. The tenant hands out tokens for them beside <code>openid</code>, the scopes of its claims and <code>offline_access</code>, announces them, and a client that registers itself may register them</td>
 </tr>
+<tr>
+<td><code>BEFFROI_TENANT_PASSKEY_ATTESTATION</code></td>
+<td><code>none</code></td>
+<td>What the enrolment of a passkey asks of its authenticator, <code>none</code>, <code>direct</code> or <code>enterprise</code>, as <a href="../credentials/passkeys/#what-the-enrolment-asks">passkeys</a> says</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS</code></td>
+<td><code>[]</code></td>
+<td>The roots of the enterprise attestations the tenant admits, a JSON list of PEM certificates, read under <code>enterprise</code> only</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS</code></td>
+<td><code>[]</code></td>
+<td>The authorities of the tenant itself, a JSON list of PEM certificates, read under <code>enterprise</code> only</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS</code></td>
+<td><code>{}</code></td>
+<td>The models under a security alert the tenant still enrols, a JSON map of AAGUID to the last day it does</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_ADMINISTRATION_RESOURCE</code></td>
+<td>empty</td>
+<td>The identifier of the <a href="../../oidc/resources/#the-administration-api">administration API</a> of the tenant, the URL it is served at, whose audience the provider reserves to the administrators of the tenant. Empty, there is none</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_ADMINISTRATORS</code></td>
+<td><code>[]</code></td>
+<td>The groups whose members <a href="../groups/#who-administers-the-tenant">administer the tenant</a>, a JSON list of their names. <code>[]</code>, nobody administers it</td>
+</tr>
 </tbody>
 </table>
 <p><a href="../../application/configuration/">Configuration</a> lists the same variables among the others of the image,
 <code>BEFFROI_ISSUER</code> and <code>BEFFROI_TENANT_SLUG</code> under <a href="../../application/configuration/#the-provider">the provider</a>
 and the others under <a href="../../application/configuration/#the-tenant">the tenant</a>.</p>
 <h2 id="its-row">Its row<a class="headerlink" href="#its-row" title="Link to this section">&para;</a></h2>
-<p>The variables declare the tenant, and a row of the database holds what the rest of the model points at. Six
+<p>The variables declare the tenant, and a row of the database holds what the rest of the model points at. Seven
 settings are written in that row beside the issuer: the name, the logo, the two colours, the claims a person
-changes of themselves and the <code>acr</code> classes. One command makes the row say what the variables say:</p>
+changes of themselves, the <code>acr</code> classes, and what the enrolment of a passkey asks, with its roots and the models
+it admits under alert. One command makes the row say what the variables say:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:tenant:synchronize
 </span></code></pre></div>
-<p>It creates the row the first time, afterwards writes those of the six that changed, prints the tenant it
+<p>It creates the row the first time, afterwards writes those of the seven that changed, prints the tenant it
 synchronised, and is safe to run at every deployment. Every request, command and message compares the row with
 the environment of its process: while the two differ, each one that reads the tenant fails, and the log names
-the setting that differs, <code>look</code> for the logo and the colours, while the timed steps wait. Changing one of the
-six is therefore a restart of every process with the new value, and the command run in one of them. The issuer
-is the one thing the command never changes: every token a tenant issued names it, so the command refuses
-another, and another issuer is another tenant, under another slug. What a command decides with a date, the
-floor of its logins below, is written on the row and nowhere else.</p>
+the setting that differs, <code>look</code> for the logo and the colours, <code>passkey_attestation</code> for the enrolment of a
+passkey, while the timed steps wait. Changing one of the seven is therefore a restart of every process with
+the new value, and the command run in one of them. The issuer is the one thing the command never changes: every
+token a tenant issued names it, so the command refuses another, and another issuer is another tenant, under
+another slug. What a command decides with a date, the floor of its logins below, is written on the row and
+nowhere else.</p>
 <h2 id="the-classes-it-answers-with">The classes it answers with<a class="headerlink" href="#the-classes-it-answers-with" title="Link to this section">&para;</a></h2>
 <p>A session never stores an <code>acr</code>: it records what was proven, and satisfies every class whose predicate holds
 on those proofs. The predicates are the provider's, one class each, and a tenant names its classes on them.</p>
@@ -4174,8 +4206,9 @@ gives nobody back what was forgotten.</p>
 <li>A step-up offers no kind of credential the floor forbids, and the page of the second factor offers an
   enrolment only where a code is admitted.</li>
 <li>The length a password has to reach follows it: fifteen characters where a password signs somebody in
-  alone, eight where a second factor goes with it (NIST SP 800-63B §3.1.1.2). A password already stored is
-  left as it is, since a hash says nothing of the length behind it.</li>
+  alone, as NIST SP 800-63B §3.1.1.2 asks, and twelve where a second factor goes with it, where §3.1.1.2
+  would let a verifier ask eight. A password already stored is left as it is, since a hash says nothing of the
+  length behind it.</li>
 <li>A login through an <a href="../../saml/federated-sign-in/#the-session">upstream identity provider</a> is held to it as
   well.</li>
 </ul>
@@ -4207,7 +4240,7 @@ address first.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:20:02 UTC">November 17, 2026</span>
   </span>
 
     

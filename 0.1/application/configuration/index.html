@@ -4344,7 +4344,7 @@ image is built.</p>
 </tbody>
 </table>
 <h2 id="the-tenant">The tenant<a class="headerlink" href="#the-tenant" title="Link to this section">&para;</a></h2>
-<p>Eight variables are lists of the configuration, three of them here. Each is a JSON document of the shape the
+<p>Twelve variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
 list has in the <a href="../../reference/configuration/">configuration tree</a>, <code>[]</code> or <code>{}</code> for none. An empty variable
 is no JSON document, and is refused.</p>
 <table>
@@ -4369,7 +4369,7 @@ is no JSON document, and is refused.</p>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
 <td><code>#1f6feb</code></td>
-<td>The colour the buttons and the links of the pages are drawn in: <code>#</code> and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour</td>
+<td>The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: <code>#</code> and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour</td>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code></td>
@@ -4391,13 +4391,45 @@ is no JSON document, and is refused.</p>
 <td><code>[]</code></td>
 <td>The scopes of the APIs the tenant protects, as <code>["invoices.read","invoices.pay"]</code>. The tenant hands out tokens for them beside <code>openid</code>, the scopes of its claims and <code>offline_access</code>, announces them, and a client that registers itself may register them</td>
 </tr>
+<tr>
+<td><code>BEFFROI_TENANT_PASSKEY_ATTESTATION</code></td>
+<td><code>none</code></td>
+<td>What the enrolment of a passkey asks of its authenticator (WebAuthn Level 3 §5.4.7): <code>none</code>, <code>direct</code> or <code>enterprise</code>, as <a href="../../core/credentials/passkeys/#what-the-enrolment-asks">passkeys</a> says</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS</code></td>
+<td><code>[]</code></td>
+<td>The roots of the enterprise attestations the tenant admits, in PEM, under <code>enterprise</code> only: an attestation under one of them carries the serial number of its authenticator</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS</code></td>
+<td><code>[]</code></td>
+<td>The authorities of the tenant itself, in PEM, under <code>enterprise</code> only, under which no serial number is asked</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS</code></td>
+<td><code>{}</code></td>
+<td>The models under a security alert the tenant still enrols under <code>direct</code> and <code>enterprise</code>, AAGUID to the last day, as <code>{"&lt;AAGUID&gt;":"2027-03-31"}</code></td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_ADMINISTRATION_RESOURCE</code></td>
+<td>empty</td>
+<td>The identifier of the <a href="../../oidc/resources/#the-administration-api">administration API</a> of the tenant, the resource its tokens are addressed to (RFC 8707 §2): an absolute URI without a fragment, the URL the API is served at, as <code>https://admin.example.com</code>. The provider addresses a token to it only for an administrator of the tenant, signed in at the authorization endpoint with a phishing-resistant proof, by a token bound to a key of the client, and never announces it. Empty, there is no administration API and nothing is reserved</td>
+</tr>
+<tr>
+<td><code>BEFFROI_TENANT_ADMINISTRATORS</code></td>
+<td><code>[]</code></td>
+<td>The groups whose members <a href="../../core/groups/#who-administers-the-tenant">administer the tenant</a>, by their names in the tenant, compared exactly, as <code>["administrators"]</code>: a local group the console fills, or a group an upstream provider or a directory holds the members of. A name that is empty, or that begins or ends with whitespace, is refused; a name no group carries yet is accepted. <code>[]</code>, nobody administers the tenant</td>
+</tr>
 </tbody>
 </table>
-<p><strong>Six of them are written in the row of the tenant</strong>, with its issuer: its name, its logo and its two colours,
-the claims a person changes and its <code>acr</code> classes. <code>beffroi:tenant:synchronize</code> writes them, and every request
-and every message compares the row with the environment of its process: while the two differ, each one that
-reads the tenant fails, and the log names the setting that differs, <code>look</code> for the logo and the colours,
-while the timed steps wait. Changing one of them is therefore a restart of
+<p><strong>Ten of them are written in the row of the tenant</strong>, with its issuer: its name, its logo and its two colours,
+the claims a person changes, its <code>acr</code> classes, and the four that say what the enrolment of a passkey asks:
+the seven settings of <a href="../../core/tenants/">the row of the tenant</a>, the enrolment of a passkey counting once.
+<code>beffroi:tenant:synchronize</code> writes them, and every request and every message compares the row with the
+environment of its process: while the two differ, each one that reads the tenant fails, and the log names the
+setting that differs, <code>look</code> for the logo and the colours, <code>passkey_attestation</code> for the four of the passkey
+enrolment, while the timed steps wait. Changing one of them is therefore a restart of
 every process with the new value, and <code>bin/console beffroi:tenant:synchronize</code> run in one of them; a process
 still on the previous value stops serving from that moment.</p>
 <h2 id="keys-and-lifetimes">Keys and lifetimes<a class="headerlink" href="#keys-and-lifetimes" title="Link to this section">&para;</a></h2>
@@ -4865,8 +4897,8 @@ on what its own clients send.</p>
 </tr>
 <tr>
 <td><code>FRANKENPHP_LOOP_MAX</code></td>
-<td>not set</td>
-<td>The requests a PHP worker of the server serves before it restarts, read by the runtime of Symfony: 500 when it is not set, never with <code>0</code> or a negative number</td>
+<td><code>0</code></td>
+<td>The requests a PHP worker of the server serves before it restarts, read by the runtime of Symfony: never with <code>0</code> or a negative number, 500 when it is not set. <code>.env</code> sets <code>0</code>, so a worker keeps the keys it opened when it started</td>
 </tr>
 </tbody>
 </table>
@@ -4890,15 +4922,19 @@ container into, and <code>APP_LOG_DIR</code>, which moves its logs.</p>
 </tr>
 <tr>
 <td><code>TLS_TERMINATION</code></td>
-<td>Who terminates the TLS of the site of <code>SERVER_NAME</code>. <code>caddy</code>, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. <code>proxy</code>: a proxy in front of the image, which sends the site plain HTTP, <code>SERVER_NAME</code> then naming the one host the proxy asks for, or <code>:&lt;port&gt;</code> for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way</td>
+<td>Who terminates the TLS of the site of <code>SERVER_NAME</code>. <code>caddy</code>, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. <code>proxy</code>: a proxy in front of the image, which sends the site plain HTTP, <code>SERVER_NAME</code> then naming the one host the proxy asks for, or <code>:&lt;port&gt;</code> for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way, and the site of the administration API is served on the address its own variable gives</td>
 </tr>
 <tr>
 <td><code>MTLS_SERVER_NAME</code></td>
 <td>The host of the listener that asks for a client certificate, in <code>mtls.Caddyfile</code></td>
 </tr>
 <tr>
+<td><code>ADMINISTRATION_SERVER_NAME</code></td>
+<td>The address of the site of the administration API, in <code>administration.Caddyfile</code>: the host of the URL <code>BEFFROI_TENANT_ADMINISTRATION_RESOURCE</code> names, or, behind a proxy that terminates TLS, a plain HTTP address such as <code>:81</code>. Its worker serves the administration API and nothing else</td>
+</tr>
+<tr>
 <td><code>CADDY_EXTRA_CONFIG</code></td>
-<td>Configuration added to the <code>Caddyfile</code> beside the site of <code>SERVER_NAME</code>. <code>import mtls.Caddyfile</code> is what serves the host that asks for a client certificate</td>
+<td>Configuration added to the <code>Caddyfile</code> beside the site of <code>SERVER_NAME</code>. <code>import mtls.Caddyfile</code> is what serves the host that asks for a client certificate, and <code>import administration.Caddyfile</code> the administration API, which a deployment that does not import it does not serve</td>
 </tr>
 <tr>
 <td><code>CADDY_GLOBAL_OPTIONS</code></td>
@@ -4907,6 +4943,10 @@ container into, and <code>APP_LOG_DIR</code>, which moves its logs.</p>
 <tr>
 <td><code>CADDY_SERVER_EXTRA_DIRECTIVES</code></td>
 <td>Directives added to the site of <code>SERVER_NAME</code>, such as a <code>tls</code> directive naming a certificate and its key</td>
+</tr>
+<tr>
+<td><code>CADDY_ADMINISTRATION_EXTRA_DIRECTIVES</code></td>
+<td>Directives added to the site of the administration API, as <code>CADDY_SERVER_EXTRA_DIRECTIVES</code> are to the site of <code>SERVER_NAME</code>: behind a proxy, the one that hands PHP the address of the client. Each site has its own, a directive of one not fitting the other</td>
 </tr>
 <tr>
 <td><code>CADDY_SERVER_LOG_OPTIONS</code></td>
@@ -4918,7 +4958,7 @@ container into, and <code>APP_LOG_DIR</code>, which moves its logs.</p>
 </tr>
 <tr>
 <td><code>FRANKENPHP_WORKER_CONFIG</code></td>
-<td>Directives added to the <code>worker</code> block: the <code>watch</code> lines of the development stack, nothing in production</td>
+<td>Directives added to each <code>worker</code> block, the one of <code>worker.Caddyfile</code> and the one of the administration API: the <code>watch</code> lines of the development stack, nothing in production</td>
 </tr>
 </tbody>
 </table>
@@ -4955,10 +4995,11 @@ the same command, run in the image, to draw the key into it once before anything
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nv">BEFFROI_KMS_KEY_ID</span><span class="o">=</span><span class="s2">"beffroi-{tenant}"</span>
 </span></code></pre></div>
 <p>The Transit key of a tenant is <code>beffroi-&lt;slug&gt;</code>, of type <code>aes256-gcm96</code> and created with <code>derived=true</code>:
-the envelope carries a context that binds it to its tenant, Vault honours a context on a derived key only,
-and the bridge refuses to seal under a key that is not one. The development stack also creates it not
-exportable, with no plaintext backup, and refuses its deletion. The token needs three paths and nothing
-else:</p>
+each data key is wrapped under a context, its reference and its scope, and Vault honours a context on a
+derived key only, so the bridge reads the configuration of the key once per process and refuses to wrap a
+data key under one that is not derived. The development stack also creates it not exportable, with no
+plaintext backup, and refuses its deletion. The token needs four paths and nothing else, <code>transit/encrypt</code>
+for the data key a rewrap towards Vault wraps again:</p>
 <div class="language-hcl highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="err">path</span><span class="w"> </span><span class="s2">"transit/datakey/plaintext/beffroi-*"</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="na">capabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"update"</span><span class="p">]</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">}</span>
@@ -4967,9 +5008,13 @@ else:</p>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="na">capabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"update"</span><span class="p">]</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">}</span>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="err">path</span><span class="w"> </span><span class="s2">"transit/keys/beffroi-*"</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="na">capabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"read"</span><span class="p">]</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="err">path</span><span class="w"> </span><span class="s2">"transit/encrypt/beffroi-*"</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="na">capabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"update"</span><span class="p">]</span>
 </span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">}</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="err">path</span><span class="w"> </span><span class="s2">"transit/keys/beffroi-*"</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="na">capabilities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"read"</span><span class="p">]</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>The Vault of the development stack is a dev server answering over plain HTTP, which its DSN says with
 <code>?scheme=http</code>.</p>
@@ -5056,7 +5101,7 @@ fixtures. A production kernel reads none of them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 13:12:45 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:37:58 UTC">November 17, 2026</span>
   </span>
 
     

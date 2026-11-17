@@ -1025,6 +1025,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#what-an-administrator-says-of-a-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What an administrator says of a person
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#what-a-person-says-of-themselves" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4043,6 +4054,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#what-an-administrator-says-of-a-person" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What an administrator says of a person
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#what-a-person-says-of-themselves" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4212,6 +4234,9 @@ well formed. The command prints the username, the subject, the email address wit
 the row and the slug of the tenant. It gives the user no credential: a password is
 <a href="../credentials/passwords/"><code>beffroi:user:set-password</code></a>, and a first passkey on a tenant that holds no password
 is an <a href="../credentials/passkeys/#a-first-passkey-from-a-ticket">enrolment ticket</a>.</p>
+<p>An administrator creates a person through the administration API as well, from their username and, when it is
+known, their address and whether it was verified, under the same refusals. Creating a person is an act of
+theirs, <code>person.created</code>, which names the administrator when one created them.</p>
 <p>A person is also created by an upstream identity provider, <a href="../../saml/federated-sign-in/#the-person">at their first sign-in through their
 organisation</a>. That person is named by their address, which is their
 username, the address is verified, and the source says which provider created them.</p>
@@ -4308,9 +4333,16 @@ number and the postal address it wrote; reading a user without writing is <code>
 </tr>
 </tbody>
 </table>
-<p>The email address is not among them: it is given when the user is created, and rewritten afterwards only by
-the upstream provider that <a href="../../saml/federated-sign-in/#the-person">created the person</a>. No command renames a
-user either.</p>
+<p>The email address is not among them. It is given when the user is created, and rewritten afterwards by the
+upstream provider that <a href="../../saml/federated-sign-in/#the-person">created the person</a>, or by an administrator
+through the administration API. No command renames a user.</p>
+<h3 id="what-an-administrator-says-of-a-person">What an administrator says of a person<a class="headerlink" href="#what-an-administrator-says-of-a-person" title="Link to this section">&para;</a></h3>
+<p>An administrator changes the username and the claims of a person through the administration API, with one JSON
+merge patch (RFC 7396) of the document that reads the person: a claim set to <code>null</code> is taken away, and a new
+address or number is unverified until the patch says it was verified. All of it is written or none of it. A
+username another person of the tenant holds is refused, and so is a value that changes what the source of the
+person holds. Each value that changed is a line of the history of the person, which names the administrator,
+and the patch is one act, <code>person.described</code>, which carries the names of what changed and never a value.</p>
 <h3 id="what-a-person-says-of-themselves">What a person says of themselves<a class="headerlink" href="#what-a-person-says-of-themselves" title="Link to this section">&para;</a></h3>
 <p>A person changes, on <a href="../../application/account/#what-a-person-may-change-of-themselves">the page of their account</a>,
 the claims their tenant opens in <code>tenant.self_served_claims</code>, and no other: a tenant that opens none serves a
@@ -4355,8 +4387,10 @@ says which organisation they are of.</p>
 <p>It prints the username, the subject, whether the account is enabled, when it was created, the email address with
 its state and the source, then the name, the given name, the family name, the phone number and the postal
 address. Below them, one line per credential with its kind, identifier, name and dates, revoked ones
-included, and one line per group with the source of the membership and the date it was added. It writes
-nothing. The <a href="../../reference/console-commands/">console commands</a> list what else reads a person:
+included, and for a passkey its authenticator: the model a source names, or <code>unknown</code> with its AAGUID, then
+what the enrolment proved, <code>declared</code>, <code>verified</code> or <code>enterprise</code>, the serial number an enterprise attestation
+carried, and <code>under a security alert</code> for a model the tenant admitted under one. Then one line per group with
+the source of the membership and the date it was added. It writes nothing. The <a href="../../reference/console-commands/">console commands</a> list what else reads a person:
 <code>beffroi:user:sessions</code>, <code>beffroi:user:journal</code> and <code>beffroi:user:applications</code>.</p>
 <h2 id="a-disabled-user">A disabled user<a class="headerlink" href="#a-disabled-user" title="Link to this section">&para;</a></h2>
 <p>An account carries the date it was disabled, and a disabled person is refused at these places:</p>
@@ -4364,14 +4398,22 @@ nothing. The <a href="../../reference/console-commands/">console commands</a> li
 <li>every login, by password, by passkey or by code, after the credential was checked, so that the refusal
   costs what a wrong credential costs and says nothing of the state of the account;</li>
 <li>a sign-in through an upstream provider, before anything the provider said is written;</li>
-<li>an enrolment ticket, which is not issued for them and no longer opens anything once they are;</li>
+<li>a ticket of any kind, for a passkey, a password or an authenticator application, which is not issued for them
+  and no longer opens anything once they are;</li>
 <li>an assertion of a trusted issuer at the token endpoint (RFC 7523 §3) that names them;</li>
-<li>an access token that names them, at UserInfo, at introspection, and presented to the token exchange
-  (RFC 8693).</li>
+<li>an access token that names them, at UserInfo, at introspection, at the administration API, and presented to
+  the token exchange (RFC 8693);</li>
+<li>a refresh token issued for them, at the token endpoint, refused with <code>invalid_grant</code>.</li>
 </ul>
-<p>Nothing else reads the state of the account: a session already open goes on serving the browser that holds it,
-and a refresh token goes on being exchanged at the token endpoint. <code>beffroi:user:show</code> says <code>disabled since</code> and
-the date. No command or page of the application disables or enables an account.</p>
+<p><strong>Disabling a person ends every session of theirs.</strong> The account is disabled first, so that no session opens
+meanwhile, then each session ends as any other does: its clients are told through the back channel and its
+refresh tokens are revoked. Enabling the person again gives nothing back, and they sign in anew.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:user:disable<span class="w"> </span>alice
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bin/console<span class="w"> </span>beffroi:user:enable<span class="w"> </span>alice
+</span></code></pre></div>
+<p>An administrator does the same through the administration API, and cannot disable the account they act with.
+Each is an act of the person, <code>person.disabled</code> or <code>person.enabled</code>. A person already in that state is left as
+they are, and nothing is written. <code>beffroi:user:show</code> says <code>disabled since</code> and the date.</p>
 
 
 
@@ -4392,7 +4434,7 @@ the date. No command or page of the application disables or enables an account.<
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
   </span>
 
     

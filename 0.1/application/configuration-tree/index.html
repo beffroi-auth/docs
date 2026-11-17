@@ -4491,7 +4491,7 @@ type and its bounds.</p>
 <tbody>
 <tr>
 <td><a href="#tenant"><code>tenant</code></a></td>
-<td>The issuer, the name and the look of the tenant, the claims its people change, its <code>acr</code> vocabulary and the scopes of its APIs</td>
+<td>The issuer, the name and the look of the tenant, the claims its people change, its <code>acr</code> vocabulary, the scopes of its APIs, the groups that administer it and its administration API, and what the enrolment of its passkeys asks</td>
 <td>Required. <code>BEFFROI_ISSUER</code>, <code>BEFFROI_TENANT_SLUG</code> and the <code>BEFFROI_TENANT_*</code> variables</td>
 </tr>
 <tr>
@@ -4577,7 +4577,7 @@ type and its bounds.</p>
 <tr>
 <td><a href="#trusted_issuers"><code>trusted_issuers</code></a></td>
 <td>The issuers of the JWT bearer grant</td>
-<td><code>BEFFROI_TRUSTED_ISSUERS</code>, <code>{}</code>. The grant issues no token on the image, whatever this names</td>
+<td><code>BEFFROI_TRUSTED_ISSUERS</code>, <code>{}</code>. The grant issues a token only to a client its initial access token gave a resource</td>
 </tr>
 <tr>
 <td><a href="#clients"><code>clients</code></a></td>
@@ -4611,9 +4611,9 @@ chooses is a variable, which stands for a value only once a process runs.</p>
 bounds the tree sets for its option and to the rules between options, a sliding refresh lifetime longer than
 the absolute one, a SAML <code>cache_duration</code> that is not shorter than the SAML staging delay; a list a variable
 carries is held to the rules of the tree as a list written in the file is. The first request or command that
-needs a value refuses it out of bounds, except the age of a key, <code>keys.age</code>, which the timed step of the key
-lifecycle refuses at its first tick when it is not longer than the retirement window of its use, and a change
-of variable asks for a restart of the processes, not for a new image.</p>
+needs a value refuses it out of bounds, an age of a key, <code>keys.age</code>, below a second among them, and the timed
+step of the key lifecycle refuses besides an age that is not longer than the retirement window of its use, when
+it comes to stage a successor. A change of variable asks for a restart of the processes, not for a new image.</p>
 <p><strong>When the provider first reads a declaration.</strong> What only the wiring can answer is checked against the
 wiring, the first time the provider builds the object: the tenant, the scopes of its APIs, each trusted
 issuer, each authority of software statements, the default scope of registrations, and each SAML peer, the
@@ -4693,11 +4693,16 @@ seal a column.</p>
 <h2 id="tenant"><code>tenant</code><a class="headerlink" href="#tenant" title="Link to this section">&para;</a></h2>
 <p>Who the provider is, and required. <code>issuer</code> is the identifier every token carries as <code>iss</code> and the URL every
 endpoint is served under: the application imports its routes at the root, so its issuer is an origin with no
-path, which the provider checks at the first request. <code>slug</code> names the tenant for good: its identifier is
-derived from it, and renaming it is creating another tenant. <code>name</code> and <code>look</code> are what the pages show of the
-tenant, <code>self_served_claims</code> what its people may change of themselves, <code>authentication_classes</code> the <code>acr</code> it
-answers with, and <code>scopes</code> the scopes of the APIs it protects, which a client that registers itself may
-register beside <code>openid</code>, the scopes of the claims and <code>offline_access</code>.</p>
+path, which the provider checks when it builds the tenant, at <code>beffroi:tenant:synchronize</code> and at every
+request that reads it. <code>slug</code> names the tenant for good: its identifier is derived from it, and renaming it is
+creating another tenant. <code>name</code> and <code>look</code> are what the pages show of the tenant, <code>self_served_claims</code> what
+its people may change of themselves, <code>authentication_classes</code> the <code>acr</code> it answers with, and <code>scopes</code> the
+scopes of the APIs it protects, which a client that registers itself may register beside <code>openid</code>, the scopes
+of the claims and <code>offline_access</code>. <code>administrators</code> names the groups whose members <a href="../../core/groups/#who-administers-the-tenant">administer the
+tenant</a>, and <code>administration_resource</code> the identifier of its
+<a href="../../oidc/resources/#the-administration-api">administration API</a>. The four <code>passkey_*</code> options say what the
+enrolment of a passkey asks of its authenticator, as
+<a href="../../core/credentials/passkeys/#what-the-enrolment-asks">passkeys</a> says.</p>
 <div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">beffroi</span><span class="p">:</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">tenant</span><span class="p">:</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="nt">issuer</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_ISSUER)%'</span>
@@ -4710,12 +4715,20 @@ register beside <code>openid</code>, the scopes of the claims and <code>offline_
 </span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">        </span><span class="nt">self_served_claims</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TENANT_SELF_SERVED_CLAIMS)%'</span>
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="nt">authentication_classes</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TENANT_AUTHENTICATION_CLASSES)%'</span>
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="nt">scopes</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TENANT_SCOPES)%'</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="nt">administrators</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TENANT_ADMINISTRATORS)%'</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">        </span><span class="nt">administration_resource</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::BEFFROI_TENANT_ADMINISTRATION_RESOURCE)%'</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">        </span><span class="nt">passkey_attestation</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_TENANT_PASSKEY_ATTESTATION)%'</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">        </span><span class="nt">passkey_attestation_roots</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS)%'</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">        </span><span class="nt">passkey_attestation_own_roots</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS)%'</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">        </span><span class="nt">passkey_compromised_models</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS)%'</span>
 </span></code></pre></div>
 <p><code>default::</code> makes an empty variable no value at all: an empty <code>BEFFROI_TENANT_NAME</code> names the tenant after the
-host of the issuer, and an empty colour is no colour. An empty <code>BEFFROI_TENANT_LOGO_URI</code> is the parameter
+host of the issuer, an empty colour is no colour, and an empty <code>BEFFROI_TENANT_ADMINISTRATION_RESOURCE</code> is no
+administration API, which reserves nothing. An empty <code>BEFFROI_TENANT_LOGO_URI</code> is the parameter
 <code>app.tenant_logo_uri</code> of the file, the placeholder mark the image serves at <code>/tenant-logo.svg</code> under the
-issuer. The three lists are JSON documents: <code>.env</code> opens the fourteen claims the application wires to the
-people of the tenant, names no <code>acr</code> class, which is the default policy, and no scope of an API.</p>
+issuer. The seven lists are JSON documents: <code>.env</code> opens the fourteen claims the application wires to the
+people of the tenant, names no <code>acr</code> class, which is the default policy, no scope of an API, no group of
+administrators, and no root and no model under alert beside <code>BEFFROI_TENANT_PASSKEY_ATTESTATION=none</code>.</p>
 <p>The logo is loaded by the browser of the visitor, under the <code>Content-Security-Policy</code> the application sends.
 Every page that reads the tenant adds the origin of the logo to the <code>img-src</code> of that policy, so a logo served
 from another origin than the pages is named in no file of the application. Its host answers
@@ -4929,8 +4942,8 @@ the provider (RFC 9449 §8). A client that sends no proof is not concerned.</p>
 signing key of one of them can name a user of the tenant and be answered with an access token, so each one is
 declared whole: its keys, the algorithms it signs with, the clients that may present its assertions, the
 source of the identities it names and the scopes it is trusted for. <code>.env</code> declares none, and the grant issues
-no token on the image whatever this section names: it addresses a token to a resource the client registered,
-and no client of the image registers one (<a href="../../oidc/grants/jwt-bearer/">JWT bearer</a>).</p>
+a token only to a client that holds a resource, which a client of the image does when its initial access token
+gave it one (<a href="../../oidc/grants/jwt-bearer/">JWT bearer</a>).</p>
 <div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">beffroi</span><span class="p">:</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="nt">trusted_issuers</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TRUSTED_ISSUERS)%'</span>
 </span></code></pre></div>
@@ -4960,8 +4973,9 @@ client leaves out is the provider's convenience rather than RFC 7591 §2: the br
 scopes <code>openid profile email</code>, and the first wired method of authentication, <code>client_secret_basic</code>.</p>
 <p>A declared client may also carry the members of the deployment, <code>requires_consent</code>, <code>requires_pkce</code>,
 <code>access_token_format</code>, <code>resources</code>, <code>token_exchange</code>, <code>may_act</code> and <code>require_sender_constrained_tokens</code>, which
-a registration is refused for. No client of the image carries one, and <a href="../../oidc/clients/#what-the-image-does-not-set">what the image does not
-set</a> says what every client of the image has instead.</p>
+a registration is refused for. A client that registers itself with an initial access token holds those of
+the five the token names, and <a href="../../oidc/clients/#what-the-image-does-not-set">what the image does not set</a>
+says what every client of the image has otherwise.</p>
 <p><a href="../../oidc/clients/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Clients</a> and <a href="../../getting-started/your-first-client/">your first client</a></p>
 <h2 id="self_client"><code>self_client</code><a class="headerlink" href="#self_client" title="Link to this section">&para;</a></h2>
@@ -5104,7 +5118,7 @@ refuses it.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 09:59:48 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:37:58 UTC">November 17, 2026</span>
   </span>
 
     

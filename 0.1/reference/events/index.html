@@ -4027,6 +4027,9 @@ say what each one carries beyond those four, and who it concerns:</p>
 <li><strong>a client</strong>, when it implements <code>ConcernsAClientInterface</code> and names the client by the identifier it was
   registered under, never the client itself.</li>
 </ul>
+<p>An event that implements <code>NamesItsAuthorInterface</code> names, besides, the administrator who did the act through
+the administration API, by the subject of their account, and nobody when the person, the operator at the
+console or nobody did it.</p>
 <h2 id="every-event-leaves-the-process">Every event leaves the process<a class="headerlink" href="#every-event-leaves-the-process" title="Link to this section">&para;</a></h2>
 <p>An event is routed to the transport <code>async_priority_low</code>, a queue of the database, every one of them by the
 interface they all implement, so an event added to a package leaves the process without a line of
@@ -4035,9 +4038,10 @@ class of the event, its stamps and the slug of its tenant. Nothing listens in th
 an event nothing listens to is announced all the same.</p>
 <h2 id="what-listens">What listens<a class="headerlink" href="#what-listens" title="Link to this section">&para;</a></h2>
 <p><strong>Every event is written to the journal.</strong> <code>WriteTheActDownHandler</code> hears every event of the three packages
-and writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person
-and the client when it concerns a client, and nothing else. A row is kept <code>BEFFROI_JOURNAL_RETENTION</code> days,
-180 in the image, and <code>beffroi:user:journal</code> reads it back for a person.</p>
+and writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person,
+the client when it concerns a client and the administrator when one did it, and nothing else. A row is kept
+<code>BEFFROI_JOURNAL_RETENTION</code> days, 180 in the image, and <code>beffroi:user:journal</code> and the administration API read
+it back for a person.</p>
 <p>The other listeners of the application each hear one event, or an interface a few of them implement:</p>
 <table>
 <thead>
@@ -4133,7 +4137,7 @@ way, <code>logout_token.given_up</code> is raised.</p>
 <td><code>session.ended</code></td>
 <td><code>AuthenticationSessionEnded</code></td>
 <td>A session ends</td>
-<td>The session, which says who ended it</td>
+<td>The session, which says who ended it, and the administrator when one did</td>
 <td>A person</td>
 </tr>
 <tr>
@@ -4172,9 +4176,37 @@ way, <code>logout_token.given_up</code> is raised.</p>
 <td>A person</td>
 </tr>
 <tr>
+<td><code>person.created</code></td>
+<td><code>PersonCreated</code></td>
+<td>A person is created, at the console or through the administration API</td>
+<td>The subject, and the administrator</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>person.described</code></td>
+<td><code>PersonDescribed</code></td>
+<td>An administrator changes the username or the claims of a person</td>
+<td>The subject, the names of what changed, never a value, and the administrator</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>person.disabled</code></td>
+<td><code>PersonDisabled</code></td>
+<td>A person is disabled</td>
+<td>The subject, and the administrator</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>person.enabled</code></td>
+<td><code>PersonEnabled</code></td>
+<td>A person is enabled again</td>
+<td>The subject, and the administrator</td>
+<td>A person</td>
+</tr>
+<tr>
 <td><code>credential.enrolled</code></td>
 <td><code>CredentialEnrolled</code></td>
-<td>A passkey or a TOTP is enrolled</td>
+<td>A passkey or a TOTP is enrolled, or a password ticket gives a password to a person who held none</td>
 <td>The credential</td>
 <td>A person</td>
 </tr>
@@ -4189,7 +4221,7 @@ way, <code>logout_token.given_up</code> is raised.</p>
 <td><code>credential.revoked</code></td>
 <td><code>CredentialRevoked</code></td>
 <td>A credential is revoked</td>
-<td>The credential</td>
+<td>The credential, and the administrator</td>
 <td>A person</td>
 </tr>
 <tr>
@@ -4224,7 +4256,21 @@ way, <code>logout_token.given_up</code> is raised.</p>
 <td><code>enrolment_ticket.issued</code></td>
 <td><code>EnrolmentTicketIssued</code></td>
 <td>An enrolment ticket is issued</td>
-<td>The ticket</td>
+<td>The ticket, and the administrator</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>password_ticket.issued</code></td>
+<td><code>PasswordTicketIssued</code></td>
+<td>A password ticket is issued</td>
+<td>The ticket, and the administrator</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>totp_ticket.issued</code></td>
+<td><code>TotpTicketIssued</code></td>
+<td>A ticket for an authenticator application is issued</td>
+<td>The ticket, and the administrator</td>
 <td>A person</td>
 </tr>
 <tr>
@@ -4252,6 +4298,27 @@ way, <code>logout_token.given_up</code> is raised.</p>
 <td><code>archive.dropped</code></td>
 <td><code>PersonDroppedTheirArchive</code></td>
 <td>A person has it dropped</td>
+<td>The same</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>group.created</code></td>
+<td><code>GroupCreated</code></td>
+<td>A group is created</td>
+<td>The name of the group, and the administrator</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>group_membership.added</code></td>
+<td><code>GroupMembershipAdded</code></td>
+<td>A person is made a member of a group the tenant holds the members of</td>
+<td>The subject, the name of the group, and the administrator</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>group_membership.removed</code></td>
+<td><code>GroupMembershipRemoved</code></td>
+<td>A person is taken out of such a group</td>
 <td>The same</td>
 <td>A person</td>
 </tr>
@@ -4384,8 +4451,8 @@ way, <code>logout_token.given_up</code> is raised.</p>
 <tr>
 <td><code>consent.revoked</code></td>
 <td><code>ConsentRevoked</code></td>
-<td>A person takes a consent back, on their account or by the console</td>
-<td>The consent, the client, the subject, the grants revoked with it, and the hashes of the refresh and access tokens revoked</td>
+<td>A consent is taken back, by the person on their account, at the console, or by an administrator through the administration API</td>
+<td>The consent, the client, the subject, the grants revoked with it, the hashes of the refresh and access tokens revoked, and the administrator when one took it back</td>
 <td>A person, a client</td>
 </tr>
 <tr>
@@ -4433,9 +4500,58 @@ way, <code>logout_token.given_up</code> is raised.</p>
 <tr>
 <td><code>registered_client.deleted</code></td>
 <td><code>RegisteredClientDeleted</code></td>
-<td>A client that registered itself is gone: deleted at its configuration endpoint (RFC 7592 §2.3), by <code>beffroi:client:delete</code>, or dropped for want of use</td>
-<td>The client</td>
+<td>A client that registered itself is gone: deleted at its configuration endpoint (RFC 7592 §2.3), by <code>beffroi:client:delete</code>, by an administrator through the administration API, or dropped for want of use</td>
+<td>The client, and the administrator when one deleted it</td>
 <td>A client</td>
+</tr>
+<tr>
+<td><code>initial_access_token.issued</code></td>
+<td><code>InitialAccessTokenIssued</code></td>
+<td>An initial access token is issued, at the console or through the administration API</td>
+<td>The identifier of the token, and the administrator who issued it</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>initial_access_token.revoked</code></td>
+<td><code>InitialAccessTokenRevoked</code></td>
+<td>An initial access token is revoked the same way</td>
+<td>The identifier of the token, and the administrator who revoked it</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>administration.person_read</code></td>
+<td><code>PersonReadByAnAdministrator</code></td>
+<td>An administrator reads a person through the administration API</td>
+<td>The client the administrator acts through, the subject of the person, the administrator</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>administration.sessions_read</code></td>
+<td><code>SessionsReadByAnAdministrator</code></td>
+<td>An administrator reads the open sessions of a person</td>
+<td>The same</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>administration.journal_read</code></td>
+<td><code>JournalReadByAnAdministrator</code></td>
+<td>An administrator reads the journal of a person</td>
+<td>The same</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>administration.consents_read</code></td>
+<td><code>ConsentsReadByAnAdministrator</code></td>
+<td>An administrator reads the applications a person agreed to</td>
+<td>The same</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>administration.membership_read</code></td>
+<td><code>MembershipReadByAnAdministrator</code></td>
+<td>An administrator reads the members of a group, one act per member</td>
+<td>The same</td>
+<td>A person, a client</td>
 </tr>
 </tbody>
 </table>
@@ -4486,7 +4602,7 @@ is. The reason of <code>pushed_request.refused</code> is one of <code>unknown_re
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:37:58 UTC">November 17, 2026</span>
   </span>
 
     

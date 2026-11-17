@@ -4228,7 +4228,7 @@ endpoint, then:</p>
 </tr>
 <tr>
 <td><code>resource</code></td>
-<td>Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client of the image registers none, so a <code>resource</code> it names is <code>invalid_target</code></td>
+<td>Optional and repeatable, among the resources the client holds (RFC 8707 §2). A <code>resource</code> the client does not hold is refused with <code>invalid_target</code>, and so is the <a href="../../resources/#the-administration-api">administration API</a> of the tenant, whichever client names it</td>
 </tr>
 <tr>
 <td><code>user_code</code></td>
@@ -4496,8 +4496,8 @@ it is asked, which is what a <code>ping</code> client needs, the ping coming soo
 is spent once, atomically.</p>
 <p>The tokens are those of an ordinary authorization, descending from the session the person approved with: an
 access token addressed to the resources of the request, or to the client itself when it named none, as every
-client of the image does; an ID token, always, <code>openid</code> being required of the request, without a <code>nonce</code>; and
-a refresh token when one is due. They are bound to what the token request binds them to
+client that holds no resource does; an ID token, always, <code>openid</code> being required of the request, without a
+<code>nonce</code>; and a refresh token when one is due. They are bound to what the token request binds them to
 (<a href="../#what-the-token-endpoint-does">grants</a>), never to anything the browser that approved proved.</p>
 <h2 id="what-is-announced">What is announced<a class="headerlink" href="#what-is-announced" title="Link to this section">&para;</a></h2>
 <p>While a grant of this flow is wired, the <a href="../../discovery-and-jwks/">discovery document</a> carries:</p>
@@ -4547,7 +4547,7 @@ a refresh token when one is due. They are bound to what the token request binds 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
   </span>
 
     

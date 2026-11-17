@@ -4166,10 +4166,11 @@ against a copy of the sealed keys, not against a compromise of the host.
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<p>A Transit key per tenant, and a token minted under a policy that allows data keys and decryption under
-those keys, their configuration and nothing else. The client is <code>symfony/hashicorp-vault-key-management</code>.
-A Vault that answers in plain HTTP, as the one of the development stack does, is named with
-<code>?scheme=http</code> at the end of the DSN.</p>
+<p>A Transit key per tenant, and a token minted under a policy that allows data keys, decryption under those
+keys, the encryption of a data key the provider already holds, which a rewrap towards Vault wraps again,
+and the reading of their configuration, and nothing else. The client is
+<code>symfony/hashicorp-vault-key-management</code>. A Vault that answers in plain HTTP, as the one of the development
+stack does, is named with <code>?scheme=http</code> at the end of the DSN.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>BEFFROI_KMS_DSN="hashicorp-vault-transit://&lt;token&gt;@&lt;host&gt;:8200"
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
 </span></code></pre></div>
@@ -4184,23 +4185,31 @@ A Vault that answers in plain HTTP, as the one of the development stack does, is
 </div>
 </div>
 <h2 id="opening-a-key">Opening a key<a class="headerlink" href="#opening-a-key" title="Link to this section">&para;</a></h2>
-<p>A process opens a key once, the first time it needs it, and keeps it open for as long as it lives, by tenant
-and by <code>kid</code>; a key that retires is forgotten. Served by FrankenPHP in worker mode, as the image of the
-application is, a process pays one opening per key for all the signatures it makes; a process rebuilt at each
-request pays one at each request. The sealed columns follow the same rule with their data keys, one opening
-per data key and per process.</p>
+<p>A process opens the keys it serves with when it starts, and keeps each one open for as long as it lives, by
+tenant and by <code>kid</code>; a key that retires is forgotten. A thread of the HTTP server opens them before its first
+request: the active key of each signature algorithm, the published keys a client encrypts to, the SAML signing
+key when a SAML role is on, the keys the upstream identity providers encrypt to, and every data key of the
+tenant, retired ones included. The worker opens, when it starts consuming, the keys message bodies are sealed
+to, the active signing keys, the application server keys of web push and the same data keys. A key created
+after the process started, or one it could not open then, is opened the first time it is needed. The image
+sets <code>FRANKENPHP_LOOP_MAX=0</code>, so a thread of the server is never started again and pays one opening per key for
+all the signatures it makes; a process rebuilt at each request pays one at each request.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:keys:list<span class="w"> </span>--check
 </span></code></pre></div>
 <p>Opens the keys in use and the ones about to be, and fails on a key the service cannot open: a key the provider
 cannot open is an outage at the first token request, so this is worth a run in a deployment pipeline.</p>
 <h2 id="when-the-service-does-not-answer">When the service does not answer<a class="headerlink" href="#when-the-service-does-not-answer" title="Link to this section">&para;</a></h2>
 <p>A key management service that does not answer, or whose backend refuses, is an outage and not an error of the
-request. Wherever it stands on the path of a request, the first opening of a signing key on a process that has
-not signed yet, the secret of an authenticator application at the code page, the enrolment of one, the request
-is answered <code>503 Service Unavailable</code> with <code>Retry-After: 10</code>, the same request being served once the service is
-back. Nothing was refused to the person and nothing was counted: a pending login keeps waiting for the same
-code. The outage is announced to the journal with the words of the service, and nothing of what was being
-opened.</p>
+request. Wherever it stands on the path of a request, the opening of a key the process could not open when it
+started or that was created since, the secret of an authenticator application at the code page, the enrolment
+of one, the request is answered <code>503 Service Unavailable</code> with <code>Retry-After: 10</code>, the same request being served
+once the service is back. Nothing was refused to the person and nothing was counted: a pending login keeps
+waiting for the same code. The outage is announced to the journal with the words of the service, and nothing of
+what was being opened.</p>
+<p>A process that starts while the service does not answer starts all the same, writes so to its log at the level
+<code>error</code>, and opens each key at its first use. A service reached over HTTP is given five seconds of silence and
+ten seconds in all for each request, unless its DSN names its own <code>timeout</code> or <code>max_duration</code>, so a service
+that stops answering is an outage within seconds rather than a request held until PHP ends it.</p>
 <p>An envelope the service refuses to open, tampered with, sealed for another tenant or another use, or wrapped
 under a master key the service does not know when it opens it, is not an outage: it is an error, and no
 retry changes it.</p>
@@ -4252,7 +4261,7 @@ command that moves them first.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 22:59:05 UTC">November 17, 2026</span>
   </span>
 
     

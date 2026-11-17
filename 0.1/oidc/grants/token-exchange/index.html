@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and why no client of a deployment of the image is registered for it.">
+        <meta name="description" content="Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and the initial access token that registers a client for it.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -82,7 +82,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Token exchange">
-  <meta property="og:description" content="Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and why no client of a deployment of the image is registered for it.">
+  <meta property="og:description" content="Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and the initial access token that registers a client for it.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -4058,9 +4058,10 @@ addressed to resources the first one was already addressed to, and good for no s
 carry (RFC 8693 §2.1). It is how a gateway that received a person's token calls the service behind it with a
 token of its own, narrowed to that service, and how a service tells the resource it calls that it acts for
 somebody else.</p>
-<p><strong>No client of a deployment of the image is registered for it</strong>, and no access token of the image is one it
-takes: <a href="#registering-a-client-for-it">registering a client for it</a> says why. The rest of this page is what the
-grant does for a client that carries <code>token_exchange</code> and a token addressed to a resource.</p>
+<p><strong>A client of a deployment of the image is registered for it only when the initial access token it registered
+with gave it <code>token_exchange</code></strong>, and a token is exchangeable only when it is addressed to a resource:
+<a href="#registering-a-client-for-it">registering a client for it</a> says why. The rest of this page is what the grant
+does for a client that carries <code>token_exchange</code> and a token addressed to a resource.</p>
 <h2 id="registering-a-client-for-it">Registering a client for it<a class="headerlink" href="#registering-a-client-for-it" title="Link to this section">&para;</a></h2>
 <p>What a client may do at the exchange is registered in advance and never asked for, in the <code>token_exchange</code>
 member:</p>
@@ -4076,13 +4077,15 @@ member:</p>
 can be, one to 255 visible ASCII characters and no space, since it is named where a subject is expected, and a
 public client is refused the grant.</p>
 <p><strong><code>token_exchange</code> is a member of the deployment.</strong> A registration that carries it is refused with
-<code>invalid_client_metadata</code>, and so is a registration that names the grant without it. A deployment of the image
-declares no client, and no variable gives the member to one, so no client of the image is registered for the
-grant, and the token endpoint answers a request of it with <code>unauthorized_client</code> (<a href="../../clients/#what-the-image-does-not-set">what the image does not
+<code>invalid_client_metadata</code>, and so is a registration that names the grant without the member. On a deployment
+of the image, the member comes from the initial access token the client registered with, issued with
+<code>--exchange-subject-token-type</code> once per type, and with <code>--exchange-for-a-user</code> for <code>may_act_for_a_user</code>, and
+the client still registers the grant. A client that was given none is not registered for the grant, and the
+token endpoint answers a request of it with <code>unauthorized_client</code> (<a href="../../clients/#what-the-image-does-not-set">what the image does not
 set</a>).</p>
-<p><strong>Nor is an access token of the image exchangeable.</strong> A client of the image registers no resource, so each of
-its access tokens is addressed to the client itself, and an exchange refuses a token addressed to its own
-client: it was asked for no resource, so there is nothing to narrow.</p>
+<p><strong>A token addressed to its own client is not exchangeable.</strong> A client that holds no resource has each of its
+access tokens addressed to itself, and an exchange refuses a token addressed to its own client: it was asked
+for no resource, so there is nothing to narrow.</p>
 <h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4154,8 +4157,9 @@ token said, and carries its <code>act</code>, if any, unchanged.</p>
 that may act for the subject of a token issued to that client: it is written on every self-contained token
 that client receives, and an exchange of a token of that client is refused with <code>invalid_request</code> for anybody
 else, the party compared being the outermost actor the new token would name or, when it would name none, the
-client that asked. It is a member of the deployment too, which no client of the image carries (<a href="../../clients/#what-the-image-does-not-set">what the image
-does not set</a>).</p>
+client that asked. It is a member of the deployment too, which a client of the image carries when the initial
+access token it registered with was issued with <code>--may-act</code> (<a href="../../clients/#what-the-image-does-not-set">what the image does not
+set</a>).</p>
 <h2 id="what-the-issued-token-says">What the issued token says<a class="headerlink" href="#what-the-issued-token-says" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4227,7 +4231,7 @@ taking that grant back takes both, and the end of the session the presented toke
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:07:49 UTC">November 17, 2026</span>
   </span>
 
     

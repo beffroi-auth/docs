@@ -4112,8 +4112,8 @@ and no other.</p>
 <p><a href="../../application/">The application</a> answers every port. A team that writes its own integration
 around the components answers them itself, and starts from the implementations the package ships,
 <a href="#what-ships-in-the-package">below</a>.</p>
-<p><strong>Besides its own</strong>, the package uses eighteen ports of <a href="../../core/ports/">the core</a>, <code>Beffroi\Core\Port</code>:
-it calls sixteen and implements two. And it calls two interfaces of the PHP-FIG, the clock of PSR-20, which
+<p><strong>Besides its own</strong>, the package uses twenty-five ports of <a href="../../core/ports/">the core</a>, <code>Beffroi\Core\Port</code>:
+it calls twenty-three and implements two. And it calls two interfaces of the PHP-FIG, the clock of PSR-20, which
 the use cases read the time from, and the event dispatcher of PSR-14, which every act leaves through.</p>
 <table>
 <thead>
@@ -4170,6 +4170,26 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 <tr>
 <td><code>PasswordHasherInterface</code>, <code>PasswordAlgorithmsInterface</code></td>
 <td>The secrets of the clients, hashed when they are kept and read back by the algorithm they name</td>
+</tr>
+<tr>
+<td><code>SubjectsOfSessionsInterface</code></td>
+<td>The subject of the person a session names, so that announcing a replayed code, a reused refresh token or a token a client gave back asks nothing of the key management service</td>
+</tr>
+<tr>
+<td><code>SigningKeyOpenerInterface</code></td>
+<td>Opens the active key of an algorithm before a grant or the authorization endpoint spends what it cannot get back</td>
+</tr>
+<tr>
+<td><code>AdministratorGroupsInterface</code>, <code>GroupsOfAPersonInterface</code></td>
+<td>Who <a href="../../core/groups/#who-administers-the-tenant">administers the tenant</a>, read from the groups of the person, for the audience of the <a href="../resources/#the-administration-api">administration API</a> and the requests it serves</td>
+</tr>
+<tr>
+<td><code>GroupsOfATenantInterface</code>, <code>MembersOfAGroupInterface</code></td>
+<td>The groups of the tenant and their members, which an administrator reads through the administration API</td>
+</tr>
+<tr>
+<td><code>CanPageActsOfAPersonInterface</code></td>
+<td>The journal of a person, which an administrator reads through the administration API</td>
 </tr>
 <tr>
 <td><code>SecretSealerInterface</code></td>
@@ -4321,6 +4341,11 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 <td><code>TrustedIssuersInterface</code></td>
 <td>The third parties whose assertions a tenant trusts (RFC 7523 §3)</td>
 <td>The configuration</td>
+</tr>
+<tr>
+<td><code>AdministrationResourceInterface</code></td>
+<td>The <a href="../resources/#the-administration-api">administration API</a> of a tenant, the resource whose audience the provider reserves to its administrators, or none</td>
+<td>The configuration, <code>tenant.administration_resource</code></td>
 </tr>
 <tr>
 <td><code>PushedAuthorizationRequirementInterface</code>, <code>RegisteredAccessTokenShapesInterface</code>, <code>RegisteredResourcesInterface</code>, <code>RegisteredScopesInterface</code>, <code>UnsignedRequestObjectsInterface</code></td>
@@ -4675,7 +4700,7 @@ the application's, or the one a team writes around the components.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
   </span>
 
     

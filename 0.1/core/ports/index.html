@@ -4098,7 +4098,8 @@ time from, and an event dispatcher (PSR-14), which the application binds to its 
 is that implementation, in the bridge of the core (<code>Beffroi\Core\Bridge</code>) or in the application (<code>App</code>). Where
 the tables name a class of the application, an integration of one's own around the components implements the
 port itself. The sources of the model of an authenticator are a list the wiring names in order, the FIDO
-metadata before the list of the community. Every other list of several implementations of one interface, a
+metadata before the list of the community, and so are the families of keys a thread of the server and the
+worker open when they start. Every other list of several implementations of one interface, a
 port, an interface of the model or an interface of the bridge, is fed by a tag, every service carrying the tag
 being in it, and a list a role switches takes as well the services of that role while the role is on:</p>
 <table>
@@ -4124,6 +4125,11 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>beffroi.authentication_predicate</code></td>
 <td><code>AuthenticationPredicateInterface</code></td>
 <td><code>WiredAuthenticationPredicates</code>, which the <code>acr</code> vocabulary and the floor of a tenant name predicates from</td>
+</tr>
+<tr>
+<td><code>beffroi.passkey_attestation_policy</code></td>
+<td><code>PasskeyAttestationPolicyInterface</code></td>
+<td><code>WiredPasskeyAttestationPolicies</code>, which the policy of passkey attestation of a tenant is named from</td>
 </tr>
 <tr>
 <td><code>beffroi.archive_chapter</code></td>
@@ -4261,6 +4267,12 @@ being in it, and a list a role switches takes as well the services of that role 
 <td>The bytes of the secret values drawn through it, an authorization code, a refresh token, a TOTP secret and a backup code among them</td>
 <td><code>PlatformRandomness</code> (core)</td>
 </tr>
+<tr>
+<td><code>CanCountUsersInterface</code></td>
+<td><code>countUsersIn</code></td>
+<td>How many people a tenant has, whatever their state, and nothing of anybody: the statistics of the instance</td>
+<td><code>DoctrineUserRepository</code> (application)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="groups">Groups<a class="headerlink" href="#groups" title="Link to this section">&para;</a></h2>
@@ -4291,6 +4303,24 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>of</code></td>
 <td>The memberships of one person with their sources</td>
 <td><code>DoctrineGroupMembershipRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>GroupsOfATenantInterface</code></td>
+<td><code>of</code>, <code>find</code></td>
+<td>The groups of a tenant, all of them or one by its identifier</td>
+<td><code>DoctrineGroupRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>MembersOfAGroupInterface</code></td>
+<td><code>membersOf</code>, <code>countMembersOf</code></td>
+<td>The members of one group, or how many it holds, which delivers none of them</td>
+<td><code>DoctrineGroupMembershipRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>AdministratorGroupsInterface</code></td>
+<td><code>groupsAdministering</code></td>
+<td>The names of the groups whose members <a href="../groups/#who-administers-the-tenant">administer a tenant</a>, none for a tenant nobody administers</td>
+<td><code>ConfigurationAdministratorGroups</code> (core), from <code>tenant.administrators</code></td>
 </tr>
 </tbody>
 </table>
@@ -4372,6 +4402,18 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>WebauthnPasskeyAuthenticator</code> (core)</td>
 </tr>
 <tr>
+<td><code>PasskeyAttestationPoliciesInterface</code></td>
+<td><code>named</code></td>
+<td>The policy of passkey attestation a tenant names, what its enrolment asks of an authenticator (WebAuthn Level 3 §5.4.7), or a refusal naming the wired ones</td>
+<td><code>WiredPasskeyAttestationPolicies</code> (core)</td>
+</tr>
+<tr>
+<td><code>AttestationRootReaderInterface</code></td>
+<td><code>read</code></td>
+<td>A root of passkey attestations a tenant pins, read from its PEM, the certificate of no certificate authority refused (RFC 5280 §4.2.1.9)</td>
+<td><code>PkiAttestationRootReader</code> (core)</td>
+</tr>
+<tr>
 <td><code>MetadataBlobStoreInterface</code></td>
 <td><code>write</code>, <code>readAll</code></td>
 <td>The FIDO metadata the ceremonies read</td>
@@ -4402,10 +4444,28 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>EnvelopeSecretSealer</code> (core)</td>
 </tr>
 <tr>
+<td><code>TicketRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
+<td>The tickets of one kind, found by identifier only, the row holding a hash of the value; the three ports below are this one for their kind</td>
+<td><code>DoctrineTicketRepository</code> (application), one per kind</td>
+</tr>
+<tr>
 <td><code>EnrolmentTicketRepositoryInterface</code></td>
 <td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
 <td>The enrolment tickets of a person</td>
 <td><code>DoctrineEnrolmentTicketRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>PasswordTicketRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
+<td>The password tickets of a person</td>
+<td><code>DoctrinePasswordTicketRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>TotpTicketRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
+<td>The tickets of a person for an authenticator application</td>
+<td><code>DoctrineTotpTicketRepository</code> (application)</td>
 </tr>
 </tbody>
 </table>
@@ -4430,6 +4490,12 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>CanPageActiveSessionsInterface</code></td>
 <td><code>pageOfActiveSessions</code></td>
 <td>One page of the sessions open in the name of a person</td>
+<td><code>DoctrineAuthenticationSessionRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanCountActiveSessionsInterface</code></td>
+<td><code>countActiveSessionsIn</code></td>
+<td>How many sessions of a tenant are open at a moment, neither ended nor expired, and nothing of whose they are</td>
 <td><code>DoctrineAuthenticationSessionRepository</code> (application)</td>
 </tr>
 <tr>
@@ -4590,6 +4656,12 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>SealedKeyProvider</code> (core)</td>
 </tr>
 <tr>
+<td><code>OpenableKeysInterface</code></td>
+<td><code>open</code></td>
+<td>A family of keys of a tenant a process opens when it starts, through the port a request would open them with</td>
+<td><code>ActiveSigningKeys</code>, <code>PublishedDecryptionKeys</code>, <code>ActiveKeptSigningKeys</code>, <code>KeptDecryptionKeysInService</code>, <code>MessageKeysInService</code>, <code>ApplicationServerKeysInService</code> (core, use cases of <code>Beffroi\Core\Application\Key</code>) and <code>DataKeysOfTheTenant</code> (application)</td>
+</tr>
+<tr>
 <td><code>JwsSignerInterface</code></td>
 <td><code>sign</code></td>
 <td>A compact JWS signed by the active key of an algorithm</td>
@@ -4651,6 +4723,12 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>DoctrineJournal</code> (application)</td>
 </tr>
 <tr>
+<td><code>CanCountActsInterface</code></td>
+<td><code>countActsSince</code></td>
+<td>How many acts of each name the journal of a tenant holds since a moment, and nothing of whose they are</td>
+<td><code>DoctrineJournal</code> (application)</td>
+</tr>
+<tr>
 <td><code>PersonalArchiveRepositoryInterface</code></td>
 <td><code>find</code>, <code>latestOf</code>, <code>save</code>, <code>forget</code>, <code>forgetExpired</code></td>
 <td>The archives people asked for</td>
@@ -4672,7 +4750,7 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>DeadRecordsInterface</code></td>
 <td><code>forgetWhatIsDead</code></td>
 <td>The rows of a store that can no longer do anything, dropped and counted</td>
-<td>Nine stores of the application, tagged</td>
+<td>Eleven stores of the application, tagged</td>
 </tr>
 <tr>
 <td><code>PushSubscriptionRepositoryInterface</code></td>
@@ -4689,7 +4767,7 @@ being in it, and a list a role switches takes as well the services of that role 
 </tbody>
 </table>
 <h2 id="what-else-the-bridge-of-the-core-ships">What else the bridge of the core ships<a class="headerlink" href="#what-else-the-bridge-of-the-core-ships" title="Link to this section">&para;</a></h2>
-<p>The bridge of the core holds fifteen stores in memory, for tests and for an integration of one's own that wires
+<p>The bridge of the core holds seventeen stores in memory, for tests and for an integration of one's own that wires
 the core without the stores of the application: <code>InMemoryUserRepository</code>, <code>InMemoryCredentialRepository</code>,
 <code>InMemoryAuthenticationSessionRepository</code>, <code>InMemoryTenantKeyRepository</code> and their siblings; the journal has
 none. It holds three implementations that answer nothing, <code>NullBreachedPasswords</code>, which asks no list,
@@ -4716,7 +4794,7 @@ the protocol</a> list.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
   </span>
 
     

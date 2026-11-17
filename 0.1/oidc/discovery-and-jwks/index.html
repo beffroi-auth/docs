@@ -4112,7 +4112,7 @@ provider refuses rather than arbitrates.</p>
 </tr>
 <tr>
 <td><code>id_token_signing_alg_values_supported</code>, <code>userinfo_signing_alg_values_supported</code></td>
-<td>The signature algorithms the provider is wired with: <code>RS256</code>, <code>PS256</code>, <code>ES256</code> and <code>EdDSA</code> in the application</td>
+<td>The signature algorithms the provider is wired with that the tenant holds an active key for, among <code>RS256</code>, <code>PS256</code>, <code>ES256</code> and <code>EdDSA</code> in the application. Only an active key counts: a staged, a retiring or a retired one does not</td>
 </tr>
 <tr>
 <td><code>id_token_encryption_*</code>, <code>userinfo_encryption_*</code>, <code>request_object_encryption_*</code> (<code>alg_values_supported</code>, <code>enc_values_supported</code>)</td>
@@ -4140,7 +4140,7 @@ provider refuses rather than arbitrates.</p>
 </tr>
 <tr>
 <td><code>introspection_endpoint</code>, <code>introspection_endpoint_auth_methods_supported</code>, <code>introspection_endpoint_auth_signing_alg_values_supported</code>, <code>introspection_signing_alg_values_supported</code></td>
-<td>The endpoint, the wired methods that authenticate a client (all but <code>none</code>), what their assertions are signed with, and the signature algorithms wired (RFC 9701). <a href="../introspection-and-revocation/">Introspection</a></td>
+<td>The endpoint, the wired methods that authenticate a client (all but <code>none</code>), what their assertions are signed with, and the default signature algorithm, the one the answer is signed with, while the tenant holds an active key for it (RFC 9701). <a href="../introspection-and-revocation/">Introspection</a></td>
 </tr>
 <tr>
 <td><code>revocation_endpoint</code>, <code>revocation_endpoint_auth_methods_supported</code>, <code>revocation_endpoint_auth_signing_alg_values_supported</code></td>
@@ -4187,7 +4187,7 @@ provider refuses rather than arbitrates.</p>
 </tr>
 <tr>
 <td><code>protected_resources</code></td>
-<td>A client of the tenant holds resources (RFC 9728 §4), which no client of the image does. <a href="../resources/">Resources</a></td>
+<td>A client of the tenant holds resources (RFC 9728 §4), which a client of the image does when its initial access token gave it some. The administration API is never among them. <a href="../resources/">Resources</a></td>
 </tr>
 <tr>
 <td><code>authorization_details_types_supported</code></td>
@@ -4197,7 +4197,8 @@ provider refuses rather than arbitrates.</p>
 </table>
 <p>The document announces no <code>check_session_iframe</code>: OpenID Connect Session Management 1.0 is not implemented,
 and logout goes through the front and back channels. Its content changes when the wiring or the registrations
-of the tenant change, never during a key rotation, which is the JWK Set's business.</p>
+of the tenant change, or when the tenant is given its first active key of a signature algorithm, never during a
+key rotation, which is the JWK Set's business.</p>
 <h2 id="the-jwk-set">The JWK Set<a class="headerlink" href="#the-jwk-set" title="Link to this section">&para;</a></h2>
 <p><code>GET /jwks</code>, the <code>jwks_uri</code> of the discovery document, answers <code>200</code> with <code>application/json</code> and the public
 keys of the tenant (RFC 7517 §5).</p>
@@ -4277,7 +4278,7 @@ stages a successor once a key has worked its age.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 10:26:34 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
   </span>
 
     

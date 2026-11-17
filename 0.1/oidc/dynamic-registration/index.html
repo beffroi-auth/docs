@@ -4143,8 +4143,11 @@ that are wired.</p>
 <div class="tabbed-block">
 <p><code>BEFFROI_REGISTRATION_MODE=initial_access_token</code> registers a client presented by an initial access token
 the tenant issued (RFC 7591 §1.2): a credential for the team that integrates, named, worth a number of
-registrations and no more, expiring, and revocable. It opens no other endpoint, carries no subject and no
-scope, and says one thing only: that whoever holds it may register a client with this tenant.</p>
+registrations and no more, expiring, and revocable. It opens no other endpoint and carries no scope. It
+says that whoever holds it may register a client with this tenant, and what the tenant gives every client
+it registers: the resources, the shape of access token, the binding, the token exchange and the <code>may_act</code>
+it was issued with (<a href="../clients/#what-the-image-does-not-set">what the image does not set</a>), and whether
+they are clients of the administration API of the tenant.</p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nf">POST</span> <span class="nn">/register</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">op.example.com</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -4162,9 +4165,21 @@ does not hold a token of this tenant learns nothing about the one they presented
 </span></code></pre></div>
 <p><code>beffroi:client:token:issue</code> prints the value once, and the provider keeps its SHA-256 and never the
 value: a token that was lost is replaced by issuing another. It is worth one registration and thirty days
-unless the command says otherwise, a day at least. <code>beffroi:client:token:list</code> shows what each token has
-served of what it is worth, and whether it still authorises anything. <code>beffroi:client:token:revoke</code>
+unless the command says otherwise, a day at least. Its options name what it gives the clients it
+registers: <code>--resource</code>, once per API (RFC 8707 §2); <code>--access-token-format</code>;
+<code>--require-sender-constrained-tokens</code>; <code>--exchange-subject-token-type</code>, once per type (RFC 8693 §3), with
+<code>--exchange-for-a-user</code> when they may exchange a token somebody signed in for; and
+<code>--may-act</code> (RFC 8693 §4.4). What a token gives is read when it is issued, and a token that gives what the
+provider does not serve is not issued. <code>beffroi:client:token:list</code> shows what each token has served of
+what it is worth, what it gives, and whether it still authorises anything. <code>beffroi:client:token:revoke</code>
 takes one back at once, and the clients it registered stay.</p>
+<p><code>--administration</code> issues a token for the administration of the tenant, which a tenant that names no
+administration API refuses. The clients it registers authenticate with a key, <code>private_key_jwt</code> or a
+certificate, and a registration that names a method proving a secret, or none at all, is refused with
+<code>invalid_client_metadata</code>. They hold the <a href="../resources/#the-administration-api">administration API</a> of the
+tenant and no other resource, so such a token names no <code>--resource</code>. <code>beffroi:client:token:list</code> says of
+each token whether it is one. An administrator issues, lists and revokes initial access tokens through
+the administration API as well.</p>
 </div>
 <div class="tabbed-block">
 <p><code>BEFFROI_REGISTRATION_MODE=software_statement</code> registers a client presented by a statement an authority
@@ -4190,7 +4205,8 @@ statement's, so the registration is written with the <code>client_name</code> an
 signed. A statement is held to what the tenant offers as a body is: one that names a scope, a grant or a
 method the tenant does not offer is refused with <code>invalid_client_metadata</code>, as a body naming it would be.
 The claims of RFC 7519 §4.1 of the statement describe the statement and are not metadata. A
-<a href="#reading-replacing-and-deleting-itself">replacement</a> of the registration reads no statement.</p>
+<a href="#reading-replacing-and-deleting-itself">replacement</a> of the registration reads no new statement, and what
+the statement of the registration signed still outranks what the replacement sends.</p>
 <p>The statement is the credential of this mode, and it travels in the body: a body that is not a JSON
 object is refused with <code>invalid_client_metadata</code> before anything else is read, and a JSON object that
 carries no statement is answered <code>401</code>.</p>
@@ -4229,12 +4245,18 @@ read, and in the <code>software_statement</code> mode before anything, the state
 <li><strong>The members this provider defines for itself are not a client's to send</strong>: <code>requires_consent</code>,
   <code>requires_pkce</code>, <code>access_token_format</code>, <code>resources</code>, <code>token_exchange</code>, <code>may_act</code> and
   <code>require_sender_constrained_tokens</code> are exceptions and privileges. A body that carries one is refused, and a
-  software statement does not grant one either: a client that registers itself never obtains them, and no
-  variable gives them to it (<a href="../clients/#what-the-image-does-not-set">what the image does not set</a>).</li>
+  software statement does not grant one either. A client that registers itself obtains five of them,
+  <code>resources</code>, <code>access_token_format</code>, <code>require_sender_constrained_tokens</code>, <code>token_exchange</code> and <code>may_act</code>, from
+  the initial access token it registered with alone, and <code>requires_consent</code> and <code>requires_pkce</code> from nothing a
+  deployment of the image sets (<a href="../clients/#what-the-image-does-not-set">what the image does not set</a>).</li>
 <li><strong>A member nobody reads is refused</strong>, <code>client_id</code> and <code>client_secret</code> included: the provider draws both.</li>
 <li><strong>What a member names is one the provider is wired with</strong>: a grant, a method, an algorithm, a mode of
   delivery, a kind of subject, a type of authorization detail.</li>
 <li><strong>A scope is one the tenant hands out</strong>, the ones its discovery document lists in <code>scopes_supported</code>.</li>
+<li><strong>What the provider signs for the client, it holds a key for</strong>: an algorithm named in
+  <code>id_token_signed_response_alg</code>, <code>authorization_signed_response_alg</code> or <code>userinfo_signed_response_alg</code> is one
+  the tenant holds an active key for, at the registration and at every replacement. An algorithm left out is
+  the default one, whose key is the deployment's to draw and never a reason to refuse the client.</li>
 <li><strong>A <code>sector_identifier_uri</code> is proven</strong>: the provider reads the document behind it once, with one <code>GET</code>,
   no redirect followed, within the seconds and the bytes the two <code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_*</code>
   variables give it, and the document
@@ -4269,7 +4291,11 @@ before what the client sent, until the policy writes the registration again.</p>
 the method the client registered proves a secret, <code>client_secret_basic</code>, <code>client_secret_post</code> or
 <code>client_secret_jwt</code>, the answer also carries a <code>client_secret</code> drawn the same way and <code>client_secret_expires_at</code>
 at <code>0</code>, which says the secret does not expire (RFC 7591 §3.2.1). The metadata follow, as the client sent
-them, a member a statement signed standing in place of the one the client sent.</p>
+them, a member a statement signed standing in place of the one the client sent, and the <code>scope</code> the
+registration policy wrote on a registration that named none (RFC 7591 §3.2.1). The members of the deployment
+are never answered, neither the PKCE exemption of the policy nor what an initial access token gave: a client
+sends back what it was answered to replace itself (RFC 7592 §2.2), and a body that carries one of them is
+refused.</p>
 <p><strong>A secret and a registration access token are said once.</strong> The provider keeps a hash of the secret, or the
 secret sealed for <code>client_secret_jwt</code>, and the SHA-256 of the token, and answers neither again: a read of the
 registration carries neither.</p>
@@ -4287,7 +4313,7 @@ a bearer credential and no other:</p>
 <tbody>
 <tr>
 <td><code>GET</code></td>
-<td><code>200</code>, the registration as the provider holds it, without the secret and without the token</td>
+<td><code>200</code>, the registration with the members an answer carries, without the secret and without the token</td>
 </tr>
 <tr>
 <td><code>PUT</code></td>
@@ -4305,15 +4331,16 @@ a bearer credential and no other:</p>
 </table>
 <p><strong>A replacement is whole and never a patch</strong>: a member the request leaves out is a member the client no longer
 registers. The replacement is read by the reader, under the policy of the tenant and the rules a registration
-body is read under, so it names nothing a registration body could not; it is read from the request alone,
-whatever the mode, with no statement in front of it. The request names the client in <code>client_id</code>, the one
-the URI answers for; it carries none of <code>client_id_issued_at</code>, <code>client_secret_expires_at</code>,
+body is read under, so it names nothing a registration body could not; it is read from the request, whatever
+the mode, with what a statement signed at the registration in front of it, which still outranks what the
+request sends, and with what the initial access token gave. The request names the client in <code>client_id</code>, the
+one the URI answers for; it carries none of <code>client_id_issued_at</code>, <code>client_secret_expires_at</code>,
 <code>registration_access_token</code> and <code>registration_client_uri</code>, which the provider assigned; and a <code>client_secret</code>
 it echoes is the one it holds.
-What the provider assigned stays: the identifier, the date and the token, which is not rotated. The secret is
-the one thing that may change: a client that registers a method proving a secret where it held none, or one
-its kept secret does not suit, is handed a new one, said once, and a client that registers a method proving
-none keeps no secret.</p>
+What the provider assigned stays: the identifier, the date and the token, which is not rotated, and so do the
+members a statement signed and the ones an initial access token gave. The secret is the one thing that may
+change: a client that registers a method proving a secret where it held none, or one its kept secret does not
+suit, is handed a new one, said once, and a client that registers a method proving none keeps no secret.</p>
 <p><strong>A deleted client is gone at once</strong>, with its token: a request that presents it afterwards is answered as a
 token nobody holds. What the client was issued, consents, grants and refresh tokens, is left where it is and
 can no longer be spent, since nothing resolves the client it names. The sessions of the people who used it are
@@ -4331,8 +4358,10 @@ client never used and registered more than <code>BEFFROI_REGISTRATION_KEEP_A_CLI
 One run deletes a hundred clients at most, and the next run takes the rest; what it deleted is written to the
 log. A tenant that registers nobody deletes nothing, and a client the configuration declares, which the image
 holds none of, is never deleted.</p>
-<p>Each deletion, by the step, by the client itself or by <code>beffroi:client:delete</code>, emits the same
-<code>RegisteredClientDeleted</code> event.</p>
+<p>Each deletion, by the step, by the client itself, by <code>beffroi:client:delete</code> or by an administrator through the
+administration API, emits the same <code>RegisteredClientDeleted</code> event, which names the administrator when one
+deleted it. The administration API refuses a client the configuration declares, as the command does, and the
+client the administrator acts through.</p>
 <h2 id="refusals">Refusals<a class="headerlink" href="#refusals" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4389,7 +4418,7 @@ the sentence of the refusal, in ASCII (RFC 7591 §3.2.2).</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
   </span>
 
     

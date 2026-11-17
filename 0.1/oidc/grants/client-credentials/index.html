@@ -4043,18 +4043,21 @@ out (<a href="../../../application/configuration/#the-tenant">configuration</a>)
 </tr>
 <tr>
 <td><code>resources</code></td>
-<td><em>Deployment.</em> The resources it may ask a token for. A client that registered none can obtain nothing with this grant, a request having to name one</td>
+<td><em>Deployment.</em> The resources it may ask a token for, which the initial access token it registered with gives. A client that holds none can obtain nothing with this grant, a request having to name one</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition warning">
-<p class="admonition-title">No token for a client of the image</p>
-<p><code>resources</code> is a member of the deployment: a registration that carries it is refused, and no variable
-gives it to a client (<a href="../../clients/#what-the-image-does-not-set">what the image does not set</a>). A client
-of the image therefore registers no resource, and a request it makes with this grant whose scopes hold is
-refused with <code>invalid_target</code>, whether it names a resource or not: on a deployment of the image, the
-client credentials grant issues no token. The rest of this page is what the grant does for a client that
-carries resources.</p>
+<div class="admonition note">
+<p class="admonition-title">The resources of a service come from its initial access token</p>
+<p><code>resources</code> is a member of the deployment: a registration that carries it is refused. On a deployment of
+the image, a service holds the resources the initial access token it registered with gives, issued with
+<code>--resource</code> once per API (<a href="../../dynamic-registration/#the-three-modes">dynamic registration</a>). A client
+that holds none has every request of this grant whose scopes hold refused with <code>invalid_target</code>, whether
+it names a resource or not (<a href="../../clients/#what-the-image-does-not-set">what the image does not set</a>).
+The <a href="../../resources/#the-administration-api">administration API</a> of the tenant is never addressed under
+this grant, which has nobody signed in behind it.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:client:token:issue<span class="w"> </span><span class="s1">'Billing service'</span><span class="w"> </span>--resource<span class="o">=</span>https://invoices.example.com/
+</span></code></pre></div>
 </div>
 <h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
 <table>
@@ -4184,7 +4187,7 @@ about nobody. The answer is the access token, its <code>token_type</code>, <code
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:12:06 UTC">November 17, 2026</span>
   </span>
 
     

@@ -1411,6 +1411,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#keys-and-data-keys" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4032,6 +4043,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groups
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#keys-and-data-keys" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4128,7 +4150,7 @@ packages with what listens to it.</p>
 </tr>
 </tbody>
 </table>
-<p>Two interfaces say more of an event that means more:</p>
+<p>Three interfaces say more of an event that means more:</p>
 <table>
 <thead>
 <tr>
@@ -4148,14 +4170,20 @@ packages with what listens to it.</p>
 <td><code>sessionId()</code>, the session whose row holds the very provenance the event carries</td>
 <td>The enrichment that finds the place of that provenance and writes it on the row of the session</td>
 </tr>
+<tr>
+<td><code>NamesItsAuthorInterface</code></td>
+<td><code>author()</code>, the administrator who did the act through the administration API, by the subject their account carries. Null when the person, the operator at the console or nobody did it</td>
+<td>The journal, which writes it beside the person</td>
+</tr>
 </tbody>
 </table>
 <p><strong>An event that names a domain object carries it whole</strong>, as its row holds it: a credential with its hash or its
 envelope and the person it belongs to, a session with its two provenances, a key with its sealed private half.
 That is why the body of every message is sealed on its way out. What reaches the journal of the acts is the act,
-its date, its provenance, sealed, the subject and the client, and nothing else of what the event carries. An
-event that names facts carries the facts and no more: <code>person.provisioned</code> carries the subject and the name of
-the provider, never what the provider said, and an archive is named by its identifier and never carried.</p>
+its date, its provenance, sealed, the subject, the client and the author, and nothing else of what the event
+carries. An event that names facts carries the facts and no more: <code>person.provisioned</code> carries the subject and
+the name of the provider, never what the provider said, and an archive is named by its identifier and never
+carried.</p>
 <h2 id="the-events">The events<a class="headerlink" href="#the-events" title="Link to this section">&para;</a></h2>
 <h3 id="signing-in">Signing in<a class="headerlink" href="#signing-in" title="Link to this section">&para;</a></h3>
 <table>
@@ -4184,7 +4212,7 @@ the provider, never what the provider said, and an archive is named by its ident
 <td><code>session.ended</code></td>
 <td><code>AuthenticationSessionEnded</code></td>
 <td>A session ends, whatever ended it</td>
-<td>The session, which says who ended it: <code>user</code> or <code>relying_party</code>, the two the application writes</td>
+<td>The session, which says who ended it, <code>user</code>, <code>administrator</code> or <code>relying_party</code>, the three the application writes, and the administrator who ended it when one did</td>
 </tr>
 <tr>
 <td><code>password.used</code></td>
@@ -4237,7 +4265,7 @@ page of a code says apart when too many codes have been tried.</p>
 <tr>
 <td><code>credential.enrolled</code></td>
 <td><code>CredentialEnrolled</code></td>
-<td>A passkey or a TOTP is enrolled</td>
+<td>A passkey or a TOTP is enrolled, or a first password is posed with a ticket</td>
 <td>The credential</td>
 </tr>
 <tr>
@@ -4250,7 +4278,7 @@ page of a code says apart when too many codes have been tried.</p>
 <td><code>credential.revoked</code></td>
 <td><code>CredentialRevoked</code></td>
 <td>A credential is revoked</td>
-<td>The credential</td>
+<td>The credential, and the administrator who revoked it through the administration API</td>
 </tr>
 <tr>
 <td><code>credential.forgotten</code></td>
@@ -4261,7 +4289,7 @@ page of a code says apart when too many codes have been tried.</p>
 <tr>
 <td><code>password.changed</code></td>
 <td><code>PasswordChanged</code></td>
-<td>A person replaces their own password</td>
+<td>A person replaces their own password, on their account or with a ticket</td>
 <td>The credential</td>
 </tr>
 <tr>
@@ -4279,8 +4307,20 @@ page of a code says apart when too many codes have been tried.</p>
 <tr>
 <td><code>enrolment_ticket.issued</code></td>
 <td><code>EnrolmentTicketIssued</code></td>
-<td>An administrator issues an enrolment ticket</td>
-<td>The ticket, which holds a hash of its value</td>
+<td>An enrolment ticket is issued, at the console or through the administration API</td>
+<td>The ticket, which holds a hash of its value, and the administrator who issued it through the API</td>
+</tr>
+<tr>
+<td><code>password_ticket.issued</code></td>
+<td><code>PasswordTicketIssued</code></td>
+<td>A password ticket is issued</td>
+<td>The same</td>
+</tr>
+<tr>
+<td><code>totp_ticket.issued</code></td>
+<td><code>TotpTicketIssued</code></td>
+<td>A ticket for an authenticator application is issued</td>
+<td>The same</td>
 </tr>
 </tbody>
 </table>
@@ -4295,6 +4335,30 @@ page of a code says apart when too many codes have been tried.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>person.created</code></td>
+<td><code>PersonCreated</code></td>
+<td>A person is created, at the console or through the administration API</td>
+<td>The subject of the person, and the administrator who created them; never what they were created with</td>
+</tr>
+<tr>
+<td><code>person.described</code></td>
+<td><code>PersonDescribed</code></td>
+<td>An administrator changes the username or the claims of a person through the administration API</td>
+<td>The subject, the names of what changed and never a value, and the administrator</td>
+</tr>
+<tr>
+<td><code>person.disabled</code></td>
+<td><code>PersonDisabled</code></td>
+<td>A person is disabled, at the console or through the administration API</td>
+<td>The subject, and the administrator who disabled them</td>
+</tr>
+<tr>
+<td><code>person.enabled</code></td>
+<td><code>PersonEnabled</code></td>
+<td>A person is enabled again</td>
+<td>The same</td>
+</tr>
 <tr>
 <td><code>person.described_themselves</code></td>
 <td><code>PersonDescribedThemselves</code></td>
@@ -4317,6 +4381,37 @@ page of a code says apart when too many codes have been tried.</p>
 <td><code>archive.dropped</code></td>
 <td><code>PersonDroppedTheirArchive</code></td>
 <td>A person has their archive dropped</td>
+<td>The same</td>
+</tr>
+</tbody>
+</table>
+<h3 id="groups">Groups<a class="headerlink" href="#groups" title="Link to this section">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Act</th>
+<th>Class</th>
+<th>Raised when</th>
+<th>Carries beyond the four</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>group.created</code></td>
+<td><code>GroupCreated</code></td>
+<td>A group is created, at the console or through the administration API</td>
+<td>The name of the group, and the administrator who created it. It concerns no person, a group holding nobody when it is created</td>
+</tr>
+<tr>
+<td><code>group_membership.added</code></td>
+<td><code>GroupMembershipAdded</code></td>
+<td>A person is made a member of a group, a membership the tenant holds itself</td>
+<td>The subject, the name of the group, and the administrator who added them</td>
+</tr>
+<tr>
+<td><code>group_membership.removed</code></td>
+<td><code>GroupMembershipRemoved</code></td>
+<td>A person is taken out of such a group</td>
 <td>The same</td>
 </tr>
 </tbody>
@@ -4390,7 +4485,10 @@ page of a code says apart when too many codes have been tried.</p>
 </tbody>
 </table>
 <p>The page of the account that reads the journal of a person shows every act of this list that concerns a person,
-<code>password.rehashed</code> excepted, which is this provider storing a hash again and nothing the person did.</p>
+<code>password.rehashed</code> excepted, which is this provider storing a hash again and nothing the person did. Beside
+them it shows <code>consent.granted</code> and <code>consent.revoked</code>, and the reads an administrator made of the person through
+the administration API, unless that administrator is the person. An act an administrator did says so in place
+of where it came from, and nothing else of them.</p>
 <h2 id="how-they-leave">How they leave<a class="headerlink" href="#how-they-leave" title="Link to this section">&para;</a></h2>
 <p>In the application, the dispatcher the core is handed is <code>EventBusDispatcher</code>, which replays every event on
 the <code>event.bus</code> of Messenger; an event raised by the handler of a message leaves once that handler has
@@ -4422,7 +4520,7 @@ a kind implements, which is how the one that writes the journal hears every even
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:47:59 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
   </span>
 
     

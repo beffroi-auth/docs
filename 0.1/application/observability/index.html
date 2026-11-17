@@ -4085,6 +4085,10 @@ never on the path of a request, and an act that cannot be written down does not 
 <td>In the clear</td>
 </tr>
 <tr>
+<td>The administrator who did it through the administration API, by the subject their account carries, when one did</td>
+<td>In the clear, as the subject is</td>
+</tr>
+<tr>
 <td>The identifier of the row</td>
 <td>A UUIDv7, so the journal sorts by time on its primary key</td>
 </tr>
@@ -4093,7 +4097,10 @@ never on the path of a request, and an act that cannot be written down does not 
 <p><strong>The reads that hand a person over to a third party are acts too</strong>: an introspection that tells a resource
 server who a token names, <code>introspection.answered</code>, and a UserInfo answer, <code>userinfo.answered</code>. An
 introspection that describes nobody, because the token is inactive or held by a client for itself, writes
-nothing.</p>
+nothing. The reads an administrator makes of a person through the administration API are acts of that person
+as well, each naming the administrator: <code>administration.person_read</code>, <code>administration.sessions_read</code>,
+<code>administration.journal_read</code>, <code>administration.consents_read</code>, and <code>administration.membership_read</code> once for
+each member of a group read.</p>
 <p>A person reads the acts of their account on <a href="../account/#the-pages">the page of their acts</a>.
 An operator reads them with <code>beffroi:user:journal</code>:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>beffroi:user:journal<span class="w"> </span>alice<span class="w"> </span>--from<span class="o">=</span><span class="m">2026</span>-01-01<span class="w"> </span>--to<span class="o">=</span><span class="m">2026</span>-01-31<span class="w"> </span>--act<span class="o">=</span>tokens.issued<span class="w"> </span>--format<span class="o">=</span>json
@@ -4185,21 +4192,25 @@ the development environment every channel but <code>event</code> goes to <code>v
 </tr>
 <tr>
 <td><code>error</code></td>
-<td>The metadata of a SAML peer were refused, or those of a whole role could not be refreshed. A client that registered itself holds metadata the provider now refuses, and is served as no client</td>
+<td>The metadata of a SAML peer were refused, or those of a whole role could not be refreshed. A client that registered itself holds metadata the provider now refuses, and is served as no client. The keys a thread of the server or the worker opens when it starts could not be opened, the key management service not answering or refusing one, and each is opened at its first use</td>
 </tr>
 </tbody>
 </table>
 <p>In production an <code>info</code> or a <code>warning</code> reaches the log only beside an error. The acts are in the journal, not in
 the log.</p>
 <p>Caddy writes an access log for each of its sites, one line per request with its path and query string.
-<code>CADDY_SERVER_LOG_OPTIONS</code> adds directives to both logs. On the site of <code>SERVER_NAME</code>, the <code>authorization</code>
-parameter of the query is replaced by <code>REDACTED</code>; the site that asks for a client certificate replaces
-nothing. A path is written as it was requested, the link of an enrolment ticket, <code>/enrol/{ticket}/{value}</code>,
-included.</p>
+<code>CADDY_SERVER_LOG_OPTIONS</code> adds directives to the log of each site. On the site of <code>SERVER_NAME</code>, the
+<code>authorization</code> parameter of the query is replaced by <code>REDACTED</code>; the site that asks for a client certificate and
+the site of the administration API replace nothing. A path is written as it was requested, the link of a ticket
+included: <code>/enrol/{ticket}/{value}</code>, <code>/password/{ticket}/{value}</code> and <code>/two-factor/{ticket}/{value}</code>.</p>
 <h2 id="metrics-and-health">Metrics and health<a class="headerlink" href="#metrics-and-health" title="Link to this section">&para;</a></h2>
 <p>The provider exports no metrics of its own. The health check of the image reads the metrics endpoint of the
 Caddy admin API inside the container, <code>http://localhost:2019/metrics</code>, and the development stack reports its
 worker healthy while <code>messenger:consume</code> is the first process of its container.</p>
+<p>What the instance knows of itself is read on request, and nothing is kept between two reads.
+<code>beffroi:statistics</code>, and <code>GET /statistics</code> of the administration API, give its people, clients and open
+sessions, its keys by state, its acts by name over what the journal keeps and the messages waiting in each
+lane; <code>GET /health</code> of the same API gives the points <code>beffroi:doctor</code> looks at.</p>
 <p>The panel the provider adds to the Symfony profiler is wired only in a kernel that runs in debug, and the web
 profiler is registered in the development and test environments alone: a production kernel has neither.</p>
 
@@ -4222,7 +4233,7 @@ profiler is registered in the development and test environments alone: a product
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 3, 2026 22:01:54 UTC">November 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:17:15 UTC">November 17, 2026</span>
   </span>
 
     

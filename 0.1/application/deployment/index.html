@@ -3101,13 +3101,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#tls-and-the-two-hosts" class="md-nav__link">
+  <a href="#tls-and-the-hosts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        TLS and the two hosts
+        TLS and the hosts
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="TLS and the hosts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-host-of-the-administration-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The host of the administration API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4048,13 +4065,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#tls-and-the-two-hosts" class="md-nav__link">
+  <a href="#tls-and-the-hosts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        TLS and the two hosts
+        TLS and the hosts
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="TLS and the hosts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-host-of-the-administration-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The host of the administration API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4208,7 +4242,8 @@ the interaction plane, as every route the image serves belongs to a plane. A pro
 of its hosts, the one that asks for a client certificate included. Whatever sends a request to the process
 of the protocol or to that of the interaction reads its path, and <a href="../../reference/endpoints/">the endpoints</a> give
 the plane of every path. The administration API is reached by its own host, the site of
-<code>/etc/frankenphp/administration.Caddyfile</code>.</p>
+<code>/etc/frankenphp/administration.Caddyfile</code>, <a href="#the-host-of-the-administration-api">below</a>, whose worker serves
+that plane whatever <code>BEFFROI_PLANE</code> the container sets.</p>
 <h2 id="the-worker">The worker<a class="headerlink" href="#the-worker" title="Link to this section">&para;</a></h2>
 <p>The worker is the same image, running the consumer of Messenger on the schedule and the four lanes of the
 provider, in this order, which is the order it takes them in:</p>
@@ -4290,7 +4325,7 @@ so some state has to be the same for all of them.</p>
 <td>The FIDO metadata, and the list of passkey providers of the community in its directory <code>community/</code></td>
 <td><code>var/webauthn</code></td>
 <td><code>beffroi:webauthn:mds-refresh</code>, <code>beffroi:webauthn:mds-import</code>, and <code>beffroi:webauthn:aaguids-refresh</code> for the list</td>
-<td>The page of the passkeys and <code>beffroi:user:show</code>, which name the authenticator of a passkey from both, and a ceremony whose options ask for an attestation, which the enrolment of the provider does not</td>
+<td>The page of the passkeys and <code>beffroi:user:show</code>, which name the authenticator of a passkey from both, and the enrolment of a passkey under the <code>direct</code> or <code>enterprise</code> policy of the tenant, which reads them for the model and its status reports</td>
 </tr>
 </tbody>
 </table>
@@ -4351,11 +4386,11 @@ a code are counted per person, five in a sliding window of one minute, by two li
 pool on <code>cache.app</code> as well: they are shared as these pools are. The application names no session handler
 either, so the session of a browser lives where the native handler of PHP keeps it, in the container that
 served it.</p>
-<h2 id="tls-and-the-two-hosts">TLS and the two hosts<a class="headerlink" href="#tls-and-the-two-hosts" title="Link to this section">&para;</a></h2>
+<h2 id="tls-and-the-hosts">TLS and the hosts<a class="headerlink" href="#tls-and-the-hosts" title="Link to this section">&para;</a></h2>
 <p>Caddy terminates TLS for the host of <code>SERVER_NAME</code>, unless a proxy in front of the image does
-(<a href="#behind-a-proxy">below</a>), and for the host that asks for a client certificate in every deployment. On the
-hosts of the image whose TLS it terminates, it serves one snippet of its <code>Caddyfile</code>, which is the TLS a
-FAPI 1.0 plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two suites of FAPI 1.0 Advanced Final
+(<a href="#behind-a-proxy">below</a>), and for the host that asks for a client certificate in every deployment. On these
+two hosts, when it terminates their TLS, it serves one snippet of its <code>Caddyfile</code>, which is the TLS a FAPI 1.0
+plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two suites of FAPI 1.0 Advanced Final
 §8.5 a listener built on Go can offer, <code>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</code> and
 <code>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</code>. TLS 1.2 is the floor Caddy already holds.</p>
 <p><strong>The host that asks for a client certificate is a host of its own</strong> (RFC 8705 §5). It is served when
@@ -4376,6 +4411,18 @@ for nothing.</p>
   §2.1) writes the site block of that host in <code>CADDY_EXTRA_CONFIG</code>, in place of the import, with a
   <code>trust_pool</code> in its <code>client_auth</code>, so the chain is validated at the edge.</li>
 </ul>
+<h3 id="the-host-of-the-administration-api">The host of the administration API<a class="headerlink" href="#the-host-of-the-administration-api" title="Link to this section">&para;</a></h3>
+<p><strong>The administration API is a host of its own</strong>, served when <code>CADDY_EXTRA_CONFIG</code> imports
+<code>administration.Caddyfile</code>, under the address <code>ADMINISTRATION_SERVER_NAME</code> gives it, which is the host of
+<code>BEFFROI_TENANT_ADMINISTRATION_RESOURCE</code>. Its worker serves the routes of the administration API and no other,
+and the processes of the host of <code>SERVER_NAME</code> never load them. That site follows neither <code>TLS_TERMINATION</code> nor
+the snippet above: Caddy serves it with the certificate it holds or obtains for that name, under its own
+defaults, and behind a proxy that terminates TLS the variable names a plain HTTP address, such as <code>:81</code>. A
+deployment that does not import the file serves no administration API.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>ADMINISTRATION_SERVER_NAME=admin.example.com
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>CADDY_EXTRA_CONFIG='import administration.Caddyfile'
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>BEFFROI_TENANT_ADMINISTRATION_RESOURCE=https://admin.example.com
+</span></code></pre></div>
 <p><a href="../configuration/#the-web-server"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The variables of the web server</a></p>
 <h2 id="behind-a-proxy">Behind a proxy<a class="headerlink" href="#behind-a-proxy" title="Link to this section">&para;</a></h2>
@@ -4398,8 +4445,9 @@ served as they came, under the address of the proxy.</p>
 <p>A proxy that names the client in a header Symfony does not read, <code>CF-Connecting-IP</code> behind Cloudflare, has
 Caddy read it, with <code>client_ip_headers</code> and <code>trusted_proxies</code> in the <code>servers</code> block of <code>CADDY_GLOBAL_OPTIONS</code>,
 and write it into <code>X-Forwarded-For</code>, with <code>request_header X-Forwarded-For {client_ip}</code> in
-<code>CADDY_SERVER_EXTRA_DIRECTIVES</code>: FrankenPHP hands PHP the address of its peer and the headers as they arrived,
-whatever Caddy read.</p>
+<code>CADDY_SERVER_EXTRA_DIRECTIVES</code>, and in <code>CADDY_ADMINISTRATION_EXTRA_DIRECTIVES</code> for the site of the
+administration API, each site carrying its own: FrankenPHP hands PHP the address of its peer and the headers as
+they arrived, whatever Caddy read.</p>
 <p>The host that asks for a client certificate terminates its TLS in Caddy whatever <code>TLS_TERMINATION</code> says. A
 client presents its certificate in the handshake, so a proxy in front of that host passes its connections
 through without terminating them.</p>
@@ -4527,7 +4575,7 @@ revocation list of the test service of the FIDO Alliance to the host that serves
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 13:12:45 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:20:02 UTC">November 17, 2026</span>
   </span>
 
     
