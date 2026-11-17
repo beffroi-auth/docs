@@ -136,6 +136,8 @@ bin/console beffroi:data-keys:rewrap --to=second --from=op
   built from `BEFFROI_KMS_DSN_SECOND`, and the command lists the clients when it is missing.
 - `--from` moves only the keys that client holds; all of them without it.
 - `--dry-run` lists what would move and writes nothing.
+- `--accept-unbound` moves as well the keys wrapped under no context, which open nothing until they are
+  wrapped again under their reference and their scope.
 
 The master key is the one `BEFFROI_KMS_KEY_ID` names for the tenant, resolved from the environment and never
 asked for: an operator who had to type it could type the one of another tenant. It moves one tenant, the one

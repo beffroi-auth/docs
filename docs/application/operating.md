@@ -146,7 +146,9 @@ stays sealed there; the class of the message, its stamps and its tenant are in t
 `503 Service Unavailable` with `Retry-After: 10`: nothing was refused to the person, counted against them or
 forgotten, and the same request is served once the service is back. The outage is an act of the journal,
 `kms.unavailable`, with the provenance of the request that met it. The worker does not start without a key
-management service at all.
+management service at all, `BEFFROI_KMS_DSN` naming none. A process that starts while the service does not
+answer starts all the same, the worker as a thread of the server: it writes so to its log at the level
+`error`, and opens each key at its first use.
 
 **A spent load budget is a `429`**, with a `Retry-After` and `Cache-Control: no-store`, and an act of the
 journal, `load.budget_spent`.

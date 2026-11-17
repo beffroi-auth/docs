@@ -71,9 +71,9 @@ chooses is a variable, which stands for a value only once a process runs.
 bounds the tree sets for its option and to the rules between options, a sliding refresh lifetime longer than
 the absolute one, a SAML `cache_duration` that is not shorter than the SAML staging delay; a list a variable
 carries is held to the rules of the tree as a list written in the file is. The first request or command that
-needs a value refuses it out of bounds, except the age of a key, `keys.age`, which the timed step of the key
-lifecycle refuses at its first tick when it is not longer than the retirement window of its use, and a change
-of variable asks for a restart of the processes, not for a new image.
+needs a value refuses it out of bounds, an age of a key, `keys.age`, below a second among them, and the timed
+step of the key lifecycle refuses besides an age that is not longer than the retirement window of its use, when
+it comes to stage a successor. A change of variable asks for a restart of the processes, not for a new image.
 
 **When the provider first reads a declaration.** What only the wiring can answer is checked against the
 wiring, the first time the provider builds the object: the tenant, the scopes of its APIs, each trusted

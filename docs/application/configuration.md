@@ -214,7 +214,7 @@ on what its own clients send.
 | `SYMFONY_TRUSTED_HEADERS` | not set | The headers Symfony reads from those proxies, separated by commas. Not set, `x-forwarded-for`, `x-forwarded-port` and `x-forwarded-proto` |
 | `SYMFONY_TRUSTED_HOSTS` | not set | The hosts a request may name, as regular expressions separated by commas, `framework.trusted_hosts`. A request that names another is refused with `400`. Not set, every host |
 | `SYMFONY_TRUST_X_SENDFILE_TYPE_HEADER` | not set | Whether a file Symfony answers with, a script of the provider, is handed to a proxy that asks for it with `X-Sendfile-Type`. Not set, never |
-| `FRANKENPHP_LOOP_MAX` | not set | The requests a PHP worker of the server serves before it restarts, read by the runtime of Symfony: 500 when it is not set, never with `0` or a negative number |
+| `FRANKENPHP_LOOP_MAX` | `0` | The requests a PHP worker of the server serves before it restarts, read by the runtime of Symfony: never with `0` or a negative number, 500 when it is not set. `.env` sets `0`, so a worker keeps the keys it opened when it started |
 
 The kernel and the runtime of Symfony read others, which a deployment leaves unset, among them `APP_RUNTIME`,
 `APP_RUNTIME_OPTIONS`, `APP_RUNTIME_ENV` and `APP_RUNTIME_MODE`, which choose and describe the runtime the
@@ -285,10 +285,11 @@ the same. An envelope sealed by one backend does not open with another.
     ```
 
     The Transit key of a tenant is `beffroi-<slug>`, of type `aes256-gcm96` and created with `derived=true`:
-    the envelope carries a context that binds it to its tenant, Vault honours a context on a derived key only,
-    and the bridge refuses to seal under a key that is not one. The development stack also creates it not
-    exportable, with no plaintext backup, and refuses its deletion. The token needs three paths and nothing
-    else:
+    each data key is wrapped under a context, its reference and its scope, and Vault honours a context on a
+    derived key only, so the bridge reads the configuration of the key once per process and refuses to wrap a
+    data key under one that is not derived. The development stack also creates it not exportable, with no
+    plaintext backup, and refuses its deletion. The token needs four paths and nothing else, `transit/encrypt`
+    for the data key a rewrap towards Vault wraps again:
 
     ``` hcl
     path "transit/datakey/plaintext/beffroi-*" {
@@ -296,6 +297,10 @@ the same. An envelope sealed by one backend does not open with another.
     }
 
     path "transit/decrypt/beffroi-*" {
+      capabilities = ["update"]
+    }
+
+    path "transit/encrypt/beffroi-*" {
       capabilities = ["update"]
     }
 

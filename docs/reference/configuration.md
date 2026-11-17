@@ -38,9 +38,9 @@ configuration](../application/configuration.md) lists the variables.
 - **A duration** is in seconds, except the two retentions, which are in days.
 - **A bound** is in the type column. The tree refuses a value outside it, and a value a variable carries is
   held to it when the container builds the service the value reaches, so the first request or command that
-  needs it refuses it. The age of a key, `keys.age`, is the exception: the timed step of the key lifecycle
-  refuses it at its first tick when it is not longer than the retirement window of its use. An unknown key is
-  refused at any level of the tree.
+  needs it refuses it, an age of a key, `keys.age`, below a second among them. The age of a key is held besides
+  to a rule no bound states: the timed step of the key lifecycle refuses it, when it comes to stage a successor,
+  if it is not longer than the retirement window of its use. An unknown key is refused at any level of the tree.
 - **required** means the configuration is refused without it. **none** means the option is absent until it
   is written, and the last column says what its absence decides.
 - **A list a variable carries whole**, the trusted issuers, the authorities of software statements and the
