@@ -26,7 +26,9 @@ says so with `cty` `JWT` (RFC 7519 §5.2).
 ## Registering it
 
 A client names the pairs it wants in its [registration](../dynamic-registration.md), beside the keys it
-publishes:
+publishes. The registration below also has its UserInfo answer signed with `ES256`, which the tenant accepts
+only while it holds an active `ES256` key, as `beffroi:keys:generate --algorithm=ES256` draws one ([ID
+tokens](id-tokens.md#signing)):
 
 ``` json
 {
