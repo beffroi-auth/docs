@@ -63,7 +63,7 @@ Three more decide what a deployment of real people does:
 
 ## The tenant
 
-Eight variables are lists of the configuration, three of them here. Each is a JSON document of the shape the
+Eleven variables are lists of the configuration, six of them here. Each is a JSON document of the shape the
 list has in the [configuration tree](../reference/configuration.md), `[]` or `{}` for none. An empty variable
 is no JSON document, and is refused.
 
@@ -76,12 +76,17 @@ is no JSON document, and is refused.
 | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the application lets a person change, from `name` to `phone_number` | What a person may change of themselves on the page of their account. A tenant whose directory owns the data names `[]` |
 | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | `{}` | The `acr` vocabulary of the tenant, class name to predicate, in order. `{}` is the default policy of the core |
 | `BEFFROI_TENANT_SCOPES` | `[]` | The scopes of the APIs the tenant protects, as `["invoices.read","invoices.pay"]`. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them, and a client that registers itself may register them |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION` | `none` | What the enrolment of a passkey asks of its authenticator (WebAuthn Level 3 §5.4.7): `none`, `direct` or `enterprise`, as [passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` | `[]` | The roots of the enterprise attestations the tenant admits, in PEM, under `enterprise` only: an attestation under one of them carries the serial number of its authenticator |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS` | `[]` | The authorities of the tenant itself, in PEM, under `enterprise` only, under which no serial number is asked |
+| `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` | `{}` | The models under a security alert the tenant still enrols under `direct` and `enterprise`, AAGUID to the last day, as `{"<AAGUID>":"2027-03-31"}` |
 
-**Six of them are written in the row of the tenant**, with its issuer: its name, its logo and its two colours,
-the claims a person changes and its `acr` classes. `beffroi:tenant:synchronize` writes them, and every request
-and every message compares the row with the environment of its process: while the two differ, each one that
-reads the tenant fails, and the log names the setting that differs, `look` for the logo and the colours,
-while the timed steps wait. Changing one of them is therefore a restart of
+**Ten of them are written in the row of the tenant**, with its issuer: its name, its logo and its two colours,
+the claims a person changes, its `acr` classes, and the four that say what the enrolment of a passkey asks.
+`beffroi:tenant:synchronize` writes them, and every request and every message compares the row with the
+environment of its process: while the two differ, each one that reads the tenant fails, and the log names the
+setting that differs, `look` for the logo and the colours, `passkey_attestation` for the four of the passkey
+enrolment, while the timed steps wait. Changing one of them is therefore a restart of
 every process with the new value, and `bin/console beffroi:tenant:synchronize` run in one of them; a process
 still on the previous value stops serving from that moment.
 

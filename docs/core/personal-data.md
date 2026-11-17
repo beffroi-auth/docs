@@ -25,7 +25,7 @@ the key of another table than its own.
 |---|---|
 | `user` | The username, the email address, the profile, the phone number, the postal address, and the source that created the person, which says which organisation they are of |
 | `linked_identity` | The provider, the subject it gives the person, and the snapshot of what it said |
-| `passkey_credential` | The name a person gave a passkey |
+| `passkey_credential` | The name a person gave a passkey, and the serial number of its authenticator an enterprise attestation carried, which designates one device |
 | `push_subscription` | The endpoint of a browser web push reaches, and the name a person gave it |
 | `authentication_session` | Where a session was opened from and last seen from |
 | `claim_change` | What a claim said before a person changed it, what it says after, and where the change came from |

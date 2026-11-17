@@ -33,6 +33,7 @@ being in it, and a list a role switches takes as well the services of that role 
 | `beffroi.password_algorithm` | `PasswordAlgorithmInterface` | `WiredPasswordAlgorithms`, the hasher of the first wired making every new hash |
 | `beffroi.password_hasher` | `AlgorithmPasswordHasherInterface` | `PasswordHasherRegistry`, which hands each hash to the hasher that supports its algorithm |
 | `beffroi.authentication_predicate` | `AuthenticationPredicateInterface` | `WiredAuthenticationPredicates`, which the `acr` vocabulary and the floor of a tenant name predicates from |
+| `beffroi.passkey_attestation_policy` | `PasskeyAttestationPolicyInterface` | `WiredPasskeyAttestationPolicies`, which the policy of passkey attestation of a tenant is named from |
 | `beffroi.archive_chapter` | `ArchiveChapterInterface` | The archive a person asks for, one chapter per class |
 | `beffroi.dead_records` | `DeadRecordsInterface` | The hourly step that drops the rows that can no longer do anything |
 | `beffroi.key_bound_artifact` | `KeyBoundArtifactInterface` | The retirement window of a key |
@@ -84,6 +85,8 @@ being in it, and a list a role switches takes as well the services of that role 
 | `BreachedPasswordsInterface` | `looksUp`, `timesSeen` | What a list of compromised passwords says of a digest | `PwnedPasswords` (application) |
 | `PasskeyRegistrarInterface` | `creationOptions`, `verifyAttestation` | The registration ceremony of WebAuthn Level 3 §7.1 | `WebauthnPasskeyRegistrar` (core) |
 | `PasskeyAuthenticatorInterface` | `requestOptions`, `verifyAssertion` | The authentication ceremony of WebAuthn Level 3 §7.2 | `WebauthnPasskeyAuthenticator` (core) |
+| `PasskeyAttestationPoliciesInterface` | `named` | The policy of passkey attestation a tenant names, what its enrolment asks of an authenticator (WebAuthn Level 3 §5.4.7), or a refusal naming the wired ones | `WiredPasskeyAttestationPolicies` (core) |
+| `AttestationRootReaderInterface` | `read` | A root of passkey attestations a tenant pins, read from its PEM, the certificate of no certificate authority refused (RFC 5280 §4.2.1.9) | `PkiAttestationRootReader` (core) |
 | `MetadataBlobStoreInterface` | `write`, `readAll` | The FIDO metadata the ceremonies read | `FileMetadataBlobStore` (application) |
 | `AuthenticatorListStoreInterface` | `write`, `read` | The list of passkey providers the community keeps, as the console downloaded it, which names models and nothing else | `FileAuthenticatorListStore` (application) |
 | `AuthenticatorModelSourceInterface` | `model` | The make and model a source names for the AAGUID a passkey declared, or nothing; read by the page of the passkeys and the console, by no ceremony | `MetadataAuthenticatorModels`, then `StoredAuthenticatorList` (core), asked in that order by `AuthenticatorModels` |

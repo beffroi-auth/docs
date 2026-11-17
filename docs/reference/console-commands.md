@@ -47,7 +47,7 @@ was forgotten. [The floor of its logins](../core/tenants.md#the-floor-of-its-log
 | `beffroi:user:revoke-session` | End a session of a user by its identifier; the relying parties of that session are told by the back-channel. |
 | `beffroi:user:sessions` | List the sessions open in the name of a user, with what each one proved and where it was last seen. |
 | `beffroi:user:set-password` | Set or replace the password of a user, asked on the terminal or read from the standard input. |
-| `beffroi:user:show` | Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name, authenticator and dates, and the groups with the source of each membership. |
+| `beffroi:user:show` | Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name, authenticator, what their enrolment proved of it and dates, and the groups with the source of each membership. |
 
 **An enrolment ticket** is for a person who has nothing to sign in with yet, on a tenant that signs its people
 in by passkey and holds no password of theirs to give them. The link opens one enrolment of a passkey, once,

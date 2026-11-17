@@ -165,8 +165,10 @@ bin/console beffroi:user:show alice
 It prints the username, the subject, whether the account is enabled, when it was created, the email address with
 its state and the source, then the name, the given name, the family name, the phone number and the postal
 address. Below them, one line per credential with its kind, identifier, name and dates, revoked ones
-included, and one line per group with the source of the membership and the date it was added. It writes
-nothing. The [console commands](../reference/console-commands.md) list what else reads a person:
+included, and for a passkey its authenticator: the model a source names, or `unknown` with its AAGUID, then
+what the enrolment proved, `declared`, `verified` or `enterprise`, the serial number an enterprise attestation
+carried, and `under a security alert` for a model the tenant admitted under one. Then one line per group with
+the source of the membership and the date it was added. It writes nothing. The [console commands](../reference/console-commands.md) list what else reads a person:
 `beffroi:user:sessions`, `beffroi:user:journal` and `beffroi:user:applications`.
 
 ## A disabled user

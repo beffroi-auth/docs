@@ -20,15 +20,15 @@ container of the image, or with `castor console` on the development stack.
    restart, and refuses to run while one of those tables holds rows, naming it and how many: a sealed column
    has nothing to take from a value in the clear.
 2. **The row of the tenant** follows the environment: `beffroi:tenant:synchronize` creates it, or writes on it
-   the name, the `acr` policy, the look and the claims its people may change of themselves that the
-   environment says, then prints the row. The provider serves nothing while the row and the environment of a
-   process disagree, and a request then fails with an exception naming the field that differs. A change of
-   `BEFFROI_TENANT_NAME`, `BEFFROI_TENANT_LOGO_URI`, `BEFFROI_TENANT_PRIMARY_COLOR`,
-   `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR`, `BEFFROI_TENANT_SELF_SERVED_CLAIMS` or
-   `BEFFROI_TENANT_AUTHENTICATION_CLASSES` is therefore a restart of every process with the new value and the
-   command run in one of them. A changed `BEFFROI_ISSUER` is refused: the issuer of a tenant does not change,
-   every token issued so far names it, and another issuer is another tenant, under another
-   `BEFFROI_TENANT_SLUG`.
+   what the environment says of its name, its `acr` policy, its look, the claims its people may change of
+   themselves and what the enrolment of a passkey asks, then prints the row. The provider serves nothing while
+   the row and the environment of a process disagree, and a request then fails with an exception naming the
+   field that differs. A change of `BEFFROI_TENANT_NAME`, `BEFFROI_TENANT_LOGO_URI`,
+   `BEFFROI_TENANT_PRIMARY_COLOR`, `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR`, `BEFFROI_TENANT_SELF_SERVED_CLAIMS`,
+   `BEFFROI_TENANT_AUTHENTICATION_CLASSES` or one of the four `BEFFROI_TENANT_PASSKEY_*` is therefore a restart
+   of every process with the new value and the command run in one of them. A changed `BEFFROI_ISSUER` is
+   refused: the issuer of a tenant does not change, every token issued so far names it, and another issuer is
+   another tenant, under another `BEFFROI_TENANT_SLUG`.
 3. **Two questions for the pipeline**, both of which write nothing and fail when the answer is no:
    `beffroi:keys:list --check` opens the keys in use and the ones about to be with the key management
    service, and fails on one it cannot open or that has worked past its age with nothing staged behind it;

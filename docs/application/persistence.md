@@ -30,10 +30,10 @@ it belongs to, by a foreign key on `tenant_id`.
 
     | Table | What a row is |
     |---|---|
-    | `beffroi_tenant` | The tenant: its issuer, its slug, its name, its look, the claims its people may change, its `acr` vocabulary and the floor of its logins |
+    | `beffroi_tenant` | The tenant: its issuer, its slug, its name, its look, the claims its people may change, its `acr` vocabulary, the floor of its logins and what the enrolment of its passkeys asks |
     | `beffroi_user` | A person: the subject, in the clear and unique in the tenant, the username, the e-mail address, the telephone number, the postal address, the claims of the profile and the source that created them |
     | `beffroi_password_credential` | The password of a person, its hash typed by its algorithm, and when a list of compromised passwords was last asked about it and when it was found there |
-    | `beffroi_passkey_credential` | A passkey: the credential record of WebAuthn, its name and its revocation |
+    | `beffroi_passkey_credential` | A passkey: the credential record of WebAuthn, its name, what its enrolment proved of the model of its authenticator, the serial number an enterprise attestation carried, whether the model was under a security alert the tenant admitted, and its revocation |
     | `beffroi_totp_credential` | An authenticator application: its secret, the last time step accepted and the hashed backup codes |
     | `beffroi_enrolment_ticket` | The ticket that opens one enrolment of a first passkey, by a hash of its value |
     | `beffroi_linked_identity` | Who a person is at an upstream provider, and what that provider said of them |
@@ -125,7 +125,7 @@ is treated as absent: a token or a consent of a client that does not exist is no
 
 ## Sealed columns
 
-Thirty-three columns hold a personal datum, or the secret of a client, sealed under a data key of their
+Thirty-six columns hold a personal datum, or the secret of a client, sealed under a data key of their
 tenant. A data key is minted per tenant and per family of columns, the family being the name of the table
 without its prefix, so the key that opens one table of a tenant opens no other table and no other tenant.
 
@@ -133,14 +133,14 @@ without its prefix, so the key that opens one table of a tenant opens no other t
 |---|---|
 | `user` | `username`, `email`, `phone_number`, `address`, `profile`, `source` |
 | `linked_identity` | `provider`, `subject`, `claims` |
-| `passkey_credential` | `name` |
+| `passkey_credential` | `name`, `serial_number` |
 | `push_subscription` | `endpoint`, `label` |
 | `authentication_session` | `created_from`, `last_seen_from` |
 | `interaction` | `login_hint`, `id_token_hint` |
 | `pushed_authorization_request` | `parameters` |
 | `device_authorization_request` | `requested_from` |
 | `backchannel_authentication_request` | `binding_message`, `requested_from` |
-| `client` | `metadata`, `assigned_metadata`, `secret` |
+| `client` | `metadata`, `assigned_metadata`, `attested_metadata`, `granted_metadata`, `secret` |
 | `journal` | `context` |
 | `claim_change` | `was`, `became`, `context` |
 | `disclosure` | `scopes`, `claims`, `authorization_details` |

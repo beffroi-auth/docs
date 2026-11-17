@@ -36,7 +36,7 @@ beffroi:
 
 | Section | What it decides | In the image |
 |---|---|---|
-| [`tenant`](#tenant) | The issuer, the name and the look of the tenant, the claims its people change, its `acr` vocabulary and the scopes of its APIs | Required. `BEFFROI_ISSUER`, `BEFFROI_TENANT_SLUG` and the `BEFFROI_TENANT_*` variables |
+| [`tenant`](#tenant) | The issuer, the name and the look of the tenant, the claims its people change, its `acr` vocabulary, the scopes of its APIs and what the enrolment of its passkeys asks | Required. `BEFFROI_ISSUER`, `BEFFROI_TENANT_SLUG` and the `BEFFROI_TENANT_*` variables |
 | [`keys`](#keys) | The client that seals the keys, where they are kept, what binds the data keys, and how keys rotate | Required. `op` and `var/keys` written in the file, `BEFFROI_KMS_KEY_ID`, `BEFFROI_DATA_KEY_SECRETS` and three variables of rotation |
 | [`webauthn`](#webauthn) | Where the FIDO metadata are kept | `var/webauthn` written in the file, no variable |
 | [`mutual_tls`](#mutual_tls) | The host that asks a client for its certificate | `BEFFROI_MTLS_ORIGIN`, empty: no alias announced |
@@ -135,7 +135,9 @@ path, which the provider checks at the first request. `slug` names the tenant fo
 derived from it, and renaming it is creating another tenant. `name` and `look` are what the pages show of the
 tenant, `self_served_claims` what its people may change of themselves, `authentication_classes` the `acr` it
 answers with, and `scopes` the scopes of the APIs it protects, which a client that registers itself may
-register beside `openid`, the scopes of the claims and `offline_access`.
+register beside `openid`, the scopes of the claims and `offline_access`. The four `passkey_*` options say what
+the enrolment of a passkey asks of its authenticator, as
+[passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
@@ -150,13 +152,18 @@ beffroi:
         self_served_claims: '%env(json:BEFFROI_TENANT_SELF_SERVED_CLAIMS)%'
         authentication_classes: '%env(json:BEFFROI_TENANT_AUTHENTICATION_CLASSES)%'
         scopes: '%env(json:BEFFROI_TENANT_SCOPES)%'
+        passkey_attestation: '%env(BEFFROI_TENANT_PASSKEY_ATTESTATION)%'
+        passkey_attestation_roots: '%env(json:BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS)%'
+        passkey_attestation_own_roots: '%env(json:BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS)%'
+        passkey_compromised_models: '%env(json:BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS)%'
 ```
 
 `default::` makes an empty variable no value at all: an empty `BEFFROI_TENANT_NAME` names the tenant after the
 host of the issuer, and an empty colour is no colour. An empty `BEFFROI_TENANT_LOGO_URI` is the parameter
 `app.tenant_logo_uri` of the file, the placeholder mark the image serves at `/tenant-logo.svg` under the
-issuer. The three lists are JSON documents: `.env` opens the fourteen claims the application wires to the
-people of the tenant, names no `acr` class, which is the default policy, and no scope of an API.
+issuer. The six lists are JSON documents: `.env` opens the fourteen claims the application wires to the
+people of the tenant, names no `acr` class, which is the default policy, no scope of an API, and no root and no
+model under alert beside `BEFFROI_TENANT_PASSKEY_ATTESTATION=none`.
 
 The logo is loaded by the browser of the visitor, under the `Content-Security-Policy` the application sends.
 Every page that reads the tenant adds the origin of the logo to the `img-src` of that policy, so a logo served

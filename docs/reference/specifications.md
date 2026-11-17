@@ -74,6 +74,7 @@ code here.
 | Specification | What it brings | Page |
 |---|---|---|
 | W3C Web Authentication Level 3 | Passkeys, enrolment and assertion | [Passkeys](../core/credentials/passkeys.md) |
+| FIDO Metadata Service v3.1.1 | The metadata of the FIDO Alliance, the root a full attestation is checked up to and the status reports that put a model under a security alert (§3.1.4.2) | [Passkeys](../core/credentials/passkeys.md#the-fido-metadata) |
 | RFC 4226, RFC 6238 | HOTP and TOTP, the second factor from an application | [TOTP](../core/credentials/totp.md) |
 | RFC 9106 | Argon2, one of the password algorithms a hash names | [Passwords](../core/credentials/passwords.md) |
 | RFC 8176 | The authentication method references a session reports, `amr` | [Authentication sessions](../core/authentication-sessions.md) |

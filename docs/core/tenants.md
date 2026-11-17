@@ -37,6 +37,10 @@ BEFFROI_TENANT_SELF_SERVED_CLAIMS='["name","given_name","family_name","locale","
 | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the application lets a person change, from `name` to `phone_number` | The claims the people of this tenant may change of themselves on the page of their account, a JSON list. A tenant whose directory owns the data opens none, `[]` |
 | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | `{}` | The `acr` vocabulary of the tenant, below. `{}` is the default policy |
 | `BEFFROI_TENANT_SCOPES` | `[]` | The [scopes](../oidc/scopes-and-claims.md#scopes) of the APIs the tenant protects, a JSON list. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them, and a client that registers itself may register them |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION` | `none` | What the enrolment of a passkey asks of its authenticator, `none`, `direct` or `enterprise`, as [passkeys](credentials/passkeys.md#what-the-enrolment-asks) says |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` | `[]` | The roots of the enterprise attestations the tenant admits, a JSON list of PEM certificates, read under `enterprise` only |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS` | `[]` | The authorities of the tenant itself, a JSON list of PEM certificates, read under `enterprise` only |
+| `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` | `{}` | The models under a security alert the tenant still enrols, a JSON map of AAGUID to the last day it does |
 
 [Configuration](../application/configuration.md) lists the same variables among the others of the image,
 `BEFFROI_ISSUER` and `BEFFROI_TENANT_SLUG` under [the provider](../application/configuration.md#the-provider)
@@ -44,22 +48,24 @@ and the others under [the tenant](../application/configuration.md#the-tenant).
 
 ## Its row
 
-The variables declare the tenant, and a row of the database holds what the rest of the model points at. Six
+The variables declare the tenant, and a row of the database holds what the rest of the model points at. Seven
 settings are written in that row beside the issuer: the name, the logo, the two colours, the claims a person
-changes of themselves and the `acr` classes. One command makes the row say what the variables say:
+changes of themselves, the `acr` classes, and what the enrolment of a passkey asks, with its roots and the models
+it admits under alert. One command makes the row say what the variables say:
 
 ``` bash
 bin/console beffroi:tenant:synchronize
 ```
 
-It creates the row the first time, afterwards writes those of the six that changed, prints the tenant it
+It creates the row the first time, afterwards writes those of the seven that changed, prints the tenant it
 synchronised, and is safe to run at every deployment. Every request, command and message compares the row with
 the environment of its process: while the two differ, each one that reads the tenant fails, and the log names
-the setting that differs, `look` for the logo and the colours, while the timed steps wait. Changing one of the
-six is therefore a restart of every process with the new value, and the command run in one of them. The issuer
-is the one thing the command never changes: every token a tenant issued names it, so the command refuses
-another, and another issuer is another tenant, under another slug. What a command decides with a date, the
-floor of its logins below, is written on the row and nowhere else.
+the setting that differs, `look` for the logo and the colours, `passkey_attestation` for the enrolment of a
+passkey, while the timed steps wait. Changing one of the seven is therefore a restart of every process with
+the new value, and the command run in one of them. The issuer is the one thing the command never changes: every
+token a tenant issued names it, so the command refuses another, and another issuer is another tenant, under
+another slug. What a command decides with a date, the floor of its logins below, is written on the row and
+nowhere else.
 
 ## The classes it answers with
 

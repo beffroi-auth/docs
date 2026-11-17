@@ -1,6 +1,6 @@
 ---
 title: Passkeys
-description: WebAuthn enrolment and assertion, what a passkey proves, the first passkey of a person who has nothing to sign in with, and the FIDO metadata.
+description: WebAuthn enrolment and assertion, what a passkey proves, what a tenant asks of its authenticator, the first passkey of a person who has nothing to sign in with, and the FIDO metadata.
 ---
 
 # Passkeys
@@ -24,7 +24,7 @@ passkey bound to its authenticator ([the classes it answers with](../tenants.md#
 | Challenge | 32 random bytes, drawn for each ceremony (§13.4.3 asks 16 at the least) |
 | Resident key | Required: a passkey is a discoverable credential (§5.4.6) |
 | User verification | Preferred and never required, so that a security key with no PIN enrols and signs in |
-| Attestation | None asked (§5.4.7) |
+| Attestation | What the [policy of the tenant](#what-the-enrolment-asks) asks (§5.4.7): `none` in the image, `direct` or `enterprise` |
 
 ## Enrolling one
 
@@ -42,14 +42,48 @@ five minutes before it lets a passkey be added.
 - **What comes back is checked against the options**: the challenge, the origin and the relying party, then the
   record. A credential ID the tenant already holds is refused (§7.1, step 26), so are options drawn for another
   person, a record without its backup flags and a credential of another type than `public-key`.
-- **An attestation an authenticator sends anyway is verified**, in the formats `packed`, `fido-u2f`,
-  `android-key`, `tpm` and `apple`. `none` is what is asked, and any other format is a refusal and never a pass.
-  The attestation is not kept, and no policy reads it afterwards.
+- **An attestation is verified whatever the policy asks**, in the formats `packed`, `fido-u2f`, `android-key`,
+  `tpm` and `apple`, and any other format is a refusal and never a pass. The policy of the tenant then judges it,
+  below. Its certificates are not kept: the passkey keeps what the enrolment proved of its model.
 - **The floor of the tenant is asked once the passkey is known.** What a passkey proves is read from the flags of
   its creation, so a tenant whose floor is `phishing_resistant_hardware` refuses a synced passkey once the
   ceremony has answered, and admits one bound to its authenticator.
 
 A passkey enrolled writes the act `credential.enrolled` to the journal of the person.
+
+## What the enrolment asks
+
+The tenant names what the enrolment of a passkey asks of its authenticator, the attestation conveyance of
+WebAuthn Level 3 §5.4.7, in `BEFFROI_TENANT_PASSKEY_ATTESTATION`. The policy applies to every enrolment, a
+ticket's included.
+
+| Policy | What it enrols | What it refuses | What the passkey keeps |
+|---|---|---|---|
+| `none`, in the image | Every passkey | Nothing more | The model its authenticator declares |
+| `direct` | Every passkey. A full attestation, `basic`, `attca` or `anonca`, of an AAGUID the [FIDO metadata](#the-fido-metadata) know is checked up to the root their statement names | An attestation that does not verify, and a model under a security alert | The model, verified by its attestation, or declared |
+| `enterprise` | An attestation that chains up to a root of `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` and carries the serial number of its authenticator (§8.2.2), or one that chains up to an authority of the tenant itself, `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS`, under which no serial number is asked | Every other one, and a model under a security alert | `enterprise`, and the serial number when there is one, sealed |
+
+An authenticator gives an enterprise attestation only for a relying party identifier its configuration
+permits (§5.4.7), here the host of the issuer.
+
+**A model under a security alert** is one whose last status report in the FIDO metadata is a security
+notification (FIDO Metadata Service v3.1.1 §3.1.4.2). `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` admits one
+under `direct` and `enterprise`, by the AAGUID of its authenticator, until a day written as `2027-03-31`, in UTC
+and included: a passkey of that model enrols until then and is marked under alert, and the refusal returns the
+day after.
+
+**A person refused by the policy is told why** on the page that enrolled: "Your organisation accepts only the
+keys it gave you. Use one of them." under `enterprise`, and "This model of authenticator is under a security
+alert and is no longer accepted. Use another one." for a model under alert. An attestation that does not verify
+is refused as any other passkey the provider refuses. The page of the passkeys and `beffroi:user:show` say what
+each enrolment proved: the model declared, verified by its attestation, or attested for the organisation with
+its serial number, and a model admitted under alert.
+
+**What the policy cannot read is refused** by the first request or command that reads the tenant: a name no
+wired policy carries, naming the ones that are wired; `enterprise` with no root at all; a root that is not one
+certificate in PEM, or the certificate of no certificate authority (RFC 5280 §4.2.1.9); roots under `none` or
+`direct`, which read none; a model admitted under alert under `none`, which proves no model; an AAGUID that is
+not one, or admitted twice; and a day written otherwise.
 
 ## Signing in with one
 
@@ -147,7 +181,10 @@ bin/console beffroi:webauthn:mds-import vendor-statement.json
 | `beffroi:webauthn:mds-refresh` | The Metadata BLOB of `https://mds.fidoalliance.org/`, or of each `--url` given, verified before anything is kept: one signature, made by the first certificate of its chain, the chain leading to the root it pins, `GlobalSign Root R46` shipped with the application unless `--root` names another, as a PEM or DER file or an `https` URL. No redirect is followed, and a refused blob keeps nothing |
 | `beffroi:webauthn:mds-import` | Metadata statements a manufacturer publishes for keys the service does not list, or that the FIDO conformance tools ship, one authenticator per file, unsigned and trusted as the file is |
 
-What reads them is a ceremony whose options ask for an attestation: an authenticator its status reports name as
-compromised is refused, a full attestation is checked up to the root its statement names, and an AAGUID the
-metadata do not know is refused on a full attestation and passed on a self attestation. The enrolment of the
-provider asks for no attestation, so a deployment that never ran either command enrols passkeys all the same.
+The enrolment reads them under the policies that ask for an attestation. Under `direct`, a full attestation of
+an AAGUID the metadata know is checked up to the root its statement names and its model is verified, and any
+other attestation leaves the model declared, an AAGUID the metadata do not know included. Under `direct` and
+`enterprise`, a model under a security alert is refused, save one the tenant admits until a day it names. A
+deployment that never ran either command enrols passkeys all the same. The endpoints the FIDO conformance tools
+drive keep the rules of the library, the metadata and the status reports included, and never read the policy
+of the tenant.

@@ -115,7 +115,7 @@ so some state has to be the same for all of them.
 | The sealed keys of the tenant, and its pairwise salt | `var/keys` | `beffroi:keys:*`, the timed step of the key lifecycle, and the first process that needs the salt | Every process that signs, decrypts or seals |
 | The key of the file backend, when that is the key management service | The directory its DSN names, `var/kms` on the development stack and in the Compose file of the image | Whoever provisions it | Every process |
 | The GeoLite2 databases of addresses | `var/geoip` | `beffroi:geoip:refresh`, the weekly step | The worker, which enriches a provenance |
-| The FIDO metadata, and the list of passkey providers of the community in its directory `community/` | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import`, and `beffroi:webauthn:aaguids-refresh` for the list | The page of the passkeys and `beffroi:user:show`, which name the authenticator of a passkey from both, and a ceremony whose options ask for an attestation, which the enrolment of the provider does not |
+| The FIDO metadata, and the list of passkey providers of the community in its directory `community/` | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import`, and `beffroi:webauthn:aaguids-refresh` for the list | The page of the passkeys and `beffroi:user:show`, which name the authenticator of a passkey from both, and the enrolment of a passkey under the `direct` or `enterprise` policy of the tenant, which reads them for the model and its status reports |
 
 The development stack gives `var/keys`, `var/kms` and `var/geoip` a volume each, and the Compose file of the
 image, [`compose.prod.yaml`](../getting-started/the-standalone-application.md#the-compose-file-of-the-image),

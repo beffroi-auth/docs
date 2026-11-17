@@ -57,9 +57,9 @@ configuration](../application/configuration.md) lists the variables.
 
 The one tenant of the deployment: required. [Tenants](../core/tenants.md) is what a tenant is. A value the
 tenant cannot hold is refused when the provider builds the tenant, which it does before serving anything of
-it. The issuer and six of these values are written in the row of the tenant: a change to one of the six is
-followed by `beffroi:tenant:synchronize`, which refuses another issuer than the one the row was written with,
-as [the tenant](../application/configuration.md#the-tenant) says.
+it. The issuer and ten of these values are written in the row of the tenant, the four of the passkey enrolment
+together: a change to one of the ten is followed by `beffroi:tenant:synchronize`, which refuses another issuer
+than the one the row was written with, as [the tenant](../application/configuration.md#the-tenant) says.
 
 | Option | Variable | Type | In the image | What it decides |
 |---|---|---|---|---|
@@ -72,6 +72,10 @@ as [the tenant](../application/configuration.md#the-tenant) says.
 | `self_served_claims` | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | list of strings | the fourteen claims the application wires | The claims of OIDC Core §5.1 the people of the tenant may change of themselves on the page of their account, among the claims the provider is wired with: `name`, `given_name`, `family_name`, `middle_name`, `nickname`, `preferred_username`, `birthdate`, `gender`, `locale`, `zoneinfo`, `profile`, `picture`, `website` and `phone_number` in the application. A tenant whose directory owns the data names `[]` |
 | `authentication_classes` | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | map of class name to predicate name | `{}`: the default policy | The `acr` vocabulary of the tenant, in the order a session is answered in, each class on a predicate the provider is wired with: `phishing_resistant_hardware`, `phishing_resistant`, `two_factors` and `single_factor` in the application. Left empty, the default policy answers: `phrh`, `phr`, `2` and `1`, on those four in that order. A policy names one class at least on a predicate every login satisfies, `single_factor` among the four, so that every session has an `acr`. It never names `0` (OIDC Core §2), and the names of OpenID Connect EAP ACR Values 1.0 keep their meaning: `phrh` stands on `phishing_resistant_hardware` only, `phr` on it or on `phishing_resistant` |
 | `scopes` | `BEFFROI_TENANT_SCOPES` | list of strings | `[]`: none | The scopes of the APIs the tenant protects, which stand for no claim, as `["invoices.read","invoices.pay"]`. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them in `scopes_supported`, and a client that registers itself may register them: the image declares no client, so nothing else makes such a scope exist in it. Each is a scope token of RFC 6749 §3.3, and `offline_access` is refused, the wired grants deciding it (OIDC Core §11) |
+| `passkey_attestation` | `BEFFROI_TENANT_PASSKEY_ATTESTATION` | string, not empty, a wired name | `none` | What the enrolment of a passkey asks of its authenticator (WebAuthn Level 3 §5.4.7), by the name of a policy the provider is wired with: `none`, `direct` or `enterprise` in the application. [Passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says what each one enrols, refuses and keeps |
+| `passkey_attestation_roots` | `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` | list of strings | `[]`: none | The roots of the enterprise attestations the tenant admits, one certificate in PEM each, read under `enterprise` only: an attestation that chains up to one of them carries the serial number of its authenticator (WebAuthn Level 3 §8.2.2) or is refused. A certificate of no certificate authority is refused (RFC 5280 §4.2.1.9), and so is `enterprise` with no root of either list |
+| `passkey_attestation_own_roots` | `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS` | list of strings | `[]`: none | The authorities of the tenant itself, the ones that sign the identities of its own devices, in PEM, under `enterprise` only. Under them no serial number is asked |
+| `passkey_compromised_models` | `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` | map of AAGUID to a day | `{}`: none | The models whose last status report in the FIDO metadata is a security notification (FIDO Metadata Service v3.1.1 §3.1.4.2) the tenant still enrols under `direct` and `enterprise`, each the AAGUID of its authenticator to the last day it does, as `{"<AAGUID>":"2027-03-31"}`, in UTC and included. A passkey of such a model enrols until then and is marked under alert |
 
 ## `keys`
 
