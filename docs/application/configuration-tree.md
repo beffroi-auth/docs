@@ -53,7 +53,7 @@ beffroi:
 | [`client_authentication`](#client_authentication) | What a client assertion and a published key set are held to | `BEFFROI_CLIENT_ASSERTION_*` and `BEFFROI_JWKS_URI_*` |
 | [`request_objects`](#request_objects) | What a request object and its `request_uri` are held to | `BEFFROI_REQUEST_OBJECT_*` |
 | [`dpop`](#dpop) | What a proof of possession is held to | `BEFFROI_DPOP_*`: no nonce asked |
-| [`trusted_issuers`](#trusted_issuers) | The issuers of the JWT bearer grant | `BEFFROI_TRUSTED_ISSUERS`, `{}`. The grant issues no token on the image, whatever this names |
+| [`trusted_issuers`](#trusted_issuers) | The issuers of the JWT bearer grant | `BEFFROI_TRUSTED_ISSUERS`, `{}`. The grant issues a token only to a client its initial access token gave a resource |
 | [`clients`](#clients) | The clients a file of the application declares | Empty, no variable: a client registers itself |
 | [`self_client`](#self_client) | The application as a client of its own provider | Not written, no variable: the application is no client |
 | [`client_registration`](#client_registration) | Whether and how a client registers itself | `BEFFROI_REGISTRATION_*`, an empty mode: no registration endpoint |
@@ -437,8 +437,8 @@ The issuers whose assertions the tenant accepts as an authorization grant (RFC 7
 signing key of one of them can name a user of the tenant and be answered with an access token, so each one is
 declared whole: its keys, the algorithms it signs with, the clients that may present its assertions, the
 source of the identities it names and the scopes it is trusted for. `.env` declares none, and the grant issues
-no token on the image whatever this section names: it addresses a token to a resource the client registered,
-and no client of the image registers one ([JWT bearer](../oidc/grants/jwt-bearer.md)).
+a token only to a client that holds a resource, which a client of the image does when its initial access token
+gave it one ([JWT bearer](../oidc/grants/jwt-bearer.md)).
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
@@ -478,8 +478,9 @@ scopes `openid profile email`, and the first wired method of authentication, `cl
 
 A declared client may also carry the members of the deployment, `requires_consent`, `requires_pkce`,
 `access_token_format`, `resources`, `token_exchange`, `may_act` and `require_sender_constrained_tokens`, which
-a registration is refused for. No client of the image carries one, and [what the image does not
-set](../oidc/clients.md#what-the-image-does-not-set) says what every client of the image has instead.
+a registration is refused for. A client that registers itself is given five of them by the initial access
+token it registered with, and [what the image does not set](../oidc/clients.md#what-the-image-does-not-set)
+says what every client of the image has otherwise.
 
 [:beffroi-arrow-right: Clients](../oidc/clients.md) and [your first client](../getting-started/your-first-client.md)
 

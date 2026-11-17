@@ -67,11 +67,12 @@ the specification of its feature gives it, the members marked *deployment* being
 member this provider does not read is refused rather than ignored, and a value of the wrong kind is refused
 rather than converted: a string where a list is expected, or `"true"` where a boolean is.
 
-The members marked *deployment* are exceptions to a rule, or privileges, written by whoever declares a client
-or by the [registration policy](dynamic-registration.md) of the tenant. A client that registers itself never
-obtains one: one in the body of its registration request is refused with `invalid_client_metadata`, and a
-software statement does not grant one either. A deployment of the image gives none of them to its clients:
-[what the image does not set](#what-the-image-does-not-set) says what every client of the image has instead.
+The members marked *deployment* are exceptions to a rule, or privileges, written by whoever declares a client,
+by the [registration policy](dynamic-registration.md) of the tenant, or by the initial access token a client
+registers with. A client never sends one: one in the body of its registration request is refused with
+`invalid_client_metadata`, and a software statement does not grant one either. A deployment of the image gives
+five of them through its initial access tokens alone: [what the image does not
+set](#what-the-image-does-not-set) says what every client of the image has otherwise.
 
 ### Who is asking
 
@@ -164,21 +165,27 @@ about encryption](tokens/encryption.md).
 ## What the image does not set
 
 A deployment of the image declares no client, and no variable gives the registration policy of its tenant a
-member of the deployment, so every client of the image has each of them at the value the reader takes when it
-is left out:
+member of the deployment. Five of them reach a client of the image through the initial access token it
+registered with alone, when the console issued the token with them ([dynamic
+registration](dynamic-registration.md#the-three-modes)), and the other two reach none. A member nobody gave a
+client is at the value the reader takes when it is left out:
 
-| Member | What every client of the image has |
+| Member | What a client of the image has |
 |---|---|
-| `requires_consent` | `true`: the [consent page](consent.md) is shown for every client |
-| `requires_pkce` | `true`: every authorization request carries a `code_challenge`, the ones of confidential clients included |
-| `access_token_format` | The first shape wired, `jwt`: every access token is an `at+jwt` ([access tokens](tokens/access-tokens.md)) |
-| `resources` | None: a client asks a token for no resource, a `resource` parameter is refused with `invalid_target`, and its access tokens are addressed to itself ([resources](resources.md)). The grants that issue a token for a resource only, [`client_credentials`](grants/client-credentials.md), the [JWT bearer grant](grants/jwt-bearer.md) and the token exchange, issue none |
-| `token_exchange`, `may_act` | None: no client is registered for the [token exchange](grants/token-exchange.md) grant |
-| `require_sender_constrained_tokens` | `false`: a client that proves neither a certificate nor a key is answered with bearer tokens, unless it registered `tls_client_certificate_bound_access_tokens`, for which a request without a certificate is refused |
+| `requires_consent` | `true`: the [consent page](consent.md) is shown for every client. No token gives it |
+| `requires_pkce` | `true`: every authorization request carries a `code_challenge`, the ones of confidential clients included. No token gives it |
+| `access_token_format` | The first shape wired, `jwt`, every access token being an `at+jwt` ([access tokens](tokens/access-tokens.md)), unless its token was issued with `--access-token-format opaque` |
+| `resources` | The resources its token was issued with, `--resource` once per resource. A client given none asks a token for no resource, a `resource` parameter is refused with `invalid_target`, its access tokens are addressed to itself ([resources](resources.md)), and [`client_credentials`](grants/client-credentials.md) and the [JWT bearer grant](grants/jwt-bearer.md) issue it no token |
+| `token_exchange` | What its token was issued with, `--exchange-subject-token-type` once per type and `--exchange-for-a-user`. A client given none is not registered for the [token exchange](grants/token-exchange.md), and a client given it registers the grant as well |
+| `may_act` | The party its token names with `--may-act`, and none otherwise |
+| `require_sender_constrained_tokens` | `true` when its token was issued with `--require-sender-constrained-tokens`. Otherwise `false`: a client that proves neither a certificate nor a key is answered with bearer tokens, unless it registered `tls_client_certificate_bound_access_tokens`, for which a request without a certificate is refused |
 
-The PKCE exemption of the registration policy, `client_registration.exempt_confidential_clients_from_pkce`,
-is not set either. The development configuration writes some of these members on the clients it declares,
-and the exemption in its registration policy.
+What a token gives is read when the token is issued, so a token that gives what the provider does not serve, a
+shape it does not write for instance, is not issued. A client keeps what its token gave when it replaces its
+registration, and no answer of the registration endpoints carries it. The PKCE exemption of the registration
+policy, `client_registration.exempt_confidential_clients_from_pkce`, is not set either. The development
+configuration writes some of these members on the clients it declares, and the exemption in its registration
+policy.
 
 ## The addresses a client registers
 
@@ -260,9 +267,9 @@ bin/console beffroi:client:delete s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg
 
 `beffroi:client:list` prints every client of the tenant with its name and its source, `configuration` or
 `registration`, and for a registered client when it registered and when it was last used.
-`beffroi:client:show` prints the same for one client, and for a registered one the members it registered and
-the ones the registration policy of the tenant wrote on it; for a declared one it points at the
-configuration, which is the whole of what it is. `beffroi:client:delete` deletes a client that registered
+`beffroi:client:show` prints the same for one client, and for a registered one the members it registered, the
+ones the registration policy of the tenant wrote on it, and the ones the initial access token it registered
+with gave it; for a declared one it points at the configuration, which is the whole of what it is. `beffroi:client:delete` deletes a client that registered
 itself, and refuses a declared one.
 
 A registered client whose stored registration the reader refuses, a row naming a member this version does not

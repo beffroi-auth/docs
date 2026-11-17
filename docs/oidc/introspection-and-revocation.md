@@ -121,9 +121,10 @@ nothing about whether the token existed.
 **What a revocation does not reach.** An `at+jwt` issued under the grant of a refresh token that was revoked
 stays valid until it expires, at a resource server as at the endpoints of the provider: the provider keeps no
 list of the self-contained tokens it would refuse, and its lifetime is what bounds it, ten minutes unless
-`BEFFROI_ACCESS_TOKEN_TTL` says otherwise. Every access token of the image is an `at+jwt`: the opaque shape,
-which a revocation removes, is the value `opaque` of `access_token_format`, a member of the deployment that
-the image gives no client ([what the image does not set](clients.md#what-the-image-does-not-set)).
+`BEFFROI_ACCESS_TOKEN_TTL` says otherwise. An access token of the image is an `at+jwt` unless its client was
+given the opaque shape, which a revocation removes: the value `opaque` of `access_token_format`, a member of the
+deployment that the initial access token of a client gives ([what the image does not
+set](clients.md#what-the-image-does-not-set)).
 
 **Every revocation is an act**, `token.revoked`, in the journal of the person the token was issued for; the
 revocation of a token a client held for itself names nobody.

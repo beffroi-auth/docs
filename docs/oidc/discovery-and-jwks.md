@@ -73,7 +73,7 @@ Some members are announced only when what they describe exists, and are absent o
 | `backchannel_authentication_endpoint`, `backchannel_token_delivery_modes_supported`, `backchannel_authentication_request_signing_alg_values_supported`, `backchannel_user_code_parameter_supported` | A grant of the backchannel flow is wired; the last one is then `false`. [Backchannel authentication](grants/backchannel-authentication.md) |
 | `authorization_signing_alg_values_supported`, `authorization_encryption_alg_values_supported`, `authorization_encryption_enc_values_supported` | A signed response mode is wired |
 | `mtls_endpoint_aliases` | `BEFFROI_MTLS_ORIGIN` names the host that asks for a certificate. [Mutual TLS](sender-constrained/mutual-tls.md#the-endpoint-aliases) |
-| `protected_resources` | A client of the tenant holds resources (RFC 9728 §4), which no client of the image does. [Resources](resources.md) |
+| `protected_resources` | A client of the tenant holds resources (RFC 9728 §4), which a client of the image does when its initial access token gave it some. The administration API is never among them. [Resources](resources.md) |
 | `authorization_details_types_supported` | A type of authorization detail is wired (RFC 9396 §10), which the image wires none of. [Authorization details](authorization-details.md) |
 
 The document announces no `check_session_iframe`: OpenID Connect Session Management 1.0 is not implemented,

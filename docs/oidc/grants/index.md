@@ -46,8 +46,9 @@ refusal:
 
     A client registered with `require_sender_constrained_tokens` whose request binds nothing, and a client
     registered with `tls_client_certificate_bound_access_tokens` whose request presents no certificate, are
-    refused with `invalid_request` before anything the request came to spend is read. The first is a member
-    no client of the image carries ([what the image does not set](../clients.md#what-the-image-does-not-set)).
+    refused with `invalid_request` before anything the request came to spend is read. On a deployment of the
+    image, the first is given by the initial access token the client registered with ([what the image does not
+    set](../clients.md#what-the-image-does-not-set)).
 
 3. **The grant type.** `grant_type` is looked up among the grants the provider is wired with, and a name
    none of them gives itself is `unsupported_grant_type`.
@@ -108,16 +109,17 @@ names is read against the grants the provider is wired with, and against what ea
   exchange also needs a `client_id` that can be a `sub`, one to 255 visible ASCII characters and no space,
   which the identifier the provider draws for a client that registers itself always is.
 - **Token exchange** needs the `token_exchange` member, and the member needs the grant. `token_exchange` is a
-  member of the deployment, refused in a registration, so no client of the image is registered for the
-  grant.
+  member of the deployment, refused in a registration body: a client of the image is registered for the grant
+  only when the initial access token it registered with gave it the member.
 
 A registration that breaks one of these rules is answered `invalid_redirect_uri` for the two rules on
 redirect URIs and `invalid_client_metadata` for the others.
 
-**Three grants issue no token on a deployment of the image.** No client of it is registered for token
-exchange, above. The client credentials and JWT bearer grants answer only a request that names a resource
-the client registered, and `resources` is a member of the deployment too: a client of the image registers
-none, so a request of either grant that gets as far as its resources is refused with `invalid_target` ([what
+**Three grants depend on what the initial access token of a client gave it.** A client is registered for
+token exchange only when its token gave it `token_exchange`, above. The client credentials and JWT bearer
+grants answer only a request that names a resource the client holds, and `resources` is a member of the
+deployment too: a client of the image holds one only when its token gave it, and a request of either grant
+from a client that holds none is refused with `invalid_target` once it gets as far as its resources ([what
 the image does not set](../clients.md#what-the-image-does-not-set)).
 
 One more condition is read at the endpoint and not at registration: a client of backchannel authentication
@@ -129,7 +131,7 @@ with `unauthorized_client`. [Clients](../clients.md) has every other member of a
 
 `grant_types_supported`, in the [discovery document](../discovery-and-jwks.md), is the list of the wired
 grants in the order they are wired, which is the order of the table at the top of this page. The image is
-wired with the seven, and announces them all, the three that issue no token to a client of the image included.
+wired with the seven, and announces them all.
 The members that go with a grant follow it: the backchannel authentication endpoint and its metadata are
 announced only while a grant of that flow is wired, and `offline_access` is offered only while a wired grant
 issues refresh tokens and another spends them.

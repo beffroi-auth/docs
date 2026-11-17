@@ -77,7 +77,7 @@ already, by their name, and a value naming a group the tenant does not hold is n
 | `beffroi:client:delete` | Delete a client that registered itself; a client declared in the configuration is refused. |
 | `beffroi:client:list` | List the clients of the tenant: where each came from, when it was registered and when it was last used. |
 | `beffroi:client:show` | Show a client of the tenant: where it came from, its dates, and what it registered. |
-| `beffroi:client:token:issue` | Issue an initial access token for the tenant; the value is printed once and never again. |
+| `beffroi:client:token:issue` | Issue an initial access token for the tenant, and what it gives the clients it registers; the value is printed once and never again. |
 | `beffroi:client:token:list` | List the initial access tokens of the tenant: what each has served, what it has left and whether it still authorises anything. |
 | `beffroi:client:token:revoke` | Revoke an initial access token by its identifier; it authorises no registration from that instant. |
 

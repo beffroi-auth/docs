@@ -101,7 +101,7 @@ before it reads those columns with the type they had.
 ## A value object in one column
 
 **A value object a column holds whole goes in one column**, with a DBAL type of the application: the tree
-declares thirty-four of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
+declares thirty-six of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
 `beffroi_password_hash` among them. What the column holds is written by the object itself, in the package
 that owns it, and read back through its constructor, so a row edited by hand into something the object
 refuses fails when it is loaded, as a conversion error naming the type, and never further down.

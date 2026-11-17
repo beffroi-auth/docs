@@ -58,11 +58,11 @@ at the token endpoint, after the client has authenticated and before the grant i
 
 | Member | What a token request of that client must prove | Who sets it |
 |---|---|---|
-| `require_sender_constrained_tokens` | A certificate its tokens are bound to, or a DPoP key, whichever (FAPI 2.0 Security Profile §5.3.2.1) | Nobody on a deployment of the image. It is a member of the deployment: a client that registers itself and sends it is refused with `invalid_client_metadata`, and no client of the image holds it ([what the image does not set](../clients.md#what-the-image-does-not-set)) |
+| `require_sender_constrained_tokens` | A certificate its tokens are bound to, or a DPoP key, whichever (FAPI 2.0 Security Profile §5.3.2.1) | The initial access token the client registered with, issued with `--require-sender-constrained-tokens`. It is a member of the deployment: a client that registers itself and sends it is refused with `invalid_client_metadata` ([what the image does not set](../clients.md#what-the-image-does-not-set)) |
 | `tls_client_certificate_bound_access_tokens` | The certificate of its connection, whatever way it authenticates (RFC 8705 §3.4) | The client, when it registers, RFC 8705 §3.4 making it a member of a registration |
 
-A client of the image that must bind therefore registers the second ([dynamic
-registration](../dynamic-registration.md)):
+A client that registers itself and must bind registers the second, or is given the first by its initial
+access token ([dynamic registration](../dynamic-registration.md)):
 
 ``` json
 {

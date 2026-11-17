@@ -31,7 +31,7 @@ other scope, among the ones it registered.
 | `grant_type` | `refresh_token` |
 | `refresh_token` | Required |
 | `scope` | Optional: a subset of the scopes of the refresh token, for this answer only (RFC 6749 §6) |
-| `resource` | Optional and repeatable: a subset of the resources of the authorization, for this access token only (RFC 8707 §2.2). The authorization of a client of the image carries none, so a `resource` it names is `invalid_target` |
+| `resource` | Optional and repeatable: a subset of the resources of the authorization, for this access token only (RFC 8707 §2.2). The authorization of a client that holds no resource carries none, so a `resource` it names is `invalid_target` |
 | `authorization_details` | Optional: a subset of the details of the authorization, for this access token only (RFC 9396 §7) |
 
 The client authenticates beside them with the method it registered.

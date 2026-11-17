@@ -60,7 +60,7 @@ then reads what it asks for. Its errors are the JSON of RFC 6749 §5.2, never a 
 | Parameter | |
 |---|---|
 | `scope` | Required, among the scopes the client registered. RFC 8628 §3.1 makes it optional; here it is what the person is shown, and a request naming nothing would ask them to agree to everything the client ever registered |
-| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client of the image registers none, so a `resource` it names is `invalid_target` |
+| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client that holds no resource has a `resource` it names refused with `invalid_target` |
 
 | Refusal | Error |
 |---|---|
@@ -146,7 +146,7 @@ poll after the approval: of several polls at once, exactly one is served.
 
 The tokens are those of an ordinary authorization, descending from the session the person approved with: an
 access token addressed to the resources the device named at the device authorization endpoint, or to the
-client itself when it named none, as every client of the image does; an ID token when `openid` was among the
-scopes, without a `nonce`; and a refresh token when one is due, starting a family with the absolute lifetime
-of every other. They are bound to what the polling request binds them to
+client itself when it named none, as every client that holds no resource does; an ID token when `openid` was
+among the scopes, without a `nonce`; and a refresh token when one is due, starting a family with the absolute
+lifetime of every other. They are bound to what the polling request binds them to
 ([grants](index.md#what-the-token-endpoint-does)), never to anything the browser that approved proved.

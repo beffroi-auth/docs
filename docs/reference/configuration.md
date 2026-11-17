@@ -236,10 +236,9 @@ the provider reads behind a `jwks_uri`: the clients' and the [trusted issuers'](
 
 The issuers whose assertions the tenant accepts as an authorization grant (RFC 7523 §2.1), one entry per
 issuer. `BEFFROI_TRUSTED_ISSUERS` carries the section whole, a JSON document keyed by the `iss` of each
-issuer, and `.env` writes `{}`. The grant issues no token on the image whatever this section names: it
-addresses a token to a resource the client registered, and no client of the image registers one ([JWT
-bearer](../oidc/grants/jwt-bearer.md)). A declaration that does not hold together is refused when the provider
-first reads the trusted issuers.
+issuer, and `.env` writes `{}`. The grant addresses a token to a resource the client holds, and a client of
+the image holds one only when its initial access token gave it ([JWT bearer](../oidc/grants/jwt-bearer.md)). A
+declaration that does not hold together is refused when the provider first reads the trusted issuers.
 
 | Option | Type | Default | What it decides |
 |---|---|---|---|
@@ -263,10 +262,10 @@ Each entry is read like a registration of RFC 7591 §2 and OIDC Registration §2
 registration, and a declaration that does not hold together is refused when the provider first reads its
 clients, naming the client, the option and the rule. A client that registers itself carries the same members
 in its registration, except the key and `secret`, which the provider draws for it, and the seven members
-marked *deployment*, which a registration is refused for: no client of the image carries one of those, and
-[what the image does not set](../oidc/clients.md#what-the-image-does-not-set) says what every client of the
-image has instead. The default column is what a declared client gets for a member it leaves out, and a client
-that registers itself gets what RFC 7591 §2 says instead ([registering
+marked *deployment*, which a registration is refused for: an initial access token gives five of those to the
+clients it registers, and [what the image does not set](../oidc/clients.md#what-the-image-does-not-set) says
+what every client of the image has otherwise. The default column is what a declared client gets for a member
+it leaves out, and a client that registers itself gets what RFC 7591 §2 says instead ([registering
 one](../oidc/clients.md#registering-one)).
 
 | Option | Type | Default | What it decides |
