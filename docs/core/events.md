@@ -34,9 +34,9 @@ Three interfaces say more of an event that means more:
 envelope and the person it belongs to, a session with its two provenances, a key with its sealed private half.
 That is why the body of every message is sealed on its way out. What reaches the journal of the acts is the act,
 its date, its provenance, sealed, the subject, the client and the author, and nothing else of what the event
-carries. An
-event that names facts carries the facts and no more: `person.provisioned` carries the subject and the name of
-the provider, never what the provider said, and an archive is named by its identifier and never carried.
+carries. An event that names facts carries the facts and no more: `person.provisioned` carries the subject and
+the name of the provider, never what the provider said, and an archive is named by its identifier and never
+carried.
 
 ## The events
 

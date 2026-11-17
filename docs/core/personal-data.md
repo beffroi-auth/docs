@@ -28,7 +28,7 @@ the key of another table than its own.
 | `passkey_credential` | The name a person gave a passkey, and the serial number of its authenticator an enterprise attestation carried, which designates one device |
 | `push_subscription` | The endpoint of a browser web push reaches, and the name a person gave it |
 | `authentication_session` | Where a session was opened from and last seen from |
-| `claim_change` | What a claim said before a person changed it, what it says after, and where the change came from |
+| `claim_change` | What a claim said before a person or an administrator changed it, what it says after, and where the change came from |
 | `journal` | Where each act came from |
 | `personal_archive` | The archive a person asked for |
 | `interaction` | The `login_hint` and the `id_token_hint` of an authorization request |

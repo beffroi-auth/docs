@@ -59,6 +59,13 @@ history of one part without the rest.
 
     [:beffroi-arrow-right: The SAML packages](../saml/packages.md)
 
+=== "I administer an instance from a terminal"
+
+    `beffroi/tui` is the terminal client of the administration API of an instance: a client of the provider like
+    any other, which talks to it over HTTP and installs none of the packages above.
+
+    [:beffroi-arrow-right: The administration plane](../reference/endpoints.md#the-administration-plane)
+
 ## What depends on what
 
 The direction never reverses. The core knows nothing of the protocols, the protocols know nothing of each
@@ -90,10 +97,10 @@ not.
 
 | What | Which |
 |---|---|
-| PHP | 8.4 or later, with `intl`; `zip` for the application; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding |
-| Symfony | 8.2, for the application |
+| PHP | 8.4 or later, with `intl`; `zip` for the application; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding; `mbstring`, `openssl` and `sodium` for the terminal client |
+| Symfony | 8.2, for the application and the terminal client |
 | Database | PostgreSQL, through Doctrine ORM |
-| Licence | MIT, for all seven packages |
+| Licence | MIT, for all eight packages |
 
 The cryptography of the tokens and the credentials is not written here. Signatures and encryption of JOSE
 come from [`web-token/jwt-library`](https://github.com/web-token/jwt-framework), WebAuthn from

@@ -97,6 +97,7 @@ being in it, and a list a role switches takes as well the services of that role 
 | `AuthenticatorModelSourceInterface` | `model` | The make and model a source names for the AAGUID a passkey declared, or nothing; read by the page of the passkeys and the console, by no ceremony | `MetadataAuthenticatorModels`, then `StoredAuthenticatorList` (core), asked in that order by `AuthenticatorModels` |
 | `TotpAlgorithmInterface` | `codeAt`, `provisioningUri` | The code of a time step (RFC 6238 §4.2), and the URI an application scans | `OtphpTotpAlgorithm` (core) |
 | `SecretSealerInterface` | `seal`, `unseal` | The secret of a TOTP, sealed by the key management service of the tenant | `EnvelopeSecretSealer` (core) |
+| `TicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The tickets of one kind, found by identifier only, the row holding a hash of the value; the three ports below are this one for their kind | `DoctrineTicketRepository` (application), one per kind |
 | `EnrolmentTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The enrolment tickets of a person | `DoctrineEnrolmentTicketRepository` (application) |
 | `PasswordTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The password tickets of a person | `DoctrinePasswordTicketRepository` (application) |
 | `TotpTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The tickets of a person for an authenticator application | `DoctrineTotpTicketRepository` (application) |
@@ -137,7 +138,7 @@ being in it, and a list a role switches takes as well the services of that role 
 | `KeptDecryptionKeyProviderInterface` | `keptDecryptionKeys` | The kept keys a peer encrypts to, the keys of an upstream SAML identity provider | `SealedKeyProvider` (core) |
 | `ApplicationServerKeyProviderInterface` | `activeApplicationServerKey`, `applicationServerKey` | The key a browser is handed, and the key a subscription was made under | `SealedKeyProvider` (core) |
 | `MessageKeyProviderInterface` | `sealingKey`, `messageKey` | The key a body is sealed to, and the key a sealed body names | `SealedKeyProvider` (core) |
-| `OpenableKeysInterface` | `open` | A family of keys of a tenant a process opens when it starts, through the port a request would open them with | `ActiveSigningKeys`, `PublishedDecryptionKeys`, `ActiveKeptSigningKeys`, `KeptDecryptionKeysInService`, `MessageKeysInService`, `ApplicationServerKeysInService` (core) and `DataKeysOfTheTenant` (application) |
+| `OpenableKeysInterface` | `open` | A family of keys of a tenant a process opens when it starts, through the port a request would open them with | `ActiveSigningKeys`, `PublishedDecryptionKeys`, `ActiveKeptSigningKeys`, `KeptDecryptionKeysInService`, `MessageKeysInService`, `ApplicationServerKeysInService` (core, use cases of `Beffroi\Core\Application\Key`) and `DataKeysOfTheTenant` (application) |
 | `JwsSignerInterface` | `sign` | A compact JWS signed by the active key of an algorithm | `JwtLibraryJwsSigner` (core) |
 | `JwsVerifierInterface` | `verify` | A compact JWS verified against the published keys of the tenant | `JwtLibraryJwsVerifier` (core) |
 | `JweDecrypterInterface` | `decrypt` | A compact JWE encrypted to a published key, opened | `JwtLibraryJweDecrypter` (core) |

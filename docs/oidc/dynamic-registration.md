@@ -80,8 +80,8 @@ that are wired.
     value: a token that was lost is replaced by issuing another. It is worth one registration and thirty days
     unless the command says otherwise, a day at least. Its options name what it gives the clients it
     registers: `--resource`, once per API (RFC 8707 §2); `--access-token-format`;
-    `--require-sender-constrained-tokens`; `--exchange-subject-token-type`, once per type, with
-    `--exchange-for-a-user` when they may exchange a token somebody signed in for (RFC 8693 §3); and
+    `--require-sender-constrained-tokens`; `--exchange-subject-token-type`, once per type (RFC 8693 §3), with
+    `--exchange-for-a-user` when they may exchange a token somebody signed in for; and
     `--may-act` (RFC 8693 §4.4). What a token gives is read when it is issued, and a token that gives what the
     provider does not serve is not issued. `beffroi:client:token:list` shows what each token has served of
     what it is worth, what it gives, and whether it still authorises anything. `beffroi:client:token:revoke`
@@ -239,7 +239,7 @@ a bearer credential and no other:
 
 | Request | Answer |
 |---|---|
-| `GET` | `200`, the registration as the answer to the registration carried it, without the secret and without the token |
+| `GET` | `200`, the registration with the members an answer carries, without the secret and without the token |
 | `PUT` | `200`, the registration replaced whole (RFC 7592 §2.2) |
 | `DELETE` | `204`, and the client is gone |
 | Another method | `405` |

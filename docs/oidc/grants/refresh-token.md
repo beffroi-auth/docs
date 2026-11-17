@@ -57,7 +57,7 @@ is invalid.`:
 8. `resource` and `authorization_details` narrow and never widen: `invalid_target` and
    `invalid_authorization_details` otherwise. An access token for the [administration
    API](../resources.md#the-administration-api) of the tenant is refused with `invalid_target` once the person
-   no longer administers it.
+   has left the groups that administer it.
 
 ## Rotation
 

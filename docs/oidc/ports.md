@@ -33,7 +33,7 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 | `LinkedIdentityRepositoryInterface` | The person the assertion of a trusted issuer is about (RFC 7523 §3) |
 | `PasswordHasherInterface`, `PasswordAlgorithmsInterface` | The secrets of the clients, hashed when they are kept and read back by the algorithm they name |
 | `SubjectsOfSessionsInterface` | The subject of the person a session names, so that announcing a replayed code, a reused refresh token or a token a client gave back asks nothing of the key management service |
-| `SigningKeyOpenerInterface` | Opens the active key of an algorithm before a grant or a registration spends what it cannot get back |
+| `SigningKeyOpenerInterface` | Opens the active key of an algorithm before a grant or the authorization endpoint spends what it cannot get back |
 | `AdministratorGroupsInterface`, `GroupsOfAPersonInterface` | Who [administers the tenant](../core/groups.md#who-administers-the-tenant), read from the groups of the person, for the audience of the [administration API](resources.md#the-administration-api) and the requests it serves |
 | `GroupsOfATenantInterface`, `MembersOfAGroupInterface` | The groups of the tenant and their members, which an administrator reads through the administration API |
 | `CanPageActsOfAPersonInterface` | The journal of a person, which an administrator reads through the administration API |

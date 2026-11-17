@@ -58,8 +58,9 @@ token presented to it as an access token, which is the point.
 The client chooses the algorithm in `id_token_signed_response_alg` (OIDC Registration §2), among those the
 provider is wired with, `RS256`, `PS256`, `ES256` and `EdDSA`, that the tenant holds an active key for. A client
 that registers none gets the first one wired, `RS256`, which OIDC Core §15.1 makes mandatory. A name nothing signs
-under, `none` among them, or an algorithm the tenant holds no active key for, is refused with
-`invalid_client_metadata`. The client names it when it [registers](../dynamic-registration.md), and the
+under, `none` among them, is refused with `invalid_client_metadata`, and so is a registration that names an
+algorithm the tenant holds no active key for; a client the configuration declares is not refused for it, and
+`beffroi:doctor` names it. The client names it when it [registers](../dynamic-registration.md), and the
 registration below needs an `ES256` key, which `beffroi:keys:generate --algorithm=ES256` draws:
 
 ``` json

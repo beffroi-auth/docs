@@ -43,8 +43,9 @@ five minutes before it lets a passkey be added.
   record. A credential ID the tenant already holds is refused (§7.1, step 26), so are options drawn for another
   person, a record without its backup flags and a credential of another type than `public-key`.
 - **An attestation is verified whatever the policy asks**, in the formats `packed`, `fido-u2f`, `android-key`,
-  `tpm` and `apple`, and any other format is a refusal and never a pass. The policy of the tenant then judges it,
-  below. Its certificates are not kept: the passkey keeps what the enrolment proved of its model.
+  `tpm` and `apple`; the format `none`, no attestation at all, is taken as it is, and any other format is a
+  refusal and never a pass. The policy of the tenant then judges it, below. Its certificates are not kept: the
+  passkey keeps what the enrolment proved of its model.
 - **The floor of the tenant is asked once the passkey is known.** What a passkey proves is read from the flags of
   its creation, so a tenant whose floor is `phishing_resistant_hardware` refuses a synced passkey once the
   ceremony has answered, and admits one bound to its authenticator.
@@ -63,8 +64,8 @@ ticket's included.
 | `direct` | Every passkey. A full attestation, `basic`, `attca` or `anonca`, of an AAGUID the [FIDO metadata](#the-fido-metadata) know is checked up to the root their statement names | An attestation that does not verify, and a model under a security alert | The model, verified by its attestation, or declared |
 | `enterprise` | An attestation that chains up to a root of `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` and carries the serial number of its authenticator (§8.2.2), or one that chains up to an authority of the tenant itself, `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS`, under which no serial number is asked | Every other one, and a model under a security alert | `enterprise`, and the serial number when there is one, sealed |
 
-An authenticator gives an enterprise attestation only for a relying party identifier its configuration
-permits (§5.4.7), here the host of the issuer.
+A browser gives an enterprise attestation only for a relying party identifier its configuration, or the
+configuration of the authenticator, permits (§5.4.7), here the host of the issuer.
 
 **A model under a security alert** is one whose last status report in the FIDO metadata is a security
 notification (FIDO Metadata Service v3.1.1 §3.1.4.2). `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` admits one
@@ -121,7 +122,7 @@ another flag is refused, as a revoked passkey is, rather than rewriting the reco
 ## A first passkey from a ticket
 
 A person created on a tenant that signs its people in by passkey has nothing to sign in with, and no password to
-be given. An administrator issues them a ticket instead:
+be given. An operator issues them a ticket instead:
 
 ``` bash
 bin/console beffroi:user:enrolment-ticket alice

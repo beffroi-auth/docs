@@ -194,8 +194,8 @@ An account carries the date it was disabled, and a disabled person is refused at
 - a ticket of any kind, for a passkey, a password or an authenticator application, which is not issued for them
   and no longer opens anything once they are;
 - an assertion of a trusted issuer at the token endpoint (RFC 7523 §3) that names them;
-- an access token that names them, at UserInfo, at introspection, and presented to the token exchange
-  (RFC 8693);
+- an access token that names them, at UserInfo, at introspection, at the administration API, and presented to
+  the token exchange (RFC 8693);
 - a refresh token issued for them, at the token endpoint, refused with `invalid_grant`.
 
 **Disabling a person ends every session of theirs.** The account is disabled first, so that no session opens

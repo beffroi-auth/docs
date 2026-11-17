@@ -167,9 +167,9 @@ about encryption](tokens/encryption.md).
 
 A deployment of the image declares no client, and no variable gives the registration policy of its tenant a
 member of the deployment. Five of them reach a client of the image through the initial access token it
-registered with alone, when the console issued the token with them ([dynamic
-registration](dynamic-registration.md#the-three-modes)), and the other two reach none. A member nobody gave a
-client is at the value the reader takes when it is left out:
+registered with alone, when the token was issued with them, at the console or through the administration API
+([dynamic registration](dynamic-registration.md#the-three-modes)), and the other two reach none. A member
+nobody gave a client is at the value the reader takes when it is left out:
 
 | Member | What a client of the image has |
 |---|---|
