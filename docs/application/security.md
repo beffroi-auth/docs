@@ -175,7 +175,7 @@ they follow the size of a deployment: the application fills `beffroi.load` from 
 
 | Budget | What it counts | Default |
 |---|---|---|
-| `origin` | Every request one client address sends to a route of either plane, before the firewall and before any work, whatever it asks for | `limit: 2400` requests in `interval: 60` seconds |
+| `origin` | Every request one client address sends to a route of any of the three planes, before the firewall and before any work, whatever it asks for | `limit: 2400` requests in `interval: 60` seconds |
 | `client` | Every request one authenticated client makes, per tenant, counted where its authentication succeeds | `limit: 1200` requests in `interval: 60` seconds |
 
 A request refused for load answers `429 Too Many Requests` with a `Retry-After` and

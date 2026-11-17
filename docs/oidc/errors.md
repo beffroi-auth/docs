@@ -124,7 +124,7 @@ sentences are replaced.
 
 Two budgets bound what the provider takes, and both always exist:
 
-- **the budget of an address**, counted on every route of the provider, both planes, before any work is done:
+- **the budget of an address**, counted on every route of the three planes, before any work is done:
   before a session is opened, a password hashed, an assertion or a proof verified;
 - **the budget of a client**, counted where its authentication succeeded, at the endpoints that
   authenticate a client. A public client proves nothing and is bounded by the budget of its address.

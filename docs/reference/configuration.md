@@ -125,7 +125,7 @@ The two budgets every request is counted against. A request over a budget is ans
 
 | Option | Variable | Type | In the image | What it decides |
 |---|---|---|---|---|
-| `origin.limit` | `BEFFROI_LOAD_ORIGIN_LIMIT` | integer, 1 or more | `2400` | Requests taken from one client address in the window, on every route of the two planes and for every tenant of the deployment, counted before anything is verified |
+| `origin.limit` | `BEFFROI_LOAD_ORIGIN_LIMIT` | integer, 1 or more | `2400` | Requests taken from one client address in the window, on every route of the three planes and for every tenant of the deployment, counted before anything is verified |
 | `origin.interval` | `BEFFROI_LOAD_ORIGIN_INTERVAL` | integer, 1 or more | `60`, one minute | The window of that budget |
 | `client.limit` | `BEFFROI_LOAD_CLIENT_LIMIT` | integer, 1 or more | `1200` | Requests taken from one client of one tenant in the window, counted once the client has authenticated |
 | `client.interval` | `BEFFROI_LOAD_CLIENT_INTERVAL` | integer, 1 or more | `60`, one minute | The window of that budget |
