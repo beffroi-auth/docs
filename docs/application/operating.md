@@ -34,10 +34,12 @@ container of the image, or with `castor console` on the development stack.
    service, and fails on one it cannot open or that has worked past its age with nothing staged behind it;
    `beffroi:doctor` says whether the deployment holds together, one line per point it looks at.
 4. **The discovery document**, last: `<issuer>/.well-known/openid-configuration` answers once the routes are
-   where the issuer says they are. The application serves them at the root, so with an issuer that has a path
-   the first request that needs the endpoints fails with an exception naming where the document is served and
-   where the issuer makes clients look for it (OIDC Discovery 1.0 §4.1). `bin/console debug:router` lists the
-   routes, those of the provider under names that carry their plane.
+   where the issuer says they are. The application serves them at the root, so its issuer is an origin: an
+   issuer with a path is refused by `beffroi:tenant:synchronize` and by every request that reads the tenant,
+   and behind a proxy that forwards a prefix, the first request that needs the endpoints fails with an
+   exception naming where the document is served and where the issuer makes clients look for it (OIDC
+   Discovery 1.0 §4.1). `bin/console debug:router` lists the routes, those of the provider under names that
+   carry their plane.
 
 ## What time does on its own
 

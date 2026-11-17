@@ -131,13 +131,13 @@ seal a column.
 
 Who the provider is, and required. `issuer` is the identifier every token carries as `iss` and the URL every
 endpoint is served under: the application imports its routes at the root, so its issuer is an origin with no
-path, which the provider checks at the first request. `slug` names the tenant for good: its identifier is
-derived from it, and renaming it is creating another tenant. `name` and `look` are what the pages show of the
-tenant, `self_served_claims` what its people may change of themselves, `authentication_classes` the `acr` it
-answers with, and `scopes` the scopes of the APIs it protects, which a client that registers itself may
-register beside `openid`, the scopes of the claims and `offline_access`. The four `passkey_*` options say what
-the enrolment of a passkey asks of its authenticator, as
-[passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says.
+path, which the provider checks when it builds the tenant, at `beffroi:tenant:synchronize` and at every
+request that reads it. `slug` names the tenant for good: its identifier is derived from it, and renaming it is
+creating another tenant. `name` and `look` are what the pages show of the tenant, `self_served_claims` what
+its people may change of themselves, `authentication_classes` the `acr` it answers with, and `scopes` the
+scopes of the APIs it protects, which a client that registers itself may register beside `openid`, the scopes
+of the claims and `offline_access`. The four `passkey_*` options say what the enrolment of a passkey asks of
+its authenticator, as [passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:

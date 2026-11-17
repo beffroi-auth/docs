@@ -28,7 +28,7 @@ BEFFROI_TENANT_SELF_SERVED_CLAIMS='["name","given_name","family_name","locale","
 
 | Variable | In the image | What it decides |
 |---|---|---|
-| `BEFFROI_ISSUER` | `https://op.localhost` | The issuer identifier (OIDC Discovery 1.0 §3): an absolute `https` URL with no query, no fragment and no trailing slash, plain HTTP on a loopback host only. Every endpoint is served under it, the SAML metadata included |
+| `BEFFROI_ISSUER` | `https://op.localhost` | The issuer identifier (OIDC Discovery 1.0 §3): an absolute `https` URL with no query, no fragment, no trailing slash and no path, plain HTTP on a loopback host only. The application serves the provider at the root, so the issuer is an origin, and every endpoint is served under it, the SAML metadata included |
 | `BEFFROI_TENANT_SLUG` | `default` | The stable name of the tenant, from which its identifier is derived. Renaming it is creating another tenant |
 | `BEFFROI_TENANT_NAME` | empty | What the pages call it. Empty, the host of the issuer |
 | `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL with no fragment and no credentials, plain HTTP on a loopback host only. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. The logo is loaded by the browser of the visitor, never by the provider |
