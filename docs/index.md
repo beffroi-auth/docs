@@ -22,9 +22,10 @@ Beffroi paints that last box the same colour as the other two.</p>
 
 !!! info "This documentation describes a version that is not released yet"
 
-    No `beffroi/*` package is published on Packagist at this point. Every page here states what the code
-    does today, in the branch this version of the documentation follows. What is not written yet is marked
-    as a stub rather than guessed at.
+    It follows `0.1.x`, where the next minor version is written. The released version is `0.0`, one entry
+    away in the selector at the top of the page. Every page here states what the code does today, in the
+    branch this version of the documentation follows. What is not written yet is marked as a stub rather
+    than guessed at.
 
 <div class="grid cards" markdown>
 
