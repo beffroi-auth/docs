@@ -81,9 +81,9 @@ code here.
 | RFC 7517, RFC 7515, RFC 7516, RFC 7518, RFC 7519 | JOSE: keys, signatures, encryption, algorithms, claims | [Keys](../core/keys.md) |
 
 NIST SP 800-63B §3.1.1.2 is what the rules of a password are written against: a floor on the length, fifteen
-characters for a password that signs somebody in alone and eight for one a second factor goes with, an estimate
-of how hard it is to guess, and a comparison against a list of compromised values rather than a composition
-rule. [Passwords](../core/credentials/passwords.md) says what each of them refuses.
+characters for a password that signs somebody in alone and at least eight for one a second factor goes with, of
+which the provider asks twelve, an estimate of how hard it is to guess, and a comparison against a list of
+compromised values rather than a composition rule. [Passwords](../core/credentials/passwords.md) says what each of them refuses.
 
 ## Reaching a person
 

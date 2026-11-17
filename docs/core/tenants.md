@@ -117,8 +117,9 @@ gives nobody back what was forgotten.
 - A step-up offers no kind of credential the floor forbids, and the page of the second factor offers an
   enrolment only where a code is admitted.
 - The length a password has to reach follows it: fifteen characters where a password signs somebody in
-  alone, eight where a second factor goes with it (NIST SP 800-63B §3.1.1.2). A password already stored is
-  left as it is, since a hash says nothing of the length behind it.
+  alone, as NIST SP 800-63B §3.1.1.2 asks, and twelve where a second factor goes with it, where §3.1.1.2
+  would let a verifier ask eight. A password already stored is left as it is, since a hash says nothing of the
+  length behind it.
 - A login through an [upstream identity provider](../saml/federated-sign-in.md#the-session) is held to it as
   well.
 

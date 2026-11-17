@@ -68,7 +68,7 @@ backchannel request, and the single sign-on of a SAML service provider among the
 A password posed here is typed twice and the two are compared in constant time, and the counter beside the
 field is local to the browser: what the page says of a password as it is typed asks nobody anything, and a
 password is never sent anywhere to be scored. The length it asks for is the one the floor of the tenant
-sets, fifteen characters or eight, and the field and the core read the same number.
+sets, fifteen characters or twelve, and the field and the core read the same number.
 
 [:beffroi-arrow-right: Passwords](../core/credentials/passwords.md)
 

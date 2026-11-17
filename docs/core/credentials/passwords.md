@@ -39,13 +39,14 @@ A prospective password is refused rather than warned about when it is too short,
 to guess, or held by a list of compromised values. Nothing else is asked of it: it is never refused for holding
 no digit, no capital or no symbol, the composition rules NIST SP 800-63B §3.1.1.2 asks a verifier not to impose.
 
-**How short is too short is two numbers**, as NIST SP 800-63B §3.1.1.2 makes it, and the floor of the logins of
-the tenant decides which one applies:
+**How short is too short is two numbers**, and the floor of the logins of the tenant decides which one applies.
+NIST SP 800-63B §3.1.1.2 asks fifteen characters of a password that is the whole of a login and lets a verifier
+ask eight of one a second factor goes with; the provider asks twelve of that one:
 
 | The floor of the tenant | The length a password has to reach |
 |---|---|
 | `single_factor`, a password being the whole of a login | fifteen characters |
-| `two_factors`, a second factor going with it | eight characters |
+| `two_factors`, a second factor going with it | twelve characters |
 
 A floor that reads nothing a password proves, `phishing_resistant` or `phishing_resistant_hardware`, holds no
 password at all. The length is counted in characters, each code point one, and the page, the console and the
