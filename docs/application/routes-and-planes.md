@@ -1,14 +1,16 @@
 ---
 title: Routes and planes
-description: Where the routes are imported, the two planes their names carry, and restricting a process to one of them.
+description: Where the routes are imported, the planes their names carry, and restricting a process to its planes.
 ---
 
 # Routes and planes
 
 Every route of the provider is declared on its controller, in `src/Controller/`, one action per class, and
 its name carries its plane: `beffroi_protocol_*` for what a client or a resource server calls,
-`beffroi_interaction_*` for what a browser reads. `BEFFROI_PLANE` restricts a process to one of them, so that a
-provider can serve the protocol on machines a browser never reaches, from the same build.
+`beffroi_interaction_*` for what a browser reads. The administration API of the tenant is a third plane,
+`beffroi_administration_*`, whose controllers are in `src/Administration/Controller/` and which a process of its
+own serves. `BEFFROI_PLANE` restricts a process to its planes, so that a provider can serve the protocol on
+machines a browser never reaches, from the same build.
 
 ## Importing the routes
 
@@ -76,30 +78,33 @@ when@dev:
 
 Their names, `beffroi_fido_conformance_*` and `beffroi_ciba_conformance_approval`, carry no plane.
 
-## The two planes
+## The planes
 
 | Plane | Route names | Who calls it | What is on it |
 |---|---|---|---|
 | Protocol | `beffroi_protocol_*` | A client or a resource server, server to server | The discovery document and the RFC 8414 metadata, the JWK Set, the token, UserInfo, introspection, revocation, pushed authorization, device authorization, backchannel authentication and registration endpoints, and the metadata of both SAML roles |
 | Interaction | `beffroi_interaction_*` | A browser, with a person in front of it | The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the enrolment of a first passkey, the choice of a language and of a theme, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to |
+| Administration | `beffroi_administration_*` | A client of the administration API, with the token of an administrator of the tenant | The tenant, its clients and its signing keys, the statistics and the health of the instance, and the people of the tenant: finding and creating one, their open sessions and ending one, revoking a credential, their journal, and the ticket that lets a person enrol a passkey |
 
 [:beffroi-arrow-right: Every route, with its method and path](../reference/endpoints.md)
 
 What tells the planes apart is the name and nothing else. A route is of the protocol plane because its name
 starts `beffroi_protocol_`, so a route the provider gains is in its plane by being routed, and a route whose
-name starts with neither belongs to no plane. Every route the image serves carries one; the routes of no plane
+name starts with none of the three prefixes belongs to no plane. Every route the image serves carries one; the routes of no plane
 are the ones a development stack adds, the endpoints of the conformance tools above among them.
 
-## Restricting a process to one plane
+## Restricting a process to its planes
 
 | `BEFFROI_PLANE` | What the process serves |
 |---|---|
-| `all` | Both planes. The default when the variable is not set |
+| `provider` | The interaction and protocol planes, and the routes of no plane, never the administration API. The default when the variable is not set, and what `.env` says |
 | `interaction` | The routes of the interaction plane, and the routes of no plane |
 | `protocol` | The routes of the protocol plane, and the routes of no plane |
+| `administration` | The administration API alone: the process routes a request to the API and to nothing else. It is the value the worker of `/etc/frankenphp/administration.Caddyfile` sets |
 
-The variable is read by the process and not compiled into the container, so one build serves the three.
-Every process imports the same routes and declares the same firewalls; what differs between the process that
+The variable is read by the process and not compiled into the container, so one build serves the first three. A
+process of the administration, whose routes differ, compiles its own container beside theirs.
+The processes of those three import the same routes and declare the same firewalls; what differs between the process that
 serves the browsers and the one that serves the clients is one variable of its environment, which the second
 sets to:
 
@@ -107,7 +112,8 @@ sets to:
 BEFFROI_PLANE=protocol
 ```
 
-**A route of the other plane answers `404`**, the answer an unknown path gets, and the exception says why:
+**A route of the other plane answers `404`** in a process of the interaction or of the protocol plane, the answer
+an unknown path gets, and the exception says why:
 
 ``` text
 The route "beffroi_interaction_login" belongs to a plane this process does not serve (BEFFROI_PLANE=protocol).
@@ -115,16 +121,18 @@ The route "beffroi_interaction_login" belongs to a plane this process does not s
 
 The refusal is made once the router has named the route and before the firewall reads anything, so a
 request refused for its plane opens no session and is not counted against the load budget of its origin. A
-route of no plane, an endpoint of the conformance tools on a development stack, is never refused.
+route of no plane, an endpoint of the conformance tools on a development stack, is never refused. A process of
+the administration routes no request to the other planes: their paths are paths the API does not serve, which
+it answers like any other once it has read the token of the request.
 
-**A value that is none of the three refuses every request of the process**, the routes of no plane included.
-A plane nobody spelled right is not `all`.
+**A value that is none of the four refuses every request of the process**, the routes of no plane included.
+A plane nobody spelled right is not `provider`.
 
-## What every route of the two planes carries
+## What every route of a plane carries
 
 Being of a plane is also what decides what the provider puts around a route.
 
-- **The budget of its origin.** Every request to a route of either plane is counted against the address it
+- **The budget of its origin.** Every request to a route of any plane is counted against the address it
   comes from, before the firewall, and refused with `429` once the budget is spent.
   [Attempts and budgets](security.md#attempts-and-budgets) says how much and in which shape.
 - **The headers of a page.** Every page the provider renders on the interaction plane carries

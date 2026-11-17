@@ -21,7 +21,7 @@ integration.
 ## Why it is one application
 
 A provider needs a dozen decisions besides its protocols: the web server, the worker, where its lanes go,
-the key management client, the migrations, the two planes, the image. They are the same for almost
+the key management client, the migrations, the planes, the image. They are the same for almost
 everybody, so the project makes them once, in the application, and a deployment sets what differs from one
 machine to the next through its environment.
 
@@ -29,7 +29,7 @@ machine to the next through its environment.
 
 | Page | What it covers |
 |---|---|
-| [Deployment](deployment.md) | The image, FrankenPHP in worker mode, and the two planes |
+| [Deployment](deployment.md) | The image, FrankenPHP in worker mode, and the planes |
 | [Configuration](configuration.md) | The environment the application reads, and what each variable decides |
 | [Examples](examples.md) | Whole deployments written with those variables: one host, behind a proxy, lists in JSON |
 | [Console commands](console-commands.md) | Tenant, users, groups, clients, keys, data keys, SAML metadata, FIDO metadata |
@@ -41,7 +41,7 @@ machine to the next through its environment.
 | Page | What it covers |
 |---|---|
 | [The configuration tree](configuration-tree.md) | One tree under `beffroi`, section by section, each value read from the variable a deployment sets: its shape checked when the container is built, the values of the environment when the provider first builds what they reach |
-| [Routes and planes](routes-and-planes.md) | The controllers of both planes, and `BEFFROI_PLANE` to restrict a process to one |
+| [Routes and planes](routes-and-planes.md) | The controllers of the three planes, and `BEFFROI_PLANE` to restrict a process to its planes |
 | [Persistence](persistence.md) | The Doctrine mapping, the migrations, and the DBAL types that read value objects back |
 | [Security](security.md) | The firewalls, the authenticators, and what a session carries |
 | [Key management](key-management.md) | The key management client the private keys are sealed with |

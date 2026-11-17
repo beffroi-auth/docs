@@ -1,6 +1,6 @@
 ---
 title: Deployment
-description: The image, the HTTP server in worker mode, the worker, the two planes, what the processes share, TLS and the host that asks for a client certificate.
+description: The image, the HTTP server in worker mode, the worker, the planes, what the processes share, TLS and the host that asks for a client certificate.
 ---
 
 # Deployment
@@ -52,23 +52,27 @@ seconds. Only the server runs Caddy, so a container that runs the worker turns t
 The Compose file of the image gives its worker a check of its own, that the consumer is the first process of
 its container.
 
-### The two planes
+### The planes
 
 Every route of the provider, the ones `config/beffroi/routes.php` imports, carries its plane in its name,
 `beffroi_protocol_*` for what a client or a resource server calls and `beffroi_interaction_*` for what a browser
-reads. `BEFFROI_PLANE` restricts a process to one of them:
+reads. The administration API of the tenant is a third plane, `beffroi_administration_*`. `BEFFROI_PLANE`
+restricts a process to its planes:
 
 | `BEFFROI_PLANE` | What the process serves |
 |---|---|
-| `all` | Both planes, which is what `.env` says |
+| `provider` | The protocol and interaction planes, never the administration API, which is what `.env` says |
 | `protocol` | The protocol plane; every route of the interaction plane answers `404` |
 | `interaction` | The interaction plane; every route of the protocol plane answers `404` |
+| `administration` | The administration API alone, the value the worker of `/etc/frankenphp/administration.Caddyfile` sets |
 
-The refusal comes after the router and before the firewall, so a request to the other plane opens no session
-and counts against no budget. The root `/` of the application and the choice of a theme, `/theme`, belong to
-the interaction plane, as every route the image serves belongs to one of the two. A process serves its plane on each
-of its hosts, the one that asks for a client certificate included. Whatever sends a request to one process or
-the other reads its path, and [the endpoints](../reference/endpoints.md) give the plane of every path.
+In a process of the protocol or of the interaction plane, the refusal comes after the router and before the
+firewall, so a request to the other plane opens no session and counts against no budget. The root `/` of the application and the choice of a theme, `/theme`, belong to
+the interaction plane, as every route the image serves belongs to a plane. A process serves its plane on each
+of its hosts, the one that asks for a client certificate included. Whatever sends a request to the process
+of the protocol or to that of the interaction reads its path, and [the endpoints](../reference/endpoints.md) give
+the plane of every path. The administration API is reached by its own host, the site of
+`/etc/frankenphp/administration.Caddyfile`.
 
 ## The worker
 

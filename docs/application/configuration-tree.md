@@ -255,7 +255,7 @@ it, so that a token still in use verifies: ten minutes for a signing key with th
 ## `load`
 
 Every request is counted against two budgets, and the section sets their numbers, never whether they exist.
-The first counts the address of the client, on every route of the two planes and before anything is verified;
+The first counts the address of the client, on every route of the three planes and before anything is verified;
 the second counts a client of a tenant once it has authenticated. A request over a budget is answered `429`
 with a `Retry-After` header. The file reads the four numbers from `BEFFROI_LOAD_ORIGIN_LIMIT`,
 `BEFFROI_LOAD_ORIGIN_INTERVAL`, `BEFFROI_LOAD_CLIENT_LIMIT` and `BEFFROI_LOAD_CLIENT_INTERVAL`, which `.env`
