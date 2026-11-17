@@ -84,7 +84,8 @@ is no JSON document, and is refused.
 | `BEFFROI_TENANT_ADMINISTRATORS` | `[]` | The groups whose members [administer the tenant](../core/groups.md#who-administers-the-tenant), by their names in the tenant, compared exactly, as `["administrators"]`: a local group the console fills, or a group an upstream provider or a directory holds the members of. A name that is empty, or that begins or ends with whitespace, is refused; a name no group carries yet is accepted. `[]`, nobody administers the tenant |
 
 **Ten of them are written in the row of the tenant**, with its issuer: its name, its logo and its two colours,
-the claims a person changes, its `acr` classes, and the four that say what the enrolment of a passkey asks.
+the claims a person changes, its `acr` classes, and the four that say what the enrolment of a passkey asks:
+the seven settings of [the row of the tenant](../core/tenants.md), the enrolment of a passkey counting once.
 `beffroi:tenant:synchronize` writes them, and every request and every message compares the row with the
 environment of its process: while the two differ, each one that reads the tenant fails, and the log names the
 setting that differs, `look` for the logo and the colours, `passkey_attestation` for the four of the passkey
@@ -232,7 +233,7 @@ These are read by Caddy and FrankenPHP, not by the kernel.
 | `SERVER_NAME` | The host Caddy serves the provider on, `localhost` when it is not set. When Caddy terminates TLS, it obtains the certificate of that host itself, from a public authority for a public name and from its internal authority for `localhost`, and keeps it under `/data` |
 | `TLS_TERMINATION` | Who terminates the TLS of the site of `SERVER_NAME`. `caddy`, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. `proxy`: a proxy in front of the image, which sends the site plain HTTP, `SERVER_NAME` then naming the one host the proxy asks for, or `:<port>` for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way, and the site of the administration API is served on the address its own variable gives |
 | `MTLS_SERVER_NAME` | The host of the listener that asks for a client certificate, in `mtls.Caddyfile` |
-| `ADMINISTRATION_SERVER_NAME` | The address of the site of the administration API, in `administration.Caddyfile`: the host of the URL `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names. Its worker serves the administration API and nothing else |
+| `ADMINISTRATION_SERVER_NAME` | The address of the site of the administration API, in `administration.Caddyfile`: the host of the URL `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names, or, behind a proxy that terminates TLS, a plain HTTP address such as `:81`. Its worker serves the administration API and nothing else |
 | `CADDY_EXTRA_CONFIG` | Configuration added to the `Caddyfile` beside the site of `SERVER_NAME`. `import mtls.Caddyfile` is what serves the host that asks for a client certificate, and `import administration.Caddyfile` the administration API, which a deployment that does not import it does not serve |
 | `CADDY_GLOBAL_OPTIONS` | Directives added to the global options of the `Caddyfile` |
 | `CADDY_SERVER_EXTRA_DIRECTIVES` | Directives added to the site of `SERVER_NAME`, such as a `tls` directive naming a certificate and its key |

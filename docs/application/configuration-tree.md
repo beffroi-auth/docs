@@ -36,7 +36,7 @@ beffroi:
 
 | Section | What it decides | In the image |
 |---|---|---|
-| [`tenant`](#tenant) | The issuer, the name and the look of the tenant, the claims its people change, its `acr` vocabulary, the scopes of its APIs and what the enrolment of its passkeys asks | Required. `BEFFROI_ISSUER`, `BEFFROI_TENANT_SLUG` and the `BEFFROI_TENANT_*` variables |
+| [`tenant`](#tenant) | The issuer, the name and the look of the tenant, the claims its people change, its `acr` vocabulary, the scopes of its APIs, the groups that administer it and its administration API, and what the enrolment of its passkeys asks | Required. `BEFFROI_ISSUER`, `BEFFROI_TENANT_SLUG` and the `BEFFROI_TENANT_*` variables |
 | [`keys`](#keys) | The client that seals the keys, where they are kept, what binds the data keys, and how keys rotate | Required. `op` and `var/keys` written in the file, `BEFFROI_KMS_KEY_ID`, `BEFFROI_DATA_KEY_SECRETS` and three variables of rotation |
 | [`webauthn`](#webauthn) | Where the FIDO metadata are kept | `var/webauthn` written in the file, no variable |
 | [`mutual_tls`](#mutual_tls) | The host that asks a client for its certificate | `BEFFROI_MTLS_ORIGIN`, empty: no alias announced |
@@ -484,8 +484,8 @@ scopes `openid profile email`, and the first wired method of authentication, `cl
 
 A declared client may also carry the members of the deployment, `requires_consent`, `requires_pkce`,
 `access_token_format`, `resources`, `token_exchange`, `may_act` and `require_sender_constrained_tokens`, which
-a registration is refused for. A client that registers itself is given five of them by the initial access
-token it registered with, and [what the image does not set](../oidc/clients.md#what-the-image-does-not-set)
+a registration is refused for. A client that registers itself with an initial access token holds those of
+the five the token names, and [what the image does not set](../oidc/clients.md#what-the-image-does-not-set)
 says what every client of the image has otherwise.
 
 [:beffroi-arrow-right: Clients](../oidc/clients.md) and [your first client](../getting-started/your-first-client.md)

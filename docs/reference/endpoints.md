@@ -162,8 +162,9 @@ names, which a deployment serves by importing `administration.Caddyfile`
 ([deployment](../application/deployment.md#the-host-of-the-administration-api)). Every request is held to its
 access token before its controller runs, whatever its path: a token of this provider addressed to that API,
 bound to a key and presented with its proof, for a person who administers the tenant at that moment ([the
-administration API](../oidc/resources.md#the-administration-api)). An answer is JSON, and a path the API does
-not serve is answered `404` once the token has been read.
+administration API](../oidc/resources.md#the-administration-api)). An answer is JSON, but for a request that
+presents no token, answered with the bare challenge (RFC 6750 §3.1), and a path the API does not serve is
+answered `404` once the token has been read.
 
 | Method | Path | Route |
 |---|---|---|

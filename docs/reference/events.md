@@ -70,7 +70,7 @@ way, `logout_token.given_up` is raised.
 | `person.described` | `PersonDescribed` | An administrator changes the username or the claims of a person | The subject, the names of what changed, never a value, and the administrator | A person |
 | `person.disabled` | `PersonDisabled` | A person is disabled | The subject, and the administrator | A person |
 | `person.enabled` | `PersonEnabled` | A person is enabled again | The subject, and the administrator | A person |
-| `credential.enrolled` | `CredentialEnrolled` | A passkey or a TOTP is enrolled | The credential | A person |
+| `credential.enrolled` | `CredentialEnrolled` | A passkey or a TOTP is enrolled, or a password ticket gives a password to a person who held none | The credential | A person |
 | `credential.renamed` | `CredentialRenamed` | A passkey is renamed | The credential, and the name it had | A person |
 | `credential.revoked` | `CredentialRevoked` | A credential is revoked | The credential, and the administrator | A person |
 | `credential.forgotten` | `CredentialForgotten` | The floor of the tenant forgets a credential | The credential | A person |
