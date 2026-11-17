@@ -20,24 +20,26 @@ container of the image, or with `castor console` on the development stack.
    restart, and refuses to run while one of those tables holds rows, naming it and how many: a sealed column
    has nothing to take from a value in the clear.
 2. **The row of the tenant** follows the environment: `beffroi:tenant:synchronize` creates it, or writes on it
-   the name, the `acr` policy, the look and the claims its people may change of themselves that the
-   environment says, then prints the row. The provider serves nothing while the row and the environment of a
-   process disagree, and a request then fails with an exception naming the field that differs. A change of
-   `BEFFROI_TENANT_NAME`, `BEFFROI_TENANT_LOGO_URI`, `BEFFROI_TENANT_PRIMARY_COLOR`,
-   `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR`, `BEFFROI_TENANT_SELF_SERVED_CLAIMS` or
-   `BEFFROI_TENANT_AUTHENTICATION_CLASSES` is therefore a restart of every process with the new value and the
-   command run in one of them. A changed `BEFFROI_ISSUER` is refused: the issuer of a tenant does not change,
-   every token issued so far names it, and another issuer is another tenant, under another
-   `BEFFROI_TENANT_SLUG`.
+   what the environment says of its name, its `acr` policy, its look, the claims its people may change of
+   themselves and what the enrolment of a passkey asks, then prints the row. The provider serves nothing while
+   the row and the environment of a process disagree, and a request then fails with an exception naming the
+   field that differs. A change of `BEFFROI_TENANT_NAME`, `BEFFROI_TENANT_LOGO_URI`,
+   `BEFFROI_TENANT_PRIMARY_COLOR`, `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR`, `BEFFROI_TENANT_SELF_SERVED_CLAIMS`,
+   `BEFFROI_TENANT_AUTHENTICATION_CLASSES` or one of the four `BEFFROI_TENANT_PASSKEY_*` is therefore a restart
+   of every process with the new value and the command run in one of them. A changed `BEFFROI_ISSUER` is
+   refused: the issuer of a tenant does not change, every token issued so far names it, and another issuer is
+   another tenant, under another `BEFFROI_TENANT_SLUG`.
 3. **Two questions for the pipeline**, both of which write nothing and fail when the answer is no:
    `beffroi:keys:list --check` opens the keys in use and the ones about to be with the key management
    service, and fails on one it cannot open or that has worked past its age with nothing staged behind it;
    `beffroi:doctor` says whether the deployment holds together, one line per point it looks at.
 4. **The discovery document**, last: `<issuer>/.well-known/openid-configuration` answers once the routes are
-   where the issuer says they are. The application serves them at the root, so with an issuer that has a path
-   the first request that needs the endpoints fails with an exception naming where the document is served and
-   where the issuer makes clients look for it (OIDC Discovery 1.0 §4.1). `bin/console debug:router` lists the
-   routes, those of the provider under names that carry their plane.
+   where the issuer says they are. The application serves them at the root, so its issuer is an origin: an
+   issuer with a path is refused by `beffroi:tenant:synchronize` and by every request that reads the tenant,
+   and behind a proxy that forwards a prefix, the first request that needs the endpoints fails with an
+   exception naming where the document is served and where the issuer makes clients look for it (OIDC
+   Discovery 1.0 §4.1). `bin/console debug:router` lists the routes, those of the provider under names that
+   carry their plane.
 
 ## What time does on its own
 
@@ -123,10 +125,11 @@ blind index with them.
 ## When something fails
 
 **`beffroi:doctor` is what to ask first.** It reads, writes nothing, and is safe on a provider serving
-traffic. What it looks at is what is wired, and in this application that is one point: whether a logout
-token is retried for as long as it stays verifiable. No variable sends the notifications to another transport
-or retries them on another schedule, so the point holds on a deployment of the image; a configuration of the
-application that did either would keep a provider that works and logout tokens a client may refuse when they
+traffic. What it looks at is what is wired, and in this application that is two points: whether every client
+is signed for with an algorithm the tenant holds an active key for, and whether a logout token is retried for as
+long as it stays verifiable. No variable sends the notifications to another transport or retries them on
+another schedule, so the second point holds on a deployment of the image; a configuration of the application
+that did either would keep a provider that works and logout tokens a client may refuse when they
 arrive late, after a rotation or after the client restarts, which nothing else shows.
 
 **A message that fails is tried again, then kept.** The three lanes of the provider's own writes retry it on
@@ -146,7 +149,9 @@ stays sealed there; the class of the message, its stamps and its tenant are in t
 `503 Service Unavailable` with `Retry-After: 10`: nothing was refused to the person, counted against them or
 forgotten, and the same request is served once the service is back. The outage is an act of the journal,
 `kms.unavailable`, with the provenance of the request that met it. The worker does not start without a key
-management service at all.
+management service at all, `BEFFROI_KMS_DSN` naming none. A process that starts while the service does not
+answer starts all the same, the worker as a thread of the server: it writes so to its log at the level
+`error`, and opens each key at its first use.
 
 **A spent load budget is a `429`**, with a `Retry-After` and `Cache-Control: no-store`, and an act of the
 journal, `load.budget_spent`.

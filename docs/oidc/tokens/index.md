@@ -10,7 +10,7 @@ which one it is holding:
 
 | Token | Who it is for | Its shape | How long it lives | Page |
 |---|---|---|---|---|
-| Access token | A resource server | A JWT of type `at+jwt` for every client of the image; an opaque reference is the other shape the provider writes | `BEFFROI_ACCESS_TOKEN_TTL`, 600 seconds | [Access tokens](access-tokens.md) |
+| Access token | A resource server | A JWT of type `at+jwt`, or an opaque reference for a client its initial access token gave that shape | `BEFFROI_ACCESS_TOKEN_TTL`, 600 seconds | [Access tokens](access-tokens.md) |
 | ID token | The client, about the person who signed in | A JWT signed by the tenant, encrypted when the client asked for it | `BEFFROI_ID_TOKEN_TTL`, 600 seconds | [ID tokens](id-tokens.md) |
 | Refresh token | The token endpoint, to ask again | An opaque reference | `BEFFROI_REFRESH_TOKEN_TTL`, 30 days, within `BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL`, 90 days | [Refresh tokens](refresh-tokens.md) |
 

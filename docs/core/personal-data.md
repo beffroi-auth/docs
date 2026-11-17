@@ -25,10 +25,10 @@ the key of another table than its own.
 |---|---|
 | `user` | The username, the email address, the profile, the phone number, the postal address, and the source that created the person, which says which organisation they are of |
 | `linked_identity` | The provider, the subject it gives the person, and the snapshot of what it said |
-| `passkey_credential` | The name a person gave a passkey |
+| `passkey_credential` | The name a person gave a passkey, and the serial number of its authenticator an enterprise attestation carried, which designates one device |
 | `push_subscription` | The endpoint of a browser web push reaches, and the name a person gave it |
 | `authentication_session` | Where a session was opened from and last seen from |
-| `claim_change` | What a claim said before a person changed it, what it says after, and where the change came from |
+| `claim_change` | What a claim said before a person or an administrator changed it, what it says after, and where the change came from |
 | `journal` | Where each act came from |
 | `personal_archive` | The archive a person asked for |
 | `interaction` | The `login_hint` and the `id_token_hint` of an authorization request |
@@ -109,6 +109,12 @@ the kernel, `APP_SECRET`, while that variable is not set, one list for the whole
 binds a new row, and a row bound under any of them opens. A row bound under a secret that is no longer listed
 opens nothing, and neither does any value sealed under its key.
 
+The key management service binds the wrapping of each data key to the same reference and scope, which it
+authenticates beside the key: a wrapped key presented under another reference or scope is refused by the
+service before the key leaves it. Nothing turns this off, and a backend that cannot authenticate that context,
+a Vault Transit key that is not derived, refuses to wrap a data key at all. A row wrapped under no context opens
+nothing until `beffroi:data-keys:rewrap --accept-unbound` wraps it again under its reference and its scope.
+
 ``` bash
 bin/console beffroi:data-keys:list
 ```
@@ -129,6 +135,7 @@ bin/console beffroi:data-keys:rewrap --to=second
 | `--to` | The key management client that wraps the data keys the tenant holds, `op` or `second` in the application |
 | `--from` | Move only the keys that client wraps; all of them when it is left out |
 | `--dry-run` | List what would move, and write nothing |
+| `--accept-unbound` | Move as well the keys wrapped under no context, which open nothing until they are wrapped again under their reference and their scope |
 
 The master key is not asked for: it is the one `BEFFROI_KMS_KEY_ID` resolves for the slug of the tenant, so an
 operator cannot type the master key of another tenant. No sealed value is read and none is rewritten, every

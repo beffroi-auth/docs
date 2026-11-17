@@ -40,16 +40,21 @@ The answer carries the `client_id` the provider drew and the `client_secret`, sa
 | The `client_id` | The `sub` of every token this grant issues the client, so it is one to 255 visible ASCII characters, and no space, which the identifier the provider draws always is |
 | `grant_types` | `client_credentials`. A client registered for no grant that sends a browser back to it registers no redirect URI |
 | `scope` | The scopes it may ask for. `openid` is refused whatever the registration says, this grant having nobody to authenticate |
-| `resources` | *Deployment.* The resources it may ask a token for. A client that registered none can obtain nothing with this grant, a request having to name one |
+| `resources` | *Deployment.* The resources it may ask a token for, which the initial access token it registered with gives. A client that holds none can obtain nothing with this grant, a request having to name one |
 
-!!! warning "No token for a client of the image"
+!!! note "The resources of a service come from its initial access token"
 
-    `resources` is a member of the deployment: a registration that carries it is refused, and no variable
-    gives it to a client ([what the image does not set](../clients.md#what-the-image-does-not-set)). A client
-    of the image therefore registers no resource, and a request it makes with this grant whose scopes hold is
-    refused with `invalid_target`, whether it names a resource or not: on a deployment of the image, the
-    client credentials grant issues no token. The rest of this page is what the grant does for a client that
-    carries resources.
+    `resources` is a member of the deployment: a registration that carries it is refused. On a deployment of
+    the image, a service holds the resources the initial access token it registered with gives, issued with
+    `--resource` once per API ([dynamic registration](../dynamic-registration.md#the-three-modes)). A client
+    that holds none has every request of this grant whose scopes hold refused with `invalid_target`, whether
+    it names a resource or not ([what the image does not set](../clients.md#what-the-image-does-not-set)).
+    The [administration API](../resources.md#the-administration-api) of the tenant is never addressed under
+    this grant, which has nobody signed in behind it.
+
+    ``` bash
+    bin/console beffroi:client:token:issue 'Billing service' --resource=https://invoices.example.com/
+    ```
 
 ## The request
 

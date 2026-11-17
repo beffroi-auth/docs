@@ -81,9 +81,9 @@ type (RFC 9701 §4, §5), whatever the client registered:
 | Claims | `token_introspection` | The members above, `{"active": false}` included |
 
 The answer is signed and not encrypted. A resource server verifies it against the JWK Set of the provider,
-whose URL it reads in the `jwks_uri` of the discovery document. The document announces the signing
-algorithms the provider is wired with in `introspection_signing_alg_values_supported`, and the answer is
-signed with the default one among them.
+whose URL it reads in the `jwks_uri` of the discovery document. The document announces in
+`introspection_signing_alg_values_supported` the one algorithm the answer is signed with, the default one, and
+only while the tenant holds an active key for it.
 
 Either answer is served with `Cache-Control: no-store` and `Pragma: no-cache`, as `application/json` or as
 `application/token-introspection+jwt`.
@@ -121,19 +121,21 @@ nothing about whether the token existed.
 **What a revocation does not reach.** An `at+jwt` issued under the grant of a refresh token that was revoked
 stays valid until it expires, at a resource server as at the endpoints of the provider: the provider keeps no
 list of the self-contained tokens it would refuse, and its lifetime is what bounds it, ten minutes unless
-`BEFFROI_ACCESS_TOKEN_TTL` says otherwise. Every access token of the image is an `at+jwt`: the opaque shape,
-which a revocation removes, is the value `opaque` of `access_token_format`, a member of the deployment that
-the image gives no client ([what the image does not set](clients.md#what-the-image-does-not-set)).
+`BEFFROI_ACCESS_TOKEN_TTL` says otherwise. An access token of the image is an `at+jwt` unless its client was
+given the opaque shape, which a revocation removes: the value `opaque` of `access_token_format`, a member of the
+deployment that the initial access token of a client gives ([what the image does not
+set](clients.md#what-the-image-does-not-set)).
 
 **Every revocation is an act**, `token.revoked`, in the journal of the person the token was issued for; the
 revocation of a token a client held for itself names nobody.
 
 Revocation ends one token and what depends on it. What takes back everything issued under a session is the
 end of that session, at the [end session endpoint](logout.md) or anywhere else, and what takes back the
-grants, the refresh tokens and the opaque access tokens a client holds for a person is that person taking back
-their consent, on [the page of their account](../application/account.md) or with
-`beffroi:user:revoke-consent`. In both cases an `at+jwt` is refused by the provider from that moment, and
-accepted by a resource server that verifies it offline until it expires.
+grants, the refresh tokens and the opaque access tokens a client holds for a person is the consent of that
+person taken back, by them on [the page of their account](../application/account.md), with
+`beffroi:user:revoke-consent`, or by an administrator through the administration API. In both cases an
+`at+jwt` is refused by the provider from that moment, and accepted by a resource server that verifies it
+offline until it expires.
 
 ## Refusals
 

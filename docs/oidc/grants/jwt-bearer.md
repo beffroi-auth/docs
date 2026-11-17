@@ -82,14 +82,16 @@ The answer carries the `client_id` the provider drew, which the `clients` of the
 `client_secret`, said once. A public client is refused a registration for the grant: a token of this grant is
 issued only to a client that authenticates itself.
 
-!!! warning "No token for a client of the image"
+!!! note "The resources of the client come from its initial access token"
 
-    A request of this grant names at least one resource, among those the client registered, and `resources` is
-    a member of the deployment: a registration that carries it is refused, and no variable gives it to a
-    client ([what the image does not set](../clients.md#what-the-image-does-not-set)). A client of the image
-    therefore registers no resource, and a request it makes with an assertion this provider accepts is refused
-    with `invalid_target`: on a deployment of the image, the JWT bearer grant issues no token. The rest of
-    this page is what the grant does for a client that carries resources.
+    A request of this grant names at least one resource, among those the client holds, and `resources` is a
+    member of the deployment: a registration that carries it is refused. On a deployment of the image, a
+    client holds the resources the initial access token it registered with gives, issued with `--resource`
+    once per API ([dynamic registration](../dynamic-registration.md#the-three-modes)). A client that holds
+    none has every request it makes with an assertion this provider accepts refused with `invalid_target`
+    ([what the image does not set](../clients.md#what-the-image-does-not-set)). The [administration
+    API](../resources.md#the-administration-api) of the tenant is never addressed under this grant, which
+    has nobody signed in at the provider behind it.
 
 The assertion is the authorization, not the authentication of the client (RFC 7523 §2.1): the client
 authenticates beside it with the method it registered, as for every other grant. The two readings of an

@@ -5,14 +5,16 @@ description: Every route of the provider, its method, the plane it belongs to an
 
 # Endpoints
 
-Paths are relative to the issuer, at whose root the application imports the routes of the provider. A
+Paths are relative to the issuer, at whose root the application imports the routes of the provider, and the
+paths of the [administration plane](#the-administration-plane) to the host of the administration API. A
 deployment whose issuer is `https://op.example.com` serves the token endpoint at
 `https://op.example.com/token`. The root itself, `/`, is `beffroi_interaction_home`, a route of the application
 that sends a browser to the home of its account.
 
 Every route name of the provider carries its plane. `beffroi_protocol_*` is server to server, called by a
-client or a resource server; `beffroi_interaction_*` is a browser, where a person reads a page and answers. The
-`BEFFROI_PLANE` environment variable restricts a process to one plane, so an interaction never reaches a
+client or a resource server; `beffroi_interaction_*` is a browser, where a person reads a page and answers;
+`beffroi_administration_*` is the administration API of the tenant, served on a host of its own. The
+`BEFFROI_PLANE` environment variable restricts a process to its planes, so an interaction never reaches a
 machine that only serves the protocol, and the other way round. One more route of the application carries the
 interaction plane, as the root does: `POST /theme`, `beffroi_interaction_theme`, where a visitor chooses the
 theme of the pages.
@@ -55,9 +57,13 @@ advertised.
 | `GET` `POST` | `/logout` | `beffroi_interaction_logout` | RP-initiated logout, OIDC RP-Initiated Logout 1.0 |
 | `GET` `POST` | `/device` | `beffroi_interaction_device` | Where the code shown by a device is confirmed, RFC 8628 §3.3 |
 | `GET` | `/initiate-login` | `beffroi_interaction_initiate_login` | Third party initiated login, OIDC Core §4 |
-| `GET` | `/enrol/{ticket}/{value}` | `beffroi_interaction_enrolment_ticket` | The page an enrolment ticket opens, where a person poses their first passkey without a session |
+| `GET` | `/enrol/{ticket}/{value}` | `beffroi_interaction_enrolment_ticket` | The page an enrolment ticket opens, where a person poses a passkey without a session |
 | `POST` | `/enrol/{ticket}/{value}/options` | `beffroi_interaction_enrolment_ticket_options` | The creation options of that passkey |
 | `POST` | `/enrol/{ticket}/{value}` | `beffroi_interaction_enrolment_ticket_enrol` | The passkey itself, which spends the ticket |
+| `GET` | `/password/{ticket}/{value}` | `beffroi_interaction_password_ticket` | The page a password ticket opens, where a person poses a new password without the one in use and without a session |
+| `POST` | `/password/{ticket}/{value}` | `beffroi_interaction_password_ticket_set` | The password, typed twice, which spends the ticket and ends every session of the person |
+| `GET` | `/two-factor/{ticket}/{value}` | `beffroi_interaction_totp_ticket` | The page a ticket for an authenticator application opens, where a person sets one up in place of the one they hold, without a session |
+| `POST` | `/two-factor/{ticket}/{value}` | `beffroi_interaction_totp_ticket_enrol` | The first code of that application, which spends the ticket, revokes the application held and ends every session of the person |
 | `POST` | `/locale` | `beffroi_interaction_locale` | The language a visitor chose for the pages |
 
 ### The account pages
@@ -71,7 +77,7 @@ session rather than sending it to a login.
 | `GET` | `/account` | `beffroi_interaction_account` | One card per page below, with what the account holds there |
 | `GET` `POST` | `/account/approvals` | `beffroi_interaction_account_approvals` | What somebody is waiting on an answer for now, CIBA Core §7.1 |
 | `GET` | `/account/profile` | `beffroi_interaction_account_profile` | What the provider holds of this person, one line per claim |
-| `GET` | `/account/profile/changes` | `beffroi_interaction_account_profile_changes` | What those claims said before, and when they changed |
+| `GET` | `/account/profile/changes` | `beffroi_interaction_account_profile_changes` | What those claims said before, when they changed, and whether the person or an administrator changed them |
 | `GET` | `/account/password` | `beffroi_interaction_account_password` | When the password was last written, and the form that replaces it |
 | `GET` | `/account/passkeys` | `beffroi_interaction_account_passkeys` | The passkeys of this person, with their names, dates and state |
 | `GET` | `/account/two-factor` | `beffroi_interaction_account_two_factor` | The second factor, and the backup codes that go with it |
@@ -79,7 +85,7 @@ session rather than sending it to a login.
 | `GET` | `/account/consents` | `beffroi_interaction_account_consents` | One line per client this person agreed to, with the scopes, the claims by name and the authorization details it holds |
 | `GET` | `/account/applications/{id}` | `beffroi_interaction_account_application` | What one of those applications holds, behind its line |
 | `GET` | `/account/sessions` | `beffroi_interaction_account_sessions` | Where this person is signed in, and what each session proved |
-| `GET` | `/account/acts` | `beffroi_interaction_account_acts` | What happened to the account: who signed in and how, the refused attempts, what signed out, what changed of the means of signing in, and what the person did of their own record |
+| `GET` | `/account/acts` | `beffroi_interaction_account_acts` | What happened to the account: who signed in and how, the refused attempts, what signed out, what changed of the account and of its means of signing in, the consents given and taken back, what the person did of their own record, and what an administrator of their organisation consulted or changed of them |
 | `GET` | `/account/notifications` | `beffroi_interaction_account_notifications` | The browsers the provider can reach by web push |
 | `GET` | `/account/archive` | `beffroi_interaction_account_archive` | The file holding everything the provider knows of them |
 | `GET` | `/account/archive/file` | `beffroi_interaction_account_archive_file` | That file, downloaded as it was built |
@@ -148,3 +154,47 @@ logout services of the identity provider refuse every message, nobody being decl
 | `POST` | `/saml/sp/acs` | `beffroi_interaction_saml_assertion_consumer_service` | The assertion consumer service, over HTTP-POST, SAML Profiles §4.1.4 |
 
 [:beffroi-arrow-right: SAML 2.0](../saml/index.md)
+
+## The administration plane
+
+The paths are relative to the host of the administration API, the URL `BEFFROI_TENANT_ADMINISTRATION_RESOURCE`
+names, which a deployment serves by importing `administration.Caddyfile`
+([deployment](../application/deployment.md#the-host-of-the-administration-api)). Every request is held to its
+access token before its controller runs, whatever its path: a token of this provider addressed to that API,
+bound to a key and presented with its proof, for a person who administers the tenant at that moment ([the
+administration API](../oidc/resources.md#the-administration-api)). An answer is JSON, but for a request that
+presents no token, answered with the bare challenge (RFC 6750 §3.1), and a path the API does not serve is
+answered `404` once the token has been read.
+
+| Method | Path | Route |
+|---|---|---|
+| `GET` | `/tenant` | `beffroi_administration_tenant` |
+| `GET` | `/keys` | `beffroi_administration_keys` |
+| `GET` | `/statistics` | `beffroi_administration_statistics` |
+| `GET` | `/health` | `beffroi_administration_health` |
+| `GET` | `/clients` | `beffroi_administration_clients` |
+| `GET` | `/clients/{clientId}` | `beffroi_administration_client` |
+| `DELETE` | `/clients/{clientId}` | `beffroi_administration_client_removal` |
+| `GET` | `/initial-access-tokens` | `beffroi_administration_initial_access_tokens` |
+| `POST` | `/initial-access-tokens` | `beffroi_administration_initial_access_token_issuance` |
+| `DELETE` | `/initial-access-tokens/{id}` | `beffroi_administration_initial_access_token_revocation` |
+| `GET` | `/users?username=` | `beffroi_administration_user` |
+| `POST` | `/users` | `beffroi_administration_user_creation` |
+| `PATCH` | `/users/{id}` | `beffroi_administration_user_description` |
+| `PUT` | `/users/{id}/disabled` | `beffroi_administration_user_disabling` |
+| `DELETE` | `/users/{id}/disabled` | `beffroi_administration_user_enabling` |
+| `GET` | `/users/{id}/sessions` | `beffroi_administration_user_sessions` |
+| `DELETE` | `/users/{id}/sessions/{session}` | `beffroi_administration_user_session_end` |
+| `DELETE` | `/users/{id}/credentials/{credential}` | `beffroi_administration_user_credential_revocation` |
+| `GET` | `/users/{id}/journal` | `beffroi_administration_user_journal` |
+| `GET` | `/users/{id}/consents` | `beffroi_administration_user_consents` |
+| `DELETE` | `/users/{id}/consents/{consent}` | `beffroi_administration_user_consent_revocation` |
+| `POST` | `/users/{id}/enrolment-ticket` | `beffroi_administration_user_enrolment_ticket` |
+| `POST` | `/users/{id}/password-ticket` | `beffroi_administration_user_password_ticket` |
+| `POST` | `/users/{id}/totp-ticket` | `beffroi_administration_user_totp_ticket` |
+| `GET` | `/groups` | `beffroi_administration_groups` |
+| `POST` | `/groups` | `beffroi_administration_group_creation` |
+| `GET` | `/groups/{id}/members` | `beffroi_administration_group_members` |
+| `POST` | `/groups/{id}/members` | `beffroi_administration_group_member_addition` |
+| `DELETE` | `/groups/{id}/members/{person}` | `beffroi_administration_group_member_removal` |
+| any | Any other path | `beffroi_administration_unknown_path` |

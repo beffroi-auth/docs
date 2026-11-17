@@ -85,7 +85,7 @@ endpoint, then:
 | `acr_values` | Optional: the classes the client would like the authentication to reach, in its order of preference |
 | `requested_expiry` | Optional: a positive number of seconds the request should live. More than the ceiling is served the ceiling, not refused |
 | `client_notification_token` | Required of a `ping` client and refused from a `poll` one: what the provider presents when it pings, a bearer token (RFC 6750 §2.1) of 22 to 1024 characters |
-| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client of the image registers none, so a `resource` it names is `invalid_target` |
+| `resource` | Optional and repeatable, among the resources the client holds (RFC 8707 §2). A `resource` the client does not hold is refused with `invalid_target`, and so is the [administration API](../resources.md#the-administration-api) of the tenant, whichever client names it |
 | `user_code` | Refused: the provider takes none, and says so in `backchannel_user_code_parameter_supported` |
 | `request` or `request_uri` | The request as a signed request object (CIBA Core §7.1.1), whose parameters are then the request |
 
@@ -253,8 +253,8 @@ is spent once, atomically.
 
 The tokens are those of an ordinary authorization, descending from the session the person approved with: an
 access token addressed to the resources of the request, or to the client itself when it named none, as every
-client of the image does; an ID token, always, `openid` being required of the request, without a `nonce`; and
-a refresh token when one is due. They are bound to what the token request binds them to
+client that holds no resource does; an ID token, always, `openid` being required of the request, without a
+`nonce`; and a refresh token when one is due. They are bound to what the token request binds them to
 ([grants](index.md#what-the-token-endpoint-does)), never to anything the browser that approved proved.
 
 ## What is announced

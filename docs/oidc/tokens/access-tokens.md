@@ -14,11 +14,11 @@ is validating:
 | Self-contained | `jwt` | A JWT signed by the tenant, of type `at+jwt` (RFC 9068) | Offline, against the [JWK Set](../discovery-and-jwks.md) of the issuer | Refused: it expires on its own (RFC 7009 §2.2.1) |
 | Reference | `opaque` | 256 random bits in base64url, 43 characters, which mean something to this provider alone | At the [introspection endpoint](../introspection-and-revocation.md) (RFC 7662) | Taken back at once |
 
-**Every client of the image receives the self-contained shape.** The shape of a client is its
+**A client receives the self-contained shape unless it was given the other.** The shape of a client is its
 `access_token_format`, a member of the deployment: a registration that carries it is refused with
-`invalid_client_metadata`, and no variable gives it to a client, so every client of the image takes `jwt`, the
-first shape the provider is wired with ([what the image does not
-set](../clients.md#what-the-image-does-not-set)).
+`invalid_client_metadata`. A client of the image takes `jwt`, the first shape the provider is wired with,
+unless the initial access token it registered with was issued with `--access-token-format opaque` ([what the
+image does not set](../clients.md#what-the-image-does-not-set)).
 
 Both shapes live `BEFFROI_ACCESS_TOKEN_TTL` seconds, ten minutes in the image: the self-contained one cannot
 be taken back, so its lifetime is what bounds it, and the opaque one gets the same, a revocation being a
@@ -41,7 +41,7 @@ provider keeps under its SHA-256, which introspection renders under the same nam
 | `iss` | The issuer of the tenant |
 | `sub` | Who the token is about: for a person who signed in, the subject this provider gives them for this client, public or [pairwise](../pairwise-subjects.md); for a client acting for itself, its `client_id`; for a token of a token exchange or of a JWT bearer assertion, the subject the grant named |
 | `client_id` | The client the token was issued to (RFC 9068 §2.2) |
-| `aud` | The resources it is addressed to (RFC 8707 §2), named by the request or carried by what the grant spends, as the page of each grant says: a token exchange that names none is addressed to every resource of the presented token, and a token of an authorization that carries no resource is addressed to the `client_id`, as every token of a client of the image is. One value is written as a string, several as a list |
+| `aud` | The resources it is addressed to (RFC 8707 §2), named by the request or carried by what the grant spends, as the page of each grant says: a token exchange that names none is addressed to every resource of the presented token, and a token of an authorization that carries no resource is addressed to the `client_id`, as every token of a client that holds no resource is. One value is written as a string, several as a list |
 | `exp`, `iat` | When it expires, and when it was issued |
 | `scope` | The scopes it carries, space-delimited |
 | `auth_time`, `acr`, `amr`, `sid` | What the session had proven when the authorization was granted, and that session (RFC 9068 §2.2.1). Absent from a token nobody signed in for |
@@ -52,8 +52,8 @@ provider keeps under its SHA-256, which introspection renders under the same nam
 
 The self-contained shape carries four claims more, which introspection does not render: `jti`, a random UUID;
 `userinfo_claims`, the claims the client asked for by name for the UserInfo endpoint (OIDC Core §5.5);
-`may_act`, who may act for the subject of a token of this client (RFC 8693 §4.4), when it carries one, which
-no client of the image does; and `person`, below.
+`may_act`, who may act for the subject of a token of this client (RFC 8693 §4.4), when the client carries one,
+which a client of the image does when its initial access token gave it; and `person`, below.
 
 ### The header
 
@@ -92,13 +92,13 @@ taken back and the revocation of its grant wherever it is verified offline**, un
 answers `"active": false` for it from the instant any of those happened.
 
 The UserInfo endpoint takes only a token addressed to the client itself, the one a request that names no
-resource gets, as every request of a client of the image does: a token addressed to a resource is refused
-there with `invalid_token`, whatever it is good for elsewhere.
+resource gets, as every request of a client that holds no resource does: a token addressed to a resource is
+refused there with `invalid_token`, whatever it is good for elsewhere.
 
 ## Choosing a shape
 
-A deployment of the image has no choice to make: every client of it receives `jwt`, above. The two shapes
-answer two kinds of resource server:
+A deployment of the image chooses the shape of a client when it issues the initial access token that
+registers it, `jwt` unless the token names `opaque`, above. The two shapes answer two kinds of resource server:
 
 === "jwt"
 

@@ -52,14 +52,14 @@ provider refuses rather than arbitrates.
 | `acr_values_supported` | The classes of the policy of the tenant that the logins it serves can prove, in the order the policy names them. [Tenants](../core/tenants.md) |
 | `subject_types_supported` | The kinds of `sub` the provider assigns: `public` and `pairwise`. [Pairwise subjects](pairwise-subjects.md) |
 | `token_endpoint_auth_methods_supported`, `token_endpoint_auth_signing_alg_values_supported` | The client authentication methods wired, in the order they are tried, and what their assertions may be signed with. [Client authentication](client-authentication.md) |
-| `id_token_signing_alg_values_supported`, `userinfo_signing_alg_values_supported` | The signature algorithms the provider is wired with: `RS256`, `PS256`, `ES256` and `EdDSA` in the application |
+| `id_token_signing_alg_values_supported`, `userinfo_signing_alg_values_supported` | The signature algorithms the provider is wired with that the tenant holds an active key for, among `RS256`, `PS256`, `ES256` and `EdDSA` in the application. Only an active key counts: a staged, a retiring or a retired one does not |
 | `id_token_encryption_*`, `userinfo_encryption_*`, `request_object_encryption_*` (`alg_values_supported`, `enc_values_supported`) | The encryption algorithms wired: `ECDH-ES+A256KW` and `RSA-OAEP-256`, with `A256GCM`. A provider wired with no key encryption or no content encryption algorithm announces none of these pairs rather than empty lists |
 | `request_parameter_supported`, `request_uri_parameter_supported`, `require_request_uri_registration` | `true` all three: a `request_uri` is read only from a URL its client registered |
 | `request_object_signing_alg_values_supported` | The signature algorithms wired, and `none` beside them only when a client of the tenant registered `request_object_signing_alg: none`. [Request objects](request-objects.md) |
 | `authorization_response_iss_parameter_supported` | `true`: every authorization response carries `iss` (RFC 9207) |
 | `pushed_authorization_request_endpoint`, `require_pushed_authorization_requests` | The endpoint; `true` only when every client registered for the tenant requires pushed requests. [Pushed authorization requests](pushed-authorization-requests.md) |
 | `device_authorization_endpoint` | The endpoint where a device code is asked for (RFC 8628 §4) |
-| `introspection_endpoint`, `introspection_endpoint_auth_methods_supported`, `introspection_endpoint_auth_signing_alg_values_supported`, `introspection_signing_alg_values_supported` | The endpoint, the wired methods that authenticate a client (all but `none`), what their assertions are signed with, and the signature algorithms wired (RFC 9701). [Introspection](introspection-and-revocation.md) |
+| `introspection_endpoint`, `introspection_endpoint_auth_methods_supported`, `introspection_endpoint_auth_signing_alg_values_supported`, `introspection_signing_alg_values_supported` | The endpoint, the wired methods that authenticate a client (all but `none`), what their assertions are signed with, and the default signature algorithm, the one the answer is signed with, while the tenant holds an active key for it (RFC 9701). [Introspection](introspection-and-revocation.md) |
 | `revocation_endpoint`, `revocation_endpoint_auth_methods_supported`, `revocation_endpoint_auth_signing_alg_values_supported` | The endpoint, and the methods of the token endpoint, `none` included |
 | `end_session_endpoint`, `frontchannel_logout_supported`, `frontchannel_logout_session_supported`, `backchannel_logout_supported`, `backchannel_logout_session_supported` | The endpoint, and `true` for each logout channel wired, both in the application. [Logout](logout.md) |
 | `dpop_signing_alg_values_supported` | The signature algorithms wired. [DPoP](sender-constrained/dpop.md) |
@@ -73,12 +73,13 @@ Some members are announced only when what they describe exists, and are absent o
 | `backchannel_authentication_endpoint`, `backchannel_token_delivery_modes_supported`, `backchannel_authentication_request_signing_alg_values_supported`, `backchannel_user_code_parameter_supported` | A grant of the backchannel flow is wired; the last one is then `false`. [Backchannel authentication](grants/backchannel-authentication.md) |
 | `authorization_signing_alg_values_supported`, `authorization_encryption_alg_values_supported`, `authorization_encryption_enc_values_supported` | A signed response mode is wired |
 | `mtls_endpoint_aliases` | `BEFFROI_MTLS_ORIGIN` names the host that asks for a certificate. [Mutual TLS](sender-constrained/mutual-tls.md#the-endpoint-aliases) |
-| `protected_resources` | A client of the tenant holds resources (RFC 9728 §4), which no client of the image does. [Resources](resources.md) |
+| `protected_resources` | A client of the tenant holds resources (RFC 9728 §4), which a client of the image does when its initial access token gave it some. The administration API is never among them. [Resources](resources.md) |
 | `authorization_details_types_supported` | A type of authorization detail is wired (RFC 9396 §10), which the image wires none of. [Authorization details](authorization-details.md) |
 
 The document announces no `check_session_iframe`: OpenID Connect Session Management 1.0 is not implemented,
 and logout goes through the front and back channels. Its content changes when the wiring or the registrations
-of the tenant change, never during a key rotation, which is the JWK Set's business.
+of the tenant change, or when the tenant is given its first active key of a signature algorithm, never during a
+key rotation, which is the JWK Set's business.
 
 ## The JWK Set
 

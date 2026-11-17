@@ -39,7 +39,7 @@ BEFFROI_AUTHORIZATION_CODE_TTL=60
 | `code` | Required |
 | `redirect_uri` | Required: the one the authorization request carried, as it carried it |
 | `code_verifier` | Required when the authorization request carried a `code_challenge` (RFC 7636 §4.5), refused when it carried none |
-| `resource` | Optional and repeatable: narrows what the access token is addressed to, among the resources of the authorization (RFC 8707 §2.2). The authorization of a client of the image carries none, so a `resource` it names is `invalid_target` |
+| `resource` | Optional and repeatable: narrows what the access token is addressed to, among the resources of the authorization (RFC 8707 §2.2). The authorization of a client that holds no resource carries none, so a `resource` it names is `invalid_target` |
 | `authorization_details` | Optional: narrows the details the access token carries, among those of the authorization (RFC 9396 §7) |
 
 The client authenticates beside them with the method it registered, which for a public client is its
@@ -73,12 +73,12 @@ carry is `invalid_target`, and an `authorization_details` it does not carry is
 
 ## What the answer carries
 
-- **An access token**, an `at+jwt` for every client of the image ([access tokens](../tokens/access-tokens.md)).
-  It is addressed to the resources the token request named, or to all those of the authorization when it
-  named none, or to the client itself when the authorization carries none, which is every authorization of
-  a client of the image. It is bound to what this request binds it to, the key of its DPoP proof or the
-  certificate of its connection, as [grants](index.md#what-the-token-endpoint-does) says, and is a bearer
-  token otherwise.
+- **An access token**, in the shape of the client, an `at+jwt` unless it was given the opaque one ([access
+  tokens](../tokens/access-tokens.md)). It is addressed to the resources the token request named, or to all
+  those of the authorization when it named none, or to the client itself when the authorization carries none,
+  which is every authorization of a client that holds no resource. It is bound to what this request binds it
+  to, the key of its DPoP proof or the certificate of its connection, as
+  [grants](index.md#what-the-token-endpoint-does) says, and is a bearer token otherwise.
 - **An ID token** when `openid` is among the scopes, carrying the `nonce` of the authorization request
   ([ID tokens](../tokens/id-tokens.md)).
 - **A refresh token** when one is due: the client is registered for `refresh_token`, and either
@@ -99,7 +99,7 @@ tell which.
 |---|---|
 | The grant itself | Revoked: the provider's own endpoints and its introspection refuse every access token of that grant from then on |
 | Every refresh token descending from the code | Revoked, the rotated ones included |
-| The opaque access tokens of the grant | Removed, so that wherever they are presented they are unknown. A client of the image has none, its access tokens being self-contained |
+| The opaque access tokens of the grant | Removed, so that wherever they are presented they are unknown. A client holds them only when its initial access token gave it the opaque shape |
 | A self-contained access token of the grant | Accepted until it expires by a resource server that verifies it offline against the JWK Set, which nothing the provider does can reach. It lives `BEFFROI_ACCESS_TOKEN_TTL`, ten minutes in the image |
 
 The act `authorization_code.replayed` is written in the journal of the person, naming the client the code

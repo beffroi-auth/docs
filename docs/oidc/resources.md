@@ -1,6 +1,6 @@
 ---
 title: Resources
-description: 'The audience a client asks its access token for with the resource parameter, RFC 8707: why a client of the image asks for none, and what each endpoint does with one.'
+description: 'The audience a client asks its access token for with the resource parameter, RFC 8707: which resources a client holds, and what each endpoint does with one.'
 ---
 
 # Resources
@@ -10,20 +10,29 @@ that audience rather than for everything the client might reach (RFC 8707 §2). 
 receives a token addressed elsewhere has what it needs to refuse it. A request made for a person that names no
 resource gets a token addressed to the client itself, which is the token UserInfo accepts.
 
-**A client of the image asks for no resource.** What a client may name is the closed list of its `resources`,
-and no client of a deployment of the image holds one: every `resource` parameter is refused, and every access
-token is addressed to the client it was issued to.
+**A client asks only for the resources it holds.** What a client may name is the closed list of its
+`resources`. A client of the image holds one only when the initial access token it registered with gave it:
+the resources the token names, or, for a token issued for the administration, the [administration
+API](#the-administration-api) of the tenant and nothing else. A client that holds none has every `resource`
+parameter refused and every access token addressed to itself.
 
 ## Registering resources
 
 `resources` is the closed list of what a client may ask a token for, with no pattern and no wildcard, compared
 byte for byte with what a request names. It is a member of the deployment: a client that [registers
-itself](dynamic-registration.md) and sends it is refused with `invalid_client_metadata`, the registration
-policy of a tenant writes none, no variable gives one to a client, and the image declares no client. No client
-of the image holds a resource ([what the image does not set](clients.md#what-the-image-does-not-set)), and a
-client that holds none asks for none.
+itself](dynamic-registration.md) and sends it is refused with `invalid_client_metadata`, and the registration
+policy of a tenant writes none. A client of the image holds the resources the initial access token it
+registered with gives, which the console issues with `--resource`, once per resource, and keeps them when it
+replaces its registration ([what the image does not set](clients.md#what-the-image-does-not-set)). A token
+issued with `--administration` names no resource: the clients it registers hold the administration API, the
+one `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names when the client is read. A client that holds none asks for
+none.
 
-For a resource server that accepts the access tokens of the image, that means:
+``` bash
+bin/console beffroi:client:token:issue 'Billing team' --resource=https://api.example.com/
+```
+
+For a resource server that accepts the access tokens of a client that holds no resource, that means:
 
 - the `aud` of every access token is the `client_id` of its client, so a resource server that checks the
   audience (RFC 9068 §4) checks it against the identifiers of the clients that call it;
@@ -31,8 +40,8 @@ For a resource server that accepts the access tokens of the image, that means:
   servers carry the same `aud`, and a token one of them receives can be presented to the other. What tells
   them apart is the `scope` of the token, one scope per API the tenant protects in `BEFFROI_TENANT_SCOPES`,
   which a resource server holds a token to;
-- `client_credentials` and the JWT bearer grant, which address a token to a resource or issue none, issue none
-  ([below](#at-the-token-endpoint)).
+- `client_credentials` and the JWT bearer grant, which address a token to a resource or issue none, issue that
+  client none ([below](#at-the-token-endpoint)).
 
 ## Asking for one
 
@@ -50,37 +59,67 @@ In a [request object](request-objects.md), the same claim carries a list of stri
 absolute URI without a fragment (RFC 3986 §4.3), and a resource the client does not hold, are both
 `invalid_target`, at the redirect URI of an authorization request and as JSON at the pushed request endpoint;
 the description names no resource, what a client holds being nothing an error teaches whoever sent the
-request. On the image every value is one or the other, so the request above is refused. A request that names
+request. For a client that holds neither resource above, the request above is refused. A request that names
 none asks for none, and nothing is filled in.
 
 ## What the access token says
 
-| | On the image |
-|---|---|
-| `aud` of the access token | The `client_id` |
-| `client_id` of the access token | The client |
-| `aud` at the introspection endpoint | The same as the token |
-| UserInfo | Answered |
+| | An authorization that carries no resource | One that carries resources |
+|---|---|---|
+| `aud` of the access token | The `client_id` | The resources the token is addressed to |
+| `client_id` of the access token | The client | The client |
+| `aud` at the introspection endpoint | The same as the token | The same as the token |
+| UserInfo | Answered | Refused with `invalid_token` |
 
 When the provider reads a self-contained token of its own back, it accepts in `aud` only the client itself and
-the resources that client holds, the client alone on the image, so a value it would never have written is
-refused before anything else is believed.
+the resources that client holds, the client alone for a client that holds none, so a value it would never have
+written is refused before anything else is believed.
 
 ## At the token endpoint
 
 | Grant | A `resource` named | None named |
 |---|---|---|
-| `authorization_code`, `refresh_token` | Refused with `invalid_target`: the authorization carries no resource to narrow to | The token is addressed to the client |
-| `client_credentials` | Refused with `invalid_target`: the client holds no resource | Refused with `invalid_target`: a token with nobody behind it is addressed to a resource, or it is not issued |
-| JWT bearer | Refused with `invalid_target` | Refused with `invalid_target` |
+| `authorization_code`, `refresh_token` | The token is narrowed to the resources named, among those of the authorization; one the authorization does not carry is `invalid_target` | The token is addressed to every resource of the authorization, or to the client when it carries none |
+| `client_credentials` | The token is addressed to the resources named, among those the client holds; any other is `invalid_target` | Refused with `invalid_target`: a token with nobody behind it is addressed to a resource, or it is not issued |
+| JWT bearer | As `client_credentials` | Refused with `invalid_target` |
 
-A deployment of the image therefore issues no token under `client_credentials` or the JWT bearer grant: a
-client may register either, and a token request under them that the other checks of its grant let through is
-refused with `invalid_target`, in the JSON of the token endpoint. No client of the image is registered for
-the [token exchange](grants/token-exchange.md), whose `token_exchange` member is a member of the deployment as
-well. The device authorization endpoint and the backchannel authentication endpoint read `resource` when the
-flow starts, and refuse any value with `invalid_target` in their own JSON; a request that names none there
-gets a token addressed to the client, a person being behind those flows.
+A client that holds no resource therefore obtains no token under `client_credentials` or the JWT bearer grant:
+a token request under them that the other checks of its grant let through is refused with `invalid_target`,
+in the JSON of the token endpoint. A client is registered for the [token
+exchange](grants/token-exchange.md) only when its initial access token gave it `token_exchange`, a member of
+the deployment as well. The device authorization endpoint and the backchannel authentication endpoint read
+`resource` when the flow starts, and refuse a value the client does not hold with `invalid_target` in their own
+JSON; a request that names none there gets a token addressed to the client, a person being behind those flows.
+
+## The administration API
+
+`BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names the administration API of the tenant, an absolute URI without a
+fragment, the URL the API is served at, and the provider reserves that audience to the people who
+[administer the tenant](../core/groups.md#who-administers-the-tenant). A client of the image holds it only when
+it registered with an initial access token issued for the administration:
+
+``` bash
+bin/console beffroi:client:token:issue 'Administration' --administration
+```
+
+Such a client authenticates with a key, `private_key_jwt` or a certificate, and never with a secret it shares
+with the provider, and it holds that API and no other resource. A tenant that names no administration API
+reserves nothing, and refuses to issue such a token.
+
+- **At the authorization endpoint**, a request that names the API asks for `phr`, essential, in place of
+  whatever it asked for and whatever the floor of the tenant: a person who cannot prove it is answered
+  `unmet_authentication_requirements` (OIDC Core §5.5.1.1). A person who proved it and does not administer the
+  tenant is answered `access_denied` at the redirect URI, before any consent (RFC 6749 §4.1.2.1).
+- **The device authorization endpoint and the backchannel authentication endpoint** refuse it with
+  `invalid_target`, before anybody is asked: whoever holds a client can start those flows, and an administrator
+  who approved one on another device would hand it the tokens (RFC 8628 §5.4).
+- **An access token is addressed to it** only for a person signed in at the authorization endpoint by a session
+  whose proofs satisfy `phishing_resistant`, who administers the tenant when the token is minted, and only bound
+  to a key of the client, by DPoP (RFC 9449) or by a certificate (RFC 8705 §3), whatever the grant.
+  `client_credentials` and the JWT bearer grant, which have nobody signed in behind them, obtain none, and a
+  refresh is refused once the person has left the group. The refusal is `invalid_target`, whose description
+  says that the resource is reserved and nothing of the person.
+- **The discovery document never announces it**, below.
 
 ## What the tenant announces
 
@@ -88,7 +127,8 @@ What a tenant announces as its protected resources is read from the resources it
 list kept beside them, and it is the `protected_resources` member of RFC 9728 §4: the one member of the
 registry that says what the values of a `resource` parameter are, RFC 8707 registering none of its own. A
 tenant whose clients hold none announces nothing rather than an empty list, which a client would read as "no
-resource is acceptable here", and that is what a deployment of the image announces.
+resource is acceptable here", and that is what a deployment of the image announces until the initial access
+token of one of its clients gives a resource. The administration API of the tenant is never announced.
 
 [:beffroi-arrow-right: Access tokens](tokens/access-tokens.md) and [introspection and
 revocation](introspection-and-revocation.md)

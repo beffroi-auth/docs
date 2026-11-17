@@ -72,7 +72,8 @@ the interaction plane, as every route the image serves belongs to a plane. A pro
 of its hosts, the one that asks for a client certificate included. Whatever sends a request to the process
 of the protocol or to that of the interaction reads its path, and [the endpoints](../reference/endpoints.md) give
 the plane of every path. The administration API is reached by its own host, the site of
-`/etc/frankenphp/administration.Caddyfile`.
+`/etc/frankenphp/administration.Caddyfile`, [below](#the-host-of-the-administration-api), whose worker serves
+that plane whatever `BEFFROI_PLANE` the container sets.
 
 ## The worker
 
@@ -115,7 +116,7 @@ so some state has to be the same for all of them.
 | The sealed keys of the tenant, and its pairwise salt | `var/keys` | `beffroi:keys:*`, the timed step of the key lifecycle, and the first process that needs the salt | Every process that signs, decrypts or seals |
 | The key of the file backend, when that is the key management service | The directory its DSN names, `var/kms` on the development stack and in the Compose file of the image | Whoever provisions it | Every process |
 | The GeoLite2 databases of addresses | `var/geoip` | `beffroi:geoip:refresh`, the weekly step | The worker, which enriches a provenance |
-| The FIDO metadata, and the list of passkey providers of the community in its directory `community/` | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import`, and `beffroi:webauthn:aaguids-refresh` for the list | The page of the passkeys and `beffroi:user:show`, which name the authenticator of a passkey from both, and a ceremony whose options ask for an attestation, which the enrolment of the provider does not |
+| The FIDO metadata, and the list of passkey providers of the community in its directory `community/` | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import`, and `beffroi:webauthn:aaguids-refresh` for the list | The page of the passkeys and `beffroi:user:show`, which name the authenticator of a passkey from both, and the enrolment of a passkey under the `direct` or `enterprise` policy of the tenant, which reads them for the model and its status reports |
 
 The development stack gives `var/keys`, `var/kms` and `var/geoip` a volume each, and the Compose file of the
 image, [`compose.prod.yaml`](../getting-started/the-standalone-application.md#the-compose-file-of-the-image),
@@ -146,12 +147,12 @@ pool on `cache.app` as well: they are shared as these pools are. The application
 either, so the session of a browser lives where the native handler of PHP keeps it, in the container that
 served it.
 
-## TLS and the two hosts
+## TLS and the hosts
 
 Caddy terminates TLS for the host of `SERVER_NAME`, unless a proxy in front of the image does
-([below](#behind-a-proxy)), and for the host that asks for a client certificate in every deployment. On the
-hosts of the image whose TLS it terminates, it serves one snippet of its `Caddyfile`, which is the TLS a
-FAPI 1.0 plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two suites of FAPI 1.0 Advanced Final
+([below](#behind-a-proxy)), and for the host that asks for a client certificate in every deployment. On these
+two hosts, when it terminates their TLS, it serves one snippet of its `Caddyfile`, which is the TLS a FAPI 1.0
+plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two suites of FAPI 1.0 Advanced Final
 §8.5 a listener built on Go can offer, `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256` and
 `TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384`. TLS 1.2 is the floor Caddy already holds.
 
@@ -172,6 +173,22 @@ for nothing.
   validated at the edge either. A deployment that authenticates clients with `tls_client_auth` (RFC 8705
   §2.1) writes the site block of that host in `CADDY_EXTRA_CONFIG`, in place of the import, with a
   `trust_pool` in its `client_auth`, so the chain is validated at the edge.
+
+### The host of the administration API
+
+**The administration API is a host of its own**, served when `CADDY_EXTRA_CONFIG` imports
+`administration.Caddyfile`, under the address `ADMINISTRATION_SERVER_NAME` gives it, which is the host of
+`BEFFROI_TENANT_ADMINISTRATION_RESOURCE`. Its worker serves the routes of the administration API and no other,
+and the processes of the host of `SERVER_NAME` never load them. That site follows neither `TLS_TERMINATION` nor
+the snippet above: Caddy serves it with the certificate it holds or obtains for that name, under its own
+defaults, and behind a proxy that terminates TLS the variable names a plain HTTP address, such as `:81`. A
+deployment that does not import the file serves no administration API.
+
+``` dotenv
+ADMINISTRATION_SERVER_NAME=admin.example.com
+CADDY_EXTRA_CONFIG='import administration.Caddyfile'
+BEFFROI_TENANT_ADMINISTRATION_RESOURCE=https://admin.example.com
+```
 
 [:beffroi-arrow-right: The variables of the web server](configuration.md#the-web-server)
 
@@ -198,8 +215,9 @@ served as they came, under the address of the proxy.
 A proxy that names the client in a header Symfony does not read, `CF-Connecting-IP` behind Cloudflare, has
 Caddy read it, with `client_ip_headers` and `trusted_proxies` in the `servers` block of `CADDY_GLOBAL_OPTIONS`,
 and write it into `X-Forwarded-For`, with `request_header X-Forwarded-For {client_ip}` in
-`CADDY_SERVER_EXTRA_DIRECTIVES`: FrankenPHP hands PHP the address of its peer and the headers as they arrived,
-whatever Caddy read.
+`CADDY_SERVER_EXTRA_DIRECTIVES`, and in `CADDY_ADMINISTRATION_EXTRA_DIRECTIVES` for the site of the
+administration API, each site carrying its own: FrankenPHP hands PHP the address of its peer and the headers as
+they arrived, whatever Caddy read.
 
 The host that asks for a client certificate terminates its TLS in Caddy whatever `TLS_TERMINATION` says. A
 client presents its certificate in the handshake, so a proxy in front of that host passes its connections

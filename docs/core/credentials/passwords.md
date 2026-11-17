@@ -30,8 +30,25 @@ already hold; every other browser signed in as them is signed out, and the one t
 wrong password there costs nothing against the attempts of the login, since only somebody signed in as that
 person can try.
 
-Both refuse what the rules below refuse, and both refuse to pose a password at all where the [floor of the
-tenant](../tenants.md#the-floor-of-its-logins) reads nothing a password proves.
+A person who lost the one in use, or who never held one, is handed a password ticket, issued at the console or
+by an administrator through the administration API:
+
+``` bash
+bin/console beffroi:user:password-ticket alice
+```
+
+The command prints a link, `/password/{ticket}/{value}` under the issuer, once, with the instant it opens until,
+and the row keeps a hash of what the link carries. The link opens one setting of a password, once, for
+seventy-two hours, without the one in use and without a session, and issuing another forgets the unspent one.
+The password is typed twice, and the one already held is refused. Once it is written, every session of the
+person ends, its clients told through the back channel, and the browser goes to the account, which asks it to
+sign in. A link that opens nothing is answered `404`, as the link of an [enrolment
+ticket](passkeys.md#a-first-passkey-from-a-ticket) is. Issuing the ticket is an act of the person,
+`password_ticket.issued`.
+
+The three refuse what the rules below refuse, and the three refuse to pose a password at all where the [floor of
+the tenant](../tenants.md#the-floor-of-its-logins) reads nothing a password proves, a ticket being refused at
+its issuing as well. A disabled account gets no ticket.
 
 ## What a password has to be
 
@@ -39,13 +56,14 @@ A prospective password is refused rather than warned about when it is too short,
 to guess, or held by a list of compromised values. Nothing else is asked of it: it is never refused for holding
 no digit, no capital or no symbol, the composition rules NIST SP 800-63B §3.1.1.2 asks a verifier not to impose.
 
-**How short is too short is two numbers**, as NIST SP 800-63B §3.1.1.2 makes it, and the floor of the logins of
-the tenant decides which one applies:
+**How short is too short is two numbers**, and the floor of the logins of the tenant decides which one applies.
+NIST SP 800-63B §3.1.1.2 asks fifteen characters of a password that is the whole of a login and lets a verifier
+ask eight of one a second factor goes with; the provider asks twelve of that one:
 
 | The floor of the tenant | The length a password has to reach |
 |---|---|
 | `single_factor`, a password being the whole of a login | fifteen characters |
-| `two_factors`, a second factor going with it | eight characters |
+| `two_factors`, a second factor going with it | twelve characters |
 
 A floor that reads nothing a password proves, `phishing_resistant` or `phishing_resistant_hardware`, holds no
 password at all. The length is counted in characters, each code point one, and the page, the console and the
@@ -125,7 +143,8 @@ is replaced at the next successful login, and the act `password.rehashed` goes t
 password did not change, its hash did.
 
 No command takes a hash: a password is set from its value, and a person who has none is given a passkey by an
-[enrolment ticket](passkeys.md#a-first-passkey-from-a-ticket) or signs in through their organisation. An
+[enrolment ticket](passkeys.md#a-first-passkey-from-a-ticket), a password by a password ticket, or signs in
+through their organisation. An
 algorithm is a class implementing `PasswordAlgorithmInterface`, tagged `beffroi.password_algorithm`; a hasher of
 algorithms is a class implementing `AlgorithmPasswordHasherInterface`, tagged `beffroi.password_hasher`. The
 registry hands each hash to the hasher that supports its algorithm, and every new hash to the hasher that supports
@@ -155,6 +174,6 @@ them: it is not an attempt on an account, and costs the person it names nothing.
 ## A person of an organisation
 
 A person whose address is of a domain an [upstream identity provider](../../saml/federated-sign-in.md) answers
-for has no password here. One is neither set for them, by the console or on the page of their account, nor
-accepted from them, and a password they held before their domain was federated is refused at the login and can no
-longer be replaced.
+for has no password here. One is neither set for them, by the console, by a ticket or on the page of their
+account, nor accepted from them, and a password they held before their domain was federated is refused at the
+login and can no longer be replaced.

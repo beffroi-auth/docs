@@ -59,8 +59,9 @@ Knowing these makes the rest of this section predictable.
 - **A controller is `final readonly`, one action per class**, with the route on `__invoke()`. There is no
   controller with six methods.
 - **A route name carries its plane**: `beffroi_protocol_*` is server to server, `beffroi_interaction_*` is a
-  browser, and a process can be restricted to one of the two. Every route of the image carries one, the
-  choice of a theme, `beffroi_interaction_theme`, included.
+  browser, and `beffroi_administration_*` is the administration API of the tenant, which a process of its own
+  serves. `BEFFROI_PLANE` restricts a process to its planes. Every route of the image carries one, the choice
+  of a theme, `beffroi_interaction_theme`, included.
 - **A value object a column holds whole goes in one column**, with a DBAL type of the application that reads
   it back through the object's own constructor, rather than a Doctrine embeddable fixing one type per field
   for the whole model. One embeddable is left in the mapping, embedded by one entity, and it is named where

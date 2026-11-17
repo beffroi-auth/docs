@@ -36,7 +36,7 @@ beffroi:
 
 | Section | What it decides | In the image |
 |---|---|---|
-| [`tenant`](#tenant) | The issuer, the name and the look of the tenant, the claims its people change, its `acr` vocabulary and the scopes of its APIs | Required. `BEFFROI_ISSUER`, `BEFFROI_TENANT_SLUG` and the `BEFFROI_TENANT_*` variables |
+| [`tenant`](#tenant) | The issuer, the name and the look of the tenant, the claims its people change, its `acr` vocabulary, the scopes of its APIs, the groups that administer it and its administration API, and what the enrolment of its passkeys asks | Required. `BEFFROI_ISSUER`, `BEFFROI_TENANT_SLUG` and the `BEFFROI_TENANT_*` variables |
 | [`keys`](#keys) | The client that seals the keys, where they are kept, what binds the data keys, and how keys rotate | Required. `op` and `var/keys` written in the file, `BEFFROI_KMS_KEY_ID`, `BEFFROI_DATA_KEY_SECRETS` and three variables of rotation |
 | [`webauthn`](#webauthn) | Where the FIDO metadata are kept | `var/webauthn` written in the file, no variable |
 | [`mutual_tls`](#mutual_tls) | The host that asks a client for its certificate | `BEFFROI_MTLS_ORIGIN`, empty: no alias announced |
@@ -53,7 +53,7 @@ beffroi:
 | [`client_authentication`](#client_authentication) | What a client assertion and a published key set are held to | `BEFFROI_CLIENT_ASSERTION_*` and `BEFFROI_JWKS_URI_*` |
 | [`request_objects`](#request_objects) | What a request object and its `request_uri` are held to | `BEFFROI_REQUEST_OBJECT_*` |
 | [`dpop`](#dpop) | What a proof of possession is held to | `BEFFROI_DPOP_*`: no nonce asked |
-| [`trusted_issuers`](#trusted_issuers) | The issuers of the JWT bearer grant | `BEFFROI_TRUSTED_ISSUERS`, `{}`. The grant issues no token on the image, whatever this names |
+| [`trusted_issuers`](#trusted_issuers) | The issuers of the JWT bearer grant | `BEFFROI_TRUSTED_ISSUERS`, `{}`. The grant issues a token only to a client its initial access token gave a resource |
 | [`clients`](#clients) | The clients a file of the application declares | Empty, no variable: a client registers itself |
 | [`self_client`](#self_client) | The application as a client of its own provider | Not written, no variable: the application is no client |
 | [`client_registration`](#client_registration) | Whether and how a client registers itself | `BEFFROI_REGISTRATION_*`, an empty mode: no registration endpoint |
@@ -71,9 +71,9 @@ chooses is a variable, which stands for a value only once a process runs.
 bounds the tree sets for its option and to the rules between options, a sliding refresh lifetime longer than
 the absolute one, a SAML `cache_duration` that is not shorter than the SAML staging delay; a list a variable
 carries is held to the rules of the tree as a list written in the file is. The first request or command that
-needs a value refuses it out of bounds, except the age of a key, `keys.age`, which the timed step of the key
-lifecycle refuses at its first tick when it is not longer than the retirement window of its use, and a change
-of variable asks for a restart of the processes, not for a new image.
+needs a value refuses it out of bounds, an age of a key, `keys.age`, below a second among them, and the timed
+step of the key lifecycle refuses besides an age that is not longer than the retirement window of its use, when
+it comes to stage a successor. A change of variable asks for a restart of the processes, not for a new image.
 
 **When the provider first reads a declaration.** What only the wiring can answer is checked against the
 wiring, the first time the provider builds the object: the tenant, the scopes of its APIs, each trusted
@@ -131,11 +131,16 @@ seal a column.
 
 Who the provider is, and required. `issuer` is the identifier every token carries as `iss` and the URL every
 endpoint is served under: the application imports its routes at the root, so its issuer is an origin with no
-path, which the provider checks at the first request. `slug` names the tenant for good: its identifier is
-derived from it, and renaming it is creating another tenant. `name` and `look` are what the pages show of the
-tenant, `self_served_claims` what its people may change of themselves, `authentication_classes` the `acr` it
-answers with, and `scopes` the scopes of the APIs it protects, which a client that registers itself may
-register beside `openid`, the scopes of the claims and `offline_access`.
+path, which the provider checks when it builds the tenant, at `beffroi:tenant:synchronize` and at every
+request that reads it. `slug` names the tenant for good: its identifier is derived from it, and renaming it is
+creating another tenant. `name` and `look` are what the pages show of the tenant, `self_served_claims` what
+its people may change of themselves, `authentication_classes` the `acr` it answers with, and `scopes` the
+scopes of the APIs it protects, which a client that registers itself may register beside `openid`, the scopes
+of the claims and `offline_access`. `administrators` names the groups whose members [administer the
+tenant](../core/groups.md#who-administers-the-tenant), and `administration_resource` the identifier of its
+[administration API](../oidc/resources.md#the-administration-api). The four `passkey_*` options say what the
+enrolment of a passkey asks of its authenticator, as
+[passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
@@ -150,13 +155,21 @@ beffroi:
         self_served_claims: '%env(json:BEFFROI_TENANT_SELF_SERVED_CLAIMS)%'
         authentication_classes: '%env(json:BEFFROI_TENANT_AUTHENTICATION_CLASSES)%'
         scopes: '%env(json:BEFFROI_TENANT_SCOPES)%'
+        administrators: '%env(json:BEFFROI_TENANT_ADMINISTRATORS)%'
+        administration_resource: '%env(default::BEFFROI_TENANT_ADMINISTRATION_RESOURCE)%'
+        passkey_attestation: '%env(BEFFROI_TENANT_PASSKEY_ATTESTATION)%'
+        passkey_attestation_roots: '%env(json:BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS)%'
+        passkey_attestation_own_roots: '%env(json:BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS)%'
+        passkey_compromised_models: '%env(json:BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS)%'
 ```
 
 `default::` makes an empty variable no value at all: an empty `BEFFROI_TENANT_NAME` names the tenant after the
-host of the issuer, and an empty colour is no colour. An empty `BEFFROI_TENANT_LOGO_URI` is the parameter
+host of the issuer, an empty colour is no colour, and an empty `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` is no
+administration API, which reserves nothing. An empty `BEFFROI_TENANT_LOGO_URI` is the parameter
 `app.tenant_logo_uri` of the file, the placeholder mark the image serves at `/tenant-logo.svg` under the
-issuer. The three lists are JSON documents: `.env` opens the fourteen claims the application wires to the
-people of the tenant, names no `acr` class, which is the default policy, and no scope of an API.
+issuer. The seven lists are JSON documents: `.env` opens the fourteen claims the application wires to the
+people of the tenant, names no `acr` class, which is the default policy, no scope of an API, no group of
+administrators, and no root and no model under alert beside `BEFFROI_TENANT_PASSKEY_ATTESTATION=none`.
 
 The logo is loaded by the browser of the visitor, under the `Content-Security-Policy` the application sends.
 Every page that reads the tenant adds the origin of the logo to the `img-src` of that policy, so a logo served
@@ -430,8 +443,8 @@ The issuers whose assertions the tenant accepts as an authorization grant (RFC 7
 signing key of one of them can name a user of the tenant and be answered with an access token, so each one is
 declared whole: its keys, the algorithms it signs with, the clients that may present its assertions, the
 source of the identities it names and the scopes it is trusted for. `.env` declares none, and the grant issues
-no token on the image whatever this section names: it addresses a token to a resource the client registered,
-and no client of the image registers one ([JWT bearer](../oidc/grants/jwt-bearer.md)).
+a token only to a client that holds a resource, which a client of the image does when its initial access token
+gave it one ([JWT bearer](../oidc/grants/jwt-bearer.md)).
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
@@ -471,8 +484,9 @@ scopes `openid profile email`, and the first wired method of authentication, `cl
 
 A declared client may also carry the members of the deployment, `requires_consent`, `requires_pkce`,
 `access_token_format`, `resources`, `token_exchange`, `may_act` and `require_sender_constrained_tokens`, which
-a registration is refused for. No client of the image carries one, and [what the image does not
-set](../oidc/clients.md#what-the-image-does-not-set) says what every client of the image has instead.
+a registration is refused for. A client that registers itself with an initial access token holds those of
+the five the token names, and [what the image does not set](../oidc/clients.md#what-the-image-does-not-set)
+says what every client of the image has otherwise.
 
 [:beffroi-arrow-right: Clients](../oidc/clients.md) and [your first client](../getting-started/your-first-client.md)
 

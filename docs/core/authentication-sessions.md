@@ -114,10 +114,14 @@ login on the same session moves the session, and never a token already issued.
 | Close every other one, on the same page, which keeps the session reading it | `user` |
 | A password replaced on the page of the account, which ends every other session of the person | `user` |
 | `beffroi:user:revoke-session`, with the identifier `beffroi:user:sessions` lists | `user` |
+| An administrator, through the administration API, ending that session | `administrator` |
+| `beffroi:user:disable`, which ends every session of the person | `user` |
+| An administrator disabling the person through the administration API, every session of theirs | `administrator` |
+| A password ticket or a ticket for an authenticator application, once spent, which ends every session of the person | `user` |
 | A login of another person on the same browser | `user` |
 
 The first end wins, and a session that has ended authenticates nothing afterwards. The act `session.ended`
-goes to the journal of the person.
+goes to the journal of the person, and names the administrator when one ended it.
 
 **Every end revokes what was issued under it.** On the lane of the events, beside the back-channel logout that
 tells the clients of the session ([logout](../oidc/logout.md)), its refresh tokens are revoked, rotated ones

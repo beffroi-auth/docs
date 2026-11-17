@@ -38,9 +38,9 @@ configuration](../application/configuration.md) lists the variables.
 - **A duration** is in seconds, except the two retentions, which are in days.
 - **A bound** is in the type column. The tree refuses a value outside it, and a value a variable carries is
   held to it when the container builds the service the value reaches, so the first request or command that
-  needs it refuses it. The age of a key, `keys.age`, is the exception: the timed step of the key lifecycle
-  refuses it at its first tick when it is not longer than the retirement window of its use. An unknown key is
-  refused at any level of the tree.
+  needs it refuses it, an age of a key, `keys.age`, below a second among them. The age of a key is held besides
+  to a rule no bound states: the timed step of the key lifecycle refuses it, when it comes to stage a successor,
+  if it is not longer than the retirement window of its use. An unknown key is refused at any level of the tree.
 - **required** means the configuration is refused without it. **none** means the option is absent until it
   is written, and the last column says what its absence decides.
 - **A list a variable carries whole**, the trusted issuers, the authorities of software statements and the
@@ -57,21 +57,27 @@ configuration](../application/configuration.md) lists the variables.
 
 The one tenant of the deployment: required. [Tenants](../core/tenants.md) is what a tenant is. A value the
 tenant cannot hold is refused when the provider builds the tenant, which it does before serving anything of
-it. The issuer and six of these values are written in the row of the tenant: a change to one of the six is
-followed by `beffroi:tenant:synchronize`, which refuses another issuer than the one the row was written with,
-as [the tenant](../application/configuration.md#the-tenant) says.
+it. The issuer and ten of these values are written in the row of the tenant, the four of the passkey enrolment
+together: a change to one of the ten is followed by `beffroi:tenant:synchronize`, which refuses another issuer
+than the one the row was written with, as [the tenant](../application/configuration.md#the-tenant) says.
 
 | Option | Variable | Type | In the image | What it decides |
 |---|---|---|---|---|
-| `issuer` | `BEFFROI_ISSUER` | string, not empty, required | `https://op.localhost`, the issuer of the development stack | The issuer identifier (OIDC Discovery 1.0 §3), and the URL every endpoint is served under: an absolute `https` URL with no query, no fragment, no credentials and no trailing slash. Plain `http` is accepted on a loopback host only: `localhost`, a name under it, `127.0.0.0/8` or `[::1]` |
+| `issuer` | `BEFFROI_ISSUER` | string, not empty, required | `https://op.localhost`, the issuer of the development stack | The issuer identifier (OIDC Discovery 1.0 §3), and the URL every endpoint is served under: an absolute `https` URL with no query, no fragment, no credentials, no trailing slash and no path: the application serves the provider at the root, so the issuer is an origin. Plain `http` is accepted on a loopback host only: `localhost`, a name under it, `127.0.0.0/8` or `[::1]` |
 | `slug` | `BEFFROI_TENANT_SLUG` | string, not empty | `default` | The stable name of the tenant, from which its identifier is derived. Renaming it is creating another tenant |
 | `name` | `BEFFROI_TENANT_NAME` | string | empty: the host of the issuer | What the pages call the tenant |
 | `look.logo_uri` | `BEFFROI_TENANT_LOGO_URI` | string | empty: `/tenant-logo.svg` under the issuer, the placeholder mark the image serves | The logo every page shows: an absolute `https` URL with no fragment and no credentials, plain `http` on a loopback host only. The browser of the visitor loads it, never the provider. Every page that reads the tenant adds the origin of the logo to the `img-src` of the `Content-Security-Policy` the application sends, so no policy names it by hand. A logo served from another host shows on the pages served under `Cross-Origin-Embedder-Policy: require-corp`, every page but those of `/authorize`, `/login`, `/consent`, `/logout`, `/device` and `/initiate-login`, only when that host answers `Cross-Origin-Resource-Policy: cross-origin` |
-| `look.primary_color` | `BEFFROI_TENANT_PRIMARY_COLOR` | string | `#1f6feb` | The colour the buttons and the links of the pages are drawn in: `#` and three or six hexadecimal digits, as `#1b4b8f`. Declared with `primary_content_color` or not at all, an empty variable being no colour |
+| `look.primary_color` | `BEFFROI_TENANT_PRIMARY_COLOR` | string | `#1f6feb` | The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: `#` and three or six hexadecimal digits, as `#1b4b8f`. Declared with `primary_content_color` or not at all, an empty variable being no colour |
 | `look.primary_content_color` | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | string | `#ffffff` | The colour of what is written on `primary_color`, in the same notation |
 | `self_served_claims` | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | list of strings | the fourteen claims the application wires | The claims of OIDC Core §5.1 the people of the tenant may change of themselves on the page of their account, among the claims the provider is wired with: `name`, `given_name`, `family_name`, `middle_name`, `nickname`, `preferred_username`, `birthdate`, `gender`, `locale`, `zoneinfo`, `profile`, `picture`, `website` and `phone_number` in the application. A tenant whose directory owns the data names `[]` |
 | `authentication_classes` | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | map of class name to predicate name | `{}`: the default policy | The `acr` vocabulary of the tenant, in the order a session is answered in, each class on a predicate the provider is wired with: `phishing_resistant_hardware`, `phishing_resistant`, `two_factors` and `single_factor` in the application. Left empty, the default policy answers: `phrh`, `phr`, `2` and `1`, on those four in that order. A policy names one class at least on a predicate every login satisfies, `single_factor` among the four, so that every session has an `acr`. It never names `0` (OIDC Core §2), and the names of OpenID Connect EAP ACR Values 1.0 keep their meaning: `phrh` stands on `phishing_resistant_hardware` only, `phr` on it or on `phishing_resistant` |
 | `scopes` | `BEFFROI_TENANT_SCOPES` | list of strings | `[]`: none | The scopes of the APIs the tenant protects, which stand for no claim, as `["invoices.read","invoices.pay"]`. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them in `scopes_supported`, and a client that registers itself may register them: the image declares no client, so nothing else makes such a scope exist in it. Each is a scope token of RFC 6749 §3.3, and `offline_access` is refused, the wired grants deciding it (OIDC Core §11) |
+| `administrators` | `BEFFROI_TENANT_ADMINISTRATORS` | list of strings | `[]`: nobody | The groups whose members [administer the tenant](../core/groups.md#who-administers-the-tenant), by their names in the tenant, compared exactly: a local group `beffroi:group:add-member` fills, or a group an upstream provider or a directory holds the members of. A person taken out of the group stops administering the tenant at once: their next request to the administration API is refused, whatever token they hold. A name that is empty, or that begins or ends with whitespace, is refused; a name no group carries yet is accepted |
+| `administration_resource` | `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` | string | empty: none, which reserves nothing | The identifier of the [administration API](../oidc/resources.md#the-administration-api) of the tenant, the resource its tokens are addressed to (RFC 8707 §2): an absolute URI without a fragment, the URL the API is served at. The provider addresses a token to it only for a member of a group `administrators` names, signed in at the authorization endpoint by a session whose proofs satisfy `phishing_resistant` whatever the floor of the tenant, and bound to a key of the client (RFC 9449, RFC 8705 §3). The device authorization grant and backchannel authentication are refused it, and the discovery document never announces it |
+| `passkey_attestation` | `BEFFROI_TENANT_PASSKEY_ATTESTATION` | string, not empty, a wired name | `none` | What the enrolment of a passkey asks of its authenticator (WebAuthn Level 3 §5.4.7), by the name of a policy the provider is wired with: `none`, `direct` or `enterprise` in the application. [Passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says what each one enrols, refuses and keeps |
+| `passkey_attestation_roots` | `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` | list of strings | `[]`: none | The roots of the enterprise attestations the tenant admits, one certificate in PEM each, read under `enterprise` only, a root named under `none` or `direct` being refused: an attestation that chains up to one of them carries the serial number of its authenticator (WebAuthn Level 3 §8.2.2) or is refused. A certificate of no certificate authority is refused (RFC 5280 §4.2.1.9), and so is `enterprise` with no root of either list |
+| `passkey_attestation_own_roots` | `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS` | list of strings | `[]`: none | The authorities of the tenant itself, the ones that sign the identities of its own devices, in PEM, under `enterprise` only. Under them no serial number is asked |
+| `passkey_compromised_models` | `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` | map of AAGUID to a day | `{}`: none | The models whose last status report in the FIDO metadata is a security notification (FIDO Metadata Service v3.1.1 §3.1.4.2) the tenant still enrols under `direct` and `enterprise`, each the AAGUID of its authenticator to the last day it does, as `{"<AAGUID>":"2027-03-31"}`, in UTC and included. A passkey of such a model enrols until then and is marked under alert |
 
 ## `keys`
 
@@ -232,10 +238,9 @@ the provider reads behind a `jwks_uri`: the clients' and the [trusted issuers'](
 
 The issuers whose assertions the tenant accepts as an authorization grant (RFC 7523 §2.1), one entry per
 issuer. `BEFFROI_TRUSTED_ISSUERS` carries the section whole, a JSON document keyed by the `iss` of each
-issuer, and `.env` writes `{}`. The grant issues no token on the image whatever this section names: it
-addresses a token to a resource the client registered, and no client of the image registers one ([JWT
-bearer](../oidc/grants/jwt-bearer.md)). A declaration that does not hold together is refused when the provider
-first reads the trusted issuers.
+issuer, and `.env` writes `{}`. The grant addresses a token to a resource the client holds, and a client of
+the image holds one only when its initial access token gave it ([JWT bearer](../oidc/grants/jwt-bearer.md)). A
+declaration that does not hold together is refused when the provider first reads the trusted issuers.
 
 | Option | Type | Default | What it decides |
 |---|---|---|---|
@@ -259,10 +264,10 @@ Each entry is read like a registration of RFC 7591 §2 and OIDC Registration §2
 registration, and a declaration that does not hold together is refused when the provider first reads its
 clients, naming the client, the option and the rule. A client that registers itself carries the same members
 in its registration, except the key and `secret`, which the provider draws for it, and the seven members
-marked *deployment*, which a registration is refused for: no client of the image carries one of those, and
-[what the image does not set](../oidc/clients.md#what-the-image-does-not-set) says what every client of the
-image has instead. The default column is what a declared client gets for a member it leaves out, and a client
-that registers itself gets what RFC 7591 §2 says instead ([registering
+marked *deployment*, which a registration is refused for: an initial access token may give five of those to
+the clients it registers, and [what the image does not set](../oidc/clients.md#what-the-image-does-not-set) says
+what every client of the image has otherwise. The default column is what a declared client gets for a member
+it leaves out, and a client that registers itself gets what RFC 7591 §2 says instead ([registering
 one](../oidc/clients.md#registering-one)).
 
 | Option | Type | Default | What it decides |
@@ -286,6 +291,7 @@ one](../oidc/clients.md#registering-one)).
 | `require_pushed_authorization_requests` | boolean | `false` | The client starts an authorization request only by pushing it (RFC 9126 §6), and any other request of it is refused on a page before its redirect URI is read. The discovery document announces the requirement when every client of the tenant carries it |
 | `require_sender_constrained_tokens` | boolean | `false` | *Deployment.* A token request of the client proves a certificate (RFC 8705 §3) or a key (RFC 9449 §5), or it is refused rather than answered with bearer tokens (FAPI 2.0 Security Profile §5.3.1) |
 | `tls_client_certificate_bound_access_tokens` | boolean | `false` | The tokens of the client are bound to the certificate it presents at the TLS handshake, whichever way it authenticated (RFC 8705 §3.4), and a token request that proves no certificate is refused. A client authenticating by certificate gets bound tokens either way |
+| `dpop_bound_access_tokens` | boolean | `false` | The client always proves a key of its own with DPoP when it asks for a token (RFC 9449 §5.2): a token request of it that carries no DPoP proof is refused with `invalid_request`, before anything it came to spend is read. A declaration that names it beside `tls_client_certificate_bound_access_tokens`, or for a client that authenticates with a certificate, is refused: a token is bound to one thing |
 | `require_signed_request_object` | boolean | `false` | A request of the client is read only from a request object it signed, wherever the object arrives: an authorization request in the query, behind a `request_uri` or in a pushed request (RFC 9101 §10.5), and a backchannel authentication request in its body. An unsigned authorization request is refused on a page before its redirect URI is read, an unsigned backchannel one with `invalid_request`. A declaration that names it beside `request_object_signing_alg: none` is refused |
 | `id_token_signed_response_alg` | string | the default algorithm, `RS256` | The JWS algorithm the ID tokens and the logout tokens of the client are signed with (OIDC Registration §2), among the wired ones: `RS256`, `PS256`, `ES256` and `EdDSA` in the application, the first being the default |
 | `id_token_encrypted_response_alg` | string | none | The JWE key management algorithm the signed ID token is encrypted to a key of the client with (OIDC Core §3.1.3.7), among the wired ones: `ECDH-ES+A256KW` and `RSA-OAEP-256` in the application. Named with `id_token_encrypted_response_enc` or not at all. Left out, the ID token is signed and not encrypted |

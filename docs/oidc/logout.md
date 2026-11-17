@@ -211,10 +211,9 @@ token is refused as any revoked token is, and that refusal writes nothing.
 
 What the provider cannot reach is a self-contained access token in the hands of a resource server that
 verifies it offline (RFC 9068 §4): it is accepted there until it expires, `BEFFROI_ACCESS_TOKEN_TTL` seconds
-after it was issued, ten minutes in the image. A resource server that has to know at once introspects. Every
-access token of the image is self-contained: `access_token_format`, which would give a client opaque ones, is a
-member of the deployment that no client of the image holds ([what the image does not
-set](clients.md#what-the-image-does-not-set)).
+after it was issued, ten minutes in the image. A resource server that has to know at once introspects. An
+access token of the image is self-contained unless its client was given the opaque shape by the initial access
+token it registered with ([what the image does not set](clients.md#what-the-image-does-not-set)).
 
 **A session is shared with SAML.** The session a client signed in under is the one the SAML service
 providers of the browser signed in under too, which is why the end session endpoint goes through them before

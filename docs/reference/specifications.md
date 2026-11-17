@@ -74,6 +74,7 @@ code here.
 | Specification | What it brings | Page |
 |---|---|---|
 | W3C Web Authentication Level 3 | Passkeys, enrolment and assertion | [Passkeys](../core/credentials/passkeys.md) |
+| FIDO Metadata Service v3.1.1 | The metadata of the FIDO Alliance, the root a full attestation is checked up to and the status reports that put a model under a security alert (§3.1.4.2) | [Passkeys](../core/credentials/passkeys.md#the-fido-metadata) |
 | RFC 4226, RFC 6238 | HOTP and TOTP, the second factor from an application | [TOTP](../core/credentials/totp.md) |
 | RFC 9106 | Argon2, one of the password algorithms a hash names | [Passwords](../core/credentials/passwords.md) |
 | RFC 8176 | The authentication method references a session reports, `amr` | [Authentication sessions](../core/authentication-sessions.md) |
@@ -81,9 +82,9 @@ code here.
 | RFC 7517, RFC 7515, RFC 7516, RFC 7518, RFC 7519 | JOSE: keys, signatures, encryption, algorithms, claims | [Keys](../core/keys.md) |
 
 NIST SP 800-63B §3.1.1.2 is what the rules of a password are written against: a floor on the length, fifteen
-characters for a password that signs somebody in alone and eight for one a second factor goes with, an estimate
-of how hard it is to guess, and a comparison against a list of compromised values rather than a composition
-rule. [Passwords](../core/credentials/passwords.md) says what each of them refuses.
+characters for a password that signs somebody in alone and at least eight for one a second factor goes with, of
+which the provider asks twelve, an estimate of how hard it is to guess, and a comparison against a list of
+compromised values rather than a composition rule. [Passwords](../core/credentials/passwords.md) says what each of them refuses.
 
 ## Reaching a person
 

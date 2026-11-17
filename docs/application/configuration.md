@@ -63,7 +63,7 @@ Three more decide what a deployment of real people does:
 
 ## The tenant
 
-Eight variables are lists of the configuration, three of them here. Each is a JSON document of the shape the
+Twelve variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
 list has in the [configuration tree](../reference/configuration.md), `[]` or `{}` for none. An empty variable
 is no JSON document, and is refused.
 
@@ -71,17 +71,25 @@ is no JSON document, and is refused.
 |---|---|---|
 | `BEFFROI_TENANT_NAME` | empty | What the pages and the consent call the tenant. Empty, the host of the issuer |
 | `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. Every page that shows the logo names its origin in its `img-src`. A logo served from another host shows on the pages served under `Cross-Origin-Embedder-Policy: require-corp`, every page but those of `/authorize`, `/login`, `/consent`, `/logout`, `/device` and `/initiate-login`, only when that host answers `Cross-Origin-Resource-Policy: cross-origin` |
-| `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons and the links of the pages are drawn in: `#` and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour |
+| `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: `#` and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour |
 | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | `#ffffff` | The colour of what is written on it, in the same notation |
 | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the application lets a person change, from `name` to `phone_number` | What a person may change of themselves on the page of their account. A tenant whose directory owns the data names `[]` |
 | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | `{}` | The `acr` vocabulary of the tenant, class name to predicate, in order. `{}` is the default policy of the core |
 | `BEFFROI_TENANT_SCOPES` | `[]` | The scopes of the APIs the tenant protects, as `["invoices.read","invoices.pay"]`. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them, and a client that registers itself may register them |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION` | `none` | What the enrolment of a passkey asks of its authenticator (WebAuthn Level 3 §5.4.7): `none`, `direct` or `enterprise`, as [passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` | `[]` | The roots of the enterprise attestations the tenant admits, in PEM, under `enterprise` only: an attestation under one of them carries the serial number of its authenticator |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS` | `[]` | The authorities of the tenant itself, in PEM, under `enterprise` only, under which no serial number is asked |
+| `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` | `{}` | The models under a security alert the tenant still enrols under `direct` and `enterprise`, AAGUID to the last day, as `{"<AAGUID>":"2027-03-31"}` |
+| `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` | empty | The identifier of the [administration API](../oidc/resources.md#the-administration-api) of the tenant, the resource its tokens are addressed to (RFC 8707 §2): an absolute URI without a fragment, the URL the API is served at, as `https://admin.example.com`. The provider addresses a token to it only for an administrator of the tenant, signed in at the authorization endpoint with a phishing-resistant proof, by a token bound to a key of the client, and never announces it. Empty, there is no administration API and nothing is reserved |
+| `BEFFROI_TENANT_ADMINISTRATORS` | `[]` | The groups whose members [administer the tenant](../core/groups.md#who-administers-the-tenant), by their names in the tenant, compared exactly, as `["administrators"]`: a local group the console fills, or a group an upstream provider or a directory holds the members of. A name that is empty, or that begins or ends with whitespace, is refused; a name no group carries yet is accepted. `[]`, nobody administers the tenant |
 
-**Six of them are written in the row of the tenant**, with its issuer: its name, its logo and its two colours,
-the claims a person changes and its `acr` classes. `beffroi:tenant:synchronize` writes them, and every request
-and every message compares the row with the environment of its process: while the two differ, each one that
-reads the tenant fails, and the log names the setting that differs, `look` for the logo and the colours,
-while the timed steps wait. Changing one of them is therefore a restart of
+**Ten of them are written in the row of the tenant**, with its issuer: its name, its logo and its two colours,
+the claims a person changes, its `acr` classes, and the four that say what the enrolment of a passkey asks:
+the seven settings of [the row of the tenant](../core/tenants.md), the enrolment of a passkey counting once.
+`beffroi:tenant:synchronize` writes them, and every request and every message compares the row with the
+environment of its process: while the two differ, each one that reads the tenant fails, and the log names the
+setting that differs, `look` for the logo and the colours, `passkey_attestation` for the four of the passkey
+enrolment, while the timed steps wait. Changing one of them is therefore a restart of
 every process with the new value, and `bin/console beffroi:tenant:synchronize` run in one of them; a process
 still on the previous value stops serving from that moment.
 
@@ -209,7 +217,7 @@ on what its own clients send.
 | `SYMFONY_TRUSTED_HEADERS` | not set | The headers Symfony reads from those proxies, separated by commas. Not set, `x-forwarded-for`, `x-forwarded-port` and `x-forwarded-proto` |
 | `SYMFONY_TRUSTED_HOSTS` | not set | The hosts a request may name, as regular expressions separated by commas, `framework.trusted_hosts`. A request that names another is refused with `400`. Not set, every host |
 | `SYMFONY_TRUST_X_SENDFILE_TYPE_HEADER` | not set | Whether a file Symfony answers with, a script of the provider, is handed to a proxy that asks for it with `X-Sendfile-Type`. Not set, never |
-| `FRANKENPHP_LOOP_MAX` | not set | The requests a PHP worker of the server serves before it restarts, read by the runtime of Symfony: 500 when it is not set, never with `0` or a negative number |
+| `FRANKENPHP_LOOP_MAX` | `0` | The requests a PHP worker of the server serves before it restarts, read by the runtime of Symfony: never with `0` or a negative number, 500 when it is not set. `.env` sets `0`, so a worker keeps the keys it opened when it started |
 
 The kernel and the runtime of Symfony read others, which a deployment leaves unset, among them `APP_RUNTIME`,
 `APP_RUNTIME_OPTIONS`, `APP_RUNTIME_ENV` and `APP_RUNTIME_MODE`, which choose and describe the runtime the
@@ -223,14 +231,16 @@ These are read by Caddy and FrankenPHP, not by the kernel.
 | Variable | What it decides |
 |---|---|
 | `SERVER_NAME` | The host Caddy serves the provider on, `localhost` when it is not set. When Caddy terminates TLS, it obtains the certificate of that host itself, from a public authority for a public name and from its internal authority for `localhost`, and keeps it under `/data` |
-| `TLS_TERMINATION` | Who terminates the TLS of the site of `SERVER_NAME`. `caddy`, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. `proxy`: a proxy in front of the image, which sends the site plain HTTP, `SERVER_NAME` then naming the one host the proxy asks for, or `:<port>` for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way |
+| `TLS_TERMINATION` | Who terminates the TLS of the site of `SERVER_NAME`. `caddy`, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. `proxy`: a proxy in front of the image, which sends the site plain HTTP, `SERVER_NAME` then naming the one host the proxy asks for, or `:<port>` for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way, and the site of the administration API is served on the address its own variable gives |
 | `MTLS_SERVER_NAME` | The host of the listener that asks for a client certificate, in `mtls.Caddyfile` |
-| `CADDY_EXTRA_CONFIG` | Configuration added to the `Caddyfile` beside the site of `SERVER_NAME`. `import mtls.Caddyfile` is what serves the host that asks for a client certificate |
+| `ADMINISTRATION_SERVER_NAME` | The address of the site of the administration API, in `administration.Caddyfile`: the host of the URL `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names, or, behind a proxy that terminates TLS, a plain HTTP address such as `:81`. Its worker serves the administration API and nothing else |
+| `CADDY_EXTRA_CONFIG` | Configuration added to the `Caddyfile` beside the site of `SERVER_NAME`. `import mtls.Caddyfile` is what serves the host that asks for a client certificate, and `import administration.Caddyfile` the administration API, which a deployment that does not import it does not serve |
 | `CADDY_GLOBAL_OPTIONS` | Directives added to the global options of the `Caddyfile` |
 | `CADDY_SERVER_EXTRA_DIRECTIVES` | Directives added to the site of `SERVER_NAME`, such as a `tls` directive naming a certificate and its key |
+| `CADDY_ADMINISTRATION_EXTRA_DIRECTIVES` | Directives added to the site of the administration API, as `CADDY_SERVER_EXTRA_DIRECTIVES` are to the site of `SERVER_NAME`: behind a proxy, the one that hands PHP the address of the client. Each site has its own, a directive of one not fitting the other |
 | `CADDY_SERVER_LOG_OPTIONS` | Directives added to the `log` block of each site |
 | `FRANKENPHP_CONFIG` | Directives of the `frankenphp` block. The production image sets `import worker.Caddyfile`, which is worker mode |
-| `FRANKENPHP_WORKER_CONFIG` | Directives added to the `worker` block: the `watch` lines of the development stack, nothing in production |
+| `FRANKENPHP_WORKER_CONFIG` | Directives added to each `worker` block, the one of `worker.Caddyfile` and the one of the administration API: the `watch` lines of the development stack, nothing in production |
 
 ## The key management service
 
@@ -280,10 +290,11 @@ the same. An envelope sealed by one backend does not open with another.
     ```
 
     The Transit key of a tenant is `beffroi-<slug>`, of type `aes256-gcm96` and created with `derived=true`:
-    the envelope carries a context that binds it to its tenant, Vault honours a context on a derived key only,
-    and the bridge refuses to seal under a key that is not one. The development stack also creates it not
-    exportable, with no plaintext backup, and refuses its deletion. The token needs three paths and nothing
-    else:
+    each data key is wrapped under a context, its reference and its scope, and Vault honours a context on a
+    derived key only, so the bridge reads the configuration of the key once per process and refuses to wrap a
+    data key under one that is not derived. The development stack also creates it not exportable, with no
+    plaintext backup, and refuses its deletion. The token needs four paths and nothing else, `transit/encrypt`
+    for the data key a rewrap towards Vault wraps again:
 
     ``` hcl
     path "transit/datakey/plaintext/beffroi-*" {
@@ -291,6 +302,10 @@ the same. An envelope sealed by one backend does not open with another.
     }
 
     path "transit/decrypt/beffroi-*" {
+      capabilities = ["update"]
+    }
+
+    path "transit/encrypt/beffroi-*" {
       capabilities = ["update"]
     }
 

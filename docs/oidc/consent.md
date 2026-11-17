@@ -9,7 +9,8 @@ A consent is what a person agreed to let one client obtain about them: a set of 
 by name, and the [authorization details](authorization-details.md) the client asked for beyond them. It is
 recorded once per person and client, and a request that asks for no more than it covers is answered without
 asking again. A person reads their consents and takes any of them back from [the pages of their
-account](../application/account.md), and an operator does the same at the console.
+account](../application/account.md), an operator does the same at the console, and an administrator through the
+administration API.
 
 ## When a person is asked
 
@@ -96,7 +97,9 @@ bin/console beffroi:user:revoke-consent alice s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJa
 
 `beffroi:user:applications` lists the consents in force of a person, with what each client holds.
 `beffroi:user:revoke-consent` takes back the consent a person gave a client, and says so when there was none.
-Either way the same thing happens, and **what was issued under the consent goes with it**:
+An administrator reads the same consents and takes one back through the administration API: the read is an act
+of the person, `administration.consents_read`, and the act `consent.revoked` names the administrator. Whoever
+takes it back, the same thing happens, and **what was issued under the consent goes with it**:
 
 - the consent is taken back, so the next authorization request of that client asks again;
 - every grant this person left to this client is revoked, an authorization code, a device code they approved

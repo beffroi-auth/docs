@@ -112,10 +112,11 @@ development stack of the project does, AWS through LocalStack, and are skipped o
 
 === "HashiCorp Vault Transit"
 
-    A Transit key per tenant, and a token minted under a policy that allows data keys and decryption under
-    those keys, their configuration and nothing else. The client is `symfony/hashicorp-vault-key-management`.
-    A Vault that answers in plain HTTP, as the one of the development stack does, is named with
-    `?scheme=http` at the end of the DSN.
+    A Transit key per tenant, and a token minted under a policy that allows data keys, decryption under those
+    keys, the encryption of a data key the provider already holds, which a rewrap towards Vault wraps again,
+    and the reading of their configuration, and nothing else. The client is
+    `symfony/hashicorp-vault-key-management`. A Vault that answers in plain HTTP, as the one of the development
+    stack does, is named with `?scheme=http` at the end of the DSN.
 
     ``` dotenv
     BEFFROI_KMS_DSN="hashicorp-vault-transit://<token>@<host>:8200"
@@ -134,11 +135,15 @@ development stack of the project does, AWS through LocalStack, and are skipped o
 
 ## Opening a key
 
-A process opens a key once, the first time it needs it, and keeps it open for as long as it lives, by tenant
-and by `kid`; a key that retires is forgotten. Served by FrankenPHP in worker mode, as the image of the
-application is, a process pays one opening per key for all the signatures it makes; a process rebuilt at each
-request pays one at each request. The sealed columns follow the same rule with their data keys, one opening
-per data key and per process.
+A process opens the keys it serves with when it starts, and keeps each one open for as long as it lives, by
+tenant and by `kid`; a key that retires is forgotten. A thread of the HTTP server opens them before its first
+request: the active key of each signature algorithm, the published keys a client encrypts to, the SAML signing
+key when a SAML role is on, the keys the upstream identity providers encrypt to, and every data key of the
+tenant, retired ones included. The worker opens, when it starts consuming, the keys message bodies are sealed
+to, the active signing keys, the application server keys of web push and the same data keys. A key created
+after the process started, or one it could not open then, is opened the first time it is needed. The image
+sets `FRANKENPHP_LOOP_MAX=0`, so a thread of the server is never started again and pays one opening per key for
+all the signatures it makes; a process rebuilt at each request pays one at each request.
 
 ``` bash
 bin/console beffroi:keys:list --check
@@ -150,12 +155,17 @@ cannot open is an outage at the first token request, so this is worth a run in a
 ## When the service does not answer
 
 A key management service that does not answer, or whose backend refuses, is an outage and not an error of the
-request. Wherever it stands on the path of a request, the first opening of a signing key on a process that has
-not signed yet, the secret of an authenticator application at the code page, the enrolment of one, the request
-is answered `503 Service Unavailable` with `Retry-After: 10`, the same request being served once the service is
-back. Nothing was refused to the person and nothing was counted: a pending login keeps waiting for the same
-code. The outage is announced to the journal with the words of the service, and nothing of what was being
-opened.
+request. Wherever it stands on the path of a request, the opening of a key the process could not open when it
+started or that was created since, the secret of an authenticator application at the code page, the enrolment
+of one, the request is answered `503 Service Unavailable` with `Retry-After: 10`, the same request being served
+once the service is back. Nothing was refused to the person and nothing was counted: a pending login keeps
+waiting for the same code. The outage is announced to the journal with the words of the service, and nothing of
+what was being opened.
+
+A process that starts while the service does not answer starts all the same, writes so to its log at the level
+`error`, and opens each key at its first use. A service reached over HTTP is given five seconds of silence and
+ten seconds in all for each request, unless its DSN names its own `timeout` or `max_duration`, so a service
+that stops answering is an outage within seconds rather than a request held until PHP ends it.
 
 An envelope the service refuses to open, tampered with, sealed for another tenant or another use, or wrapped
 under a master key the service does not know when it opens it, is not an outage: it is an error, and no

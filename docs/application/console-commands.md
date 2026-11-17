@@ -5,8 +5,9 @@ description: 'What the commands of the application need explained beyond their h
 
 # Console commands
 
-The application has commands for the tenant, the people and their journal, groups, clients, keys, data keys,
-the metadata of SAML peers, the databases of addresses and the metadata of FIDO. [The
+The application has commands for the tenant, the statistics of the instance, the people and their journal,
+groups, clients, keys, data keys, the metadata of SAML peers, the databases of addresses and the metadata of
+FIDO. [The
 reference](../reference/console-commands.md) lists every one of them; `bin/console <command> --help` gives its
 arguments and options. This page explains the ones a help screen does not: the rotation of a key, the data
 keys, and the doctor.
@@ -136,6 +137,8 @@ bin/console beffroi:data-keys:rewrap --to=second --from=op
   built from `BEFFROI_KMS_DSN_SECOND`, and the command lists the clients when it is missing.
 - `--from` moves only the keys that client holds; all of them without it.
 - `--dry-run` lists what would move and writes nothing.
+- `--accept-unbound` moves as well the keys wrapped under no context, which open nothing until they are
+  wrapped again under their reference and their scope.
 
 The master key is the one `BEFFROI_KMS_KEY_ID` names for the tenant, resolved from the environment and never
 asked for: an operator who had to type it could type the one of another tenant. It moves one tenant, the one
@@ -167,18 +170,26 @@ before it answers, prints one line per point, explains the ones it does not answ
 red, so a deployment pipeline can ask the question. A point is a class tagged `beffroi.doctor_check`, so a
 point added is a class added; a run with nothing tagged fails rather than answering for nothing.
 
-The application tags one point, `App\Doctor\NotificationsLanePatience`: whether the lane a logout token is sent
-on is retried on the schedule the token is written for, the one `beffroi.back_channel_logout` sets. On a
-deployment that keeps the lane of notifications the application declares, `async_notifications`, with the
-defaults of that section, the run reads:
+The application tags two points. `App\Doctor\ClientsSignedWithHeldKeys` reads every client of the tenant,
+declared or registered, and is red when one receives its ID tokens, its authorization responses or its UserInfo
+responses signed with an algorithm the tenant holds no active key for, the default one counting for a client
+that names none: the first of them it asks for would fail with a server error. Its finding names the client,
+the documents and the algorithm, and says that `bin/console beffroi:keys:generate --algorithm=<algorithm>` draws
+the missing key. `App\Doctor\NotificationsLanePatience` says whether the lane a logout token is sent on is
+retried on the schedule the token is written for, the one `beffroi.back_channel_logout` sets. On a deployment
+that holds a key for every algorithm its clients are signed with, and keeps the lane of notifications the
+application declares, `async_notifications`, with the defaults of that section, the run reads:
 
 ``` text
+ [ok] Clients: the keys their documents are signed with
+      The tenant "default" holds an active key for every algorithm it signs the documents of its clients with.
+
  [ok] Back-channel logout: how long a logout token is retried
       A logout token is retried on "async_notifications" for 3 minutes 20 seconds and stops being verifiable after 3 minutes 55 seconds, both read from the schedule this provider publishes (App\Messenger\NotificationRetryPolicy): a client that is restarting is reached, and nothing arrives after the "exp" of the token has passed or after the key that signed it has left the JWK Set.
 ```
 
 The two figures are the budget a logout token is written for; [Messenger](messenger.md#what-the-application-writes)
-says what that budget bounds. The point is red when the notifications are routed to a lane retried on another
-schedule, or to no lane at all.
+says what that budget bounds. The second point is red when the notifications are routed to a lane retried on
+another schedule, or to no lane at all.
 
 [:beffroi-arrow-right: Messenger](messenger.md)

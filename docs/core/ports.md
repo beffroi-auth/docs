@@ -24,7 +24,8 @@ Most ports have one implementation, which the application aliases the interface 
 is that implementation, in the bridge of the core (`Beffroi\Core\Bridge`) or in the application (`App`). Where
 the tables name a class of the application, an integration of one's own around the components implements the
 port itself. The sources of the model of an authenticator are a list the wiring names in order, the FIDO
-metadata before the list of the community. Every other list of several implementations of one interface, a
+metadata before the list of the community, and so are the families of keys a thread of the server and the
+worker open when they start. Every other list of several implementations of one interface, a
 port, an interface of the model or an interface of the bridge, is fed by a tag, every service carrying the tag
 being in it, and a list a role switches takes as well the services of that role while the role is on:
 
@@ -33,6 +34,7 @@ being in it, and a list a role switches takes as well the services of that role 
 | `beffroi.password_algorithm` | `PasswordAlgorithmInterface` | `WiredPasswordAlgorithms`, the hasher of the first wired making every new hash |
 | `beffroi.password_hasher` | `AlgorithmPasswordHasherInterface` | `PasswordHasherRegistry`, which hands each hash to the hasher that supports its algorithm |
 | `beffroi.authentication_predicate` | `AuthenticationPredicateInterface` | `WiredAuthenticationPredicates`, which the `acr` vocabulary and the floor of a tenant name predicates from |
+| `beffroi.passkey_attestation_policy` | `PasskeyAttestationPolicyInterface` | `WiredPasskeyAttestationPolicies`, which the policy of passkey attestation of a tenant is named from |
 | `beffroi.archive_chapter` | `ArchiveChapterInterface` | The archive a person asks for, one chapter per class |
 | `beffroi.dead_records` | `DeadRecordsInterface` | The hourly step that drops the rows that can no longer do anything |
 | `beffroi.key_bound_artifact` | `KeyBoundArtifactInterface` | The retirement window of a key |
@@ -60,6 +62,7 @@ being in it, and a list a role switches takes as well the services of that role 
 | `AtomicWritesInterface` | `atomically` | Several writes that are one fact, all of them kept or none | `DoctrineAtomicWrites` (application) |
 | `UuidGeneratorInterface` | `timeOrdered`, `opaque` | A UUID version 7 for a row, a version 4 for a value a party sees, a subject above all | `SymfonyUuidGenerator` (core) |
 | `RandomnessInterface` | `bytes` | The bytes of the secret values drawn through it, an authorization code, a refresh token, a TOTP secret and a backup code among them | `PlatformRandomness` (core) |
+| `CanCountUsersInterface` | `countUsersIn` | How many people a tenant has, whatever their state, and nothing of anybody: the statistics of the instance | `DoctrineUserRepository` (application) |
 
 ## Groups
 
@@ -68,6 +71,9 @@ being in it, and a list a role switches takes as well the services of that role 
 | `GroupRepositoryInterface` | `findByName`, `save` | The groups of a tenant, by their exact name | `DoctrineGroupRepository` (application) |
 | `GroupMembershipRepositoryInterface` | `save`, `remove` | Where a membership is written and taken back | `DoctrineGroupMembershipRepository` (application) |
 | `GroupsOfAPersonInterface` | `of` | The memberships of one person with their sources | `DoctrineGroupMembershipRepository` (application) |
+| `GroupsOfATenantInterface` | `of`, `find` | The groups of a tenant, all of them or one by its identifier | `DoctrineGroupRepository` (application) |
+| `MembersOfAGroupInterface` | `membersOf`, `countMembersOf` | The members of one group, or how many it holds, which delivers none of them | `DoctrineGroupMembershipRepository` (application) |
+| `AdministratorGroupsInterface` | `groupsAdministering` | The names of the groups whose members [administer a tenant](groups.md#who-administers-the-tenant), none for a tenant nobody administers | `ConfigurationAdministratorGroups` (core), from `tenant.administrators` |
 
 ## Credentials
 
@@ -84,12 +90,17 @@ being in it, and a list a role switches takes as well the services of that role 
 | `BreachedPasswordsInterface` | `looksUp`, `timesSeen` | What a list of compromised passwords says of a digest | `PwnedPasswords` (application) |
 | `PasskeyRegistrarInterface` | `creationOptions`, `verifyAttestation` | The registration ceremony of WebAuthn Level 3 §7.1 | `WebauthnPasskeyRegistrar` (core) |
 | `PasskeyAuthenticatorInterface` | `requestOptions`, `verifyAssertion` | The authentication ceremony of WebAuthn Level 3 §7.2 | `WebauthnPasskeyAuthenticator` (core) |
+| `PasskeyAttestationPoliciesInterface` | `named` | The policy of passkey attestation a tenant names, what its enrolment asks of an authenticator (WebAuthn Level 3 §5.4.7), or a refusal naming the wired ones | `WiredPasskeyAttestationPolicies` (core) |
+| `AttestationRootReaderInterface` | `read` | A root of passkey attestations a tenant pins, read from its PEM, the certificate of no certificate authority refused (RFC 5280 §4.2.1.9) | `PkiAttestationRootReader` (core) |
 | `MetadataBlobStoreInterface` | `write`, `readAll` | The FIDO metadata the ceremonies read | `FileMetadataBlobStore` (application) |
 | `AuthenticatorListStoreInterface` | `write`, `read` | The list of passkey providers the community keeps, as the console downloaded it, which names models and nothing else | `FileAuthenticatorListStore` (application) |
 | `AuthenticatorModelSourceInterface` | `model` | The make and model a source names for the AAGUID a passkey declared, or nothing; read by the page of the passkeys and the console, by no ceremony | `MetadataAuthenticatorModels`, then `StoredAuthenticatorList` (core), asked in that order by `AuthenticatorModels` |
 | `TotpAlgorithmInterface` | `codeAt`, `provisioningUri` | The code of a time step (RFC 6238 §4.2), and the URI an application scans | `OtphpTotpAlgorithm` (core) |
 | `SecretSealerInterface` | `seal`, `unseal` | The secret of a TOTP, sealed by the key management service of the tenant | `EnvelopeSecretSealer` (core) |
+| `TicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The tickets of one kind, found by identifier only, the row holding a hash of the value; the three ports below are this one for their kind | `DoctrineTicketRepository` (application), one per kind |
 | `EnrolmentTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The enrolment tickets of a person | `DoctrineEnrolmentTicketRepository` (application) |
+| `PasswordTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The password tickets of a person | `DoctrinePasswordTicketRepository` (application) |
+| `TotpTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The tickets of a person for an authenticator application | `DoctrineTotpTicketRepository` (application) |
 
 ## Sessions
 
@@ -97,6 +108,7 @@ being in it, and a list a role switches takes as well the services of that role 
 |---|---|---|---|
 | `AuthenticationSessionRepositoryInterface` | `find`, `findActiveByUser`, `save` | The sessions of the provider | `DoctrineAuthenticationSessionRepository` (application) |
 | `CanPageActiveSessionsInterface` | `pageOfActiveSessions` | One page of the sessions open in the name of a person | `DoctrineAuthenticationSessionRepository` (application) |
+| `CanCountActiveSessionsInterface` | `countActiveSessionsIn` | How many sessions of a tenant are open at a moment, neither ended nor expired, and nothing of whose they are | `DoctrineAuthenticationSessionRepository` (application) |
 | `CanFindUnendedSessionsInterface` | `findUnendedByUser` | The sessions of one person that nothing has ended, those past their expiry included, for what ends every session of a person but the one it keeps | `DoctrineAuthenticationSessionRepository` (application) |
 | `SubjectsOfSessionsInterface` | `of` | The subject of the person a session names, read where the store keeps it in the clear, so that announcing a replayed code, a reused refresh token or a token a client gave back asks nothing of the key management service | `DoctrineAuthenticationSessionRepository` (application) |
 | `AuthenticationPredicatesInterface` | `named` | A predicate of the `acr` policy by its name, refused when nothing wired carries it | `WiredAuthenticationPredicates` (core) |
@@ -126,6 +138,7 @@ being in it, and a list a role switches takes as well the services of that role 
 | `KeptDecryptionKeyProviderInterface` | `keptDecryptionKeys` | The kept keys a peer encrypts to, the keys of an upstream SAML identity provider | `SealedKeyProvider` (core) |
 | `ApplicationServerKeyProviderInterface` | `activeApplicationServerKey`, `applicationServerKey` | The key a browser is handed, and the key a subscription was made under | `SealedKeyProvider` (core) |
 | `MessageKeyProviderInterface` | `sealingKey`, `messageKey` | The key a body is sealed to, and the key a sealed body names | `SealedKeyProvider` (core) |
+| `OpenableKeysInterface` | `open` | A family of keys of a tenant a process opens when it starts, through the port a request would open them with | `ActiveSigningKeys`, `PublishedDecryptionKeys`, `ActiveKeptSigningKeys`, `KeptDecryptionKeysInService`, `MessageKeysInService`, `ApplicationServerKeysInService` (core, use cases of `Beffroi\Core\Application\Key`) and `DataKeysOfTheTenant` (application) |
 | `JwsSignerInterface` | `sign` | A compact JWS signed by the active key of an algorithm | `JwtLibraryJwsSigner` (core) |
 | `JwsVerifierInterface` | `verify` | A compact JWS verified against the published keys of the tenant | `JwtLibraryJwsVerifier` (core) |
 | `JweDecrypterInterface` | `decrypt` | A compact JWE encrypted to a published key, opened | `JwtLibraryJweDecrypter` (core) |
@@ -139,16 +152,17 @@ being in it, and a list a role switches takes as well the services of that role 
 | `JournalInterface` | `record`, `forgetBefore` | Where an act is written, and forgotten past its retention | `DoctrineJournal` (application) |
 | `ActsOfAPersonInterface` | `lastOf`, `everyActOf` | The acts of one person, the last of some names or all of them in pages | `DoctrineJournal` (application) |
 | `CanPageActsOfAPersonInterface` | `pageOfActs` | One page of the journal of a person | `DoctrineJournal` (application) |
+| `CanCountActsInterface` | `countActsSince` | How many acts of each name the journal of a tenant holds since a moment, and nothing of whose they are | `DoctrineJournal` (application) |
 | `PersonalArchiveRepositoryInterface` | `find`, `latestOf`, `save`, `forget`, `forgetExpired` | The archives people asked for | `DoctrinePersonalArchiveRepository` (application) |
 | `ArchiveChapterInterface` | `name`, `of` | One chapter of an archive, read in the clear | Seven chapters of the core and two of `beffroi/oidc`, tagged |
 | `ArchiveContainerInterface` | `mediaType`, `extension`, `wrap` | The archive wrapped under the passphrase a person chose | `ZipArchiveContainer` (application) |
-| `DeadRecordsInterface` | `forgetWhatIsDead` | The rows of a store that can no longer do anything, dropped and counted | Nine stores of the application, tagged |
+| `DeadRecordsInterface` | `forgetWhatIsDead` | The rows of a store that can no longer do anything, dropped and counted | Eleven stores of the application, tagged |
 | `PushSubscriptionRepositoryInterface` | `findActiveByUser`, `findByEndpoint`, `find`, `save` | The browsers of a person the provider may push to | `DoctrinePushSubscriptionRepository` (application) |
 | `CanPageActiveSubscriptionsInterface` | `pageOfActiveSubscriptions` | One page of those browsers | `DoctrinePushSubscriptionRepository` (application) |
 
 ## What else the bridge of the core ships
 
-The bridge of the core holds fifteen stores in memory, for tests and for an integration of one's own that wires
+The bridge of the core holds seventeen stores in memory, for tests and for an integration of one's own that wires
 the core without the stores of the application: `InMemoryUserRepository`, `InMemoryCredentialRepository`,
 `InMemoryAuthenticationSessionRepository`, `InMemoryTenantKeyRepository` and their siblings; the journal has
 none. It holds three implementations that answer nothing, `NullBreachedPasswords`, which asks no list,

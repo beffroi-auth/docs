@@ -30,18 +30,18 @@ it belongs to, by a foreign key on `tenant_id`.
 
     | Table | What a row is |
     |---|---|
-    | `beffroi_tenant` | The tenant: its issuer, its slug, its name, its look, the claims its people may change, its `acr` vocabulary and the floor of its logins |
+    | `beffroi_tenant` | The tenant: its issuer, its slug, its name, its look, the claims its people may change, its `acr` vocabulary, the floor of its logins and what the enrolment of its passkeys asks |
     | `beffroi_user` | A person: the subject, in the clear and unique in the tenant, the username, the e-mail address, the telephone number, the postal address, the claims of the profile and the source that created them |
     | `beffroi_password_credential` | The password of a person, its hash typed by its algorithm, and when a list of compromised passwords was last asked about it and when it was found there |
-    | `beffroi_passkey_credential` | A passkey: the credential record of WebAuthn, its name and its revocation |
+    | `beffroi_passkey_credential` | A passkey: the credential record of WebAuthn, its name, what its enrolment proved of the model of its authenticator, the serial number an enterprise attestation carried, whether the model was under a security alert the tenant admitted, and its revocation |
     | `beffroi_totp_credential` | An authenticator application: its secret, the last time step accepted and the hashed backup codes |
-    | `beffroi_enrolment_ticket` | The ticket that opens one enrolment of a first passkey, by a hash of its value |
+    | `beffroi_enrolment_ticket`, `beffroi_password_ticket`, `beffroi_totp_ticket` | A ticket that opens once, without a session, the enrolment of a passkey, the setting of a password, or the set-up of an authenticator application in place of the one held, by a hash of its value |
     | `beffroi_linked_identity` | Who a person is at an upstream provider, and what that provider said of them |
     | `beffroi_group`, `beffroi_group_membership` | The groups of the tenant and who belongs to them, each with its source |
     | `beffroi_push_subscription` | A browser of a person the provider can reach by [web push](web-push.md) |
     | `beffroi_authentication_session` | A session: what it proved, from where it was opened and last seen, when it ends and why it ended |
     | `beffroi_journal` | One act of the provider |
-    | `beffroi_claim_change` | What a claim of a person said before they changed it, and what it says now |
+    | `beffroi_claim_change` | What a claim of a person said before they or an administrator changed it, what it says now, and the administrator who changed it when one did |
     | `beffroi_personal_archive` | The archive a person asked for of everything the provider holds of them |
 
 === "OpenID Connect"
@@ -101,7 +101,7 @@ before it reads those columns with the type they had.
 ## A value object in one column
 
 **A value object a column holds whole goes in one column**, with a DBAL type of the application: the tree
-declares thirty-four of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
+declares thirty-six of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
 `beffroi_password_hash` among them. What the column holds is written by the object itself, in the package
 that owns it, and read back through its constructor, so a row edited by hand into something the object
 refuses fails when it is loaded, as a conversion error naming the type, and never further down.
@@ -125,7 +125,7 @@ is treated as absent: a token or a consent of a client that does not exist is no
 
 ## Sealed columns
 
-Thirty-three columns hold a personal datum, or the secret of a client, sealed under a data key of their
+Thirty-six columns hold a personal datum, or the secret of a client, sealed under a data key of their
 tenant. A data key is minted per tenant and per family of columns, the family being the name of the table
 without its prefix, so the key that opens one table of a tenant opens no other table and no other tenant.
 
@@ -133,14 +133,14 @@ without its prefix, so the key that opens one table of a tenant opens no other t
 |---|---|
 | `user` | `username`, `email`, `phone_number`, `address`, `profile`, `source` |
 | `linked_identity` | `provider`, `subject`, `claims` |
-| `passkey_credential` | `name` |
+| `passkey_credential` | `name`, `serial_number` |
 | `push_subscription` | `endpoint`, `label` |
 | `authentication_session` | `created_from`, `last_seen_from` |
 | `interaction` | `login_hint`, `id_token_hint` |
 | `pushed_authorization_request` | `parameters` |
 | `device_authorization_request` | `requested_from` |
 | `backchannel_authentication_request` | `binding_message`, `requested_from` |
-| `client` | `metadata`, `assigned_metadata`, `secret` |
+| `client` | `metadata`, `assigned_metadata`, `attested_metadata`, `granted_metadata`, `secret` |
 | `journal` | `context` |
 | `claim_change` | `was`, `became`, `context` |
 | `disclosure` | `scopes`, `claims`, `authorization_details` |
@@ -187,7 +187,7 @@ taking what it left.
 
 | Step | Every | What it drops |
 |---|---|---|
-| The rows that are dead | Hour | Interactions, pushed requests, codes, device and backchannel requests, refresh tokens, opaque access tokens, enrolment tickets and sessions that nothing alive needs any more |
+| The rows that are dead | Hour | Interactions, pushed requests, codes, device and backchannel requests, refresh tokens, opaque access tokens, tickets of every kind and sessions that nothing alive needs any more |
 | The journal | Day | The acts older than `beffroi.journal.retention` days, 180 by default, and the disclosures with them |
 | The history of a record | Day | The changes of claims older than `beffroi.history.retention` days, 180 by default |
 | The archives | Hour | The archives past their expiry, a week after they were asked for |

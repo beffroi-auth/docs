@@ -14,8 +14,8 @@ and no other.
 around the components answers them itself, and starts from the implementations the package ships,
 [below](#what-ships-in-the-package).
 
-**Besides its own**, the package uses eighteen ports of [the core](../core/ports.md), `Beffroi\Core\Port`:
-it calls sixteen and implements two. And it calls two interfaces of the PHP-FIG, the clock of PSR-20, which
+**Besides its own**, the package uses twenty-five ports of [the core](../core/ports.md), `Beffroi\Core\Port`:
+it calls twenty-three and implements two. And it calls two interfaces of the PHP-FIG, the clock of PSR-20, which
 the use cases read the time from, and the event dispatcher of PSR-14, which every act leaves through.
 
 | Port of the core | What the protocol does with it |
@@ -32,6 +32,11 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 | `CredentialRepositoryInterface` | What a person holds, when a request asks for more than the session proved |
 | `LinkedIdentityRepositoryInterface` | The person the assertion of a trusted issuer is about (RFC 7523 §3) |
 | `PasswordHasherInterface`, `PasswordAlgorithmsInterface` | The secrets of the clients, hashed when they are kept and read back by the algorithm they name |
+| `SubjectsOfSessionsInterface` | The subject of the person a session names, so that announcing a replayed code, a reused refresh token or a token a client gave back asks nothing of the key management service |
+| `SigningKeyOpenerInterface` | Opens the active key of an algorithm before a grant or the authorization endpoint spends what it cannot get back |
+| `AdministratorGroupsInterface`, `GroupsOfAPersonInterface` | Who [administers the tenant](../core/groups.md#who-administers-the-tenant), read from the groups of the person, for the audience of the [administration API](resources.md#the-administration-api) and the requests it serves |
+| `GroupsOfATenantInterface`, `MembersOfAGroupInterface` | The groups of the tenant and their members, which an administrator reads through the administration API |
+| `CanPageActsOfAPersonInterface` | The journal of a person, which an administrator reads through the administration API |
 | `SecretSealerInterface` | Seals what nobody but the provider may read: the person an `at+jwt` of a token exchange or of a JWT bearer grant is about, and the references a backchannel request keeps for the client it calls back |
 | `KeyBoundArtifactInterface`, implemented | Six kinds of document bound to a key of the tenant, the ID token, the `at+jwt`, the logout token, the signed authorization response, the pushed request and the request object encrypted to it, each declaring how long a retiring key stays published for it |
 | `ArchiveChapterInterface`, implemented | The two chapters the protocol adds to the archive of a person: the consents, and what each client was given |
@@ -68,6 +73,7 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 | `UnusedClientsInterface` | The clients a source may drop for lack of use | Doctrine; the declared clients answer none, and are never dropped |
 | `ClientRegistrationPolicyInterface` | Whether a tenant registers clients, and under which policy | The configuration |
 | `TrustedIssuersInterface` | The third parties whose assertions a tenant trusts (RFC 7523 §3) | The configuration |
+| `AdministrationResourceInterface` | The [administration API](resources.md#the-administration-api) of a tenant, the resource whose audience the provider reserves to its administrators, or none | The configuration, `tenant.administration_resource` |
 | `PushedAuthorizationRequirementInterface`, `RegisteredAccessTokenShapesInterface`, `RegisteredResourcesInterface`, `RegisteredScopesInterface`, `UnsignedRequestObjectsInterface` | What the clients of a tenant registered, read as a set: whether every one pushes its requests, which shapes of access token and which resources and scopes they take, whether one reads unsigned request objects | The module, over the sources |
 
 ## What the workers share

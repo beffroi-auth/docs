@@ -28,15 +28,21 @@ BEFFROI_TENANT_SELF_SERVED_CLAIMS='["name","given_name","family_name","locale","
 
 | Variable | In the image | What it decides |
 |---|---|---|
-| `BEFFROI_ISSUER` | `https://op.localhost` | The issuer identifier (OIDC Discovery 1.0 §3): an absolute `https` URL with no query, no fragment and no trailing slash, plain HTTP on a loopback host only. Every endpoint is served under it, the SAML metadata included |
+| `BEFFROI_ISSUER` | `https://op.localhost` | The issuer identifier (OIDC Discovery 1.0 §3): an absolute `https` URL with no query, no fragment, no trailing slash and no path, plain HTTP on a loopback host only. The application serves the provider at the root, so the issuer is an origin, and every endpoint is served under it, the SAML metadata included |
 | `BEFFROI_TENANT_SLUG` | `default` | The stable name of the tenant, from which its identifier is derived. Renaming it is creating another tenant |
 | `BEFFROI_TENANT_NAME` | empty | What the pages call it. Empty, the host of the issuer |
 | `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL with no fragment and no credentials, plain HTTP on a loopback host only. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. The logo is loaded by the browser of the visitor, never by the provider |
-| `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons and the links of the pages are drawn in: `#` and three or six hexadecimal digits |
+| `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: `#` and three or six hexadecimal digits |
 | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | `#ffffff` | The colour of what is written on it, in the same notation. The two colours are named together or not at all, and two empty variables are no colour, the pages keeping their own |
 | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the application lets a person change, from `name` to `phone_number` | The claims the people of this tenant may change of themselves on the page of their account, a JSON list. A tenant whose directory owns the data opens none, `[]` |
 | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | `{}` | The `acr` vocabulary of the tenant, below. `{}` is the default policy |
 | `BEFFROI_TENANT_SCOPES` | `[]` | The [scopes](../oidc/scopes-and-claims.md#scopes) of the APIs the tenant protects, a JSON list. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them, and a client that registers itself may register them |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION` | `none` | What the enrolment of a passkey asks of its authenticator, `none`, `direct` or `enterprise`, as [passkeys](credentials/passkeys.md#what-the-enrolment-asks) says |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` | `[]` | The roots of the enterprise attestations the tenant admits, a JSON list of PEM certificates, read under `enterprise` only |
+| `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS` | `[]` | The authorities of the tenant itself, a JSON list of PEM certificates, read under `enterprise` only |
+| `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` | `{}` | The models under a security alert the tenant still enrols, a JSON map of AAGUID to the last day it does |
+| `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` | empty | The identifier of the [administration API](../oidc/resources.md#the-administration-api) of the tenant, the URL it is served at, whose audience the provider reserves to the administrators of the tenant. Empty, there is none |
+| `BEFFROI_TENANT_ADMINISTRATORS` | `[]` | The groups whose members [administer the tenant](groups.md#who-administers-the-tenant), a JSON list of their names. `[]`, nobody administers it |
 
 [Configuration](../application/configuration.md) lists the same variables among the others of the image,
 `BEFFROI_ISSUER` and `BEFFROI_TENANT_SLUG` under [the provider](../application/configuration.md#the-provider)
@@ -44,22 +50,24 @@ and the others under [the tenant](../application/configuration.md#the-tenant).
 
 ## Its row
 
-The variables declare the tenant, and a row of the database holds what the rest of the model points at. Six
+The variables declare the tenant, and a row of the database holds what the rest of the model points at. Seven
 settings are written in that row beside the issuer: the name, the logo, the two colours, the claims a person
-changes of themselves and the `acr` classes. One command makes the row say what the variables say:
+changes of themselves, the `acr` classes, and what the enrolment of a passkey asks, with its roots and the models
+it admits under alert. One command makes the row say what the variables say:
 
 ``` bash
 bin/console beffroi:tenant:synchronize
 ```
 
-It creates the row the first time, afterwards writes those of the six that changed, prints the tenant it
+It creates the row the first time, afterwards writes those of the seven that changed, prints the tenant it
 synchronised, and is safe to run at every deployment. Every request, command and message compares the row with
 the environment of its process: while the two differ, each one that reads the tenant fails, and the log names
-the setting that differs, `look` for the logo and the colours, while the timed steps wait. Changing one of the
-six is therefore a restart of every process with the new value, and the command run in one of them. The issuer
-is the one thing the command never changes: every token a tenant issued names it, so the command refuses
-another, and another issuer is another tenant, under another slug. What a command decides with a date, the
-floor of its logins below, is written on the row and nowhere else.
+the setting that differs, `look` for the logo and the colours, `passkey_attestation` for the enrolment of a
+passkey, while the timed steps wait. Changing one of the seven is therefore a restart of every process with
+the new value, and the command run in one of them. The issuer is the one thing the command never changes: every
+token a tenant issued names it, so the command refuses another, and another issuer is another tenant, under
+another slug. What a command decides with a date, the floor of its logins below, is written on the row and
+nowhere else.
 
 ## The classes it answers with
 
@@ -117,8 +125,9 @@ gives nobody back what was forgotten.
 - A step-up offers no kind of credential the floor forbids, and the page of the second factor offers an
   enrolment only where a code is admitted.
 - The length a password has to reach follows it: fifteen characters where a password signs somebody in
-  alone, eight where a second factor goes with it (NIST SP 800-63B §3.1.1.2). A password already stored is
-  left as it is, since a hash says nothing of the length behind it.
+  alone, as NIST SP 800-63B §3.1.1.2 asks, and twelve where a second factor goes with it, where §3.1.1.2
+  would let a verifier ask eight. A password already stored is left as it is, since a hash says nothing of the
+  length behind it.
 - A login through an [upstream identity provider](../saml/federated-sign-in.md#the-session) is held to it as
   well.
 

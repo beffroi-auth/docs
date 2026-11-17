@@ -28,7 +28,7 @@ titles below are the ones the English catalogue carries.
 | Applications you have allowed | `/account/consents` | One line per client in force, with the scopes, the authorization details and the claims asked for by name it holds, and a page per application behind it |
 | Where you are signed in | `/account/sessions` | Where this person is signed in at this moment, what each session proved, and where it was last seen |
 | Your password | `/account/password` | When the password was last written, and the form that replaces it |
-| What happened to your account | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the means of signing in and what they did of their own record. Its card counts the refusals among the last twenty attempts to sign in as them, since a failure is what somebody comes to look for: a refusal leaves the count once twenty attempts have followed it |
+| What happened to your account | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the account and of its means of signing in, the applications they agreed to and the consents taken back, what they did of their own record, and what an administrator of their organisation consulted or changed of them, said by that role alone and never by a name, a place or a client. A read they made of themselves through the administration API is not listed. Its card counts the refusals among the last twenty attempts to sign in as them, since a failure is what somebody comes to look for: a refusal leaves the count once twenty attempts have followed it |
 | Notifications | `/account/notifications` | The browsers this provider can reach by web push |
 | Your data | `/account/archive` | The one file holding everything the provider knows of them, and where their last request for it has got to |
 
@@ -49,8 +49,9 @@ only reads.
 A claim says what field it is, which is what the page renders: the kind its input carries, the whole set
 when the set is closed, and the pattern or the length when it is not. A closed set is closed on the server
 too, for whatever that page posts and not only in its field, and a birthdate that has not the shape of one,
-a year or a year, a month and a day, is refused rather than stored. What those lines said before, and when
-they changed, is at `/account/profile/changes`.
+a year or a year, a month and a day, is refused rather than stored. What those lines said before, when they
+changed, and whether the person changed them or an administrator of their organisation did, who is never
+named, is at `/account/profile/changes`.
 
 ### What the password page says
 
@@ -68,7 +69,7 @@ backchannel request, and the single sign-on of a SAML service provider among the
 A password posed here is typed twice and the two are compared in constant time, and the counter beside the
 field is local to the browser: what the page says of a password as it is typed asks nobody anything, and a
 password is never sent anywhere to be scored. The length it asks for is the one the floor of the tenant
-sets, fifteen characters or eight, and the field and the core read the same number.
+sets, fifteen characters or twelve, and the field and the core read the same number.
 
 [:beffroi-arrow-right: Passwords](../core/credentials/passwords.md)
 

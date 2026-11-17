@@ -1,6 +1,6 @@
 ---
 title: Token exchange
-description: Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and why no client of a deployment of the image is registered for it.
+description: Turning an access token of this provider into another one for a narrower audience, RFC 8693, delegation against impersonation, and the initial access token that registers a client for it.
 ---
 
 # Token exchange
@@ -11,9 +11,10 @@ carry (RFC 8693 §2.1). It is how a gateway that received a person's token calls
 token of its own, narrowed to that service, and how a service tells the resource it calls that it acts for
 somebody else.
 
-**No client of a deployment of the image is registered for it**, and no access token of the image is one it
-takes: [registering a client for it](#registering-a-client-for-it) says why. The rest of this page is what the
-grant does for a client that carries `token_exchange` and a token addressed to a resource.
+**A client of a deployment of the image is registered for it only when the initial access token it registered
+with gave it `token_exchange`**, and a token is exchangeable only when it is addressed to a resource:
+[registering a client for it](#registering-a-client-for-it) says why. The rest of this page is what the grant
+does for a client that carries `token_exchange` and a token addressed to a resource.
 
 ## Registering a client for it
 
@@ -32,14 +33,16 @@ can be, one to 255 visible ASCII characters and no space, since it is named wher
 public client is refused the grant.
 
 **`token_exchange` is a member of the deployment.** A registration that carries it is refused with
-`invalid_client_metadata`, and so is a registration that names the grant without it. A deployment of the image
-declares no client, and no variable gives the member to one, so no client of the image is registered for the
-grant, and the token endpoint answers a request of it with `unauthorized_client` ([what the image does not
+`invalid_client_metadata`, and so is a registration that names the grant without the member. On a deployment
+of the image, the member comes from the initial access token the client registered with, issued with
+`--exchange-subject-token-type` once per type, and with `--exchange-for-a-user` for `may_act_for_a_user`, and
+the client still registers the grant. A client that was given none is not registered for the grant, and the
+token endpoint answers a request of it with `unauthorized_client` ([what the image does not
 set](../clients.md#what-the-image-does-not-set)).
 
-**Nor is an access token of the image exchangeable.** A client of the image registers no resource, so each of
-its access tokens is addressed to the client itself, and an exchange refuses a token addressed to its own
-client: it was asked for no resource, so there is nothing to narrow.
+**A token addressed to its own client is not exchangeable.** A client that holds no resource has each of its
+access tokens addressed to itself, and an exchange refuses a token addressed to its own client: it was asked
+for no resource, so there is nothing to narrow.
 
 ## The request
 
@@ -85,8 +88,9 @@ token said, and carries its `act`, if any, unchanged.
 that may act for the subject of a token issued to that client: it is written on every self-contained token
 that client receives, and an exchange of a token of that client is refused with `invalid_request` for anybody
 else, the party compared being the outermost actor the new token would name or, when it would name none, the
-client that asked. It is a member of the deployment too, which no client of the image carries ([what the image
-does not set](../clients.md#what-the-image-does-not-set)).
+client that asked. It is a member of the deployment too, which a client of the image carries when the initial
+access token it registered with was issued with `--may-act` ([what the image does not
+set](../clients.md#what-the-image-does-not-set)).
 
 ## What the issued token says
 

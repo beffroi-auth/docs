@@ -1,12 +1,12 @@
 ---
 title: Packages
-description: The seven packages of Beffroi, what each one depends on, and which one you need.
+description: The eight packages of Beffroi, what each one depends on, and which one you need.
 ---
 
 # Packages
 
 Beffroi is developed as one monorepo, [`beffroi-auth/beffroi`](https://github.com/beffroi-auth/beffroi), and
-published as seven packages. Each package is split read-only into its own repository, so you can read the
+published as eight packages. Each package is split read-only into its own repository, so you can read the
 history of one part without the rest.
 
 | Package | Namespace | What it is | Repository |
@@ -18,6 +18,7 @@ history of one part without the rest.
 | `beffroi/saml2-bindings` | `Beffroi\Saml2\Bindings` | The HTTP-Redirect and HTTP-POST bindings | [beffroi-auth/saml2-bindings](https://github.com/beffroi-auth/saml2-bindings) |
 | `beffroi/xml-security` | `Beffroi\Xml` | A safe DOM, XML Signature and XML Encryption | [beffroi-auth/xml-security](https://github.com/beffroi-auth/xml-security) |
 | `beffroi/beffroi` | `App` | The provider, the application that carries the Symfony integration | [beffroi-auth/application](https://github.com/beffroi-auth/application) |
+| `beffroi/tui` | `Beffroi\Tui` | The terminal client of the administration of an instance: it talks to the administration API over HTTP and installs none of the packages above | [beffroi-auth/tui](https://github.com/beffroi-auth/tui) |
 
 ## Which one do I need?
 
@@ -58,6 +59,13 @@ history of one part without the rest.
 
     [:beffroi-arrow-right: The SAML packages](../saml/packages.md)
 
+=== "I administer an instance from a terminal"
+
+    `beffroi/tui` is the terminal client of the administration API of an instance: a client of the provider like
+    any other, which talks to it over HTTP and installs none of the packages above.
+
+    [:beffroi-arrow-right: The administration plane](../reference/endpoints.md#the-administration-plane)
+
 ## What depends on what
 
 The direction never reverses. The core knows nothing of the protocols, the protocols know nothing of each
@@ -76,6 +84,9 @@ graph RL
   model --> xml["beffroi/xml-security"]
 ```
 
+The terminal client, `beffroi/tui`, depends on none of them: it is a client of the administration API of an
+instance, and reads it over HTTP like any other client of the provider.
+
 Inside the pure-PHP packages of the provider, the core and the two protocols, the same rule is drawn again,
 in four layers: `Domain` holds the model and its rules, `Port` the interfaces the outside implements,
 `Application` the use cases that orchestrate them, and `Bridge` the implementations that need a library. A
@@ -86,10 +97,10 @@ not.
 
 | What | Which |
 |---|---|
-| PHP | 8.4 or later, with `intl`; `zip` for the application; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding |
-| Symfony | 8.2, for the application |
+| PHP | 8.4 or later, with `intl`; `zip` for the application; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding; `mbstring`, `openssl` and `sodium` for the terminal client |
+| Symfony | 8.2, for the application and the terminal client |
 | Database | PostgreSQL, through Doctrine ORM |
-| Licence | MIT, for all seven packages |
+| Licence | MIT, for all eight packages |
 
 The cryptography of the tokens and the credentials is not written here. Signatures and encryption of JOSE
 come from [`web-token/jwt-library`](https://github.com/web-token/jwt-framework), WebAuthn from

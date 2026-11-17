@@ -62,6 +62,10 @@ the row and the slug of the tenant. It gives the user no credential: a password 
 [`beffroi:user:set-password`](credentials/passwords.md), and a first passkey on a tenant that holds no password
 is an [enrolment ticket](credentials/passkeys.md#a-first-passkey-from-a-ticket).
 
+An administrator creates a person through the administration API as well, from their username and, when it is
+known, their address and whether it was verified, under the same refusals. Creating a person is an act of
+theirs, `person.created`, which names the administrator when one created them.
+
 A person is also created by an upstream identity provider, [at their first sign-in through their
 organisation](../saml/federated-sign-in.md#the-person). That person is named by their address, which is their
 username, the address is verified, and the source says which provider created them.
@@ -106,9 +110,18 @@ number and the postal address it wrote; reading a user without writing is `beffr
 | `phone_number`, `phone_number_verified` | `--phone-number`, `--phone-number-verified` |
 | `address` | `--address` for `formatted`, `--street-address`, `--locality`, `--region`, `--postal-code`, `--country` |
 
-The email address is not among them: it is given when the user is created, and rewritten afterwards only by
-the upstream provider that [created the person](../saml/federated-sign-in.md#the-person). No command renames a
-user either.
+The email address is not among them. It is given when the user is created, and rewritten afterwards by the
+upstream provider that [created the person](../saml/federated-sign-in.md#the-person), or by an administrator
+through the administration API. No command renames a user.
+
+### What an administrator says of a person
+
+An administrator changes the username and the claims of a person through the administration API, with one JSON
+merge patch (RFC 7396) of the document that reads the person: a claim set to `null` is taken away, and a new
+address or number is unverified until the patch says it was verified. All of it is written or none of it. A
+username another person of the tenant holds is refused, and so is a value that changes what the source of the
+person holds. Each value that changed is a line of the history of the person, which names the administrator,
+and the patch is one act, `person.described`, which carries the names of what changed and never a value.
 
 ### What a person says of themselves
 
@@ -165,8 +178,10 @@ bin/console beffroi:user:show alice
 It prints the username, the subject, whether the account is enabled, when it was created, the email address with
 its state and the source, then the name, the given name, the family name, the phone number and the postal
 address. Below them, one line per credential with its kind, identifier, name and dates, revoked ones
-included, and one line per group with the source of the membership and the date it was added. It writes
-nothing. The [console commands](../reference/console-commands.md) list what else reads a person:
+included, and for a passkey its authenticator: the model a source names, or `unknown` with its AAGUID, then
+what the enrolment proved, `declared`, `verified` or `enterprise`, the serial number an enterprise attestation
+carried, and `under a security alert` for a model the tenant admitted under one. Then one line per group with
+the source of the membership and the date it was added. It writes nothing. The [console commands](../reference/console-commands.md) list what else reads a person:
 `beffroi:user:sessions`, `beffroi:user:journal` and `beffroi:user:applications`.
 
 ## A disabled user
@@ -176,11 +191,22 @@ An account carries the date it was disabled, and a disabled person is refused at
 - every login, by password, by passkey or by code, after the credential was checked, so that the refusal
   costs what a wrong credential costs and says nothing of the state of the account;
 - a sign-in through an upstream provider, before anything the provider said is written;
-- an enrolment ticket, which is not issued for them and no longer opens anything once they are;
+- a ticket of any kind, for a passkey, a password or an authenticator application, which is not issued for them
+  and no longer opens anything once they are;
 - an assertion of a trusted issuer at the token endpoint (RFC 7523 §3) that names them;
-- an access token that names them, at UserInfo, at introspection, and presented to the token exchange
-  (RFC 8693).
+- an access token that names them, at UserInfo, at introspection, at the administration API, and presented to
+  the token exchange (RFC 8693);
+- a refresh token issued for them, at the token endpoint, refused with `invalid_grant`.
 
-Nothing else reads the state of the account: a session already open goes on serving the browser that holds it,
-and a refresh token goes on being exchanged at the token endpoint. `beffroi:user:show` says `disabled since` and
-the date. No command or page of the application disables or enables an account.
+**Disabling a person ends every session of theirs.** The account is disabled first, so that no session opens
+meanwhile, then each session ends as any other does: its clients are told through the back channel and its
+refresh tokens are revoked. Enabling the person again gives nothing back, and they sign in anew.
+
+``` bash
+bin/console beffroi:user:disable alice
+bin/console beffroi:user:enable alice
+```
+
+An administrator does the same through the administration API, and cannot disable the account they act with.
+Each is an act of the person, `person.disabled` or `person.enabled`. A person already in that state is left as
+they are, and nothing is written. `beffroi:user:show` says `disabled since` and the date.

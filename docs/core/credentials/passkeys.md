@@ -1,6 +1,6 @@
 ---
 title: Passkeys
-description: WebAuthn enrolment and assertion, what a passkey proves, the first passkey of a person who has nothing to sign in with, and the FIDO metadata.
+description: WebAuthn enrolment and assertion, what a passkey proves, what a tenant asks of its authenticator, the first passkey of a person who has nothing to sign in with, and the FIDO metadata.
 ---
 
 # Passkeys
@@ -24,7 +24,7 @@ passkey bound to its authenticator ([the classes it answers with](../tenants.md#
 | Challenge | 32 random bytes, drawn for each ceremony (§13.4.3 asks 16 at the least) |
 | Resident key | Required: a passkey is a discoverable credential (§5.4.6) |
 | User verification | Preferred and never required, so that a security key with no PIN enrols and signs in |
-| Attestation | None asked (§5.4.7) |
+| Attestation | What the [policy of the tenant](#what-the-enrolment-asks) asks (§5.4.7): `none` in the image, `direct` or `enterprise` |
 
 ## Enrolling one
 
@@ -42,14 +42,49 @@ five minutes before it lets a passkey be added.
 - **What comes back is checked against the options**: the challenge, the origin and the relying party, then the
   record. A credential ID the tenant already holds is refused (§7.1, step 26), so are options drawn for another
   person, a record without its backup flags and a credential of another type than `public-key`.
-- **An attestation an authenticator sends anyway is verified**, in the formats `packed`, `fido-u2f`,
-  `android-key`, `tpm` and `apple`. `none` is what is asked, and any other format is a refusal and never a pass.
-  The attestation is not kept, and no policy reads it afterwards.
+- **An attestation is verified whatever the policy asks**, in the formats `packed`, `fido-u2f`, `android-key`,
+  `tpm` and `apple`; the format `none`, no attestation at all, is taken as it is, and any other format is a
+  refusal and never a pass. The policy of the tenant then judges it, below. Its certificates are not kept: the
+  passkey keeps what the enrolment proved of its model.
 - **The floor of the tenant is asked once the passkey is known.** What a passkey proves is read from the flags of
   its creation, so a tenant whose floor is `phishing_resistant_hardware` refuses a synced passkey once the
   ceremony has answered, and admits one bound to its authenticator.
 
 A passkey enrolled writes the act `credential.enrolled` to the journal of the person.
+
+## What the enrolment asks
+
+The tenant names what the enrolment of a passkey asks of its authenticator, the attestation conveyance of
+WebAuthn Level 3 §5.4.7, in `BEFFROI_TENANT_PASSKEY_ATTESTATION`. The policy applies to every enrolment, a
+ticket's included.
+
+| Policy | What it enrols | What it refuses | What the passkey keeps |
+|---|---|---|---|
+| `none`, in the image | Every passkey | Nothing more | The model its authenticator declares |
+| `direct` | Every passkey. A full attestation, `basic`, `attca` or `anonca`, of an AAGUID the [FIDO metadata](#the-fido-metadata) know is checked up to the root their statement names | An attestation that does not verify, and a model under a security alert | The model, verified by its attestation, or declared |
+| `enterprise` | An attestation that chains up to a root of `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` and carries the serial number of its authenticator (§8.2.2), or one that chains up to an authority of the tenant itself, `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS`, under which no serial number is asked | Every other one, and a model under a security alert | `enterprise`, and the serial number when there is one, sealed |
+
+A browser gives an enterprise attestation only for a relying party identifier its configuration, or the
+configuration of the authenticator, permits (§5.4.7), here the host of the issuer.
+
+**A model under a security alert** is one whose last status report in the FIDO metadata is a security
+notification (FIDO Metadata Service v3.1.1 §3.1.4.2). `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` admits one
+under `direct` and `enterprise`, by the AAGUID of its authenticator, until a day written as `2027-03-31`, in UTC
+and included: a passkey of that model enrols until then and is marked under alert, and the refusal returns the
+day after.
+
+**A person refused by the policy is told why** on the page that enrolled: "Your organisation accepts only the
+keys it gave you. Use one of them." under `enterprise`, and "This model of authenticator is under a security
+alert and is no longer accepted. Use another one." for a model under alert. An attestation that does not verify
+is refused as any other passkey the provider refuses. The page of the passkeys and `beffroi:user:show` say what
+each enrolment proved: the model declared, verified by its attestation, or attested for the organisation with
+its serial number, and a model admitted under alert.
+
+**What the policy cannot read is refused** by the first request or command that reads the tenant: a name no
+wired policy carries, naming the ones that are wired; `enterprise` with no root at all; a root that is not one
+certificate in PEM, or the certificate of no certificate authority (RFC 5280 §4.2.1.9); roots under `none` or
+`direct`, which read none; a model admitted under alert under `none`, which proves no model; an AAGUID that is
+not one, or admitted twice; and a day written otherwise.
 
 ## Signing in with one
 
@@ -87,7 +122,7 @@ another flag is refused, as a revoked passkey is, rather than rewriting the reco
 ## A first passkey from a ticket
 
 A person created on a tenant that signs its people in by passkey has nothing to sign in with, and no password to
-be given. An administrator issues them a ticket instead:
+be given. An operator issues them a ticket instead:
 
 ``` bash
 bin/console beffroi:user:enrolment-ticket alice
@@ -95,7 +130,10 @@ bin/console beffroi:user:enrolment-ticket alice
 
 The command prints a link, `/enrol/{ticket}/{value}` under the issuer, once, with the instant it opens until, and
 the row keeps a hash of what the link carries, so a store read by somebody else opens nothing. Whoever issued it
-hands it over.
+hands it over. An administrator issues one through the administration API as well, which answers the link and
+that instant once, and the terminal client of the administration shows the link as a QR code the device that
+will hold the passkey scans. A ticket opens the enrolment of a passkey whether the person holds one already or
+not, so it also serves a person who lost theirs.
 
 - **It opens one enrolment, once.** The page asks the browser for a passkey, and the ticket is spent only when the
   passkey is in the rows: a ceremony that could not finish leaves the person their link.
@@ -111,7 +149,10 @@ disabled person, is answered by the same page with the status `404`, and each of
 the answer nor its time says which it was. An identifier that is not a UUID is no ticket at all, and is answered
 `404` without a hash. The passkey the ticket poses is enrolled under the same rules as any
 other, the floor of the tenant included. The page needs a browser that can hold a passkey, and says so to one that
-cannot. Issuing a ticket is an act of the journal of that person, `enrolment_ticket.issued`.
+cannot. Issuing a ticket is an act of the journal of that person, `enrolment_ticket.issued`, which names the
+administrator when one issued it. A [password](passwords.md#setting-one) and an [authenticator
+application](totp.md#from-a-ticket) have tickets of their own, which open the same way: once, for seventy-two
+hours, one at a time.
 
 ## Renaming and revoking
 
@@ -121,8 +162,8 @@ field to rename it.
 
 Revoking one is asked for a proof made in the last five minutes, since it is the gesture that can leave somebody
 with no way in at all. The passkey never authenticates again and its line stays, listed as revoked with its date;
-the sessions it opened are left as they are. An operator revokes one with `beffroi:user:revoke-credential`, which
-[credentials](index.md#revoked-and-forgotten) describes.
+the sessions it opened are left as they are. An operator revokes one with `beffroi:user:revoke-credential`, and an
+administrator through the administration API, which [credentials](index.md#revoked-and-forgotten) describes.
 
 ## Not for the people of an organisation
 
@@ -147,7 +188,10 @@ bin/console beffroi:webauthn:mds-import vendor-statement.json
 | `beffroi:webauthn:mds-refresh` | The Metadata BLOB of `https://mds.fidoalliance.org/`, or of each `--url` given, verified before anything is kept: one signature, made by the first certificate of its chain, the chain leading to the root it pins, `GlobalSign Root R46` shipped with the application unless `--root` names another, as a PEM or DER file or an `https` URL. No redirect is followed, and a refused blob keeps nothing |
 | `beffroi:webauthn:mds-import` | Metadata statements a manufacturer publishes for keys the service does not list, or that the FIDO conformance tools ship, one authenticator per file, unsigned and trusted as the file is |
 
-What reads them is a ceremony whose options ask for an attestation: an authenticator its status reports name as
-compromised is refused, a full attestation is checked up to the root its statement names, and an AAGUID the
-metadata do not know is refused on a full attestation and passed on a self attestation. The enrolment of the
-provider asks for no attestation, so a deployment that never ran either command enrols passkeys all the same.
+The enrolment reads them under the policies that ask for an attestation. Under `direct`, a full attestation of
+an AAGUID the metadata know is checked up to the root its statement names and its model is verified, and any
+other attestation leaves the model declared, an AAGUID the metadata do not know included. Under `direct` and
+`enterprise`, a model under a security alert is refused, save one the tenant admits until a day it names. A
+deployment that never ran either command enrols passkeys all the same. The endpoints the FIDO conformance tools
+drive keep the rules of the library, the metadata and the status reports included, and never read the policy
+of the tenant.
