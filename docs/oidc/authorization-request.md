@@ -151,7 +151,7 @@ and beneath it the `error` and the `error_description` for whoever develops the 
 | `invalid_authorization_details` | A detail of a type the provider does not serve or the client did not register, or that its type refuses |
 | `login_required`, `consent_required` | A page was needed and the request said `prompt=none` |
 | `unmet_authentication_requirements` | An essential `acr` that cannot be met (OIDC Core §5.5.1.1) |
-| `access_denied` | The person refused on the consent page |
+| `access_denied` | The person refused on the consent page, or the request names the [administration API](resources.md#the-administration-api) of the tenant and the person signed in does not administer it |
 
 A request whose person signs in through an upstream identity provider has more answers, all sent back the
 same way ([signing in through an organisation](../saml/federated-sign-in.md)): `access_denied` when that

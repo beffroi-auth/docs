@@ -53,7 +53,8 @@ that are wired.
     registrations and no more, expiring, and revocable. It opens no other endpoint and carries no scope. It
     says that whoever holds it may register a client with this tenant, and what the tenant gives every client
     it registers: the resources, the shape of access token, the binding, the token exchange and the `may_act`
-    it was issued with ([what the image does not set](clients.md#what-the-image-does-not-set)).
+    it was issued with ([what the image does not set](clients.md#what-the-image-does-not-set)), and whether
+    they are clients of the administration API of the tenant.
 
     ``` http
     POST /register HTTP/1.1
@@ -85,6 +86,14 @@ that are wired.
     provider does not serve is not issued. `beffroi:client:token:list` shows what each token has served of
     what it is worth, what it gives, and whether it still authorises anything. `beffroi:client:token:revoke`
     takes one back at once, and the clients it registered stay.
+
+    `--administration` issues a token for the administration of the tenant, which a tenant that names no
+    administration API refuses. The clients it registers authenticate with a key, `private_key_jwt` or a
+    certificate, and a registration that names a method proving a secret, or none at all, is refused with
+    `invalid_client_metadata`. They hold the [administration API](resources.md#the-administration-api) of the
+    tenant and no other resource, so such a token names no `--resource`. `beffroi:client:token:list` says of
+    each token whether it is one. An administrator issues, lists and revokes initial access tokens through
+    the administration API as well.
 
 === "A software statement"
 
@@ -269,8 +278,10 @@ One run deletes a hundred clients at most, and the next run takes the rest; what
 log. A tenant that registers nobody deletes nothing, and a client the configuration declares, which the image
 holds none of, is never deleted.
 
-Each deletion, by the step, by the client itself or by `beffroi:client:delete`, emits the same
-`RegisteredClientDeleted` event.
+Each deletion, by the step, by the client itself, by `beffroi:client:delete` or by an administrator through the
+administration API, emits the same `RegisteredClientDeleted` event, which names the administrator when one
+deleted it. The administration API refuses a client the configuration declares, as the command does, and the
+client the administrator acts through.
 
 ## Refusals
 

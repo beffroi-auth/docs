@@ -142,6 +142,7 @@ follow ([translations](../application/translations.md)).
 | What happened | The client | The person |
 |---|---|---|
 | The person refused on the consent page | `access_denied` at its redirect URI, with `state` and `iss` | Is sent back to the client |
+| The request names the [administration API](resources.md#the-administration-api) of the tenant, and the person does not administer it | `access_denied` at its redirect URI, with `state` and `iss` | Is sent back to the client once signed in, before any consent |
 | `prompt=none`, and a page was needed | `login_required` or `consent_required` at its redirect URI | Sees no page |
 | An essential `acr` could not be met | `unmet_authentication_requirements` at its redirect URI | Sees no page, or is sent back after the login |
 | The interaction waited more than ten minutes | Nothing | Reads a page, `400`, saying the request took too long; once the expired interaction has been purged, which a timed step does every hour, saying no request is waiting for it |

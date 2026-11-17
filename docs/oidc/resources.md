@@ -11,9 +11,10 @@ receives a token addressed elsewhere has what it needs to refuse it. A request m
 resource gets a token addressed to the client itself, which is the token UserInfo accepts.
 
 **A client asks only for the resources it holds.** What a client may name is the closed list of its
-`resources`. A client of the image holds one only when the initial access token it registered with gave it,
-and a client that holds none has every `resource` parameter refused and every access token addressed to
-itself.
+`resources`. A client of the image holds one only when the initial access token it registered with gave it:
+the resources the token names, or, for a token issued for the administration, the [administration
+API](#the-administration-api) of the tenant and nothing else. A client that holds none has every `resource`
+parameter refused and every access token addressed to itself.
 
 ## Registering resources
 
@@ -22,8 +23,10 @@ byte for byte with what a request names. It is a member of the deployment: a cli
 itself](dynamic-registration.md) and sends it is refused with `invalid_client_metadata`, and the registration
 policy of a tenant writes none. A client of the image holds the resources the initial access token it
 registered with gives, which the console issues with `--resource`, once per resource, and keeps them when it
-replaces its registration ([what the image does not set](clients.md#what-the-image-does-not-set)). A client
-that holds none asks for none.
+replaces its registration ([what the image does not set](clients.md#what-the-image-does-not-set)). A token
+issued with `--administration` names no resource: the clients it registers hold the administration API, the
+one `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names when the client is read. A client that holds none asks for
+none.
 
 ``` bash
 bin/console beffroi:client:token:issue 'Billing team' --resource=https://api.example.com/
@@ -87,6 +90,36 @@ exchange](grants/token-exchange.md) only when its initial access token gave it `
 the deployment as well. The device authorization endpoint and the backchannel authentication endpoint read
 `resource` when the flow starts, and refuse a value the client does not hold with `invalid_target` in their own
 JSON; a request that names none there gets a token addressed to the client, a person being behind those flows.
+
+## The administration API
+
+`BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names the administration API of the tenant, an absolute URI without a
+fragment, the URL the API is served at, and the provider reserves that audience to the people who
+[administer the tenant](../core/groups.md#who-administers-the-tenant). A client of the image holds it only when
+it registered with an initial access token issued for the administration:
+
+``` bash
+bin/console beffroi:client:token:issue 'Administration' --administration
+```
+
+Such a client authenticates with a key, `private_key_jwt` or a certificate, and never with a secret it shares
+with the provider, and it holds that API and no other resource. A tenant that names no administration API
+reserves nothing, and refuses to issue such a token.
+
+- **At the authorization endpoint**, a request that names the API asks for `phr`, essential, in place of
+  whatever it asked for and whatever the floor of the tenant: a person who cannot prove it is answered
+  `unmet_authentication_requirements` (OIDC Core §5.5.1.1). A person who proved it and does not administer the
+  tenant is answered `access_denied` at the redirect URI, before any consent (RFC 6749 §4.1.2.1).
+- **The device authorization endpoint and the backchannel authentication endpoint** refuse it with
+  `invalid_target`, before anybody is asked: whoever holds a client can start those flows, and an administrator
+  who approved one on another device would hand it the tokens (RFC 8628 §5.4).
+- **An access token is addressed to it** only for a person signed in at the authorization endpoint by a session
+  whose proofs satisfy `phishing_resistant`, who administers the tenant when the token is minted, and only bound
+  to a key of the client, by DPoP (RFC 9449) or by a certificate (RFC 8705 §3), whatever the grant.
+  `client_credentials` and the JWT bearer grant, which have nobody signed in behind them, obtain none, and a
+  refresh is refused once the person has left the group. The refusal is `invalid_target`, whose description
+  says that the resource is reserved and nothing of the person.
+- **The discovery document never announces it**, below.
 
 ## What the tenant announces
 

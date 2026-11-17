@@ -85,7 +85,7 @@ endpoint, then:
 | `acr_values` | Optional: the classes the client would like the authentication to reach, in its order of preference |
 | `requested_expiry` | Optional: a positive number of seconds the request should live. More than the ceiling is served the ceiling, not refused |
 | `client_notification_token` | Required of a `ping` client and refused from a `poll` one: what the provider presents when it pings, a bearer token (RFC 6750 §2.1) of 22 to 1024 characters |
-| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client that holds no resource has a `resource` it names refused with `invalid_target` |
+| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client that holds no resource has a `resource` it names refused with `invalid_target`, and so has any client the [administration API](../resources.md#the-administration-api) of the tenant |
 | `user_code` | Refused: the provider takes none, and says so in `backchannel_user_code_parameter_supported` |
 | `request` or `request_uri` | The request as a signed request object (CIBA Core §7.1.1), whose parameters are then the request |
 

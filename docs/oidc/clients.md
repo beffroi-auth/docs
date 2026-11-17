@@ -176,17 +176,17 @@ client is at the value the reader takes when it is left out:
 | `requires_consent` | `true`: the [consent page](consent.md) is shown for every client. No token gives it |
 | `requires_pkce` | `true`: every authorization request carries a `code_challenge`, the ones of confidential clients included. No token gives it |
 | `access_token_format` | The first shape wired, `jwt`, every access token being an `at+jwt` ([access tokens](tokens/access-tokens.md)), unless its token was issued with `--access-token-format opaque` |
-| `resources` | The resources its token was issued with, `--resource` once per resource. A client given none asks a token for no resource, a `resource` parameter is refused with `invalid_target`, its access tokens are addressed to itself ([resources](resources.md)), and [`client_credentials`](grants/client-credentials.md) and the [JWT bearer grant](grants/jwt-bearer.md) issue it no token |
+| `resources` | The resources its token was issued with, `--resource` once per resource, or, for a token issued with `--administration`, the [administration API](resources.md#the-administration-api) of the tenant and nothing else. A client given none asks a token for no resource, a `resource` parameter is refused with `invalid_target`, its access tokens are addressed to itself ([resources](resources.md)), and [`client_credentials`](grants/client-credentials.md) and the [JWT bearer grant](grants/jwt-bearer.md) issue it no token |
 | `token_exchange` | What its token was issued with, `--exchange-subject-token-type` once per type and `--exchange-for-a-user`. A client given none is not registered for the [token exchange](grants/token-exchange.md), and a client given it registers the grant as well |
 | `may_act` | The party its token names with `--may-act`, and none otherwise |
 | `require_sender_constrained_tokens` | `true` when its token was issued with `--require-sender-constrained-tokens`. Otherwise `false`: a client that proves neither a certificate nor a key is answered with bearer tokens, unless it registered `tls_client_certificate_bound_access_tokens` or `dpop_bound_access_tokens`, for which a request without a certificate, or without a DPoP proof, is refused |
 
 What a token gives is read when the token is issued, so a token that gives what the provider does not serve, a
 shape it does not write for instance, is not issued. A client keeps what its token gave when it replaces its
-registration, and no answer of the registration endpoints carries it. The PKCE exemption of the registration
-policy, `client_registration.exempt_confidential_clients_from_pkce`, is not set either. The development
-configuration writes some of these members on the clients it declares, and the exemption in its registration
-policy.
+registration, a client of the administration included, and no answer of the registration endpoints carries it.
+The PKCE exemption of the registration policy, `client_registration.exempt_confidential_clients_from_pkce`, is
+not set either. The development configuration writes some of these members on the clients it declares, and the
+exemption in its registration policy.
 
 ## The addresses a client registers
 

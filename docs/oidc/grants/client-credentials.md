@@ -49,6 +49,8 @@ The answer carries the `client_id` the provider drew and the `client_secret`, sa
     `--resource` once per API ([dynamic registration](../dynamic-registration.md#the-three-modes)). A client
     that holds none has every request of this grant whose scopes hold refused with `invalid_target`, whether
     it names a resource or not ([what the image does not set](../clients.md#what-the-image-does-not-set)).
+    The [administration API](../resources.md#the-administration-api) of the tenant is never addressed under
+    this grant, which has nobody signed in behind it.
 
     ``` bash
     bin/console beffroi:client:token:issue 'Billing service' --resource=https://invoices.example.com/

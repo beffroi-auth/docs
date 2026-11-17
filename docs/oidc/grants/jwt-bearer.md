@@ -89,7 +89,9 @@ issued only to a client that authenticates itself.
     client holds the resources the initial access token it registered with gives, issued with `--resource`
     once per API ([dynamic registration](../dynamic-registration.md#the-three-modes)). A client that holds
     none has every request it makes with an assertion this provider accepts refused with `invalid_target`
-    ([what the image does not set](../clients.md#what-the-image-does-not-set)).
+    ([what the image does not set](../clients.md#what-the-image-does-not-set)). The [administration
+    API](../resources.md#the-administration-api) of the tenant is never addressed under this grant, which
+    has nobody signed in at the provider behind it.
 
 The assertion is the authorization, not the authentication of the client (RFC 7523 §2.1): the client
 authenticates beside it with the method it registered, as for every other grant. The two readings of an

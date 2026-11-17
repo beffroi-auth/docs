@@ -60,7 +60,7 @@ then reads what it asks for. Its errors are the JSON of RFC 6749 §5.2, never a 
 | Parameter | |
 |---|---|
 | `scope` | Required, among the scopes the client registered. RFC 8628 §3.1 makes it optional; here it is what the person is shown, and a request naming nothing would ask them to agree to everything the client ever registered |
-| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client that holds no resource has a `resource` it names refused with `invalid_target` |
+| `resource` | Optional and repeatable, among the resources the client registered (RFC 8707 §2). A client that holds no resource has a `resource` it names refused with `invalid_target`, and so has any client the [administration API](../resources.md#the-administration-api) of the tenant |
 
 | Refusal | Error |
 |---|---|
