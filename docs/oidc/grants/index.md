@@ -44,10 +44,11 @@ refusal:
     - and nothing else: a request that would bind both a certificate and a key is refused with
       `invalid_dpop_proof`.
 
-    A client registered with `require_sender_constrained_tokens` whose request binds nothing, and a client
-    registered with `tls_client_certificate_bound_access_tokens` whose request presents no certificate, are
-    refused with `invalid_request` before anything the request came to spend is read. On a deployment of the
-    image, the first is given by the initial access token the client registered with ([what the image does not
+    A client registered with `require_sender_constrained_tokens` whose request binds nothing, a client
+    registered with `tls_client_certificate_bound_access_tokens` whose request presents no certificate, and a
+    client registered with `dpop_bound_access_tokens` whose request carries no DPoP proof, are refused with
+    `invalid_request` before anything the request came to spend is read. On a deployment of the image, the
+    first is given by the initial access token the client registered with ([what the image does not
     set](../clients.md#what-the-image-does-not-set)).
 
 3. **The grant type.** `grant_type` is looked up among the grants the provider is wired with, and a name

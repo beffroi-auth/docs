@@ -52,17 +52,18 @@ key the earlier tokens were not bound to.
 
 ## A client that must bind
 
-Two members of a registration refuse a token request rather than answer it with bearer tokens. Both are read
-at the token endpoint, after the client has authenticated and before the grant is read, and both refuse with
-`invalid_request`, status `400`.
+Three members of a registration refuse a token request rather than answer it with bearer tokens. All three are
+read at the token endpoint, after the client has authenticated and before the grant is read, and all three
+refuse with `invalid_request`, status `400`.
 
 | Member | What a token request of that client must prove | Who sets it |
 |---|---|---|
 | `require_sender_constrained_tokens` | A certificate its tokens are bound to, or a DPoP key, whichever (FAPI 2.0 Security Profile §5.3.2.1) | The initial access token the client registered with, issued with `--require-sender-constrained-tokens`. It is a member of the deployment: a client that registers itself and sends it is refused with `invalid_client_metadata` ([what the image does not set](../clients.md#what-the-image-does-not-set)) |
 | `tls_client_certificate_bound_access_tokens` | The certificate of its connection, whatever way it authenticates (RFC 8705 §3.4) | The client, when it registers, RFC 8705 §3.4 making it a member of a registration |
+| `dpop_bound_access_tokens` | A DPoP key (RFC 9449 §5.2) | The client, when it registers. It is refused beside `tls_client_certificate_bound_access_tokens` and beside a method that authenticates with a certificate, whose tokens are bound to the certificate |
 
-A client that registers itself and must bind registers the second, or is given the first by its initial
-access token ([dynamic registration](../dynamic-registration.md)):
+A client that registers itself and must bind registers one of the last two, or is given the first by its
+initial access token ([dynamic registration](../dynamic-registration.md)):
 
 ``` json
 {
@@ -78,11 +79,12 @@ Its token requests go to the token endpoint of the host that asks for a certific
 for none ([mutual TLS](mutual-tls.md#the-endpoint-aliases)). The image serves that host once a deployment
 turns it on, with `CADDY_EXTRA_CONFIG` and `MTLS_SERVER_NAME`: until then no host asks for a certificate, and
 every token request of such a client is refused with `invalid_request`.
-`tls_client_certificate_bound_access_tokens` defaults to `false`, and no variable binds the tokens of every
-client. Nothing holds a client to DPoP either: the provider reads no `dpop_bound_access_tokens` (RFC 9449
-§5.2), and a registration that carries it is refused with `invalid_client_metadata`, as one carrying any
-member the provider does not read is. A client binds its tokens to a key by sending a proof with its token
-requests.
+`tls_client_certificate_bound_access_tokens` and `dpop_bound_access_tokens` default to `false`, and no
+variable binds the tokens of every client. A client that registers `dpop_bound_access_tokens: true` has every
+token request that carries no DPoP proof refused with `invalid_request` (RFC 9449 §5.2). A registration that
+names it beside `tls_client_certificate_bound_access_tokens`, or beside a method that authenticates with a
+certificate, is refused with `invalid_client_metadata`: a token is bound to one thing. A client binds its
+tokens to a key by sending a proof with its token requests.
 
 ## Where the binding is checked
 

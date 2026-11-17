@@ -126,6 +126,7 @@ set](#what-the-image-does-not-set) says what every client of the image has other
 | `access_token_format` | *Deployment.* The shape of its access tokens: `jwt` or `opaque`. See [access tokens](tokens/access-tokens.md) |
 | `require_sender_constrained_tokens` | *Deployment.* A token request that proves neither a certificate nor a key is refused with `invalid_request` rather than answered with bearer tokens |
 | `tls_client_certificate_bound_access_tokens` | Its tokens are bound to the certificate of its connection whichever way it authenticated (RFC 8705 §3.4), and a token request that presents none is refused with `invalid_request` |
+| `dpop_bound_access_tokens` | Its tokens are bound to a key it proves with DPoP (RFC 9449 §5.2), and a token request that carries no DPoP proof is refused with `invalid_request`. `false` by default. A client whose tokens are bound to its certificate cannot register it. See [sender-constrained tokens](sender-constrained/index.md#a-client-that-must-bind) |
 | `id_token_signed_response_alg` | The algorithm its ID tokens and logout tokens are signed with. Left out, `RS256`, the first algorithm wired |
 | `id_token_encrypted_response_alg`, `id_token_encrypted_response_enc` | Its ID tokens encrypted to one of its keys once signed. The two go together, neither has a default |
 | `userinfo_signed_response_alg` | Its UserInfo answer as a signed JWT (`application/jwt`). Left out, plain JSON |
@@ -178,7 +179,7 @@ client is at the value the reader takes when it is left out:
 | `resources` | The resources its token was issued with, `--resource` once per resource. A client given none asks a token for no resource, a `resource` parameter is refused with `invalid_target`, its access tokens are addressed to itself ([resources](resources.md)), and [`client_credentials`](grants/client-credentials.md) and the [JWT bearer grant](grants/jwt-bearer.md) issue it no token |
 | `token_exchange` | What its token was issued with, `--exchange-subject-token-type` once per type and `--exchange-for-a-user`. A client given none is not registered for the [token exchange](grants/token-exchange.md), and a client given it registers the grant as well |
 | `may_act` | The party its token names with `--may-act`, and none otherwise |
-| `require_sender_constrained_tokens` | `true` when its token was issued with `--require-sender-constrained-tokens`. Otherwise `false`: a client that proves neither a certificate nor a key is answered with bearer tokens, unless it registered `tls_client_certificate_bound_access_tokens`, for which a request without a certificate is refused |
+| `require_sender_constrained_tokens` | `true` when its token was issued with `--require-sender-constrained-tokens`. Otherwise `false`: a client that proves neither a certificate nor a key is answered with bearer tokens, unless it registered `tls_client_certificate_bound_access_tokens` or `dpop_bound_access_tokens`, for which a request without a certificate, or without a DPoP proof, is refused |
 
 What a token gives is read when the token is issued, so a token that gives what the provider does not serve, a
 shape it does not write for instance, is not issued. A client keeps what its token gave when it replaces its
@@ -226,6 +227,9 @@ its grants do not call for, or call for and lack; the rule a public client's loo
   `self_signed_tls_client_auth`, a `request_object_signing_alg` naming an algorithm, and any encrypted
   response. An inline `jwks` holds a key every encryption the client registered can be addressed to.
 - `tls_client_auth` comes with exactly one of the five certificate values, and every other method with none.
+- `dpop_bound_access_tokens` is refused to a client whose tokens are bound to its certificate, by
+  `tls_client_certificate_bound_access_tokens` or by a method that authenticates with a certificate: a token is
+  bound to one thing (RFC 9449 §5.2, RFC 8705 §3).
 - The client is registered for at least one grant. `refresh_token` comes with a grant that issues one:
   `authorization_code`, the device code or the backchannel grant.
 - A client of `authorization_code` registers at least one redirect URI, and a client of no grant that sends a
