@@ -21,7 +21,7 @@ like everything else it sets:
 |---|---|
 | `BEFFROI_TENANT_NAME` | The name of the tenant, the host of the issuer when the variable is empty |
 | `BEFFROI_TENANT_LOGO_URI` | The logo of the tenant, the placeholder mark the application serves at `/tenant-logo.svg` when the variable is empty |
-| `BEFFROI_TENANT_PRIMARY_COLOR` | The colour the buttons and the links are drawn in |
+| `BEFFROI_TENANT_PRIMARY_COLOR` | The colour the buttons are drawn in, and the links mixed with the colour of the text |
 | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | The colour of what is written on them, named with the one above or not at all |
 
 A change of one of them is written to [the row of the tenant](../core/tenants.md#its-row) by
@@ -67,6 +67,7 @@ The templates read what they show of the provider through these functions and fi
 | `beffroi_locale_choice()` | The same list, or none when the record of a signed-in person decided the language of the page |
 | `beffroi_moment` | A date, on the clock of the person, in the words of the language of the page, the zone always named |
 | `beffroi_place`, `beffroi_device` | Where a request came from, and the browser it named |
+| `trans_with_client` | A message translated with the name a client gave itself (OIDC Registration §2) set apart in it, in `<b data-client-name>`: the sentence, the name and every parameter are escaped, so nothing a client writes reaches the page as markup, and a reader tells what the client says of itself from what the provider says |
 | `beffroi_authenticator` | The make and model of the authenticator a passkey declared, as the first source that knows its AAGUID gives them, the FIDO metadata before the list of the community: a name, a logo when the source has one, a FIDO certification from the metadata alone, and the source. Nothing when no source knows the AAGUID, or when it is sixteen zero bytes. The page of the passkeys reads it from what the console stored, so it fetches nothing |
 
 Three more draw the page rather than the provider: `theme()`, the theme the document is rendered in, which
@@ -83,11 +84,11 @@ stands in for it, so a reader who does not see the image is told who they came f
 browser of the visitor, never by the provider, and with no referrer. A deployment that names no logo shows the
 placeholder mark of the application.
 
-The two colours the tenant declares, the one the buttons and the links are drawn in and the one of what is
-written on them, are written by `document.html.twig` as the two custom properties DaisyUI draws a primary
-surface from, `--color-primary` and `--color-primary-content`, for both themes, in a `style` element that
-carries the nonce of the response and comes after the stylesheet. A tenant that declares no colour leaves the
-element off, and the theme answers.
+The two colours the tenant declares, the one the buttons are drawn in and the one of what is written on them,
+are written by `document.html.twig` as the two custom properties DaisyUI draws a primary surface from,
+`--color-primary` and `--color-primary-content`, for both themes, in a `style` element that carries the nonce
+of the response and comes after the stylesheet. A tenant that declares no colour leaves the element off, and
+the theme answers.
 
 Reading the tenant names the origin its logo is served from: every page that reads `beffroi_tenant()`, which
 every page that extends the layout does, adds that origin to the `img-src` of the policy its answer carries,

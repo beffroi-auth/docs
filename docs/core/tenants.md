@@ -32,7 +32,7 @@ BEFFROI_TENANT_SELF_SERVED_CLAIMS='["name","given_name","family_name","locale","
 | `BEFFROI_TENANT_SLUG` | `default` | The stable name of the tenant, from which its identifier is derived. Renaming it is creating another tenant |
 | `BEFFROI_TENANT_NAME` | empty | What the pages call it. Empty, the host of the issuer |
 | `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL with no fragment and no credentials, plain HTTP on a loopback host only. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. The logo is loaded by the browser of the visitor, never by the provider |
-| `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons and the links of the pages are drawn in: `#` and three or six hexadecimal digits |
+| `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: `#` and three or six hexadecimal digits |
 | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | `#ffffff` | The colour of what is written on it, in the same notation. The two colours are named together or not at all, and two empty variables are no colour, the pages keeping their own |
 | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the application lets a person change, from `name` to `phone_number` | The claims the people of this tenant may change of themselves on the page of their account, a JSON list. A tenant whose directory owns the data opens none, `[]` |
 | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | `{}` | The `acr` vocabulary of the tenant, below. `{}` is the default policy |
