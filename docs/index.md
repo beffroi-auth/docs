@@ -20,11 +20,11 @@ Beffroi paints that last box the same colour as the other two.</p>
 
 </div>
 
-!!! info "This documentation describes a version that is not released yet"
+!!! info "Beffroi is 0.x"
 
-    It follows `0.1.x`, where the next minor version is written. The released version is `0.0`, one entry
-    away in the selector at the top of the page. Every page here states what the code does today, in the
-    branch this version of the documentation follows. What is not written yet is marked as a stub rather
+    This documentation follows `0.0.x`, released as `0.0.0`. Until `1.0` the public API may change between
+    minor versions, and only the latest release is supported ([versions](the-project/versions.md)). Every
+    page here states what the code does in that branch. What is not written yet is marked as a stub rather
     than guessed at.
 
 <div class="grid cards" markdown>
