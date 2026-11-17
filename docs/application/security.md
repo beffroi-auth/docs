@@ -12,9 +12,9 @@ session of the provider, which records what was proven.
 
 ## The firewalls
 
-Besides the one of its development tools, the application declares two firewalls: the protocol endpoints,
-which authenticate their clients themselves and open no session, and the interaction pages, where the logins
-of the provider live.
+Besides the one of its development tools, the application declares three firewalls: the administration API,
+guarded by the token of each request; the protocol endpoints, which authenticate their clients themselves and
+open no session; and the interaction pages, where the logins of the provider live.
 
 ``` yaml title="config/packages/security.yaml"
 security:
@@ -25,6 +25,9 @@ security:
     firewalls:
         dev:
             pattern: ^/(_profiler|_wdt|assets|build)/
+            security: false
+        beffroi_administration:
+            request_matcher: App\Administration\AdministrationRequestMatcher
             security: false
         beffroi_protocol:
             pattern: ^/(\.well-known/(openid-configuration|oauth-authorization-server)|jwks|token|userinfo|introspect|revoke|par|device_authorization|backchannel_authentication|register(/.+)?)$
@@ -46,6 +49,7 @@ security:
 | Firewall | What it covers |
 |---|---|
 | `dev` | The profiler, its toolbar and the static assets of the application |
+| `beffroi_administration` | The routes of the administration API, matched by their names, which only a process of that plane loads. Nothing there reads a cookie or starts a session: `App\Administration\AdministrationGuard` holds every request to its access token before its controller runs, and answers a refusal under the challenge of its scheme (RFC 6750 §3, RFC 9449 §7.1) |
 | `beffroi_protocol` | The paths its pattern lists: the discovery document and the RFC 8414 metadata, the JWK Set, and the token, UserInfo, introspection, revocation, pushed authorization, device authorization, backchannel authentication and registration endpoints. Nothing there reads a cookie or starts a session: a client authenticates at the endpoint, and a bearer token is checked by the endpoint that receives it |
 | `beffroi_interaction` | Every other path: the pages a browser reads, where the four logins of the provider are, and the metadata of both SAML roles, `/saml/metadata`, `/saml/sp/metadata` and `/saml/sp/metadata/{identityProvider}`, which are routes of the protocol plane the pattern above does not list |
 

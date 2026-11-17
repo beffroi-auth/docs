@@ -83,8 +83,8 @@ Their names, `beffroi_fido_conformance_*` and `beffroi_ciba_conformance_approval
 | Plane | Route names | Who calls it | What is on it |
 |---|---|---|---|
 | Protocol | `beffroi_protocol_*` | A client or a resource server, server to server | The discovery document and the RFC 8414 metadata, the JWK Set, the token, UserInfo, introspection, revocation, pushed authorization, device authorization, backchannel authentication and registration endpoints, and the metadata of both SAML roles |
-| Interaction | `beffroi_interaction_*` | A browser, with a person in front of it | The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the enrolment of a first passkey, the choice of a language and of a theme, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to |
-| Administration | `beffroi_administration_*` | A client of the administration API, with the token of an administrator of the tenant | The tenant, its clients and its signing keys, the statistics and the health of the instance, and the people of the tenant: finding and creating one, their open sessions and ending one, revoking a credential, their journal, and the ticket that lets a person enrol a passkey |
+| Interaction | `beffroi_interaction_*` | A browser, with a person in front of it | The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the pages a ticket opens, where a person poses a passkey, a new password or an authenticator application without a session, the choice of a language and of a theme, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to |
+| Administration | `beffroi_administration_*` | A client of the administration API, with the token of an administrator of the tenant | The tenant, its clients and deleting one that registered itself, its initial access tokens, its signing keys, the statistics and the health of the instance, its groups and their members, and the people of the tenant: finding, creating, changing, disabling and enabling one, their open sessions and ending one, revoking a credential, their journal, the applications they agreed to and taking a consent back, and the tickets that let a person pose a passkey, a new password or an authenticator application |
 
 [:beffroi-arrow-right: Every route, with its method and path](../reference/endpoints.md)
 
@@ -100,7 +100,7 @@ are the ones a development stack adds, the endpoints of the conformance tools ab
 | `provider` | The interaction and protocol planes, and the routes of no plane, never the administration API. The default when the variable is not set, and what `.env` says |
 | `interaction` | The routes of the interaction plane, and the routes of no plane |
 | `protocol` | The routes of the protocol plane, and the routes of no plane |
-| `administration` | The administration API alone: the process routes a request to the API and to nothing else. It is the value the worker of `/etc/frankenphp/administration.Caddyfile` sets |
+| `administration` | The administration API alone: the process routes a request to the API and to nothing else. It is the value the worker of `/etc/frankenphp/administration.Caddyfile` sets, and that worker keeps it whatever `BEFFROI_PLANE` the container sets |
 
 The variable is read by the process and not compiled into the container, so one build serves the first three. A
 process of the administration, whose routes differ, compiles its own container beside theirs.
