@@ -41,6 +41,8 @@ BEFFROI_TENANT_SELF_SERVED_CLAIMS='["name","given_name","family_name","locale","
 | `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` | `[]` | The roots of the enterprise attestations the tenant admits, a JSON list of PEM certificates, read under `enterprise` only |
 | `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS` | `[]` | The authorities of the tenant itself, a JSON list of PEM certificates, read under `enterprise` only |
 | `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` | `{}` | The models under a security alert the tenant still enrols, a JSON map of AAGUID to the last day it does |
+| `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` | empty | The identifier of the [administration API](../oidc/resources.md#the-administration-api) of the tenant, the URL it is served at, whose audience the provider reserves to the administrators of the tenant. Empty, there is none |
+| `BEFFROI_TENANT_ADMINISTRATORS` | `[]` | The groups whose members [administer the tenant](groups.md#who-administers-the-tenant), a JSON list of their names. `[]`, nobody administers it |
 
 [Configuration](../application/configuration.md) lists the same variables among the others of the image,
 `BEFFROI_ISSUER` and `BEFFROI_TENANT_SLUG` under [the provider](../application/configuration.md#the-provider)

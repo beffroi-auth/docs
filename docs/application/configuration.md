@@ -63,7 +63,7 @@ Three more decide what a deployment of real people does:
 
 ## The tenant
 
-Eleven variables are lists of the configuration, six of them here. Each is a JSON document of the shape the
+Twelve variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
 list has in the [configuration tree](../reference/configuration.md), `[]` or `{}` for none. An empty variable
 is no JSON document, and is refused.
 
@@ -80,6 +80,8 @@ is no JSON document, and is refused.
 | `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` | `[]` | The roots of the enterprise attestations the tenant admits, in PEM, under `enterprise` only: an attestation under one of them carries the serial number of its authenticator |
 | `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS` | `[]` | The authorities of the tenant itself, in PEM, under `enterprise` only, under which no serial number is asked |
 | `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` | `{}` | The models under a security alert the tenant still enrols under `direct` and `enterprise`, AAGUID to the last day, as `{"<AAGUID>":"2027-03-31"}` |
+| `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` | empty | The identifier of the [administration API](../oidc/resources.md#the-administration-api) of the tenant, the resource its tokens are addressed to (RFC 8707 §2): an absolute URI without a fragment, the URL the API is served at, as `https://admin.example.com`. The provider addresses a token to it only for an administrator of the tenant, signed in at the authorization endpoint with a phishing-resistant proof, by a token bound to a key of the client, and never announces it. Empty, there is no administration API and nothing is reserved |
+| `BEFFROI_TENANT_ADMINISTRATORS` | `[]` | The groups whose members [administer the tenant](../core/groups.md#who-administers-the-tenant), by their names in the tenant, compared exactly, as `["administrators"]`: a local group the console fills, or a group an upstream provider or a directory holds the members of. A name that is empty, or that begins or ends with whitespace, is refused; a name no group carries yet is accepted. `[]`, nobody administers the tenant |
 
 **Ten of them are written in the row of the tenant**, with its issuer: its name, its logo and its two colours,
 the claims a person changes, its `acr` classes, and the four that say what the enrolment of a passkey asks.
@@ -228,14 +230,16 @@ These are read by Caddy and FrankenPHP, not by the kernel.
 | Variable | What it decides |
 |---|---|
 | `SERVER_NAME` | The host Caddy serves the provider on, `localhost` when it is not set. When Caddy terminates TLS, it obtains the certificate of that host itself, from a public authority for a public name and from its internal authority for `localhost`, and keeps it under `/data` |
-| `TLS_TERMINATION` | Who terminates the TLS of the site of `SERVER_NAME`. `caddy`, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. `proxy`: a proxy in front of the image, which sends the site plain HTTP, `SERVER_NAME` then naming the one host the proxy asks for, or `:<port>` for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way |
+| `TLS_TERMINATION` | Who terminates the TLS of the site of `SERVER_NAME`. `caddy`, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. `proxy`: a proxy in front of the image, which sends the site plain HTTP, `SERVER_NAME` then naming the one host the proxy asks for, or `:<port>` for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way, and the site of the administration API is served on the address its own variable gives |
 | `MTLS_SERVER_NAME` | The host of the listener that asks for a client certificate, in `mtls.Caddyfile` |
-| `CADDY_EXTRA_CONFIG` | Configuration added to the `Caddyfile` beside the site of `SERVER_NAME`. `import mtls.Caddyfile` is what serves the host that asks for a client certificate |
+| `ADMINISTRATION_SERVER_NAME` | The address of the site of the administration API, in `administration.Caddyfile`: the host of the URL `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names. Its worker serves the administration API and nothing else |
+| `CADDY_EXTRA_CONFIG` | Configuration added to the `Caddyfile` beside the site of `SERVER_NAME`. `import mtls.Caddyfile` is what serves the host that asks for a client certificate, and `import administration.Caddyfile` the administration API, which a deployment that does not import it does not serve |
 | `CADDY_GLOBAL_OPTIONS` | Directives added to the global options of the `Caddyfile` |
 | `CADDY_SERVER_EXTRA_DIRECTIVES` | Directives added to the site of `SERVER_NAME`, such as a `tls` directive naming a certificate and its key |
+| `CADDY_ADMINISTRATION_EXTRA_DIRECTIVES` | Directives added to the site of the administration API, as `CADDY_SERVER_EXTRA_DIRECTIVES` are to the site of `SERVER_NAME`: behind a proxy, the one that hands PHP the address of the client. Each site has its own, a directive of one not fitting the other |
 | `CADDY_SERVER_LOG_OPTIONS` | Directives added to the `log` block of each site |
 | `FRANKENPHP_CONFIG` | Directives of the `frankenphp` block. The production image sets `import worker.Caddyfile`, which is worker mode |
-| `FRANKENPHP_WORKER_CONFIG` | Directives added to the `worker` block: the `watch` lines of the development stack, nothing in production |
+| `FRANKENPHP_WORKER_CONFIG` | Directives added to each `worker` block, the one of `worker.Caddyfile` and the one of the administration API: the `watch` lines of the development stack, nothing in production |
 
 ## The key management service
 

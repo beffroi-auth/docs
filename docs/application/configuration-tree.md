@@ -136,8 +136,11 @@ request that reads it. `slug` names the tenant for good: its identifier is deriv
 creating another tenant. `name` and `look` are what the pages show of the tenant, `self_served_claims` what
 its people may change of themselves, `authentication_classes` the `acr` it answers with, and `scopes` the
 scopes of the APIs it protects, which a client that registers itself may register beside `openid`, the scopes
-of the claims and `offline_access`. The four `passkey_*` options say what the enrolment of a passkey asks of
-its authenticator, as [passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says.
+of the claims and `offline_access`. `administrators` names the groups whose members [administer the
+tenant](../core/groups.md#who-administers-the-tenant), and `administration_resource` the identifier of its
+[administration API](../oidc/resources.md#the-administration-api). The four `passkey_*` options say what the
+enrolment of a passkey asks of its authenticator, as
+[passkeys](../core/credentials/passkeys.md#what-the-enrolment-asks) says.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
@@ -152,6 +155,8 @@ beffroi:
         self_served_claims: '%env(json:BEFFROI_TENANT_SELF_SERVED_CLAIMS)%'
         authentication_classes: '%env(json:BEFFROI_TENANT_AUTHENTICATION_CLASSES)%'
         scopes: '%env(json:BEFFROI_TENANT_SCOPES)%'
+        administrators: '%env(json:BEFFROI_TENANT_ADMINISTRATORS)%'
+        administration_resource: '%env(default::BEFFROI_TENANT_ADMINISTRATION_RESOURCE)%'
         passkey_attestation: '%env(BEFFROI_TENANT_PASSKEY_ATTESTATION)%'
         passkey_attestation_roots: '%env(json:BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS)%'
         passkey_attestation_own_roots: '%env(json:BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS)%'
@@ -159,11 +164,12 @@ beffroi:
 ```
 
 `default::` makes an empty variable no value at all: an empty `BEFFROI_TENANT_NAME` names the tenant after the
-host of the issuer, and an empty colour is no colour. An empty `BEFFROI_TENANT_LOGO_URI` is the parameter
+host of the issuer, an empty colour is no colour, and an empty `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` is no
+administration API, which reserves nothing. An empty `BEFFROI_TENANT_LOGO_URI` is the parameter
 `app.tenant_logo_uri` of the file, the placeholder mark the image serves at `/tenant-logo.svg` under the
-issuer. The six lists are JSON documents: `.env` opens the fourteen claims the application wires to the
-people of the tenant, names no `acr` class, which is the default policy, no scope of an API, and no root and no
-model under alert beside `BEFFROI_TENANT_PASSKEY_ATTESTATION=none`.
+issuer. The seven lists are JSON documents: `.env` opens the fourteen claims the application wires to the
+people of the tenant, names no `acr` class, which is the default policy, no scope of an API, no group of
+administrators, and no root and no model under alert beside `BEFFROI_TENANT_PASSKEY_ATTESTATION=none`.
 
 The logo is loaded by the browser of the visitor, under the `Content-Security-Policy` the application sends.
 Every page that reads the tenant adds the origin of the logo to the `img-src` of that policy, so a logo served
