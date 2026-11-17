@@ -56,8 +56,9 @@ jobs:
             # The highest version branch whose version is released, a branch X.Y being released once the
             # code repository carries a tag X.Y.Z: only that branch carries "latest", so the root of the site
             # describes what can be installed. A branch "1.x" is where the next minor is written and never a
-            # release. Until a first release, the highest version branch carries it. A tag list that cannot be
-            # read fails the run rather than moving "latest" on a guess.
+            # release. Until a first release, the highest version branch carries it, and a site of one version
+            # branch gives it "latest" without reading a tag. A tag list that cannot be read fails the run
+            # rather than moving "latest" on a guess.
             - name: Is this the newest released version?
               id: newest
               run: |
@@ -66,9 +67,12 @@ jobs:
                   branches=$(git for-each-ref --format='%(refname:lstrip=3)' 'refs/remotes/origin/*' \
                     | grep -E '^[0-9]+\.([0-9]+|x)$' \
                     | sort -V)
-                  tags=$(git ls-remote --tags --refs https://github.com/beffroi-auth/beffroi.git \
-                    | sed 's#^.*refs/tags/##')
                   newest=""
+                  tags=""
+                  if [ "$(wc -l <<< "$branches")" -gt 1 ]; then
+                    tags=$(git ls-remote --tags --refs https://github.com/beffroi-auth/beffroi.git \
+                      | sed 's#^.*refs/tags/##')
+                  fi
                   for branch in $branches; do
                     if [[ "$branch" =~ ^[0-9]+\.[0-9]+$ ]] && grep -qxE "${branch//./\\.}\.[0-9]+" <<< "$tags"; then
                       newest="$branch"
