@@ -4023,10 +4023,10 @@ history of one part without the rest.</p>
 <td><a href="https://github.com/beffroi-auth/xml-security">beffroi-auth/xml-security</a></td>
 </tr>
 <tr>
-<td><code>beffroi/op</code></td>
+<td><code>beffroi/beffroi</code></td>
 <td><code>App</code></td>
 <td>The provider, the application that carries the Symfony integration</td>
-<td><a href="https://github.com/beffroi-auth/op">beffroi-auth/op</a></td>
+<td><a href="https://github.com/beffroi-auth/application">beffroi-auth/application</a></td>
 </tr>
 </tbody>
 </table>
@@ -4034,13 +4034,13 @@ history of one part without the rest.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="i-want-a-provider" name="__tabbed_1" type="radio" /><input id="i-run-a-symfony-application" name="__tabbed_1" type="radio" /><input id="i-want-it-inside-code-of-my-own" name="__tabbed_1" type="radio" /><input id="i-only-need-to-read-and-write-saml" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="i-want-a-provider">I want a provider</label><label for="i-run-a-symfony-application">I run a Symfony application</label><label for="i-want-it-inside-code-of-my-own">I want it inside code of my own</label><label for="i-only-need-to-read-and-write-saml">I only need to read and write SAML</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p>Deploy <code>beffroi/op</code>, the application. It holds the protocols, the identity model, the pages, the
+<p>Deploy <code>beffroi/beffroi</code>, the application. It holds the protocols, the identity model, the pages, the
 persistence and the console, on FrankenPHP, and a deployment sets it through its environment.</p>
 <p><a href="../../application/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The application</a></p>
 </div>
 <div class="tabbed-block">
-<p>Deploy <code>beffroi/op</code> beside it, and sign people in to your application through it with the <code>oidc_login</code>
+<p>Deploy <code>beffroi/beffroi</code> beside it, and sign people in to your application through it with the <code>oidc_login</code>
 authenticator of Symfony. Your application is a client of the provider: nothing of the provider is
 installed in it.</p>
 <p><a href="../../getting-started/symfony/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
@@ -4067,9 +4067,9 @@ SAML.</p>
 other nor of Symfony, and the application is the only place where a <code>Request</code>, a container or a Doctrine
 entity manager appears.</p>
 <pre class="mermaid"><code>graph RL
-  op["beffroi/op&lt;br/&gt;&lt;small&gt;the application&lt;/small&gt;"] --&gt; oidc["beffroi/oidc"]
-  op --&gt; saml["beffroi/saml"]
-  op --&gt; core["beffroi/core"]
+  app["beffroi/beffroi&lt;br/&gt;&lt;small&gt;the application&lt;/small&gt;"] --&gt; oidc["beffroi/oidc"]
+  app --&gt; saml["beffroi/saml"]
+  app --&gt; core["beffroi/core"]
   oidc --&gt; core
   saml --&gt; core
   saml --&gt; bindings["beffroi/saml2-bindings"]
@@ -4135,7 +4135,7 @@ buys.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 16, 2026 16:23:43 UTC">November 16, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 13:12:45 UTC">November 17, 2026</span>
   </span>
 
     
