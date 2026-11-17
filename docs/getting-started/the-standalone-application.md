@@ -101,7 +101,7 @@ issuer, the database, the key management service, the lanes, and every other set
 ### The Compose file of the image
 
 The monorepo carries a deployment of the published image, `ghcr.io/beffroi-auth/beffroi`, in one file at its root,
-[`compose.prod.yaml`](https://github.com/beffroi-auth/beffroi/blob/0.0.x/compose.prod.yaml). It stands alone,
+[`compose.prod.yaml`](https://github.com/beffroi-auth/beffroi/blob/0.1.x/compose.prod.yaml). It stands alone,
 so it is downloaded without the rest of the monorepo, and runs three services: the server, the worker and
 PostgreSQL, whose table `messenger_messages` holds the queues of the lanes. No broker runs beside them.
 

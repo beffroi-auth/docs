@@ -25,13 +25,6 @@ No message broker is needed. The writes the protocol does not need the result of
 asynchronously, to four lanes that are queues of the database, `doctrine://default?queue_name={lane}` in
 `BEFFROI_MESSENGER_DSN`, where they wait for a worker that consumes them (`messenger:consume`).
 
-!!! info "Not public yet"
-
-    The `beffroi/*` packages are not on Packagist at this point, and the monorepo,
-    [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi), and its image, `ghcr.io/beffroi-auth/beffroi`,
-    are private. The pages that follow run the application from a working copy of the monorepo, and from that
-    image.
-
 ## The application
 
 `beffroi/beffroi` is a Symfony application served by FrankenPHP in worker mode. It holds the protocols, the

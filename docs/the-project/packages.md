@@ -42,6 +42,12 @@ history of one part without the rest.
     no ORM, and they talk to the world through ports you implement. What you write around them is your own
     integration.
 
+    !!! note "Symfony 8.2 is in beta"
+
+        `beffroi/core`, which both require, requires `symfony/key-management` 8.2, published only as
+        pre-releases until Symfony 8.2.0 is out. Until then, the project that requires them sets
+        `"minimum-stability": "beta"` and `"prefer-stable": true` in its `composer.json`.
+
     [:beffroi-arrow-right: The ports of the protocol](../oidc/ports.md)
 
 === "I only need to read and write SAML"
