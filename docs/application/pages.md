@@ -48,7 +48,7 @@ DaisyUI built from `assets/styles/app.css`.
 | Block | What the pages put in it |
 |---|---|
 | `title` | The title of the page, which `heading` repeats unless a page says otherwise |
-| `head` | The script a page needs: `passkey.js` on the login page, the page of passkeys and the enrolment by ticket, `push.js` on the page of notifications, `copy.js` where a value is handed over to copy, `password-strength.js` on the page of the password |
+| `head` | The script a page needs: `passkey.js` on the login page, the page of passkeys and the enrolment by ticket, `push.js` on the page of notifications, `copy.js` where a value is handed over to copy, `password-strength.js` on the page of the password and on the page of a password ticket |
 | `heading` | The heading of the page |
 | `action` | The one action a page of the account offers beside its title, when it offers one |
 | `content` | The page itself |
@@ -97,7 +97,7 @@ origin anywhere, and the placeholder mark is served from the origin of the appli
 allows already.
 
 Every page but those of `/authorize`, `/login`, `/consent`, `/logout`, `/device` and `/initiate-login`, the
-pages of the account, the enrolment of a first passkey and the pages a SAML flow answers with among them, is
+pages of the account, the pages a ticket opens and the pages a SAML flow answers with among them, is
 also served `Cross-Origin-Embedder-Policy: require-corp`, under which a browser refuses an image of another
 origin whose answer does not let it in. A logo served from another host shows there when that host answers
 `Cross-Origin-Resource-Policy: cross-origin`. The pages of those six paths carry no
@@ -117,7 +117,9 @@ origin whose answer does not let it in. A logo served from another host shows th
 | `logged_out.html.twig` | `/logout`, and after the end of a session | Signed out, or still signed in after choosing to stay |
 | `device.html.twig`, `device_approval.html.twig`, `device_answered.html.twig` | `/device` | The code a device shows, what it asks for, and the answer given |
 | `approvals.html.twig`, `approval_answered.html.twig` | `/account/approvals` | What somebody waits on an answer for, and the answer given |
-| `enrolment_ticket.html.twig` | `/enrol/{ticket}/{value}` | The first passkey of a person, posed without a session |
+| `enrolment_ticket.html.twig` | `/enrol/{ticket}/{value}` | A passkey, posed without a session |
+| `password_ticket.html.twig` | `/password/{ticket}/{value}` | A new password, posed without the one in use and without a session |
+| `totp_ticket.html.twig`, `totp_ticket_enrolled.html.twig` | `/two-factor/{ticket}/{value}` | An authenticator application set up in place of the one held, without a session, and the backup codes of the new one |
 | `error.html.twig` | Wherever a request stops | The refusal, when nothing may be sent back to a client |
 | `account/*.html.twig` | `/account` and below | [The account pages](account.md) |
 | `form_post.html.twig`, `saml_post.html.twig`, `post_again.html.twig` | Wherever an answer goes back in a form: an authorization response, a SAML message, a post from another site | A form the browser posts on its own |
@@ -224,8 +226,8 @@ The scripts are served with `Cache-Control: public` for an hour and an `ETag`:
 |---|---|
 | `/passkey.js` | The login page, the enrolment of a passkey on the account and by ticket |
 | `/push.js`, `/push-worker.js` | The page of notifications, and the service worker it registers |
-| `/copy.js` | The pages that hand over a value to copy, the key of an authenticator application and the backup codes |
-| `/password-strength.js` | The page of the password |
+| `/copy.js` | The pages that hand over a value to copy, the key of an authenticator application and the backup codes, on the account and from a ticket |
+| `/password-strength.js` | The page of the password, and the page of a password ticket |
 
 ## What a template keeps
 

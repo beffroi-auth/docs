@@ -129,7 +129,10 @@ bin/console beffroi:user:enrolment-ticket alice
 
 The command prints a link, `/enrol/{ticket}/{value}` under the issuer, once, with the instant it opens until, and
 the row keeps a hash of what the link carries, so a store read by somebody else opens nothing. Whoever issued it
-hands it over.
+hands it over. An administrator issues one through the administration API as well, which answers the link and
+that instant once, and the terminal client of the administration shows the link as a QR code the device that
+will hold the passkey scans. A ticket opens the enrolment of a passkey whether the person holds one already or
+not, so it also serves a person who lost theirs.
 
 - **It opens one enrolment, once.** The page asks the browser for a passkey, and the ticket is spent only when the
   passkey is in the rows: a ceremony that could not finish leaves the person their link.
@@ -145,7 +148,10 @@ disabled person, is answered by the same page with the status `404`, and each of
 the answer nor its time says which it was. An identifier that is not a UUID is no ticket at all, and is answered
 `404` without a hash. The passkey the ticket poses is enrolled under the same rules as any
 other, the floor of the tenant included. The page needs a browser that can hold a passkey, and says so to one that
-cannot. Issuing a ticket is an act of the journal of that person, `enrolment_ticket.issued`.
+cannot. Issuing a ticket is an act of the journal of that person, `enrolment_ticket.issued`, which names the
+administrator when one issued it. A [password](passwords.md#setting-one) and an [authenticator
+application](totp.md#from-a-ticket) have tickets of their own, which open the same way: once, for seventy-two
+hours, one at a time.
 
 ## Renaming and revoking
 
@@ -155,8 +161,8 @@ field to rename it.
 
 Revoking one is asked for a proof made in the last five minutes, since it is the gesture that can leave somebody
 with no way in at all. The passkey never authenticates again and its line stays, listed as revoked with its date;
-the sessions it opened are left as they are. An operator revokes one with `beffroi:user:revoke-credential`, which
-[credentials](index.md#revoked-and-forgotten) describes.
+the sessions it opened are left as they are. An operator revokes one with `beffroi:user:revoke-credential`, and an
+administrator through the administration API, which [credentials](index.md#revoked-and-forgotten) describes.
 
 ## Not for the people of an organisation
 

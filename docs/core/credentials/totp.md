@@ -51,6 +51,24 @@ tenant whose floor reads no `otp`, `phishing_resistant` or `phishing_resistant_h
 does a person of a domain an [upstream identity provider](../../saml/federated-sign-in.md) answers for. A TOTP
 set up writes the act `credential.enrolled` to the journal of the person.
 
+### From a ticket
+
+A person who lost their application, or who cannot sign in to set one up, is handed a ticket, issued at the
+console or by an administrator through the administration API:
+
+``` bash
+bin/console beffroi:user:totp-ticket alice
+```
+
+The command prints a link, `/two-factor/{ticket}/{value}` under the issuer, once, with the instant it opens
+until, and the row keeps a hash of what the link carries. The link opens one set-up of an application, once,
+for seventy-two hours, without a session, and issuing another forgets the unspent one. Its page plays the same
+two steps, the secret drawn when the page is first read and kept sealed in the session of that browser. The
+first code that matches enrols the new application in place of the one the person held, which is revoked,
+shows the backup codes of the new one, and ends every session of the person, its clients told through the back
+channel. A ticket is refused at its issuing where the floor of the tenant or the domain of the person admits no
+application, and a disabled account gets none. Issuing it is an act of the person, `totp_ticket.issued`.
+
 ## The code page
 
 A password verified for a person who holds an active TOTP opens nothing: the login is held in the session of the
@@ -83,5 +101,5 @@ On the page of the second factor, a person removes the application with a proof 
 the TOTP is revoked, its row stays, its backup codes stop working with it, and the password alone signs them in
 again where the floor of the tenant is `single_factor`; under `two_factors`, a password alone is under the floor
 and opens nothing. The sessions it completed are left as they are. An operator revokes it with
-`beffroi:user:revoke-credential`, and raising the floor of the tenant to one that reads no `otp` forgets it, row
-and secret.
+`beffroi:user:revoke-credential`, an administrator through the administration API, and raising the floor of the
+tenant to one that reads no `otp` forgets it, row and secret.
