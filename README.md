@@ -42,9 +42,10 @@ docker run --rm -p 8000:8000 -v "$PWD":/docs squidfunk/mkdocs-material
 
 ## One branch per version
 
-A branch of this repository is a version of the packages: `0.1`, `0.2`, then `1.0`, `1.1`, and so on. A
-push to one of them publishes it under its own name, and the newest one also carries the `latest` alias,
-which the root of the site redirects to. The selector at the top of the page switches between them.
+A branch of this repository is a version of the packages: `0.0`, `0.1`, then `1.0`, `1.1`, and so on. A
+push to one of them publishes it under its own name, and the newest version the code repository has
+released, a branch `X.Y` once it carries a tag `X.Y.Z`, also carries the `latest` alias, which the root of the
+site redirects to. The selector at the top of the page switches between them.
 
 So a fix that applies to several versions is merged forward, like a fix in the code, and a page never
 describes a version other than the one it is in.
@@ -54,8 +55,11 @@ describes a version other than the one it is in.
 ```bash
 git switch -c 1.0 0.2          # from the version it continues
 # in mkdocs.yml, point edit_uri at the new branch
-git push -u origin 1.0         # publishes it, and moves "latest" and the default branch
+git push -u origin 1.0         # publishes it, and moves the default branch
 ```
+
+`latest` reaches a version at the first push to its branch, or the first run of the Pages workflow, after the
+code repository tags it.
 
 ## Contributing
 
