@@ -131,10 +131,11 @@ revocation of a token a client held for itself names nobody.
 
 Revocation ends one token and what depends on it. What takes back everything issued under a session is the
 end of that session, at the [end session endpoint](logout.md) or anywhere else, and what takes back the
-grants, the refresh tokens and the opaque access tokens a client holds for a person is that person taking back
-their consent, on [the page of their account](../application/account.md) or with
-`beffroi:user:revoke-consent`. In both cases an `at+jwt` is refused by the provider from that moment, and
-accepted by a resource server that verifies it offline until it expires.
+grants, the refresh tokens and the opaque access tokens a client holds for a person is the consent of that
+person taken back, by them on [the page of their account](../application/account.md), with
+`beffroi:user:revoke-consent`, or by an administrator through the administration API. In both cases an
+`at+jwt` is refused by the provider from that moment, and accepted by a resource server that verifies it
+offline until it expires.
 
 ## Refusals
 

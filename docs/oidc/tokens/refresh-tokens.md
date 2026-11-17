@@ -84,8 +84,9 @@ tokens of each refresh are bound to whatever that request binds them to
 | The token expires, or its family does | That token |
 | A token of its family is reused | The whole family |
 | The authorization code it descends from is presented a second time (RFC 6749 §4.1.2) | Every refresh token descending from that code |
-| Its session ends, at the end session endpoint, by a SAML logout, on the [account pages](../../application/account.md), with the console, or by a sign-in that replaced it | Every refresh token of that session |
-| The person takes back their consent to that client, on the account pages or with `beffroi:user:revoke-consent` | Every refresh token that client holds for that person |
+| Its session ends, at the end session endpoint, by a SAML logout, on the [account pages](../../application/account.md), with the console, through the administration API, by a sign-in that replaced it, or with every other session of the person when they are disabled or spend a password or authenticator application ticket | Every refresh token of that session |
+| The consent to that client is taken back, by the person on the account pages, with `beffroi:user:revoke-consent`, or by an administrator through the administration API | Every refresh token that client holds for that person |
+| The person is disabled | Every refresh token issued for them, refused at its next use |
 | The client revokes it at the revocation endpoint (RFC 7009 §2.1) | That token, and the opaque access tokens of its grant |
 
 **The grant reads the session, and not only the token.** It refuses a token whose session has ended from the

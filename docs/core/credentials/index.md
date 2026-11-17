@@ -63,7 +63,8 @@ federated signs them in no more.
 in `beffroi:user:show` and in the archive of the person, and a revoked passkey on the page of the passkeys too,
 where a revoked TOTP leaves the page of the second factor. The first revocation wins: revoking it again changes
 nothing and announces nothing. A person revokes their own on [the pages of their
-account](../../application/account.md#taking-it-back), and an operator any of them:
+account](../../application/account.md#taking-it-back), an administrator any of them through the administration
+API, the act `credential.revoked` then naming them, and an operator any of them:
 
 ``` bash
 bin/console beffroi:user:revoke-credential alice 0199f1c2-7b3a-7c4d-9e5f-1a2b3c4d5e6f

@@ -38,7 +38,7 @@ The client authenticates beside them with the method it registered.
 
 ## What is checked
 
-In this order. The first five refusals are `invalid_grant`, all with the one description `The refresh token
+In this order. The first six refusals are `invalid_grant`, all with the one description `The refresh token
 is invalid.`:
 
 1. The token is one this provider issued, to the client that authenticated, and it has not been revoked.
@@ -51,10 +51,13 @@ is invalid.`:
 4. It has not expired. Its own lifetime never reaches past the absolute lifetime of its family.
 5. A token bound to a key or to a certificate is refreshed by a request that proves that key or presents that
    certificate again (RFC 9449 §5, RFC 8705 §4).
-6. `scope` names nothing the token does not carry: `invalid_scope` otherwise. A `scope` that is not a list of
+6. The person it was issued for is not disabled.
+7. `scope` names nothing the token does not carry: `invalid_scope` otherwise. A `scope` that is not a list of
    scope tokens is `invalid_scope` too, before the token is even looked up.
-7. `resource` and `authorization_details` narrow and never widen: `invalid_target` and
-   `invalid_authorization_details` otherwise.
+8. `resource` and `authorization_details` narrow and never widen: `invalid_target` and
+   `invalid_authorization_details` otherwise. An access token for the [administration
+   API](../resources.md#the-administration-api) of the tenant is refused with `invalid_target` once the person
+   no longer administers it.
 
 ## Rotation
 
