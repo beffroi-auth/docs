@@ -17,6 +17,7 @@ table below is the map.
 | Command | What it does |
 |---|---|
 | `beffroi:doctor` | Say whether this deployment holds together: one line per point looked at, and what to do about the ones it does not answer for. Reads and writes nothing, so it is safe on a provider serving traffic, and it fails when a point is red so a deployment pipeline can ask the question too. |
+| `beffroi:statistics` | Say what the instance knows of itself now: its people, clients and open sessions, its keys by state, its acts by name over what the journal keeps, and the messages waiting in each lane. Reads and writes nothing. |
 | `beffroi:tenant:login-floor` | Name the floor of every login of the tenant, and forget the credentials it forbids. |
 | `beffroi:tenant:synchronize` | Write the row of the tenant of the configuration: created, renamed, or left alone. |
 
@@ -37,9 +38,12 @@ was forgotten. [The floor of its logins](../core/tenants.md#the-floor-of-its-log
 |---|---|
 | `beffroi:user:applications` | List the applications a user agreed to, with what each one holds of them and what it has asked that is still waiting. |
 | `beffroi:user:create` | Create a user of the tenant; give them a password with beffroi:user:set-password. |
-| `beffroi:user:enrolment-ticket` | Issue the link that lets a person pose their first passkey, and print it. |
-| `beffroi:user:journal` | List the acts of a user over a period, with the application each one was done on behalf of; for answering a request about what happened in their name. |
+| `beffroi:user:disable` | Disable a person: they can no longer sign in, and every session of theirs ends, its applications told by back-channel logout. To let them sign in again, see beffroi:user:enable. |
+| `beffroi:user:enable` | Enable a person beffroi:user:disable disabled: they may sign in again, every session of theirs having ended with the disabling. |
+| `beffroi:user:enrolment-ticket` | Issue the link that lets a person pose a passkey, and print it. |
+| `beffroi:user:journal` | List the acts of a user over a period, with the application each one was done on behalf of and the administrator who did one to them; for answering a request about what happened in their name. |
 | `beffroi:user:link` | Say that a user of the tenant is a given subject at an upstream provider; run again to refresh it. |
+| `beffroi:user:password-ticket` | Issue the link that lets a person pose a new password without the one in use, and print it; spending it ends every session of theirs. |
 | `beffroi:user:profile` | Describe a user with the standard claims of OIDC Core section 5.1; what is not said is cleared, except what the upstream provider that created the user holds, which is kept, and saying that otherwise is refused; a run that says nothing writes nothing. To read a user, see beffroi:user:show. |
 | `beffroi:user:reindex` | Derive again the blind indexes of every person of the tenant, after the projection of one changed. |
 | `beffroi:user:revoke-consent` | Take back the consent a user gave a client, and the access it holds; the next authorization request asks again. |
@@ -48,12 +52,19 @@ was forgotten. [The floor of its logins](../core/tenants.md#the-floor-of-its-log
 | `beffroi:user:sessions` | List the sessions open in the name of a user, with what each one proved and where it was last seen. |
 | `beffroi:user:set-password` | Set or replace the password of a user, asked on the terminal or read from the standard input. |
 | `beffroi:user:show` | Show a user: the identity with the source that created it, the standard claims that are set, the credentials with their kind, identifier, name, authenticator, what their enrolment proved of it and dates, and the groups with the source of each membership. |
+| `beffroi:user:totp-ticket` | Issue the link that lets a person set up an authenticator app in place of the one they hold, and print it; spending it ends every session of theirs. |
 
-**An enrolment ticket** is for a person who has nothing to sign in with yet, on a tenant that signs its people
-in by passkey and holds no password of theirs to give them. The link opens one enrolment of a passkey, once,
-for seventy-two hours, and it is printed once: the row holds a hash of what it carries. Issuing another one
-for the same person takes the first one away, and a disabled account gets none. It proves no login either:
-the session that follows comes from the passkey that was just posed.
+**A ticket** is a link that lets one person act once on their account without a session: pose a passkey,
+`beffroi:user:enrolment-ticket`; pose a new password without the one in use, `beffroi:user:password-ticket`;
+or set up an authenticator application in place of the one they hold, `beffroi:user:totp-ticket`. It opens
+once, for seventy-two hours, and it is printed once: the row holds a hash of what it carries. Issuing another
+of the same kind for the same person takes the first one away, and a disabled account gets none. A password or
+an authenticator application ticket is refused where the floor of the tenant or the domain of the person
+admits no such credential. A ticket proves no login, and spending a password or an authenticator application
+ticket ends every session of the person.
+
+**Disabling a person** ends every session of theirs, and enabling them again gives nothing back: [a disabled
+user](../core/users.md#a-disabled-user) says where they are refused.
 
 **The journal of a person** is read over `--from` and `--to`, two days in UTC, both included, narrowed with
 `--act`, repeatable, and `--client`, and written as a table or, with `--format=json`, as the document a
@@ -65,10 +76,16 @@ complete.
 
 | Command | What it does |
 |---|---|
+| `beffroi:group:add-member` | Make a user a member of a group of the tenant, a membership the tenant holds itself. |
 | `beffroi:group:create` | Create a group of the tenant, which the declaration of an upstream provider may map the groups it asserts to. |
+| `beffroi:group:remove-member` | Take a user out of a group of the tenant, a membership the tenant holds itself. |
 
 No upstream provider creates a group: the declaration of one maps the values it asserts to groups that exist
-already, by their name, and a value naming a group the tenant does not hold is no group.
+already, by their name, and a value naming a group the tenant does not hold is no group. `beffroi:group:add-member`
+and `beffroi:group:remove-member` take the name of the group, exactly as the tenant holds it, then the username,
+and take back no membership a provider or a directory gave. A person added to or taken out of a group
+`tenant.administrators` names starts or stops [administering the
+tenant](../core/groups.md#who-administers-the-tenant) at once.
 
 ## Clients and initial access tokens
 

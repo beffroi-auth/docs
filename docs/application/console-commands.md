@@ -5,8 +5,9 @@ description: 'What the commands of the application need explained beyond their h
 
 # Console commands
 
-The application has commands for the tenant, the people and their journal, groups, clients, keys, data keys,
-the metadata of SAML peers, the databases of addresses and the metadata of FIDO. [The
+The application has commands for the tenant, the statistics of the instance, the people and their journal,
+groups, clients, keys, data keys, the metadata of SAML peers, the databases of addresses and the metadata of
+FIDO. [The
 reference](../reference/console-commands.md) lists every one of them; `bin/console <command> --help` gives its
 arguments and options. This page explains the ones a help screen does not: the rotation of a key, the data
 keys, and the doctor.

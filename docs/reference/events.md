@@ -15,6 +15,10 @@ say what each one carries beyond those four, and who it concerns:
 - **a client**, when it implements `ConcernsAClientInterface` and names the client by the identifier it was
   registered under, never the client itself.
 
+An event that implements `NamesItsAuthorInterface` names, besides, the administrator who did the act through
+the administration API, by the subject of their account, and nobody when the person, the operator at the
+console or nobody did it.
+
 ## Every event leaves the process
 
 An event is routed to the transport `async_priority_low`, a queue of the database, every one of them by the
@@ -26,9 +30,10 @@ an event nothing listens to is announced all the same.
 ## What listens
 
 **Every event is written to the journal.** `WriteTheActDownHandler` hears every event of the three packages
-and writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person
-and the client when it concerns a client, and nothing else. A row is kept `BEFFROI_JOURNAL_RETENTION` days,
-180 in the image, and `beffroi:user:journal` reads it back for a person.
+and writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person,
+the client when it concerns a client and the administrator when one did it, and nothing else. A row is kept
+`BEFFROI_JOURNAL_RETENTION` days, 180 in the image, and `beffroi:user:journal` and the administration API read
+it back for a person.
 
 The other listeners of the application each hear one event, or an interface a few of them implement:
 
@@ -55,24 +60,33 @@ way, `logout_token.given_up` is raised.
 |---|---|---|---|---|
 | `user.authenticated` | `UserAuthenticated` | A session is opened | The session | A person |
 | `authentication.failed` | `AuthenticationFailed` | A login is refused | The method claimed, the reason, the identifier as typed, the user when one answers | A person, or nobody |
-| `session.ended` | `AuthenticationSessionEnded` | A session ends | The session, which says who ended it | A person |
+| `session.ended` | `AuthenticationSessionEnded` | A session ends | The session, which says who ended it, and the administrator when one did | A person |
 | `password.used` | `PasswordUsed` | A password is accepted | The credential | A person |
 | `passkey.used` | `PasskeyUsed` | A passkey assertion is verified | The credential, and whether its sign count did not grow | A person |
 | `totp.used` | `TotpUsed` | A code of the authenticator application is accepted | The credential | A person |
 | `backup_code.used` | `BackupCodeUsed` | A backup code is spent | The credential | A person |
 | `person.provisioned` | `PersonProvisioned` | An upstream provider creates a person | The subject and the name of the provider | A person |
+| `person.created` | `PersonCreated` | A person is created, at the console or through the administration API | The subject, and the administrator | A person |
+| `person.described` | `PersonDescribed` | An administrator changes the username or the claims of a person | The subject, the names of what changed, never a value, and the administrator | A person |
+| `person.disabled` | `PersonDisabled` | A person is disabled | The subject, and the administrator | A person |
+| `person.enabled` | `PersonEnabled` | A person is enabled again | The subject, and the administrator | A person |
 | `credential.enrolled` | `CredentialEnrolled` | A passkey or a TOTP is enrolled | The credential | A person |
 | `credential.renamed` | `CredentialRenamed` | A passkey is renamed | The credential, and the name it had | A person |
-| `credential.revoked` | `CredentialRevoked` | A credential is revoked | The credential | A person |
+| `credential.revoked` | `CredentialRevoked` | A credential is revoked | The credential, and the administrator | A person |
 | `credential.forgotten` | `CredentialForgotten` | The floor of the tenant forgets a credential | The credential | A person |
 | `password.changed` | `PasswordChanged` | A person replaces their own password | The credential | A person |
 | `password.rehashed` | `PasswordRehashed` | A password is stored again under the algorithm and the parameters of the hasher | The credential | A person |
 | `backup_codes.renewed` | `BackupCodesRenewed` | A person draws another set of backup codes | The credential | A person |
-| `enrolment_ticket.issued` | `EnrolmentTicketIssued` | An enrolment ticket is issued | The ticket | A person |
+| `enrolment_ticket.issued` | `EnrolmentTicketIssued` | An enrolment ticket is issued | The ticket, and the administrator | A person |
+| `password_ticket.issued` | `PasswordTicketIssued` | A password ticket is issued | The ticket, and the administrator | A person |
+| `totp_ticket.issued` | `TotpTicketIssued` | A ticket for an authenticator application is issued | The ticket, and the administrator | A person |
 | `person.described_themselves` | `PersonDescribedThemselves` | A person says something of themselves | The user, the name of the claim, whether it was taken back | A person |
 | `archive.asked` | `PersonAskedForTheirArchive` | A person asks for their archive | The identifier of the archive and the subject | A person |
 | `archive.taken` | `PersonTookTheirArchive` | A person downloads it | The same | A person |
 | `archive.dropped` | `PersonDroppedTheirArchive` | A person has it dropped | The same | A person |
+| `group.created` | `GroupCreated` | A group is created | The name of the group, and the administrator | Nobody |
+| `group_membership.added` | `GroupMembershipAdded` | A person is made a member of a group the tenant holds the members of | The subject, the name of the group, and the administrator | A person |
+| `group_membership.removed` | `GroupMembershipRemoved` | A person is taken out of such a group | The same | A person |
 | `tenant.key_staged` | `TenantKeyStaged` | A key is drawn and staged, published in the JWK Set when its algorithm is one the set carries | The key | Nobody |
 | `tenant.key_rotated` | `TenantKeyRotated` | A key takes over | The key activated, and the one it replaced | Nobody |
 | `tenant.key_retired` | `TenantKeyRetired` | A key leaves the service | The key, and why | Nobody |
@@ -94,14 +108,21 @@ way, `logout_token.given_up` is raised.
 | `token.revoked` | `TokenRevoked` | A client gives a token back at the revocation endpoint (RFC 7009 §2.1) | The client that revoked it, the subject, null for a token naming nobody, the type of the token, its hash, the grant, the access tokens revoked with a refresh token | A person, or nobody |
 | `client_authentication.failed` | `ClientAuthenticationFailed` | A client fails to authenticate, at any endpoint that authenticates one | The reason, the client identifier as typed, the method presented | Nobody |
 | `consent.granted` | `ConsentGranted` | A person agrees, on the consent page, on the page that confirms a device code, or when answering a backchannel request | The consent, the client, the subject, the scopes, the authorization details, the consent it takes over from | A person, a client |
-| `consent.revoked` | `ConsentRevoked` | A person takes a consent back, on their account or by the console | The consent, the client, the subject, the grants revoked with it, and the hashes of the refresh and access tokens revoked | A person, a client |
+| `consent.revoked` | `ConsentRevoked` | A consent is taken back, by the person on their account, at the console, or by an administrator through the administration API | The consent, the client, the subject, the grants revoked with it, the hashes of the refresh and access tokens revoked, and the administrator when one took it back | A person, a client |
 | `introspection.answered` | `IntrospectionAnswered` | A resource server is told who an active token names (RFC 7662 §2.2). An inactive token, or one naming nobody, raises nothing | The client that asked, the subject | A person, a client |
 | `userinfo.answered` | `UserInfoAnswered` | A client is answered the claims of a person (OIDC Core §5.3) | The client, the subject; never which claims | A person, a client |
 | `logout_token.issued` | `LogoutTokenIssued` | A logout token is minted for a client of a session that ended (Back-Channel Logout 1.0 §2.6) | The client, the subject, the logout URI, the session, the token | A person, a client |
 | `logout_token.given_up` | `LogoutTokenGivenUp` | A logout token is refused by its client, or could not be delivered within the retries (Back-Channel Logout 1.0 §2.8) | The client, the subject, the session, what the last attempt came back with; never the token | A person, a client |
 | `backchannel_request.answered` | `BackchannelRequestAnswered` | A backchannel request is answered, yes or no, for a client registered to be called (CIBA Core §10.2) | The client, the subject, null when the request named nobody, the notification endpoint, the identifier of the request, the notification token | A person or nobody, a client |
 | `pushed_request.refused` | `PushedRequestRefused` | A `request_uri` presented at the authorization endpoint grants nothing (RFC 9126 §4) | The reason, the client that presented it, the client it was pushed by; never the reference | Nobody |
-| `registered_client.deleted` | `RegisteredClientDeleted` | A client that registered itself is gone: deleted at its configuration endpoint (RFC 7592 §2.3), by `beffroi:client:delete`, or dropped for want of use | The client | A client |
+| `registered_client.deleted` | `RegisteredClientDeleted` | A client that registered itself is gone: deleted at its configuration endpoint (RFC 7592 §2.3), by `beffroi:client:delete`, by an administrator through the administration API, or dropped for want of use | The client, and the administrator when one deleted it | A client |
+| `initial_access_token.issued` | `InitialAccessTokenIssued` | An initial access token is issued, at the console or through the administration API | The identifier of the token, and the administrator who issued it | Nobody |
+| `initial_access_token.revoked` | `InitialAccessTokenRevoked` | An initial access token is revoked the same way | The identifier of the token, and the administrator who revoked it | Nobody |
+| `administration.person_read` | `PersonReadByAnAdministrator` | An administrator reads a person through the administration API | The client the administrator acts through, the subject of the person, the administrator | A person, a client |
+| `administration.sessions_read` | `SessionsReadByAnAdministrator` | An administrator reads the open sessions of a person | The same | A person, a client |
+| `administration.journal_read` | `JournalReadByAnAdministrator` | An administrator reads the journal of a person | The same | A person, a client |
+| `administration.consents_read` | `ConsentsReadByAnAdministrator` | An administrator reads the applications a person agreed to | The same | A person, a client |
+| `administration.membership_read` | `MembershipReadByAnAdministrator` | An administrator reads the members of a group, one act per member | The same | A person, a client |
 
 The reason of `client_authentication.failed` is one of `malformed_credentials`, `multiple_mechanisms`,
 `mismatched_client_id`, `unsupported_scheme`, `no_credentials`, `unknown_client`, `unexpected_method`,

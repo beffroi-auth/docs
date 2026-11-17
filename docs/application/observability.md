@@ -31,12 +31,16 @@ A row holds what follows and nothing else, no field a caller could fill with a s
 | Where it came from: the address, the user agent and the place derived from them | Sealed under the data key of the tenant, in a family of its own |
 | The person it was done in the name of, by the subject their account carries, when it names one | In the clear: a subject names a person without saying anything about them |
 | The client it concerned, by the identifier it was registered under, when it concerns one | In the clear |
+| The administrator who did it through the administration API, by the subject their account carries, when one did | In the clear, as the subject is |
 | The identifier of the row | A UUIDv7, so the journal sorts by time on its primary key |
 
 **The reads that hand a person over to a third party are acts too**: an introspection that tells a resource
 server who a token names, `introspection.answered`, and a UserInfo answer, `userinfo.answered`. An
 introspection that describes nobody, because the token is inactive or held by a client for itself, writes
-nothing.
+nothing. The reads an administrator makes of a person through the administration API are acts of that person
+as well, each naming the administrator: `administration.person_read`, `administration.sessions_read`,
+`administration.journal_read`, `administration.consents_read`, and `administration.membership_read` once for
+each member of a group read.
 
 A person reads the acts of their account on [the page of their acts](account.md#the-pages).
 An operator reads them with `beffroi:user:journal`:
@@ -108,16 +112,21 @@ In production an `info` or a `warning` reaches the log only beside an error. The
 the log.
 
 Caddy writes an access log for each of its sites, one line per request with its path and query string.
-`CADDY_SERVER_LOG_OPTIONS` adds directives to both logs. On the site of `SERVER_NAME`, the `authorization`
-parameter of the query is replaced by `REDACTED`; the site that asks for a client certificate replaces
-nothing. A path is written as it was requested, the link of an enrolment ticket, `/enrol/{ticket}/{value}`,
-included.
+`CADDY_SERVER_LOG_OPTIONS` adds directives to the log of each site. On the site of `SERVER_NAME`, the
+`authorization` parameter of the query is replaced by `REDACTED`; the site that asks for a client certificate and
+the site of the administration API replace nothing. A path is written as it was requested, the link of a ticket
+included: `/enrol/{ticket}/{value}`, `/password/{ticket}/{value}` and `/two-factor/{ticket}/{value}`.
 
 ## Metrics and health
 
 The provider exports no metrics of its own. The health check of the image reads the metrics endpoint of the
 Caddy admin API inside the container, `http://localhost:2019/metrics`, and the development stack reports its
 worker healthy while `messenger:consume` is the first process of its container.
+
+What the instance knows of itself is read on request, and nothing is kept between two reads.
+`beffroi:statistics`, and `GET /statistics` of the administration API, give its people, clients and open
+sessions, its keys by state, its acts by name over what the journal keeps and the messages waiting in each
+lane; `GET /health` of the same API gives the points `beffroi:doctor` looks at.
 
 The panel the provider adds to the Symfony profiler is wired only in a kernel that runs in debug, and the web
 profiler is registered in the development and test environments alone: a production kernel has neither.

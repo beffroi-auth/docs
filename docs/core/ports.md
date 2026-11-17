@@ -62,6 +62,7 @@ being in it, and a list a role switches takes as well the services of that role 
 | `AtomicWritesInterface` | `atomically` | Several writes that are one fact, all of them kept or none | `DoctrineAtomicWrites` (application) |
 | `UuidGeneratorInterface` | `timeOrdered`, `opaque` | A UUID version 7 for a row, a version 4 for a value a party sees, a subject above all | `SymfonyUuidGenerator` (core) |
 | `RandomnessInterface` | `bytes` | The bytes of the secret values drawn through it, an authorization code, a refresh token, a TOTP secret and a backup code among them | `PlatformRandomness` (core) |
+| `CanCountUsersInterface` | `countUsersIn` | How many people a tenant has, whatever their state, and nothing of anybody: the statistics of the instance | `DoctrineUserRepository` (application) |
 
 ## Groups
 
@@ -70,6 +71,9 @@ being in it, and a list a role switches takes as well the services of that role 
 | `GroupRepositoryInterface` | `findByName`, `save` | The groups of a tenant, by their exact name | `DoctrineGroupRepository` (application) |
 | `GroupMembershipRepositoryInterface` | `save`, `remove` | Where a membership is written and taken back | `DoctrineGroupMembershipRepository` (application) |
 | `GroupsOfAPersonInterface` | `of` | The memberships of one person with their sources | `DoctrineGroupMembershipRepository` (application) |
+| `GroupsOfATenantInterface` | `of`, `find` | The groups of a tenant, all of them or one by its identifier | `DoctrineGroupRepository` (application) |
+| `MembersOfAGroupInterface` | `membersOf`, `countMembersOf` | The members of one group, or how many it holds, which delivers none of them | `DoctrineGroupMembershipRepository` (application) |
+| `AdministratorGroupsInterface` | `groupsAdministering` | The names of the groups whose members [administer a tenant](groups.md#who-administers-the-tenant), none for a tenant nobody administers | `ConfigurationAdministratorGroups` (core), from `tenant.administrators` |
 
 ## Credentials
 
@@ -94,6 +98,8 @@ being in it, and a list a role switches takes as well the services of that role 
 | `TotpAlgorithmInterface` | `codeAt`, `provisioningUri` | The code of a time step (RFC 6238 §4.2), and the URI an application scans | `OtphpTotpAlgorithm` (core) |
 | `SecretSealerInterface` | `seal`, `unseal` | The secret of a TOTP, sealed by the key management service of the tenant | `EnvelopeSecretSealer` (core) |
 | `EnrolmentTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The enrolment tickets of a person | `DoctrineEnrolmentTicketRepository` (application) |
+| `PasswordTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The password tickets of a person | `DoctrinePasswordTicketRepository` (application) |
+| `TotpTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The tickets of a person for an authenticator application | `DoctrineTotpTicketRepository` (application) |
 
 ## Sessions
 
@@ -101,6 +107,7 @@ being in it, and a list a role switches takes as well the services of that role 
 |---|---|---|---|
 | `AuthenticationSessionRepositoryInterface` | `find`, `findActiveByUser`, `save` | The sessions of the provider | `DoctrineAuthenticationSessionRepository` (application) |
 | `CanPageActiveSessionsInterface` | `pageOfActiveSessions` | One page of the sessions open in the name of a person | `DoctrineAuthenticationSessionRepository` (application) |
+| `CanCountActiveSessionsInterface` | `countActiveSessionsIn` | How many sessions of a tenant are open at a moment, neither ended nor expired, and nothing of whose they are | `DoctrineAuthenticationSessionRepository` (application) |
 | `CanFindUnendedSessionsInterface` | `findUnendedByUser` | The sessions of one person that nothing has ended, those past their expiry included, for what ends every session of a person but the one it keeps | `DoctrineAuthenticationSessionRepository` (application) |
 | `SubjectsOfSessionsInterface` | `of` | The subject of the person a session names, read where the store keeps it in the clear, so that announcing a replayed code, a reused refresh token or a token a client gave back asks nothing of the key management service | `DoctrineAuthenticationSessionRepository` (application) |
 | `AuthenticationPredicatesInterface` | `named` | A predicate of the `acr` policy by its name, refused when nothing wired carries it | `WiredAuthenticationPredicates` (core) |
@@ -144,16 +151,17 @@ being in it, and a list a role switches takes as well the services of that role 
 | `JournalInterface` | `record`, `forgetBefore` | Where an act is written, and forgotten past its retention | `DoctrineJournal` (application) |
 | `ActsOfAPersonInterface` | `lastOf`, `everyActOf` | The acts of one person, the last of some names or all of them in pages | `DoctrineJournal` (application) |
 | `CanPageActsOfAPersonInterface` | `pageOfActs` | One page of the journal of a person | `DoctrineJournal` (application) |
+| `CanCountActsInterface` | `countActsSince` | How many acts of each name the journal of a tenant holds since a moment, and nothing of whose they are | `DoctrineJournal` (application) |
 | `PersonalArchiveRepositoryInterface` | `find`, `latestOf`, `save`, `forget`, `forgetExpired` | The archives people asked for | `DoctrinePersonalArchiveRepository` (application) |
 | `ArchiveChapterInterface` | `name`, `of` | One chapter of an archive, read in the clear | Seven chapters of the core and two of `beffroi/oidc`, tagged |
 | `ArchiveContainerInterface` | `mediaType`, `extension`, `wrap` | The archive wrapped under the passphrase a person chose | `ZipArchiveContainer` (application) |
-| `DeadRecordsInterface` | `forgetWhatIsDead` | The rows of a store that can no longer do anything, dropped and counted | Nine stores of the application, tagged |
+| `DeadRecordsInterface` | `forgetWhatIsDead` | The rows of a store that can no longer do anything, dropped and counted | Eleven stores of the application, tagged |
 | `PushSubscriptionRepositoryInterface` | `findActiveByUser`, `findByEndpoint`, `find`, `save` | The browsers of a person the provider may push to | `DoctrinePushSubscriptionRepository` (application) |
 | `CanPageActiveSubscriptionsInterface` | `pageOfActiveSubscriptions` | One page of those browsers | `DoctrinePushSubscriptionRepository` (application) |
 
 ## What else the bridge of the core ships
 
-The bridge of the core holds fifteen stores in memory, for tests and for an integration of one's own that wires
+The bridge of the core holds seventeen stores in memory, for tests and for an integration of one's own that wires
 the core without the stores of the application: `InMemoryUserRepository`, `InMemoryCredentialRepository`,
 `InMemoryAuthenticationSessionRepository`, `InMemoryTenantKeyRepository` and their siblings; the journal has
 none. It holds three implementations that answer nothing, `NullBreachedPasswords`, which asks no list,

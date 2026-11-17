@@ -68,6 +68,7 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 | `UnusedClientsInterface` | The clients a source may drop for lack of use | Doctrine; the declared clients answer none, and are never dropped |
 | `ClientRegistrationPolicyInterface` | Whether a tenant registers clients, and under which policy | The configuration |
 | `TrustedIssuersInterface` | The third parties whose assertions a tenant trusts (RFC 7523 §3) | The configuration |
+| `AdministrationResourceInterface` | The [administration API](resources.md#the-administration-api) of a tenant, the resource whose audience the provider reserves to its administrators, or none | The configuration, `tenant.administration_resource` |
 | `PushedAuthorizationRequirementInterface`, `RegisteredAccessTokenShapesInterface`, `RegisteredResourcesInterface`, `RegisteredScopesInterface`, `UnsignedRequestObjectsInterface` | What the clients of a tenant registered, read as a set: whether every one pushes its requests, which shapes of access token and which resources and scopes they take, whether one reads unsigned request objects | The module, over the sources |
 
 ## What the workers share
