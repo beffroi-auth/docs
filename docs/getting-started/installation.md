@@ -5,7 +5,7 @@ description: What Beffroi needs to run, and where the application that serves it
 
 # Installation
 
-Beffroi is deployed as one application, `beffroi/op`, which runs on its own beside the applications it signs
+Beffroi is deployed as one application, `beffroi/beffroi`, which runs on its own beside the applications it signs
 people in to. They talk to it through the protocols it serves, and none of them installs it. A team that wants
 the provider inside code of its own has [the components](../the-project/packages.md), and what it writes around
 them is its own integration.
@@ -28,13 +28,13 @@ asynchronously, to four lanes that are queues of the database, `doctrine://defau
 !!! info "Not public yet"
 
     The `beffroi/*` packages are not on Packagist at this point, and the monorepo,
-    [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi), and its image, `ghcr.io/beffroi-auth/op`,
+    [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi), and its image, `ghcr.io/beffroi-auth/beffroi`,
     are private. The pages that follow run the application from a working copy of the monorepo, and from that
     image.
 
 ## The application
 
-`beffroi/op` is a Symfony application served by FrankenPHP in worker mode. It holds the protocols, the
+`beffroi/beffroi` is a Symfony application served by FrankenPHP in worker mode. It holds the protocols, the
 identity model, the pages, the console and the persistence, and a deployment chooses what differs from one
 machine to the next through the environment: the issuer, the database, the key management service, and the
 rest the configuration page lists. It runs on your machine as a development stack, and anywhere else from its

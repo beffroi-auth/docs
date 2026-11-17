@@ -81,7 +81,7 @@ Beffroi paints that last box the same colour as the other two.</p>
 | [`beffroi/saml2-model`](saml/packages.md#saml2-model) | The SAML 2.0 messages, assertions and metadata, read strictly, validated and written. No HTTP | `beffroi/xml-security` |
 | [`beffroi/saml2-bindings`](saml/packages.md#saml2-bindings) | The HTTP-Redirect and HTTP-POST bindings, on strings and arrays | `beffroi/saml2-model` |
 | [`beffroi/xml-security`](saml/packages.md#xml-security) | A safe DOM, XML Signature and XML Encryption | PHP, with `dom`, `libxml` and `openssl` |
-| [`beffroi/op`](application/index.md) | The provider: the application that serves the protocols, with its configuration, controllers, security, persistence, pages and console, on FrankenPHP | the core and both protocols, plus Symfony |
+| [`beffroi/beffroi`](application/index.md) | The provider: the application that serves the protocols, with its configuration, controllers, security, persistence, pages and console, on FrankenPHP | the core and both protocols, plus Symfony |
 
 ## What it will not do
 

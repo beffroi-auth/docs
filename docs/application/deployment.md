@@ -11,7 +11,7 @@ needs PostgreSQL, which holds the lanes of Messenger as well as the model, and a
 
 ## The image
 
-`apps/op/Dockerfile` builds on `dunglas/frankenphp:1-php8.5` and adds the extensions the provider needs:
+`apps/beffroi/Dockerfile` builds on `dunglas/frankenphp:1-php8.5` and adds the extensions the provider needs:
 `apcu`, `intl`, `opcache`, `zip`, `pdo_pgsql`, `gmp`, `sodium` and `uuid`. Its build context is the
 root of the monorepo, because the application installs the packages beside it through path repositories.
 
@@ -22,10 +22,10 @@ root of the monorepo, because the application installs the packages beside it th
 | `frankenphp_prod` | The production image: the packages are copied to `/src` and the application to `/app`, installed without the development dependencies, with an authoritative class map, the `.env` of the repository compiled for production, the stylesheet built and the assets compiled |
 
 ``` bash
-docker build --file apps/op/Dockerfile --target frankenphp_prod .
+docker build --file apps/beffroi/Dockerfile --target frankenphp_prod .
 ```
 
-`apps/op/` is copied without what a working copy holds beside the repository: `Dockerfile.dockerignore` leaves
+`apps/beffroi/` is copied without what a working copy holds beside the repository: `Dockerfile.dockerignore` leaves
 out its `.env.local`, where the development stack writes its key management service, the secrets of its
 clients and the password of its user, and its `var/` and `vendor/`. The image compiles the environment the
 repository holds, and a deployment sets its own: [configuration](configuration.md).

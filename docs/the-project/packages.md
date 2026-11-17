@@ -17,20 +17,20 @@ history of one part without the rest.
 | `beffroi/saml2-model` | `Beffroi\Saml2\Model` | The SAML 2.0 messages, assertions and metadata, read strictly and written | [beffroi-auth/saml2-model](https://github.com/beffroi-auth/saml2-model) |
 | `beffroi/saml2-bindings` | `Beffroi\Saml2\Bindings` | The HTTP-Redirect and HTTP-POST bindings | [beffroi-auth/saml2-bindings](https://github.com/beffroi-auth/saml2-bindings) |
 | `beffroi/xml-security` | `Beffroi\Xml` | A safe DOM, XML Signature and XML Encryption | [beffroi-auth/xml-security](https://github.com/beffroi-auth/xml-security) |
-| `beffroi/op` | `App` | The provider, the application that carries the Symfony integration | [beffroi-auth/op](https://github.com/beffroi-auth/op) |
+| `beffroi/beffroi` | `App` | The provider, the application that carries the Symfony integration | [beffroi-auth/application](https://github.com/beffroi-auth/application) |
 
 ## Which one do I need?
 
 === "I want a provider"
 
-    Deploy `beffroi/op`, the application. It holds the protocols, the identity model, the pages, the
+    Deploy `beffroi/beffroi`, the application. It holds the protocols, the identity model, the pages, the
     persistence and the console, on FrankenPHP, and a deployment sets it through its environment.
 
     [:beffroi-arrow-right: The application](../application/index.md)
 
 === "I run a Symfony application"
 
-    Deploy `beffroi/op` beside it, and sign people in to your application through it with the `oidc_login`
+    Deploy `beffroi/beffroi` beside it, and sign people in to your application through it with the `oidc_login`
     authenticator of Symfony. Your application is a client of the provider: nothing of the provider is
     installed in it.
 
@@ -60,9 +60,9 @@ entity manager appears.
 
 ``` mermaid
 graph RL
-  op["beffroi/op<br/><small>the application</small>"] --> oidc["beffroi/oidc"]
-  op --> saml["beffroi/saml"]
-  op --> core["beffroi/core"]
+  app["beffroi/beffroi<br/><small>the application</small>"] --> oidc["beffroi/oidc"]
+  app --> saml["beffroi/saml"]
+  app --> core["beffroi/core"]
   oidc --> core
   saml --> core
   saml --> bindings["beffroi/saml2-bindings"]

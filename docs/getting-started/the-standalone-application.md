@@ -1,18 +1,19 @@
 ---
 title: Running the application
-description: 'beffroi/op on your machine and as a deployment of its own: the development stack, the production image, and the first start in the order it has to happen.'
+description: 'beffroi/beffroi on your machine and as a deployment of its own: the development stack, the production image, and the first start in the order it has to happen.'
 ---
 
 # Running the application
 
-`beffroi/op` is the provider: a Symfony application served by FrankenPHP in worker mode, with PostgreSQL for
+`beffroi/beffroi` is the provider: a Symfony application served by FrankenPHP in worker mode, with PostgreSQL for
 the model and for the writes the protocol does not wait on, each lane of Messenger a queue of the database.
 The development stack the conformance plans run against is this application.
 
-It is the `apps/op` directory of the monorepo, [beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi).
-Its `composer.json` resolves the `beffroi/*` packages through path repositories to `../../src/*`, so the
-application is built from a working copy of the monorepo: [beffroi-auth/op](https://github.com/beffroi-auth/op)
-is a read-only mirror of that one directory, and installs nothing on its own.
+It is the `apps/beffroi` directory of the monorepo,
+[beffroi-auth/beffroi](https://github.com/beffroi-auth/beffroi). Its `composer.json` resolves the `beffroi/*`
+packages through path repositories to `../../src/*`, so the application is built from a working copy of the
+monorepo: [beffroi-auth/application](https://github.com/beffroi-auth/application) is a read-only mirror of that
+one directory, and installs nothing on its own.
 
 ## Where it keeps what
 
@@ -45,7 +46,7 @@ with the extensions the locked packages require, `intl`, `dom` and `zip` among t
 
 ``` bash
 git clone git@github.com:beffroi-auth/beffroi.git && cd beffroi
-composer install && (cd apps/op && composer install)
+composer install && (cd apps/beffroi && composer install)
 castor start
 castor provision
 ```
@@ -58,7 +59,7 @@ worker is created and left stopped, because it refuses to start without one.
 
 `castor provision` is what a first start needs, in order, and it can be run again at will:
 
-1. it writes into `apps/op/.env.local` what is missing there: the key management service, a sodium key
+1. it writes into `apps/beffroi/.env.local` what is missing there: the key management service, a sodium key
    generated in place unless `--kms file`, `--kms vault` or `--kms aws` names another backend, the secrets of
    the clients the stack declares, and the password of the development user;
 2. it plays the migrations;
@@ -85,10 +86,10 @@ The production image is built from the root of the monorepo, which is the build 
 expects:
 
 ``` bash
-docker build --file apps/op/Dockerfile --target frankenphp_prod .
+docker build --file apps/beffroi/Dockerfile --target frankenphp_prod .
 ```
 
-The build copies `apps/op/` without what a working copy holds beside the repository, such as the `.env.local`
+The build copies `apps/beffroi/` without what a working copy holds beside the repository, such as the `.env.local`
 the development stack writes, installs the application without its development dependencies, compiles
 the `.env` of the repository for production with `composer dump-env prod`, builds the stylesheet and compiles
 the assets. What a deployment chooses is then read from the environment when the container starts: the
@@ -99,7 +100,7 @@ issuer, the database, the key management service, the lanes, and every other set
 
 ### The Compose file of the image
 
-The monorepo carries a deployment of the published image, `ghcr.io/beffroi-auth/op`, in one file at its root,
+The monorepo carries a deployment of the published image, `ghcr.io/beffroi-auth/beffroi`, in one file at its root,
 [`compose.prod.yaml`](https://github.com/beffroi-auth/beffroi/blob/0.0.x/compose.prod.yaml). It stands alone,
 so it is downloaded without the rest of the monorepo, and runs three services: the server, the worker and
 PostgreSQL, whose table `messenger_messages` holds the queues of the lanes. No broker runs beside them.
