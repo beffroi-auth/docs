@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 The public documentation of Beffroi, an identity provider for the Symfony ecosystem. It documents the
-application `beffroi/op`, which is the provider and alone carries the Symfony integration, and the pure-PHP
+application `beffroi/beffroi`, which is the provider and alone carries the Symfony integration, and the pure-PHP
 packages it is built on: `beffroi/core` (identity), `beffroi/oidc` (OAuth 2.0 and OpenID Connect),
 `beffroi/saml` (SAML 2.0) and the three packages under it. There is no bundle: nothing installs the provider
 inside another application. SCIM has a section, which says it is not implemented.

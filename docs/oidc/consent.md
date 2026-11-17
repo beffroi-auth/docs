@@ -56,7 +56,7 @@ no error (OIDC Core §5.5.1), so the page does not ask about it ([scopes and cla
 Its Content-Security-Policy is the one of the deployment, completed with the origin of the client's logo and
 the one of the tenant's logo in `img-src`, and the origin of the redirect URI in `form-action`, where the
 answer is carried after an Allow: nothing a client registers makes the page load anything else. The template
-is `consent.html.twig`, in `apps/op/templates/beffroi/` with every other page of the provider, and it lists
+is `consent.html.twig`, in `apps/beffroi/templates/beffroi/` with every other page of the provider, and it lists
 the claims with `claims.html.twig`, as the pages of the account list those a consent holds
 ([pages](../application/pages.md)).
 

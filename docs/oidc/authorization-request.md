@@ -136,7 +136,7 @@ the verifier among them ([authorization code](grants/authorization-code.md)).
 **On a page.** A refusal of the first stage, of a pushed request or of a request object is never sent to the
 redirect URI: the person reads a page, with status `400`, that asks them to start again from the application,
 and beneath it the `error` and the `error_description` for whoever develops the application. The page is
-`error.html.twig`, in `apps/op/templates/beffroi/` with the others ([pages](../application/pages.md)).
+`error.html.twig`, in `apps/beffroi/templates/beffroi/` with the others ([pages](../application/pages.md)).
 
 **At the redirect URI.** Every other refusal goes back to the client, in the mode of the request, with
 `error`, `error_description`, `state` and `iss`:

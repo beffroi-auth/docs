@@ -1,11 +1,11 @@
 ---
 title: The application
-description: 'beffroi/op, the provider: one Symfony application on the pure-PHP packages, served by FrankenPHP and set through its environment.'
+description: 'beffroi/beffroi, the provider: one Symfony application on the pure-PHP packages, served by FrankenPHP and set through its environment.'
 ---
 
 # The application
 
-`beffroi/op` is the provider. It is a Symfony application on the pure-PHP packages of Beffroi, served by
+`beffroi/beffroi` is the provider. It is a Symfony application on the pure-PHP packages of Beffroi, served by
 FrankenPHP in worker mode, with PostgreSQL for the model and for the writes the protocol does not wait on,
 which wait there for its worker. It runs on its own, beside the applications it signs people in to, which
 talk to it through the protocols it serves. The conformance plans are run against it, so a profile reported
@@ -76,9 +76,9 @@ Knowing these makes the rest of this section predictable.
 
 ## Where it comes from
 
-It is the `apps/op` directory of the monorepo, mirrored read only as
-[beffroi-auth/op](https://github.com/beffroi-auth/op). It resolves the packages from the directories beside
-it, so it installs nothing on its own: it is worked on inside the monorepo, and deployed from an image built
-there rather than from a clone of its mirror.
+It is the `apps/beffroi` directory of the monorepo, mirrored read only as
+[beffroi-auth/application](https://github.com/beffroi-auth/application). It resolves the packages from the
+directories beside it, so it installs nothing on its own: it is worked on inside the monorepo, and deployed
+from an image built there rather than from a clone of its mirror.
 
 [:beffroi-arrow-right: Running the application](../getting-started/the-standalone-application.md)

@@ -60,7 +60,7 @@ Content-Security-Policy: default-src 'none'; script-src 'sha256-8lDeP0UDwCO6/Rhb
 ```
 
 `script-src` names the one script by its hash and allows no other script, and `form-action` the origin of the
-redirect URI and nothing else. The page is `form_post.html.twig`, in `apps/op/templates/beffroi/` with the
+redirect URI and nothing else. The page is `form_post.html.twig`, in `apps/beffroi/templates/beffroi/` with the
 other pages of the provider: it extends no layout, since a stylesheet or a script a layout brings would be
 blocked by that policy, and it prints the script exactly as `beffroi/oidc` gives it, its hash being the
 policy. Like every page of the interaction plane, it is answered with `Cache-Control: no-store` and

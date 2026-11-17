@@ -9,7 +9,7 @@ Everything a deployment chooses is an environment variable: the issuer, the key 
 database, the lifetimes, the look of the tenant, the roles it plays and the lists of its policy. The
 configuration files hold what stays the same from one deployment to the next, and the clients.
 
-`apps/op/.env` holds the value an image takes when the deployment names none, and the production image
+`apps/beffroi/.env` holds the value an image takes when the deployment names none, and the production image
 compiles it with `composer dump-env prod`. A real environment variable wins over it, which is how a deployment
 says its own, and an empty one wins too: an empty `BEFFROI_SAML_IDENTITY_PROVIDER` turns off the identity
 provider `.env` turns on. `.env` carries no secret of a deployment: the key management service, the key it

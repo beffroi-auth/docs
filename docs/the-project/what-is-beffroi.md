@@ -12,7 +12,7 @@ own, it can send that organisation's people there to sign in, as a SAML service 
 
 It comes in two shapes, and you choose one:
 
-- **an application**, `beffroi/op`, a Symfony application you deploy on its own beside the applications it
+- **an application**, `beffroi/beffroi`, a Symfony application you deploy on its own beside the applications it
   signs people in to, which talk to it through the protocols it serves and never install it;
 - **pure-PHP components** underneath, usable without the Symfony framework, which is where the protocols
   actually live. A team that wants the provider inside code of its own starts from them, and what it writes
