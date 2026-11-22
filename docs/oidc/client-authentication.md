@@ -1,6 +1,6 @@
 ---
 title: Client authentication
-description: The seven methods a client may register, what each one reads of a request and checks, and how a refusal is answered.
+description: The methods a client may register, what each one reads of a request and checks, and how a refusal is answered.
 ---
 
 # Client authentication
@@ -14,7 +14,8 @@ as a request that presents a wrong secret is.
 
 ## The methods
 
-The application wires seven, in this order:
+The application wires five, in this order, then the two that read a certificate while the deployment names the
+host that asks for one, `BEFFROI_MTLS_ORIGIN`:
 
 | Method | What the request carries | What is checked | What the client registers |
 |---|---|---|---|
@@ -22,9 +23,9 @@ The application wires seven, in this order:
 | `client_secret_post` | `client_id` and `client_secret` in the body (RFC 6749 §2.3.1) | The same | A secret |
 | `private_key_jwt` | `client_assertion`, a JWT it signed with a key of its own (RFC 7523 §2.2, OIDC Core §9) | The signature against the keys the client publishes, then the claims | `jwks` or `jwks_uri` |
 | `client_secret_jwt` | `client_assertion`, a JWT signed with its secret under `HS256` (OIDC Core §9) | The MAC with the secret the provider keeps, then the claims | A secret |
+| `none` | `client_id` alone (RFC 6749 §2.1) | Nothing: the client names itself | Nothing |
 | `tls_client_auth` | `client_id`, and a certificate at the TLS handshake (RFC 8705 §2.1) | The one value of RFC 8705 §2.1.2 it registered, read out of the certificate | One of the five `tls_client_auth_*` values |
 | `self_signed_tls_client_auth` | `client_id`, and a certificate at the TLS handshake (RFC 8705 §2.2) | That the certificate is one the client publishes | `jwks` or `jwks_uri` |
-| `none` | `client_id` alone (RFC 6749 §2.1) | Nothing: the client names itself | Nothing |
 
 A client that registers no method takes `client_secret_basic`, the default of RFC 7591 §2. What the wiring
 holds is what a client may register and what the discovery document announces, so a method taken out of the
@@ -32,8 +33,8 @@ wiring is neither accepted nor announced.
 
 | Member of the discovery document | What it lists |
 |---|---|
-| `token_endpoint_auth_methods_supported`, `revocation_endpoint_auth_methods_supported` | The seven methods, in the order above |
-| `introspection_endpoint_auth_methods_supported` | The six that authenticate a client: `none` is refused there (RFC 7662 §2.1) |
+| `token_endpoint_auth_methods_supported`, `revocation_endpoint_auth_methods_supported` | The wired methods, in the order above |
+| `introspection_endpoint_auth_methods_supported` | The wired methods that authenticate a client: `none` is refused there (RFC 7662 §2.1) |
 | `token_endpoint_auth_signing_alg_values_supported` and its two siblings | What an assertion may be signed with: `RS256`, `PS256`, `ES256` and `EdDSA` for `private_key_jwt`, `HS256` for `client_secret_jwt` |
 
 ## A shared secret

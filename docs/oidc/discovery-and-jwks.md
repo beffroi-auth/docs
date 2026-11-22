@@ -63,7 +63,7 @@ provider refuses rather than arbitrates.
 | `revocation_endpoint`, `revocation_endpoint_auth_methods_supported`, `revocation_endpoint_auth_signing_alg_values_supported` | The endpoint, and the methods of the token endpoint, `none` included |
 | `end_session_endpoint`, `frontchannel_logout_supported`, `frontchannel_logout_session_supported`, `backchannel_logout_supported`, `backchannel_logout_session_supported` | The endpoint, and `true` for each logout channel wired, both in the application. [Logout](logout.md) |
 | `dpop_signing_alg_values_supported` | The signature algorithms wired. [DPoP](sender-constrained/dpop.md) |
-| `tls_client_certificate_bound_access_tokens` | `true` when a method that authenticates by certificate is wired, which the application does. [Mutual TLS](sender-constrained/mutual-tls.md) |
+| `tls_client_certificate_bound_access_tokens` | `true` when a method that authenticates by certificate is wired, which the application does while `BEFFROI_MTLS_ORIGIN` names a host. [Mutual TLS](sender-constrained/mutual-tls.md) |
 
 Some members are announced only when what they describe exists, and are absent otherwise rather than empty:
 
