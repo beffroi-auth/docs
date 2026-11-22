@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The unit everything belongs to, the variables that declare it and its row in the database, the acr vocabulary it answers with, and the floor of its logins.">
+        <meta name="description" content="The unit everything belongs to, the variables that declare it and its row in the database, the acr vocabulary it answers with, the floor of its logins, and the contact it gives its people.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -82,7 +82,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Tenants">
-  <meta property="og:description" content="The unit everything belongs to, the variables that declare it and its row in the database, the acr vocabulary it answers with, and the floor of its logins.">
+  <meta property="og:description" content="The unit everything belongs to, the variables that declare it and its row in the database, the acr vocabulary it answers with, the floor of its logins, and the contact it gives its people.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -978,6 +978,17 @@
     <span class="md-ellipsis">
       
         The floor of its logins
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-contact-it-gives-its-people" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The contact it gives its people
       
     </span>
   </a>
@@ -3981,6 +3992,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-contact-it-gives-its-people" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The contact it gives its people
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-domains-it-federates" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4137,7 +4159,9 @@ passkey, while the timed steps wait. Changing one of the seven is therefore a re
 the new value, and the command run in one of them. The issuer is the one thing the command never changes: every
 token a tenant issued names it, so the command refuses another, and another issuer is another tenant, under
 another slug. What a command decides with a date, the floor of its logins below, is written on the row and
-nowhere else.</p>
+nowhere else, and so is what an administrator decides through the administration API, <a href="#the-contact-it-gives-its-people">the contact it gives its
+people</a>, which <code>beffroi:tenant:synchronize</code> leaves as it is and no process
+compares with its environment.</p>
 <h2 id="the-classes-it-answers-with">The classes it answers with<a class="headerlink" href="#the-classes-it-answers-with" title="Link to this section">&para;</a></h2>
 <p>A session never stores an <code>acr</code>: it records what was proven, and satisfies every class whose predicate holds
 on those proofs. The predicates are the provider's, one class each, and a tenant names its classes on them.</p>
@@ -4215,6 +4239,27 @@ gives nobody back what was forgotten.</p>
 <p>A person created after the floor was raised has nothing to sign in with yet. An <a href="../credentials/passkeys/#a-first-passkey-from-a-ticket">enrolment
 ticket</a> gives them their first passkey without a
 password ever existing.</p>
+<h2 id="the-contact-it-gives-its-people">The contact it gives its people<a class="headerlink" href="#the-contact-it-gives-its-people" title="Link to this section">&para;</a></h2>
+<p>When the provider tells a person that a way of signing in to their account changed, it tells them what to do if
+it was not them, and NIST SP 800-63B §4.6 asks for contact information there: the contact of the tenant, one
+line the tenant writes, an address, a number or a page, which the notice writes as it is. A tenant that gives
+none sends its people to their account alone, and nothing is written in its place.</p>
+<p>No variable names it and no command sets it. An administrator of the tenant sets it through the
+<a href="../../oidc/resources/#the-administration-api">administration API</a>:</p>
+<ul>
+<li><code>PUT /tenant/contact</code>, with the JSON object <code>{"contact": "security@example.com"}</code>, sets it, and answers the
+  contact the tenant gives once it is written, <code>{"contact": "security@example.com"}</code>;</li>
+<li><code>DELETE /tenant/contact</code> takes it back, and answers <code>{"contact": null}</code>;</li>
+<li><code>GET /tenant</code> reads it as <code>contact</code>, null while the tenant gives none.</li>
+</ul>
+<p>The request of a <code>PUT</code> is a JSON object, sent as <code>application/json</code>, whose member <code>contact</code> is a string. A body the
+provider does not read as such an object, or a member of another type, is refused with <code>400</code> and <code>invalid_request</code>,
+and so is a contact that is empty, longer than 255 characters, begins or ends with a space of any kind, or holds a
+line or paragraph separator or a character of the Unicode category C: a control, a format character such as a
+bidirectional override or a zero-width space, a private use or an unassigned code point. The description of the
+refusal says which. Each change is an act of the tenant, <code>tenant.contact_changed</code>, which names the administrator
+and no person. Setting the contact the tenant gives already, or taking it back while it gives none, changes nothing
+and is no act.</p>
 <h2 id="the-domains-it-federates">The domains it federates<a class="headerlink" href="#the-domains-it-federates" title="Link to this section">&para;</a></h2>
 <p>A tenant whose SAML service provider declares <a href="../../saml/upstream-identity-providers/">upstream identity
 providers</a> federates their domains: its people of those domains sign
@@ -4240,7 +4285,7 @@ address first.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:20:02 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
   </span>
 
     
