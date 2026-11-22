@@ -80,6 +80,7 @@
 [data-md-color-scheme="default"] {
   --bf-bg: var(--beffroi-paper);
   --bf-surface: var(--beffroi-surface);
+  --bf-surface-solid: var(--beffroi-surface);
   --bf-field: var(--beffroi-field);
   --bf-text: var(--beffroi-ink);
   --bf-muted: rgba(12, 16, 22, 0.72);
@@ -98,6 +99,9 @@
 [data-md-color-scheme="slate"] {
   --bf-bg: var(--beffroi-ink);
   --bf-surface: rgba(242, 244, 246, 0.07);
+  /* A ground laid over a rule, inside a bordered button or tag, would let a translucent surface show the
+     rule through it. */
+  --bf-surface-solid: color-mix(in srgb, var(--beffroi-paper) 7%, var(--beffroi-ink));
   --bf-field: var(--beffroi-ink);
   --bf-text: var(--beffroi-paper);
   --bf-muted: rgba(242, 244, 246, 0.72);
@@ -300,32 +304,142 @@ html :focus-visible {
   color: var(--bf-accent-text);
 }
 
-/* The version: a tag, cut at 9 px. */
+/*
+ * The version, a tag in the header: Martian Mono capitals behind the 8 px ultramarine square of a label, cut
+ * at 9 px and bordered in ink in two layers, as a bordered button is, so the rule keeps its weight along the
+ * diagonal. Its list is a panel drawn the same way, under it, and marks the version under the pointer with
+ * the square. The theme writes no class on the version a page belongs to, so the list cannot mark that one.
+ */
+.md-version {
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
 .md-version__current {
-  background-color: var(--bf-surface);
+  --bf-tag-border: var(--bf-text);
+  --bf-tag-ground: var(--bf-bg);
+
+  align-items: center;
+  background-color: var(--bf-tag-border);
   clip-path: polygon(0 0, calc(100% - var(--bf-cut-tag)) 0, 100% var(--bf-cut-tag), 100% 100%, var(--bf-cut-tag) 100%, 0 calc(100% - var(--bf-cut-tag)));
   color: var(--bf-text);
+  display: inline-flex;
   font-family: var(--bf-font-mono);
   font-size: 0.55rem;
+  font-weight: 500;
+  height: 1.6rem;
+  isolation: isolate;
   letter-spacing: 0.08em;
+  line-height: 1;
+  position: relative;
+  text-transform: uppercase;
+  top: 0;
+}
+
+/* The theme writes the margins of the tag and the padding of a link under [dir], which these match. */
+[dir] .md-version__current {
+  margin: 0;
+  padding: 0 0.7rem 0 calc(0.6rem + 8px + 0.4rem);
+}
+
+.md-version__current::before {
+  background:
+    linear-gradient(var(--bf-accent), var(--bf-accent)) no-repeat calc(0.6rem - var(--bf-rule)) center / 8px 8px,
+    var(--bf-tag-ground);
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-tag) + 1px) 0, 100% calc(var(--bf-cut-tag) - 1px), 100% 100%, calc(var(--bf-cut-tag) - 1px) 100%, 0 calc(100% - var(--bf-cut-tag) + 1px));
+  content: "";
+  inset: var(--bf-rule);
+  position: absolute;
+  z-index: -1;
+}
+
+.md-version:is(:hover, :focus-within) .md-version__current {
+  --bf-tag-ground: var(--bf-surface-solid);
+}
+
+[dir] .md-version__current::after {
+  height: 0.5rem;
   margin: 0 0 0 0.6rem;
-  padding: 0.2rem 0.9rem 0.2rem 0.6rem;
 }
 
-.md-version__current::after {
-  margin-left: 0.3rem;
+.md-version__alias {
+  color: var(--bf-muted);
+  margin-left: 0.5rem;
+  opacity: 1;
 }
 
+.md-version__alias::before {
+  content: "· ";
+}
+
+/* A panel 4 px under the tag, inside the box of the selector so the pointer crossing the gap keeps it
+   open, padded so no link reaches a cut corner. */
 .md-version__list {
-  background-color: var(--bf-field);
-  border: var(--bf-rule) solid var(--bf-text);
+  background-color: var(--bf-text);
   border-radius: 0;
   box-shadow: none;
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-tag)) 0, 100% var(--bf-cut-tag), 100% 100%, var(--bf-cut-tag) 100%, 0 calc(100% - var(--bf-cut-tag)));
+  isolation: isolate;
+  left: 0;
+  margin: 0;
+  min-width: 100%;
+  padding: calc(0.4rem + var(--bf-rule)) var(--bf-rule);
+  top: calc(50% + 0.8rem + 0.2rem);
+}
+
+.md-version__list::before {
+  background-color: var(--bf-bg);
+  clip-path: polygon(0 0, calc(100% - var(--bf-cut-tag) + 1px) 0, 100% calc(var(--bf-cut-tag) - 1px), 100% 100%, calc(var(--bf-cut-tag) - 1px) 100%, 0 calc(100% - var(--bf-cut-tag) + 1px));
+  content: "";
+  inset: var(--bf-rule);
+  position: absolute;
+  z-index: -1;
+}
+
+.md-version__item {
+  line-height: 1;
 }
 
 .md-version__link {
+  color: var(--bf-text);
   font-family: var(--bf-font-mono);
-  font-size: 0.6rem;
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[dir] .md-version__link {
+  padding: 0.45rem 1.4rem 0.45rem calc(0.6rem + 8px + 0.4rem - var(--bf-rule));
+}
+
+.md-version__link:is(:hover, :focus) {
+  background: linear-gradient(var(--bf-accent), var(--bf-accent)) no-repeat calc(0.6rem - var(--bf-rule)) center / 8px 8px;
+  color: var(--bf-accent-text);
+}
+
+/* Beside the lockup a narrow screen keeps, the tag is the number alone. Below 387 px it no longer fits before
+   the switch of the scheme, and the versions page lists the versions instead. */
+@media screen and (max-width: 76.234375em) {
+  [dir] .md-version__current {
+    padding: 0 0.45rem 0 0.5rem;
+  }
+  .md-version__current::before {
+    background: var(--bf-tag-ground);
+  }
+  .md-version__current .md-version__alias {
+    display: none;
+  }
+  [dir] .md-version__current::after {
+    margin-left: 0.35rem;
+  }
+}
+
+@media screen and (max-width: 24.1875em) {
+  .md-version {
+    display: none;
+  }
 }
 
 /* The drawer of a narrow screen carries the same band. */
@@ -859,7 +973,7 @@ html :focus-visible {
 }
 
 .md-typeset .md-button:is(:hover, :focus) {
-  --bf-button-ground: var(--bf-surface);
+  --bf-button-ground: var(--bf-surface-solid);
 
   background-color: var(--bf-button-border);
   border-color: transparent;
