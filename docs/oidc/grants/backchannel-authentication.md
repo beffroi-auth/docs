@@ -172,12 +172,42 @@ name of the provider, the name of the client, the binding message when there is 
 address of the page where requests are answered. It carries no identifier of the request and no link that
 answers one, so that nothing reaching the person from outside can carry them to an approval.
 
-What carries it to the person is a channel: a class implementing `App\Ciba\PendingApprovalChannelInterface`,
-tagged `beffroi.pending_approval_channel`. The image carries one, [web push](../../application/web-push.md) to
-the browsers the person subscribed on the notifications page of their account, in the lane while
-`BEFFROI_WEB_PUSH_SUBJECT` names a subject. A deployment that sets that variable empty still serves this
-flow: the person finds the request on the page where requests are answered, which is where any channel sends
-them anyway.
+What carries it to the person is a channel, and the lane hands the word to every one of them: the classes
+implementing `App\Ciba\PendingApprovalChannelInterface` and tagged `beffroi.pending_approval_channel`, none in
+the application, then the three of the application, each while its variable names something. The three write
+in the language of the record of the person when the deployment serves it, and in the default language
+otherwise. A channel of a deployment's own answers whether it reached the person, `false` when it told them
+nothing, and throws `App\Messenger\NotificationNotDeliveredException` when a later attempt may reach them.
+
+| Channel | On while | Reaches | What it writes |
+|---|---|---|---|
+| [Web push](../../application/web-push.md) | `BEFFROI_WEB_PUSH_SUBJECT` names a subject | The browsers the person subscribed on the notifications page of their account | The name of the tenant, the sentence below, and the page where the answer is given, which a tap opens |
+| Mail | `BEFFROI_MAIL_DSN` names a transport | The email address of the person, while it is marked verified | A mail in plain text from `BEFFROI_MAIL_SENDER`, under the subject "Example: a sign-in is waiting for your approval" for a tenant named Example, which holds the sentence and the address of the page, with `Auto-Submitted: auto-generated` (RFC 3834 §5.2), which RFC 3834 §2 asks an automatic responder not to answer |
+| SMS | `BEFFROI_SMS_DSN` names a transport | The phone number of the person, while it is marked verified | The name of the tenant, the sentence and the address of the page |
+
+The sentence names the client and what it asks the person to approve, a sign-in or the binding message it
+wrote, and says that the answer is given in their account: "Billing is asking you to approve a sign-in. Open
+your account to answer." in English.
+
+**A channel that cannot reach the person tells nothing, and leaves the others to serve**: a person with no browser
+subscribed, no address or no number marked verified, and a person a deployment cannot write to. A mail DSN that no
+installed factory reads, a mail DSN without a sender or with a sender that is no address, an SMS DSN that no
+installed factory reads, a text the bridge refuses to carry and a verified address that is no addr-spec of RFC 5322
+§3.4.1 send nothing. The log says why at each message, as an error, and as a warning for an address a mail cannot
+carry, without naming the person's address or number.
+
+**The lane comes back only while no channel reached the person.** A channel whose push service, mail server or SMS
+provider did not take the message this time says that a later attempt may reach the person. When one of them says
+so and no channel reached the person, the lane sends the word again after the waits of its schedule, to every
+channel; when one channel reached them, the lane does not send it again for the failure of another, which would
+write to them twice. What a transport of the lane keeps of a refused mail or text, beside the sealed body, names
+the class of the refusal and, for a mail, its code, never what the server answered, which may quote the address or
+the number.
+
+The image installs no bridge of `symfony/mailer` or `symfony/notifier`: a mail leaves through SMTP, which
+`symfony/mailer` carries, and a deployment of the image sends no text. A deployment that turns the three
+channels off still serves this flow: the person finds the request on the page where requests are answered,
+which is where any channel sends them anyway.
 
 ## Answering: `/account/approvals`
 

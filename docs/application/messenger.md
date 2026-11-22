@@ -5,14 +5,14 @@ description: Which writes leave the request, the buses and lanes of the provider
 
 # Messenger
 
-What the protocol or the page needs in the same request, a code or a token issued, a session opened, a
-credential dated by the login that used it, a passkey renamed, is written by the use case in that request. The
-rest travels on a lane and a worker carries it out: the acts of the journal, the enrichment of where a request
-came from, the revocations that follow the end of a session, the calls to clients and push services. No
-message of the application travels on the synchronous transport. The buses, their middleware, where each
-message goes and how it is written are a contract, `App\Messenger\MessengerContract`, which the extension of the
-`beffroi:` tree, `App\DependencyInjection\BeffroiExtension`, prepends to the configuration of Messenger; what a
-deployment chooses is where the lanes go.
+What the protocol or the page needs in the same request, a code or a token issued, a session opened, a credential
+dated by the login that used it, a passkey renamed, is written by the use case in that request. The rest travels on
+a lane and a worker carries it out: the acts of the journal, the enrichment of where a request came from, the
+revocations that follow the end of a session, the calls to clients, push services and the mail server. No message
+of the application travels on the synchronous transport. The buses, their middleware, where each message goes and
+how it is written are a contract, `App\Messenger\MessengerContract`, which the extension of the `beffroi:` tree,
+`App\DependencyInjection\BeffroiExtension`, prepends to the configuration of Messenger; what a deployment chooses
+is where the lanes go.
 
 ## What leaves the request
 
@@ -39,7 +39,7 @@ What the lanes carry out:
 |---|---|
 | `async_priority_low` | Every act written to the journal; where a session was seen from, enriched; the tokens of an ended session revoked, and again for a refresh that was in flight; the clients of an ended session handed a logout token to carry; the date a client was last used; what a client was given of a person; the archive a person asked for, built; the part of a SAML service provider in a session, recorded; the client of an answered backchannel request handed its notification to carry |
 | `async_priority_medium` | A password that just signed somebody in, looked up in a list of compromised passwords; the language a person chose, written on their account; and every step of [the schedule](#what-time-does-on-its-own) |
-| `async_notifications` | A logout token posted to a client (Back-Channel Logout 1.0 §2.5), a backchannel request whose client is told it was answered (CIBA Core §10.2), a person told that a request waits for them or that a way of signing in to their account changed, through the channels the deployment wires, [web push](web-push.md) among them |
+| `async_notifications` | A logout token posted to a client (Back-Channel Logout 1.0 §2.5), a backchannel request whose client is told it was answered (CIBA Core §10.2), a person told that a request waits for them or that a way of signing in to their account changed, through the channels the deployment wires: [web push](web-push.md) for both, and a mail or a text for a request that waits |
 
 ## The contract of the provider
 

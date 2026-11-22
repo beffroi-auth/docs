@@ -17,8 +17,8 @@ and the person names the source that created them. Their [credentials](credentia
 |---|---|
 | Subject | The `sub` of OIDC Core §2: 1 to 255 printable ASCII characters, no space. Unique within the tenant, never changed and never given to anybody else |
 | Username | What the person types to name themselves: 1 to 255 bytes once the whitespace around it is trimmed, unique within the tenant and matched exactly, case included |
-| Email address | Optional, a valid address, with a flag that says whether it was verified. An absent address cannot be verified |
-| Phone number | Optional, with a flag of its own that says whether it was verified |
+| Email address | Optional, a valid address, with a flag that says whether it was verified. An absent address cannot be verified. The mail that tells the person that [a backchannel request](../oidc/grants/backchannel-authentication.md#reaching-the-person) waits for them is written to it only while it is marked verified |
+| Phone number | Optional, with a flag of its own that says whether it was verified. The text that tells them so is sent to it only while it is marked verified |
 | Address | The structured claim of OIDC Core §5.1.1. An address with no member is no address, and is not held |
 | Profile | The thirteen other claims of OIDC Core §5.1, below |
 | Source | Local, or the upstream provider that created the person and the claims it holds of them |

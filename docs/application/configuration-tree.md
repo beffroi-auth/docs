@@ -50,6 +50,8 @@ beffroi:
 | [`back_channel_logout`](#back_channel_logout) | How long a notification to a third party is tried | Five `BEFFROI_BACK_CHANNEL_LOGOUT_*` variables: six retries, 235 seconds in all |
 | [`backchannel_authentication`](#backchannel_authentication) | How the `login_hint` of a backchannel request is read, and how long a call to a client may take | `BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT`: as a `sub`; `BEFFROI_CLIENT_NOTIFICATION_TIMEOUT`: 3 seconds |
 | [`web_push`](#web_push) | Whether the provider reaches people through their browsers | `BEFFROI_WEB_PUSH_SUBJECT`: on, with the contact of the development stack |
+| [`mail`](#mail) | Whether the provider writes to people at the address marked verified | `BEFFROI_MAIL_DSN` and `BEFFROI_MAIL_SENDER`, empty: no mail |
+| [`sms`](#sms) | Whether the provider texts people at the number marked verified | `BEFFROI_SMS_DSN`, empty: no text |
 | [`client_authentication`](#client_authentication) | What a client assertion and a published key set are held to | `BEFFROI_CLIENT_ASSERTION_*` and `BEFFROI_JWKS_URI_*` |
 | [`request_objects`](#request_objects) | What a request object and its `request_uri` are held to | `BEFFROI_REQUEST_OBJECT_*` |
 | [`dpop`](#dpop) | What a proof of possession is held to | `BEFFROI_DPOP_*`: no nonce asked |
@@ -345,13 +347,13 @@ and never searched, and the login page offers the name of the person it names.
 
 ## `back_channel_logout`
 
-How a logout token is posted to a client that registered a `backchannel_logout_uri` (Back-Channel Logout 1.0
-§2.5), which five variables time, `BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT` and the four of its retries: with the
-values of `.env`, five seconds an attempt, then six retries, two seconds after the first failure and three
-times longer each time, a minute at most. The retry schedule is the one of every notification the provider
-carries to a third party, on the `async_notifications` transport of the application: the logout tokens, the
-notifications of the backchannel authentication flow, and the pushes that tell a person something waits for
-them or that a way of signing in to their account changed.
+How a logout token is posted to a client that registered a `backchannel_logout_uri` (Back-Channel Logout 1.0 §2.5),
+which five variables time, `BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT` and the four of its retries: with the values of
+`.env`, five seconds an attempt, then six retries, two seconds after the first failure and three times longer each
+time, a minute at most. The retry schedule is the one of every notification the provider carries to a third party,
+on the `async_notifications` transport of the application: the logout tokens, the notifications of the backchannel
+authentication flow, the pushes that tell a person something waits for them or that a way of signing in to their
+account changed, and the mails and texts that tell them a request waits.
 
 The schedule is also the `exp` of a logout token, 235 seconds with the values of `.env`, and a retiring
 signing key stays published that long at least, so that the provider stops trying when what it sends stops
@@ -395,6 +397,48 @@ bin/console beffroi:keys:generate --algorithm=VAPID
 ```
 
 [:beffroi-arrow-right: Web push](web-push.md)
+
+## `mail`
+
+Whether the provider writes to people, at the email address marked verified and at no other, through a
+transport of `symfony/mailer`. Naming a `dsn` turns it on, and the file reads it from `BEFFROI_MAIL_DSN`, which
+`default::` makes no DSN at all when it is empty: no mail then leaves the deployment. A mail is written from
+the `sender`, `BEFFROI_MAIL_SENDER`, an address alone or behind a name.
+
+``` yaml title="config/packages/beffroi.yaml"
+beffroi:
+    mail:
+        dsn: '%env(default::BEFFROI_MAIL_DSN)%'
+        sender: '%env(default::BEFFROI_MAIL_SENDER)%'
+```
+
+`.env` names neither, so the image writes no mail until a deployment names both. The transport is built by the
+factory of `symfony/mailer` at the first mail, and a mail leaves the image through SMTP, `smtp://` or `smtps://`.
+The component reads `sendmail://` and `native://` as well, which need a `sendmail` binary the image does not carry,
+and `null://null`, which drops the mail and counts the person reached; the scheme of a bridge needs that bridge
+installed, and the image installs none. A DSN no installed factory reads, or a DSN without a sender, writes no mail
+and leaves the other channels to serve, the log saying why at each mail.
+
+[:beffroi-arrow-right: Reaching the person of a backchannel request](../oidc/grants/backchannel-authentication.md#reaching-the-person)
+
+## `sms`
+
+Whether the provider texts people, at the phone number marked verified and at no other, through a texter transport
+of `symfony/notifier`. Naming a `dsn` turns it on, and the file reads it from `BEFFROI_SMS_DSN`, which `default::`
+makes no DSN at all when it is empty: no text then leaves the deployment. The DSN names the scheme of a bridge of
+`symfony/notifier`, with the number or the name a text is sent from among its options.
+
+``` yaml title="config/packages/beffroi.yaml"
+beffroi:
+    sms:
+        dsn: '%env(default::BEFFROI_SMS_DSN)%'
+```
+
+`.env` names none, and the image installs no bridge: a deployment of the image sends no text. A DSN no installed
+factory reads sends nothing, the log saying why at each text, and `null://null`, which `symfony/notifier` reads
+itself, drops the text and counts the person reached.
+
+[:beffroi-arrow-right: Reaching the person of a backchannel request](../oidc/grants/backchannel-authentication.md#reaching-the-person)
 
 ## `client_authentication`
 
