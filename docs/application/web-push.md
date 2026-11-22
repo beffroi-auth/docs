@@ -5,13 +5,12 @@ description: Reaching a person through the push service of a browser they signed
 
 # Web push
 
-A deployment that names a push subject reaches a person through the push service of a browser they signed in
-with (RFC 8030): the person subscribes that browser on a page of their account, and the provider pushes to it
-when a request waits for their answer and when a way of signing in to their account changes. It is how a
-backchannel authentication request (CIBA Core §7) reaches the person it names without a second application,
-and how a person learns, outside the request that made it, that a way into their account was added or taken
-away (NIST SP 800-63B §4.1.2.1, §4.5). Nothing in a notification names the request or the credential it is
-about.
+A deployment that names a push subject reaches a person through the push service of a browser they signed in with
+(RFC 8030): the person subscribes that browser on a page of their account, and the provider pushes to it when a
+request waits for their answer and when a way of signing in to their account changes. It is one way a backchannel
+authentication request (CIBA Core §7) reaches the person it names without a second application, beside mail and
+SMS, and how a person learns, outside the request that made it, that a way into their account was added or taken
+away (NIST SP 800-63B §4.1.2.1, §4.5). Nothing in a notification names the request or the credential it is about.
 
 ## Turning it on
 
@@ -75,12 +74,12 @@ endpoint, which carries the unique constraint with the person.
 
 ## What a notification carries
 
-Two messages reach a person this way, a request that waits for their answer and a change to the ways their
-account signs in. Each is put on the lane of notifications, which hands it to the channels the application
-wires for it; web push is the only one the application wires for either, in the lane while a subject is named.
-Every browser the person subscribed is pushed to, and each push carries three strings and nothing else,
-`title`, `body` and `url`, in the language of the record of the person when the deployment serves it, and in the
-default language otherwise.
+Two messages reach a person this way, a request that waits for their answer and a change to the ways their account
+signs in. Each is put on the lane of notifications, which hands it to the channels the application wires for it,
+web push among them while a subject is named: the only one for a change to the ways in, and one of three for a
+request that waits, beside mail and SMS. Every browser the person subscribed is pushed to, and each push carries
+three strings and nothing else, `title`, `body` and `url`, in the language of the record of the person when the
+deployment serves it, and in the default language otherwise.
 
 No identifier and no link that acts: the notification says that something waits or changed, and the person
 goes to a page of the provider they already know, where what it is about is found by who they are. The service
@@ -98,9 +97,12 @@ answers with.
 
 ### A request waits for an answer
 
-When a client makes a backchannel authentication request that names a person, the provider answers the
-client and puts the message that tells the person on the lane. A person who has subscribed no browser is told
-nothing, and finds the request where requests are answered.
+When a client makes a backchannel authentication request that names a person, the provider answers the client and
+puts the message that tells the person on the lane. A person who has subscribed no browser is pushed nothing: a
+mail reaches them when the deployment names a transport and a sender and their address is marked verified, and a
+text when it installs a bridge of `symfony/notifier`, which the image does not, names its DSN and their number is
+marked verified, as [backchannel authentication](../oidc/grants/backchannel-authentication.md#reaching-the-person)
+says. The request waits where requests are answered.
 
 | Member | What it says |
 |---|---|
@@ -152,7 +154,8 @@ page of the acts of the account shows it.
 A subscription whose application server key has retired is treated as gone without asking the push service,
 which would refuse a request signed by any other key. When no browser of the person was reached and at least
 one push failed, the message goes back to the lane, which sends it again after the waits of its schedule; one
-browser reached is a person told, and the message is done.
+browser reached is a person told, and the message is done. A request that waits goes back only when no other
+channel reached the person either, and its retry calls every channel again.
 
 [:beffroi-arrow-right: The lane of notifications](messenger.md#the-contract-of-the-provider)
 

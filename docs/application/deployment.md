@@ -92,7 +92,7 @@ starts it again.
 | Transport | What it carries |
 |---|---|
 | `scheduler_beffroi` | The clock of the timed steps. One process consumes it: the steps are idempotent, and are not written to run twice at once |
-| `async_notifications` | What the provider carries to somebody it does not own: logout tokens (Back-Channel Logout 1.0 §2.5), the notification that a backchannel request was answered (CIBA Core §10.2), and web push to the browsers of a person (RFC 8030) |
+| `async_notifications` | What the provider carries to somebody it does not own: logout tokens (Back-Channel Logout 1.0 §2.5), the notification that a backchannel request was answered (CIBA Core §10.2), web push to the browsers of a person (RFC 8030), and a mail or a text to the address or the number of a person, when it is marked verified |
 | `async_priority_high` | Nothing the application routes |
 | `async_priority_medium` | The writes a request does not wait for, and the timed steps the schedule hands over |
 | `async_priority_low` | The events of the core and of the protocol, which the journal writes down and the enrichment of a provenance reads |
@@ -254,7 +254,8 @@ development environment, where it would pin every `.localhost` name of the machi
 
 A deployment that filters what goes out reads it here. No outbound redirect is followed, whoever asks, but
 two, each to the one host the application names: a download of MaxMind is followed to its storage, and a
-revocation list of the test service of the FIDO Alliance to the host that serves it.
+revocation list of the test service of the FIDO Alliance to the host that serves it. The image sends no text,
+installing no bridge of `symfony/notifier`, whatever `BEFFROI_SMS_DSN` names.
 
 | From | To | When |
 |---|---|---|
@@ -267,6 +268,7 @@ revocation list of the test service of the FIDO Alliance to the host that serves
 | The worker | The `backchannel_logout_uri` of a client | When a session that client signed in ends |
 | The worker | The `backchannel_client_notification_endpoint` of a client | When a backchannel request in `ping` mode is answered |
 | The worker | The push service of a browser | When a backchannel request waits on the person who subscribed that browser, and when a way of signing in to their account changes |
+| The worker | The mail server `BEFFROI_MAIL_DSN` names, when it names one and `BEFFROI_MAIL_SENDER` names a sender | When a backchannel request waits on a person whose address is marked verified |
 | The worker, the console | The metadata of the SAML peers given by URL | Every hour, and on `beffroi:saml:*:refresh` |
 | The worker, the console | MaxMind, when a licence key is named | Every week, and on `beffroi:geoip:refresh` |
 | The console | The FIDO Metadata Service, and the revocation lists the certificates of the chain of its BLOB name | On `beffroi:webauthn:mds-refresh` |
