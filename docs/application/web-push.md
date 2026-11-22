@@ -100,8 +100,8 @@ answers with.
 When a client makes a backchannel authentication request that names a person, the provider answers the client and
 puts the message that tells the person on the lane. A person who has subscribed no browser is pushed nothing: a
 mail reaches them when the deployment names a transport and a sender and their address is marked verified, and a
-text when it installs a bridge of `symfony/notifier`, which the image does not, names its DSN and their number is
-marked verified, as [backchannel authentication](../oidc/grants/backchannel-authentication.md#reaching-the-person)
+text when it names the DSN of Sweego, the provider of texts the image carries, and their number is marked
+verified, as [backchannel authentication](../oidc/grants/backchannel-authentication.md#reaching-the-person)
 says. The request waits where requests are answered.
 
 | Member | What it says |
