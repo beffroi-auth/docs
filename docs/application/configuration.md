@@ -93,6 +93,11 @@ enrolment, while the timed steps wait. Changing one of them is therefore a resta
 every process with the new value, and `bin/console beffroi:tenant:synchronize` run in one of them; a process
 still on the previous value stops serving from that moment.
 
+The row holds two more settings, which no variable names and `beffroi:tenant:synchronize` leaves as they are:
+[the floor of its logins](../core/tenants.md#the-floor-of-its-logins), which `beffroi:tenant:login-floor` sets,
+and [the contact the tenant gives its people](../core/tenants.md#the-contact-it-gives-its-people) when it tells
+them of a change to their account, which an administrator sets through the administration API.
+
 ## Keys and lifetimes
 
 In seconds. [`keys`](../reference/configuration.md#keys) and [`tokens`](../reference/configuration.md#tokens)

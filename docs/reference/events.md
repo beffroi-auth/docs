@@ -87,6 +87,7 @@ way, `logout_token.given_up` is raised.
 | `group.created` | `GroupCreated` | A group is created | The name of the group, and the administrator | Nobody |
 | `group_membership.added` | `GroupMembershipAdded` | A person is made a member of a group the tenant holds the members of | The subject, the name of the group, and the administrator | A person |
 | `group_membership.removed` | `GroupMembershipRemoved` | A person is taken out of such a group | The same | A person |
+| `tenant.contact_changed` | `TenantContactChanged` | An administrator sets or takes back the contact the tenant gives its people, through the administration API | The administrator | Nobody |
 | `tenant.key_staged` | `TenantKeyStaged` | A key is drawn and staged, published in the JWK Set when its algorithm is one the set carries | The key | Nobody |
 | `tenant.key_rotated` | `TenantKeyRotated` | A key takes over | The key activated, and the one it replaced | Nobody |
 | `tenant.key_retired` | `TenantKeyRetired` | A key leaves the service | The key, and why | Nobody |

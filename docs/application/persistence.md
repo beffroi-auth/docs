@@ -30,7 +30,7 @@ it belongs to, by a foreign key on `tenant_id`.
 
     | Table | What a row is |
     |---|---|
-    | `beffroi_tenant` | The tenant: its issuer, its slug, its name, its look, the claims its people may change, its `acr` vocabulary, the floor of its logins and what the enrolment of its passkeys asks |
+    | `beffroi_tenant` | The tenant: its issuer, its slug, its name, its look, the claims its people may change, its `acr` vocabulary, the floor of its logins, what the enrolment of its passkeys asks and the contact it gives its people |
     | `beffroi_user` | A person: the subject, in the clear and unique in the tenant, the username, the e-mail address, the telephone number, the postal address, the claims of the profile and the source that created them |
     | `beffroi_password_credential` | The password of a person, its hash typed by its algorithm, and when a list of compromised passwords was last asked about it and when it was found there |
     | `beffroi_passkey_credential` | A passkey: the credential record of WebAuthn, its name, what its enrolment proved of the model of its authenticator, the serial number an enterprise attestation carried, whether the model was under a security alert the tenant admitted, and its revocation |
@@ -101,7 +101,7 @@ before it reads those columns with the type they had.
 ## A value object in one column
 
 **A value object a column holds whole goes in one column**, with a DBAL type of the application: the tree
-declares thirty-six of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
+declares thirty-seven of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
 `beffroi_password_hash` among them. What the column holds is written by the object itself, in the package
 that owns it, and read back through its constructor, so a row edited by hand into something the object
 refuses fails when it is loaded, as a conversion error naming the type, and never further down.
