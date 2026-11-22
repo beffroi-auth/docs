@@ -419,7 +419,7 @@ beffroi:
 factory of `symfony/mailer` at the first mail, and a mail leaves the image through SMTP, `smtp://` or `smtps://`.
 The component reads `sendmail://` and `native://` as well, which need a `sendmail` binary the image does not carry,
 and `null://null`, which drops the mail and counts the person reached; the scheme of a bridge needs that bridge
-installed, and the image installs none. A DSN no installed factory reads, or a DSN without a sender, writes no mail
+installed, and the image installs no bridge of `symfony/mailer`. A DSN no installed factory reads, or a DSN without a sender, writes no mail
 and leaves the other channels to serve, the log saying why at each mail.
 
 [:beffroi-arrow-right: Reaching the person of a backchannel request](../oidc/grants/backchannel-authentication.md#reaching-the-person)
@@ -437,8 +437,17 @@ beffroi:
         dsn: '%env(default::BEFFROI_SMS_DSN)%'
 ```
 
-`.env` names none, and the image installs no bridge: a deployment of the image sends no text. A DSN no installed
-factory reads sends nothing, the log saying why at each text, and `null://null`, which `symfony/notifier` reads
+`.env` names none. The image installs one bridge of `symfony/notifier`, that of Sweego (`symfony/sweego-notifier`),
+so a deployment of the image texts through Sweego:
+
+``` dotenv
+BEFFROI_SMS_DSN=sweego://API_KEY@default?region=FR&campaign_type=transac&shorten_urls=false
+```
+
+The bridge requires `region`, the country of the numbers as an ISO 3166-1 alpha-2 code, and `campaign_type`, such as
+`transac`. `shorten_urls=false` keeps the links of a text as the provider wrote them: without it, Sweego replaces
+each one with a shortened link, and the person no longer reads the address of the provider on the page where they
+answer. A DSN no installed factory reads sends nothing, the log saying why at each text, and `null://null`, which `symfony/notifier` reads
 itself, drops the text and counts the person reached.
 
 [:beffroi-arrow-right: Reaching the person of a backchannel request](../oidc/grants/backchannel-authentication.md#reaching-the-person)
