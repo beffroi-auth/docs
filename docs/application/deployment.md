@@ -254,8 +254,8 @@ development environment, where it would pin every `.localhost` name of the machi
 
 A deployment that filters what goes out reads it here. No outbound redirect is followed, whoever asks, but
 two, each to the one host the application names: a download of MaxMind is followed to its storage, and a
-revocation list of the test service of the FIDO Alliance to the host that serves it. The image sends no text,
-installing no bridge of `symfony/notifier`, whatever `BEFFROI_SMS_DSN` names.
+revocation list of the test service of the FIDO Alliance to the host that serves it. A text leaves for Sweego
+alone, the one bridge of `symfony/notifier` the image installs.
 
 | From | To | When |
 |---|---|---|
@@ -269,6 +269,7 @@ installing no bridge of `symfony/notifier`, whatever `BEFFROI_SMS_DSN` names.
 | The worker | The `backchannel_client_notification_endpoint` of a client | When a backchannel request in `ping` mode is answered |
 | The worker | The push service of a browser | When a backchannel request waits on the person who subscribed that browser, and when a way of signing in to their account changes |
 | The worker | The mail server `BEFFROI_MAIL_DSN` names, when it names one and `BEFFROI_MAIL_SENDER` names a sender | When a backchannel request waits on a person whose address is marked verified |
+| The worker | The API of Sweego, `api.sweego.io` unless the DSN names another host, when `BEFFROI_SMS_DSN` names one | When a backchannel request waits on a person whose phone number is marked verified |
 | The worker, the console | The metadata of the SAML peers given by URL | Every hour, and on `beffroi:saml:*:refresh` |
 | The worker, the console | MaxMind, when a licence key is named | Every week, and on `beffroi:geoip:refresh` |
 | The console | The FIDO Metadata Service, and the revocation lists the certificates of the chain of its BLOB name | On `beffroi:webauthn:mds-refresh` |

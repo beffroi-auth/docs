@@ -214,7 +214,7 @@ verifies.
 
 | Option | Variable | Type | In the image | What it decides |
 |---|---|---|---|---|
-| `dsn` | `BEFFROI_SMS_DSN` | string, not empty | empty: none, no text | The texter transport of `symfony/notifier` a text leaves through, by the scheme of a bridge the application installs, the number or the name it is sent from among its options. Naming one turns SMS on, to the phone number of a person marked verified and to no other. The image installs no bridge, so a deployment of it sends no text: a DSN no installed factory reads sends nothing, and the log says why at each one |
+| `dsn` | `BEFFROI_SMS_DSN` | string, not empty | empty: none, no text | The texter transport of `symfony/notifier` a text leaves through, by the scheme of a bridge the application installs, the number or the name it is sent from among its options. Naming one turns SMS on, to the phone number of a person marked verified and to no other. The image installs the bridge of Sweego and no other, `sweego://API_KEY@default?region=FR&campaign_type=transac&shorten_urls=false`, where `shorten_urls=false` keeps the links of a text as the provider wrote them: a DSN no installed factory reads sends nothing, and the log says why at each one |
 
 ## `client_authentication`
 
