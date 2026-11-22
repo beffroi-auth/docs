@@ -20,12 +20,10 @@ Beffroi paints that last box the same colour as the other two.</p>
 
 </div>
 
-!!! info "This documentation describes a version that is not released yet"
+!!! warning "Development version"
 
-    It follows `0.1.x`, where the next minor version is written. The released version is `0.0`, one entry
-    away in the selector at the top of the page. Every page here states what the code does today, in the
-    branch this version of the documentation follows. What is not written yet is marked as a stub rather
-    than guessed at.
+    These pages document `0.1.x`, where the next minor version is written. The released versions and their
+    support are on [the versions page](the-project/versions.md).
 
 <div class="grid cards" markdown>
 
