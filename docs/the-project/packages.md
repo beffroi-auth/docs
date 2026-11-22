@@ -68,7 +68,15 @@ deployed from its image, `ghcr.io/beffroi-auth/beffroi`.
     Each [release](https://github.com/beffroi-auth/beffroi/releases) carries it as `beffroi-tui.phar`, for PHP 8.4
     or later, and as an executable that carries its own PHP, for Linux on x86_64 and on arm64 and for macOS on
     Apple silicon. `SHA256SUMS` holds their digests, and `SHA256SUMS.asc` is its signature by the key that signs
-    the release tags. There is no Windows build: the client drives the terminal through `stty`.
+    the release tags, `5E85 361F C66B B177 1393  8831 0B2A 1B99 31D6 2A89`, published at
+    [github.com/Spomky.gpg](https://github.com/Spomky.gpg). There is no Windows build: the client drives the
+    terminal through `stty`.
+
+    ``` bash
+    curl -fsSL https://github.com/Spomky.gpg | gpg --import
+    gpg --verify SHA256SUMS.asc SHA256SUMS
+    sha256sum --check --ignore-missing SHA256SUMS
+    ```
 
     [:beffroi-arrow-right: The administration plane](../reference/endpoints.md#the-administration-plane)
 
