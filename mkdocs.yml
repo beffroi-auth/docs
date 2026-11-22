@@ -12,6 +12,8 @@ site_dir: site
 
 theme:
   name: material
+  # The variant that keeps the markup and the look of Material for MkDocs, which beffroi.css is written against.
+  variant: classic
   custom_dir: docs/overrides
   language: en
   # Archivo, Chakra Petch and Martian Mono are served by the site itself, from assets/fonts.
@@ -60,10 +62,15 @@ plugins:
   - search
   # Any external asset the theme asks for is downloaded at build time and served from this site, except the
   # script of OpenPanel: it is loaded from where it is published, which serves its current version, and
-  # OpenPanel is the one third party a reader reaches.
+  # OpenPanel is the one third party a reader reaches. The theme also names the libraries of features this
+  # site does not use, the image lightbox and the code blocks a reader runs: they are not downloaded, and a
+  # page never loads them. The lightbox would bring a video player and an advertising SDK with it.
   - privacy:
       assets_exclude:
         - openpanel.dev/*
+        - unpkg.com/glightbox@*
+        - unpkg.com/ace-builds@*
+        - unpkg.com/pyodide@*
   - git-revision-date-localized:
       enable_creation_date: false
       type: date
@@ -89,8 +96,8 @@ markdown_extensions:
   - pymdownx.caret
   - pymdownx.details
   - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:zensical.extensions.emoji.twemoji
+      emoji_generator: !!python/name:zensical.extensions.emoji.to_svg
       # The icons of the brand, as :beffroi-key:, from docs/overrides/.icons/beffroi.
       options:
         custom_icons:
@@ -118,12 +125,8 @@ markdown_extensions:
   - pymdownx.tilde
 
 validation:
-  omitted_files: warn
-  absolute_links: warn
-  unrecognized_links: warn
-  anchors: warn
-  nav:
-    omitted_files: warn
+  invalid_links: true
+  invalid_link_anchors: true
 
 extra:
   status:

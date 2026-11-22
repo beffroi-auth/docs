@@ -15,7 +15,7 @@ spikes live in `beffroi-auth/design`, cloned at `~/Projects/idp`. **Neither of t
 neither is the audience of this one**: `design` is internal and in French, this site is public and in
 English.
 
-A static site built with MkDocs and Material for MkDocs, published on GitHub Pages, one version per branch
+A static site built with Zensical, which reads `mkdocs.yml`, published on GitHub Pages, one version per branch
 through mike. `README.md` has the commands.
 
 ## Non-negotiables
@@ -50,7 +50,7 @@ description: One sentence, used by search engines and by the social card.
 ```
 
 - One page, one subject, named by its title. The navigation in `mkdocs.yml` is the table of contents, and a
-  page absent from it fails the build.
+  page absent from it fails the check.
 - Internal links are relative paths to the `.md` file (`../core/keys.md`), never to the built URL.
 - Hints are Material admonitions, not GitBook `{% hint %}` blocks, and there are three: `!!! note` (or
   `info`, `tip`), `!!! warning` and `!!! danger`. Each one shows its word above its title.
@@ -62,8 +62,8 @@ description: One sentence, used by search engines and by the social card.
 
 1. Write `docs/<section>/<page>.md` with the front matter above.
 2. Add it to `nav:` in `mkdocs.yml`, in the place the reader would look for it.
-3. `make check`. Strict mode fails on a broken link, a missing anchor, a page outside the navigation and a
-   navigation entry without a page.
+3. `make check`. It fails on a broken link, a missing anchor, a page outside the navigation and a
+   navigation entry without a page: the strict build checks the links, `tools/nav.py` the navigation.
 
 ## The look
 
@@ -71,9 +71,10 @@ The site follows the brand guidelines of Beffroi, v1.0. The kit lives in the pri
 `beffroi-auth/brand`, cloned at `~/Projects/idp/Design`. There, `v1.0/Charte Graphique.md` states every rule
 as text, and its section on the documentation (p. 47) is the one this site follows.
 
-`docs/assets/stylesheets/beffroi.css` applies them on top of Material. Its first blocks are the tokens: the
-brand colours, then the roles they play on paper and on ink. Change a value there and the whole site
-follows; do not add a hex value further down the file.
+`docs/assets/stylesheets/beffroi.css` applies them on top of the `classic` variant of the theme, which keeps
+the markup of Material for MkDocs. Its first blocks are the tokens: the brand colours, then the roles they
+play on paper and on ink. Change a value there and the whole site follows; do not add a hex value further
+down the file.
 
 - Light by default. The ink scheme follows the rules of the dark grounds: paper text, cold light for
   accent text.

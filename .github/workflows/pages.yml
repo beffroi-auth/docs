@@ -1,10 +1,10 @@
 name: Pages
 
-# One version of the site per branch, published by mike into gh-pages: 0.1 is served at /0.1/, and the
-# alias "latest" follows the highest released version, which is what the root of the site redirects to. Pages is
-# configured to deploy from the gh-pages branch, root folder, on the domain doc.beffroi.tech that the CNAME
-# file at the root of gh-pages names: mike writes only the directories of a version and of its aliases, the
-# root redirect and versions.json, so it never touches that file.
+# One version of the site per branch, built by Zensical and published by mike into gh-pages: 0.1 is served at
+# /0.1/, and the alias "latest" follows the highest released version, which is what the root of the site
+# redirects to. Pages is configured to deploy from the gh-pages branch, root folder, on the domain
+# doc.beffroi.tech that the CNAME file at the root of gh-pages names: mike writes only the directories of a
+# version and of its aliases, the root redirect and versions.json, so it never touches that file.
 on:
     push:
         branches:
@@ -13,13 +13,6 @@ on:
         paths-ignore:
             - '.github/workflows/check.yml'
     workflow_dispatch:
-
-# MkDocs 2.0 is announced as backward incompatible with every plugin and theme, so the toolchain is pinned
-# to the 1.x line in requirements.txt and the two notices about it are silenced: they are news about the
-# ecosystem, not findings about this site.
-env:
-    NO_MKDOCS_2_WARNING: 'true'
-    DISABLE_MKDOCS_2_WARNING: 'true'
 
 permissions:
     contents: write
