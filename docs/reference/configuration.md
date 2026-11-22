@@ -104,7 +104,7 @@ key of the tenant but its SAML keys, which take theirs from [`saml.keys`](#samlk
 
 | Option | Variable | Type | In the image | What it decides |
 |---|---|---|---|---|
-| `origin` | `BEFFROI_MTLS_ORIGIN` | string | empty: no mutual TLS | The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as `https://mtls.op.example.com`. The endpoints are announced under it in `mtls_endpoint_aliases` (RFC 8705 §5). Empty, the provider serves no mutual TLS: `tls_client_auth` and `self_signed_tls_client_auth` are not wired, and no token is bound to a certificate. A deployment whose listener writes the certificate in `SSL_CLIENT_CERT` on the host of the issuer itself, which the site of `SERVER_NAME` never does, names that host |
+| `origin` | `BEFFROI_MTLS_ORIGIN` | string | empty: no mutual TLS | The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as `https://mtls.op.example.com`. Six endpoints are announced under it in `mtls_endpoint_aliases` (RFC 8705 §5). Empty, the provider serves no mutual TLS: `tls_client_auth` and `self_signed_tls_client_auth` are not wired, and no token is bound to a certificate. A deployment whose listener writes the certificate in `SSL_CLIENT_CERT` on the host of the issuer itself, which the site of `SERVER_NAME` never does, names that host |
 
 ## `tokens`
 
