@@ -77,7 +77,7 @@ initial access token ([dynamic registration](../dynamic-registration.md)):
 
 Its token requests go to the token endpoint of the host that asks for a certificate, the ordinary host asking
 for none ([mutual TLS](mutual-tls.md#the-endpoint-aliases)). Until `BEFFROI_MTLS_ORIGIN` names that host,
-such a registration is refused with `invalid_client_metadata` (RFC 8705 §3.4). Once it names it, the
+such a registration is refused with `invalid_client_metadata` (RFC 7591 §3.2.2). Once it names it, the
 deployment serves the host with `CADDY_EXTRA_CONFIG` and `MTLS_SERVER_NAME`, or every token request of such a
 client is refused with `invalid_request`.
 `tls_client_certificate_bound_access_tokens` and `dpop_bound_access_tokens` default to `false`, and no
@@ -98,5 +98,7 @@ TLS](mutual-tls.md#tokens-bound-to-the-certificate) say what each one compares.
 **What the provider announces.** The discovery document always carries `dpop_signing_alg_values_supported`,
 the signature algorithms the provider is wired with. It carries `tls_client_certificate_bound_access_tokens`
 set to `true` while a client authentication method that proves a certificate is wired, which the application
-does while `BEFFROI_MTLS_ORIGIN` names a host, and to `false` otherwise. The bare challenge of UserInfo, answered to a request that carries no token at all, is what
-is read from the bindings themselves, both wired in the application: `WWW-Authenticate: Bearer, DPoP`.
+does while `BEFFROI_MTLS_ORIGIN` names a host, and to `false` otherwise. The bare challenge of UserInfo,
+answered to a request that carries no token at all, names the schemes of the two bindings, both wired in the
+application, with the algorithms of `dpop_signing_alg_values_supported` in `algs`:
+`WWW-Authenticate: Bearer, DPoP algs="..."`.

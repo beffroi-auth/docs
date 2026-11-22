@@ -227,8 +227,8 @@ its grants do not call for, or call for and lack; the rule a public client's loo
   `self_signed_tls_client_auth`, a `request_object_signing_alg` naming an algorithm, and any encrypted
   response. An inline `jwks` holds a key every encryption the client registered can be addressed to.
 - `tls_client_auth` comes with exactly one of the five certificate values, and every other method with none.
-- `tls_client_certificate_bound_access_tokens: true` is refused while `BEFFROI_MTLS_ORIGIN` names no host, no
-  method that reads a certificate being wired then (RFC 8705 §3.4).
+- `tls_client_certificate_bound_access_tokens: true` (RFC 8705 §3.4) is refused while `BEFFROI_MTLS_ORIGIN`
+  names no host, no method that reads a certificate being wired then.
 - `dpop_bound_access_tokens` is refused to a client whose tokens are bound to its certificate, by
   `tls_client_certificate_bound_access_tokens` or by a method that authenticates with a certificate: a token is
   bound to one thing (RFC 9449 §5.2, RFC 8705 §3).

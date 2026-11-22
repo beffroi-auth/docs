@@ -73,12 +73,13 @@ describes.
 
 ## Hardening a client can ask for
 
-The provider does not need a different deployment to serve a demanding client. The same endpoints accept
-[pushed authorization requests](pushed-authorization-requests.md),
-[signed request objects](request-objects.md), [signed and encrypted
-responses](response-modes.md), and tokens bound to a key with [DPoP](sender-constrained/dpop.md) or to a
-certificate with [mutual TLS](sender-constrained/mutual-tls.md). A client that asks for none of it keeps
-working, and the FAPI 2.0 profiles are what prove the strict end of that range.
+A demanding client is served by the same provider. The same endpoints accept [pushed authorization
+requests](pushed-authorization-requests.md), [signed request objects](request-objects.md), [signed and
+encrypted responses](response-modes.md), and tokens bound to a key with [DPoP](sender-constrained/dpop.md).
+Tokens bound to a certificate with [mutual TLS](sender-constrained/mutual-tls.md) are issued once the
+deployment serves a host whose listener asks for a certificate and names it in `BEFFROI_MTLS_ORIGIN`, the
+endpoints keeping their paths under that host. A client that asks for none of it keeps working, and the
+FAPI 2.0 profiles are what prove the strict end of that range.
 
 ## One source of truth
 
