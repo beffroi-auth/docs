@@ -61,7 +61,9 @@ worker is created and left stopped, because it refuses to start without one.
 
 1. it writes into `apps/beffroi/.env.local` what is missing there: the key management service, a sodium key
    generated in place unless `--kms file`, `--kms vault` or `--kms aws` names another backend, the secrets of
-   the clients the stack declares, and the password of the development user;
+   the clients the stack declares, the password of the development user, the origin of the host that asks for
+   a client certificate, `BEFFROI_MTLS_ORIGIN=https://mtls.op.localhost`, and the open registration of clients,
+   `BEFFROI_REGISTRATION_MODE=open`;
 2. it plays the migrations;
 3. it writes the row of the tenant with `beffroi:tenant:synchronize`;
 4. it draws the keys of the tenant, the key messages are sealed to first, or checks with the key management
