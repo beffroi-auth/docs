@@ -237,14 +237,13 @@ Where the FIDO metadata a passkey's attestation is checked against are kept: wha
 
 ## `mutual_tls`
 
-For a deployment whose clients authenticate with a certificate (RFC 8705) on a host whose TLS listener asks
-for one. Named, the discovery document announces six endpoints again under that host, in
-`mtls_endpoint_aliases`. The file reads the origin from `BEFFROI_MTLS_ORIGIN`, as
-`https://mtls.op.example.com`, and `.env` leaves it empty: the provider then serves no mutual TLS, so no
-alias is announced, `tls_client_auth` and `self_signed_tls_client_auth` are neither announced nor registered,
-and no token is bound to a certificate. A deployment whose listener writes the certificate in
-`SSL_CLIENT_CERT` on the host of the issuer itself, which the site of `SERVER_NAME` never does, names that
-host.
+For a deployment whose clients authenticate with a certificate or bind their tokens to one (RFC 8705), on a host
+whose TLS listener asks for one. Named, the discovery document announces six endpoints again under that host, in
+`mtls_endpoint_aliases`. The file reads the origin from `BEFFROI_MTLS_ORIGIN`, as `https://mtls.op.example.com`,
+and `.env` leaves it empty: the provider then serves no mutual TLS, so no alias is announced, `tls_client_auth`
+and `self_signed_tls_client_auth` are neither announced nor registered, and no token is bound to a certificate.
+A deployment whose listener writes the certificate in `SSL_CLIENT_CERT` on the host of the issuer itself, which
+the site of `SERVER_NAME` never does, names that host.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:

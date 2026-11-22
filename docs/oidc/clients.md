@@ -128,7 +128,7 @@ set](#what-the-image-does-not-set) says what every client of the image has other
 | `tls_client_certificate_bound_access_tokens` | Its tokens are bound to the certificate of its connection whichever way it authenticated (RFC 8705 §3.4), and a token request that presents none is refused with `invalid_request` |
 | `dpop_bound_access_tokens` | Its tokens are bound to a key it proves with DPoP (RFC 9449 §5.2), and a token request that carries no DPoP proof is refused with `invalid_request`. `false` by default. A client whose tokens are bound to its certificate cannot register it. See [sender-constrained tokens](sender-constrained/index.md#a-client-that-must-bind) |
 | `id_token_signed_response_alg` | The algorithm its ID tokens and logout tokens are signed with. Left out, `RS256`, the first algorithm wired |
-| `id_token_encrypted_response_alg`, `id_token_encrypted_response_enc` | Its ID tokens encrypted to one of its keys once signed. The two go together, neither has a default |
+| `id_token_encrypted_response_alg`, `id_token_encrypted_response_enc` | Its ID tokens and its logout tokens encrypted to one of its keys once signed. The two go together, neither has a default |
 | `userinfo_signed_response_alg` | Its UserInfo answer as a signed JWT (`application/jwt`). Left out, plain JSON |
 | `userinfo_encrypted_response_alg`, `userinfo_encrypted_response_enc` | Its UserInfo answer encrypted to one of its keys |
 | `authorization_signed_response_alg` | The algorithm of its [signed authorization responses](response-modes.md). Left out, `RS256` |
@@ -229,9 +229,10 @@ its grants do not call for, or call for and lack; the rule a public client's loo
 - `tls_client_auth` comes with exactly one of the five certificate values, and every other method with none.
 - `tls_client_certificate_bound_access_tokens: true` (RFC 8705 §3.4) is refused while `BEFFROI_MTLS_ORIGIN`
   names no host, no method that reads a certificate being wired then.
-- `dpop_bound_access_tokens` is refused to a client whose tokens are bound to its certificate, by
-  `tls_client_certificate_bound_access_tokens` or by a method that authenticates with a certificate: a token is
-  bound to one thing (RFC 9449 §5.2, RFC 8705 §3).
+- `dpop_bound_access_tokens` (RFC 9449 §5.2) is refused to a client whose tokens are bound to its certificate
+  (RFC 8705 §3), by `tls_client_certificate_bound_access_tokens` or by a method that authenticates with a
+  certificate: a token is bound to one thing, the `cnf` of a token representing a single proof-of-possession key
+  (RFC 7800 §3.1).
 - The client is registered for at least one grant. `refresh_token` comes with a grant that issues one:
   `authorization_code`, the device code or the backchannel grant.
 - A client of `authorization_code` registers at least one redirect URI, and a client of no grant that sends a
