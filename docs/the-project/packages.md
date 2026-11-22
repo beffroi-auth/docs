@@ -1,13 +1,14 @@
 ---
 title: Packages
-description: The eight packages of Beffroi, what each one depends on, and which one you need.
+description: The packages of Beffroi and its application, what each one depends on, and which one you need.
 ---
 
 # Packages
 
 Beffroi is developed as one monorepo, [`beffroi-auth/beffroi`](https://github.com/beffroi-auth/beffroi), and
-published as eight packages. Each package is split read-only into its own repository, so you can read the
-history of one part without the rest.
+split read-only into eight repositories, one per part, so you can read the history of one part without the
+rest. Seven parts are packages published on Packagist. The application, `beffroi/beffroi`, is not: it is
+deployed from its image, `ghcr.io/beffroi-auth/beffroi`.
 
 | Package | Namespace | What it is | Repository |
 |---|---|---|---|
@@ -24,7 +25,7 @@ history of one part without the rest.
 
 === "I want a provider"
 
-    Deploy `beffroi/beffroi`, the application. It holds the protocols, the identity model, the pages, the
+    Deploy `beffroi/beffroi`, the application, from its image `ghcr.io/beffroi-auth/beffroi`. It holds the protocols, the identity model, the pages, the
     persistence and the console, on FrankenPHP, and a deployment sets it through its environment.
 
     [:beffroi-arrow-right: The application](../application/index.md)
@@ -64,6 +65,11 @@ history of one part without the rest.
     `beffroi/tui` is the terminal client of the administration API of an instance: a client of the provider like
     any other, which talks to it over HTTP and installs none of the packages above.
 
+    Each [release](https://github.com/beffroi-auth/beffroi/releases) carries it as `beffroi-tui.phar`, for PHP 8.4
+    or later, and as an executable that carries its own PHP, for Linux on x86_64 and on arm64 and for macOS on
+    Apple silicon. `SHA256SUMS` holds their digests, and `SHA256SUMS.asc` is its signature by the key that signs
+    the release tags. There is no Windows build: the client drives the terminal through `stty`.
+
     [:beffroi-arrow-right: The administration plane](../reference/endpoints.md#the-administration-plane)
 
 ## What depends on what
@@ -97,10 +103,10 @@ not.
 
 | What | Which |
 |---|---|
-| PHP | 8.4 or later, with `intl`; `zip` for the application; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding; `mbstring`, `openssl` and `sodium` for the terminal client |
+| PHP | 8.4 or later, with `intl`; `zip` for the application; `dom`, `libxml` and `openssl` for the XML of SAML, `zlib` for its HTTP-Redirect binding; `dom`, `filter`, `iconv`, `libxml`, `mbstring`, `openssl`, `simplexml`, `sodium` and `zlib` for the PHAR of the terminal client, whose executables carry their own PHP |
 | Symfony | 8.2, for the application and the terminal client |
 | Database | PostgreSQL, through Doctrine ORM |
-| Licence | MIT, for all eight packages |
+| Licence | MIT, for every package and for the application |
 
 The cryptography of the tokens and the credentials is not written here. Signatures and encryption of JOSE
 come from [`web-token/jwt-library`](https://github.com/web-token/jwt-framework), WebAuthn from
