@@ -419,8 +419,13 @@ beffroi:
 factory of `symfony/mailer` at the first mail, and a mail leaves the image through SMTP, `smtp://` or `smtps://`.
 The component reads `sendmail://` and `native://` as well, which need a `sendmail` binary the image does not carry,
 and `null://null`, which drops the mail and counts the person reached; the scheme of a bridge needs that bridge
-installed, and the image installs no bridge of `symfony/mailer`. A DSN no installed factory reads, or a DSN without a sender, writes no mail
-and leaves the other channels to serve, the log saying why at each mail.
+installed, and the image installs no bridge of `symfony/mailer`. A DSN no installed factory reads, or a DSN without
+a sender, writes no mail and leaves the other channels to serve, the log saying why at each mail.
+
+The relay keeps the links of a mail as the provider wrote them: click tracking is off for the domain a mail is sent
+from. A relay that tracks clicks replaces every link with a redirect of its own, and the person no longer reads the
+address of the provider on the page where they answer. At Sweego it is "Email click-through tracking", set for each
+domain in the management of the domains, and no header of a message turns it off.
 
 [:beffroi-arrow-right: Reaching the person of a backchannel request](../oidc/grants/backchannel-authentication.md#reaching-the-person)
 
