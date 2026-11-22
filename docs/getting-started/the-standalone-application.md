@@ -60,16 +60,20 @@ worker is created and left stopped, because it refuses to start without one.
 `castor provision` is what a first start needs, in order, and it can be run again at will:
 
 1. it writes into `apps/beffroi/.env.local` what is missing there: the key management service, a sodium key
-   generated in place unless `--kms file`, `--kms vault` or `--kms aws` names another backend, the secrets of
-   the clients the stack declares, the password of the development user, the origin of the host that asks for
+   generated in place unless `--kms file`, `--kms vault` or `--kms aws` names another backend, with sodium or
+   Vault a second key in `BEFFROI_KMS_DSN_SECOND` for a move of the data keys, the secrets of the clients the
+   stack declares, the password of the development user, the origin of the host that asks for
    a client certificate, `BEFFROI_MTLS_ORIGIN=https://mtls.op.localhost`, and the open registration of clients,
-   `BEFFROI_REGISTRATION_MODE=open`;
+   `BEFFROI_REGISTRATION_MODE=open`; and it writes again, whatever the file holds, the public key sets of the
+   conformance clients, of the issuer of assertions the stack trusts and of its attestation authority, which
+   follow the keys they publish;
 2. it plays the migrations;
 3. it writes the row of the tenant with `beffroi:tenant:synchronize`;
 4. it draws the keys of the tenant, the key messages are sealed to first, or checks with the key management
    service that the keys already there still open;
 5. it creates the user `alice` with a verified email address, describes her with the claims of the
-   `profile`, `phone` and `address` scopes, and sets her password;
+   `profile`, `phone` and `address` scopes, sets her password, and writes her subject into `.env.local` as
+   `BEFFROI_DEV_USER_SUBJECT`;
 6. it issues the client certificate of the stack, on the machine, under `var/mtls/`;
 7. it starts the worker.
 

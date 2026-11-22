@@ -370,8 +370,9 @@ them.
 
 Their variables are read in the development environment: the `CONFORMANCE_*`, `OIDC_DEMO_*` and `DEMO_*`
 secrets and key sets, `BEFFROI_DEV_USER_SUBJECT`, `BEFFROI_DEMO_HOST_IP`, `APP_PROFILER` and
-`VAR_DUMPER_SERVER`. The development stack writes the secrets and the key sets into `.env.local`, and `open`
-there for `BEFFROI_REGISTRATION_MODE`, which it reads as every deployment does. The demonstration of the flows is wired in
+`VAR_DUMPER_SERVER`. The development stack writes the secrets and the key sets into `.env.local`, `open`
+there for `BEFFROI_REGISTRATION_MODE` and its host of mutual TLS for `BEFFROI_MTLS_ORIGIN`, which it reads as
+every deployment does. The demonstration of the flows is wired in
 the test environment of the application's own suite as well, so three of them are read there too,
 `DEMO_SERVICE_SECRET`, `DEMO_CIBA_POLL_SECRET` and `BEFFROI_DEV_USER_SUBJECT`, which `.env.test` gives as
 fixtures. A production kernel reads none of them.

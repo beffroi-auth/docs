@@ -52,7 +52,7 @@ The other listeners of the application each hear one event, or an interface a fe
 
 A logout token its client refuses is given up at once. One that cannot be delivered is tried again on the
 schedule of `beffroi.back_channel_logout`, and goes to the failure transport once that schedule runs out, and so
-does the issue of one for a client whose key cannot be obtained, tried again on the same schedule. Either way,
+does issuing one for a client whose key cannot be obtained, tried again on the same schedule. Either way,
 `logout_token.given_up` is raised.
 
 ## The events of the core
