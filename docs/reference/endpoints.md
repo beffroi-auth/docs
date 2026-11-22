@@ -169,6 +169,8 @@ answered `404` once the token has been read.
 | Method | Path | Route |
 |---|---|---|
 | `GET` | `/tenant` | `beffroi_administration_tenant` |
+| `PUT` | `/tenant/contact` | `beffroi_administration_tenant_contact` |
+| `DELETE` | `/tenant/contact` | `beffroi_administration_tenant_contact_removal` |
 | `GET` | `/keys` | `beffroi_administration_keys` |
 | `GET` | `/statistics` | `beffroi_administration_statistics` |
 | `GET` | `/health` | `beffroi_administration_health` |

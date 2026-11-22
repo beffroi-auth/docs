@@ -351,7 +351,7 @@ values of `.env`, five seconds an attempt, then six retries, two seconds after t
 times longer each time, a minute at most. The retry schedule is the one of every notification the provider
 carries to a third party, on the `async_notifications` transport of the application: the logout tokens, the
 notifications of the backchannel authentication flow, and the pushes that tell a person something waits for
-them.
+them or that a way of signing in to their account changed.
 
 The schedule is also the `exp` of a logout token, 235 seconds with the values of `.env`, and a retiring
 signing key stays published that long at least, so that the provider stops trying when what it sends stops
