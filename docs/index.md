@@ -98,3 +98,7 @@ The code is one monorepo, [`beffroi-auth/beffroi`](https://github.com/beffroi-au
 into one repository per package. This site is written in
 [`beffroi-auth/docs`](https://github.com/beffroi-auth/docs), one branch per version of the packages it
 describes.
+
+The website of the project is [beffroi.tech](https://beffroi.tech), and the project has an account on
+[Bluesky](https://bsky.app/profile/beffroi.tech) and a page on
+[LinkedIn](https://www.linkedin.com/company/beffroi-auth).
