@@ -290,9 +290,17 @@ Symfony locks the session and keeps them apart.
 ## The reference application
 
 [beffroi-auth/oidc-demo](https://github.com/beffroi-auth/oidc-demo) is this guide grown into everything Beffroi
-serves: a Symfony application on `oidc_login`, an API that checks the same access token several ways, an API
-Platform API behind the introspection endpoint, and a page where you compose a client option by option and
-register it on the spot.
+serves. It is a Symfony application on `oidc_login`, laid out as a tree of the features of the provider,
+grouped: signing in, client authentication, tokens, protecting an API, documents, signing out, the grants that
+need no browser, and FAPI 2.0. Each feature faces a client, shows the configuration of that client, runs it
+against the provider and shows what travelled. Around the tree:
+
+- an API Platform API that verifies an access token addressed to it on its own (RFC 8707 §2, RFC 9068) and
+  asks Beffroi about any other (RFC 7662), whose Swagger UI signs in with the authorization code and PKCE as a
+  public client;
+- routes that check the access token of the session several ways: introspected, introspected with a signed
+  answer, verified offline, and bound by DPoP;
+- a page where you compose a client option by option and register it on the spot (RFC 7591).
 
 From a working copy of the monorepo with oidc-demo checked out beside it, `castor demo` points it at
 [the development stack](the-standalone-application.md#on-your-machine) and starts it on
