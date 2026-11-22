@@ -132,7 +132,7 @@ share](../application/deployment.md#what-the-processes-share)).
 | Port | What it answers | In the application |
 |---|---|---|
 | `PendingApprovalNotifierInterface` | Telling a person that a backchannel request waits for them | A message on the lane of the notifications |
-| `LogoutTokenRetriesInterface` | The issue of a logout token for a client whose key could not be obtained when the session ended, tried again on the schedule of its delivery and given up with it | A message on the lane of the notifications |
+| `LogoutTokenRetriesInterface` | Issuing a logout token for a client whose key could not be obtained when the session ended, tried again on the schedule of its delivery and given up with it | A message on the lane of the notifications |
 | `LogoutTokenDeliveryInterface` | The budget a logout token is written for, which its `exp` and the retirement of its signing key read. It bounds the token and not the sending: a send that comes after it carries an expired token | The waits of the retry policy of that lane and the timeout of the sender, from the `BEFFROI_BACK_CHANNEL_LOGOUT_*` variables ([logout](logout.md#its-delivery)) |
 
 ## What the wiring says

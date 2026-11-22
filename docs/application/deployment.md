@@ -26,8 +26,9 @@ docker build --file apps/beffroi/Dockerfile --target frankenphp_prod .
 ```
 
 `apps/beffroi/` is copied without what a working copy holds beside the repository: `Dockerfile.dockerignore` leaves
-out its `.env.local`, where the development stack writes its key management service, the secrets of its
-clients and the password of its user, and its `var/` and `vendor/`. The image compiles the environment the
+out its `.env.local`, where `castor provision` writes the values of the development stack
+([on your machine](../getting-started/the-standalone-application.md#on-your-machine)), and its `var/` and
+`vendor/`. The image compiles the environment the
 repository holds, and a deployment sets its own: [configuration](configuration.md).
 
 The production image sets `APP_ENV=prod`, reads `php.ini-production`, preloads `config/preload.php` into

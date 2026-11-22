@@ -97,9 +97,9 @@ publishes the new one and keeps the private half of the old one for `BEFFROI_JWK
 **No document leaves in clear.** When the set behind the `jwks_uri` cannot be read, or holds no key the
 registered algorithm can be addressed to, the provider writes nothing for that client, and the request that was
 to carry the document fails: the token request that was to carry the ID token, before the code, the device code,
-the `auth_req_id` or the refresh token it presented is spent, so that the same request is served once the set
-can be read; the UserInfo request; or the authorization response. A logout token is issued later: the other
-clients of the session are told, and the issue of that client's token is tried again on the schedule of a
+the `auth_req_id` or the refresh token it presented is spent, so that the same request can be presented again
+while what it presented is still valid; the UserInfo request; or the authorization response. A logout token is issued later: the other
+clients of the session are told, and issuing that client's token is tried again on the schedule of a
 delivery and given up as one is ([logout](../logout.md#its-delivery)).
 
 A read is given `BEFFROI_JWKS_URI_TIMEOUT` seconds, 3 in the image, and `BEFFROI_JWKS_URI_MAX_SIZE` bytes,
