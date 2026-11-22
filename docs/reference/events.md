@@ -50,9 +50,9 @@ The other listeners of the application each hear one event, or an interface a fe
 | `QueueClientNotificationHandler` | `backchannel_request.answered` | Hands the call to the notification endpoint of the client to the same lane |
 | `RecordTheServiceProviderOfTheSessionHandler` | `saml.service_provider.signed_in` | Records the part of the service provider in the session, for the logout the identity provider starts |
 
-A logout token its client refuses is given up at once. One that cannot be delivered is tried again on the
-schedule of `beffroi.back_channel_logout`, and goes to the failure transport once that schedule runs out, and so
-does issuing one for a client whose key cannot be obtained, tried again on the same schedule. Either way,
+A logout token its client refuses is given up at once. One that cannot be delivered is tried again on the schedule
+of `beffroi.back_channel_logout`, and goes to the failure transport once that schedule runs out, and so does the
+message that issues one for a client whose key cannot be obtained, tried again on the same schedule. Either way,
 `logout_token.given_up` is raised.
 
 ## The events of the core

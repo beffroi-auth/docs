@@ -137,9 +137,10 @@ it ([discovery and JWKS](discovery-and-jwks.md)).
 
 ### Its delivery
 
-A token is minted on the lane of the events once the session has ended, save one whose key could not be
-obtained then, and carried to the client on the lane of the notifications: a client that cannot be reached holds no logout back, and nothing a client does
-reaches the person, whose session is already closed.
+A token is minted on the lane of the events once the session has ended, or on the lane of the notifications for a
+client whose key could not be obtained then, and is carried to the client on the lane of the notifications: a
+client that cannot be reached holds no logout back, and nothing a client does reaches the person, whose session is
+already closed.
 
 **A token that cannot be encrypted is not sent in clear.** When the key of a client that encrypts its ID
 tokens cannot be obtained as the session ends, its `jwks_uri` unreadable or its set holding no key the
