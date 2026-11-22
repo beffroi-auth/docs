@@ -86,7 +86,7 @@ The DSN is the only thing that changes between two backends: the code and the en
 suites that boot the provider run whole on a sodium key written in their DSN, and the tests of custody, the
 sealed keys, the secrets of an authenticator application and the search of a dump of the database, run again
 on a key file. The custody tests of Vault Transit and of AWS KMS run where a suite is pointed at one, which the
-development stack of the project does, AWS through LocalStack, and are skipped otherwise.
+development stack of the project does, AWS through Floci, an AWS emulator, and are skipped otherwise.
 
 === "Sodium, in the environment"
 
