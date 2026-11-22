@@ -5,18 +5,17 @@ description: A client recognised by the certificate of its connection, the token
 
 # Mutual TLS
 
-RFC 8705 has two halves, and the provider serves both while `BEFFROI_MTLS_ORIGIN` names a host. A client authenticates with the certificate it
-presents at the TLS handshake (§2), and the tokens it receives are bound to that certificate (§3), so that a
-token presented over a connection without it is refused wherever the binding is checked. The certificate is
-the one the TLS listener of the deployment received, handed to PHP by that listener and never read from a
-header of the request.
+RFC 8705 has two halves, and the provider serves both while `BEFFROI_MTLS_ORIGIN` names a host. A client
+authenticates with the certificate it presents at the TLS handshake (§2), and the tokens it receives are bound
+to that certificate (§3), so that a token presented over a connection without it is refused wherever the
+binding is checked. The certificate is the one the TLS listener of the deployment received, handed to PHP by
+that listener and never read from a header of the request.
 
 ## Authenticating with a certificate
 
 Two methods recognise a client by its certificate, and both are wired in the application while
-`BEFFROI_MTLS_ORIGIN` names a host. Either way the
-request names the client in `client_id` and presents the certificate at the handshake: a request without a
-certificate presents neither method.
+`BEFFROI_MTLS_ORIGIN` names a host. Either way the request names the client in `client_id` and presents the
+certificate at the handshake: a request without a certificate presents neither method.
 
 | `token_endpoint_auth_method` | The certificate | What makes it the client's |
 |---|---|---|
@@ -125,10 +124,12 @@ other origin, for six endpoints.
 }
 ```
 
-The issuer does not change, and neither does anything else the document says: an alias is another way to
-the same provider. The backchannel authentication endpoint reads a certificate as well, and is not among the
-aliases. The two methods that read a certificate are wired with the origin and only with it, so the document
-announces `tls_client_certificate_bound_access_tokens` as `true` with an origin and as `false` without one.
+The issuer does not change: an alias is another way to the same provider. The backchannel authentication
+endpoint reads a certificate as well, and is not among the aliases. The two methods that read a certificate
+are wired with the origin and only with it, so with an origin the document lists them in
+`token_endpoint_auth_methods_supported`, `revocation_endpoint_auth_methods_supported` and
+`introspection_endpoint_auth_methods_supported` and announces `tls_client_certificate_bound_access_tokens` as
+`true`; without one it lists neither and announces `false`.
 
 ## How the certificate reaches the application
 
@@ -138,11 +139,12 @@ out. An empty envelope, or no variable, is a request made without a certificate.
 header of its request and no variable of the process that serves it, so no header is ever read in its place.
 
 **A certificate in a header is refused.** A request that carries `Ssl-Client-Cert`, `X-Ssl-Client-Cert`,
-`X-Client-Cert` or `X-Forwarded-Client-Cert` is somebody trying, and is refused rather than served without
-its certificate, so that a deployment placed behind a proxy that forwards one learns it on its first request.
-The refusal is `invalid_request`, status `400`, at the seven endpoints that read a certificate: `/token`,
-`/par`, `/introspect`, `/revoke`, `/userinfo`, `/device_authorization` and `/backchannel_authentication`. So
-is a variable that does not hold a PEM certificate, the listener being misconfigured then.
+`X-Client-Cert` or `X-Forwarded-Client-Cert` is somebody trying, and is refused rather than served without its
+certificate, so that a deployment placed behind a proxy that forwards one learns it on its first request. The
+refusal is `invalid_request`, status `400`, at the seven endpoints of the provider that read one: `/token`,
+`/par`, `/introspect`, `/revoke`, `/userinfo`, `/device_authorization` and `/backchannel_authentication`, and
+at every request of the administration API, which reads one as well. So is a variable that does not hold a PEM
+certificate, the listener being misconfigured then.
 
 The image carries a second site block, `/etc/frankenphp/mtls.Caddyfile`, for the host whose listener asks
 for a certificate. A deployment turns it on with three variables, and the host of `SERVER_NAME` keeps asking

@@ -157,10 +157,11 @@ second time under it, with the same paths (RFC 8705 §5):
 BEFFROI_MTLS_ORIGIN=https://mtls.op.example.com
 ```
 
-The discovery document announces them in `mtls_endpoint_aliases`. The issuer does not change: an alias is
-another way to the same provider, not another provider. With no origin named, the provider serves no mutual
-TLS: the document announces no alias, and neither `tls_client_auth` nor `self_signed_tls_client_auth` is
-wired. A deployment whose listener writes the certificate in `SSL_CLIENT_CERT` on the host of the issuer
+The discovery document announces six of them in `mtls_endpoint_aliases`: the token, UserInfo, introspection,
+revocation, pushed authorization request and device authorization endpoints. The issuer does not change: an
+alias is another way to the same provider, not another provider. With no origin named, the provider serves no
+mutual TLS: the document announces no alias, and neither `tls_client_auth` nor `self_signed_tls_client_auth`
+is wired. A deployment whose listener writes the certificate in `SSL_CLIENT_CERT` on the host of the issuer
 itself, which the site of `SERVER_NAME` never does, names that host.
 
 [:beffroi-arrow-right: Mutual TLS](../oidc/sender-constrained/mutual-tls.md)
