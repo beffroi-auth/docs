@@ -134,12 +134,21 @@ extra:
     alias: true
     default: latest
   social:
+    - icon: fontawesome/solid/globe
+      link: https://beffroi.tech
+      name: The website of Beffroi
     - icon: fontawesome/brands/github
       link: https://github.com/beffroi-auth
       name: Beffroi on GitHub
     - icon: fontawesome/brands/php
       link: https://packagist.org/packages/beffroi/
       name: The packages on Packagist
+    - icon: fontawesome/brands/bluesky
+      link: https://bsky.app/profile/beffroi.tech
+      name: Beffroi on Bluesky
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/beffroi-auth
+      name: Beffroi on LinkedIn
 
 nav:
   - Beffroi: index.md
