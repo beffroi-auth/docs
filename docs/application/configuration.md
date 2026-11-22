@@ -164,6 +164,9 @@ Every lifetime is a second at least.
 |---|---|---|
 | `BEFFROI_WEB_PUSH_SUBJECT` | `mailto:operator@op.localhost` | The contact a push service is given (RFC 8292 §2.1), a `mailto:` or `https:` URI at which the operator of the deployment can be reached. Naming one turns [web push](web-push.md) on, and empty turns it off: the tenant then hands out no key and reaches nobody by push. The one of `.env` is the development stack's, so a deployment names its own |
 | `BEFFROI_WEB_PUSH_TIMEOUT` | `3` | The seconds one push is given, a tenth of a second at least |
+| `BEFFROI_MAIL_DSN` | empty | The transport of `symfony/mailer` a mail leaves through, as `smtp://user:password@smtp.example.com:587`: SMTP, `smtp://` or `smtps://`, the one a mail leaves the image through, or the scheme of a bridge the application installs, none in the image. Naming one turns mail on, to the address of a person marked verified and to no other, and empty turns it off: no mail leaves the deployment. A DSN no installed factory reads writes no mail, and the log says why at each one |
+| `BEFFROI_MAIL_SENDER` | empty | The address a mail is written from, alone or behind a name, as `Example <no-reply@example.com>`. Without one, or with one that is no address, no mail is written, and the log says why at each one |
+| `BEFFROI_SMS_DSN` | empty | The texter transport of `symfony/notifier` a text leaves through, by the scheme of a bridge the application installs, the number or the name it is sent from among the options of the DSN. Naming one turns SMS on, to the number of a person marked verified and to no other, and empty turns it off. The image installs no bridge, so a deployment of it sends no text: a DSN no installed factory reads sends nothing, and the log says why at each one |
 | `BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT` | `5` | The seconds one attempt to send a logout token to a client is given, a tenth of a second at least (Back-Channel Logout 1.0 §2.5) |
 | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES` | `6` | How many times a send that did not reach its client comes back, none at least |
 | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY` | `2` | The wait before the first return, a second at least |
@@ -171,8 +174,8 @@ Every lifetime is a second at least.
 | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY` | `60` | The longest wait, a second at least |
 | `BEFFROI_CLIENT_NOTIFICATION_TIMEOUT` | `3` | The seconds the call that tells a client its backchannel request was answered is given, a tenth of a second at least (CIBA Core §10.2) |
 
-The four figures of the returns are the schedule of the whole lane of notifications, which carries the pushes
-and the notifications of the backchannel flow as well as the logout tokens.
+The four figures of the returns are the schedule of the whole lane of notifications, which carries the pushes,
+the mails, the texts and the notifications of the backchannel flow as well as the logout tokens.
 
 ## SAML
 

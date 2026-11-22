@@ -11,7 +11,7 @@ blind index, a keyed tag of the value, rather than a readable column.
 
 The data keys can be wrapped by another key management client while the provider serves sign-ins, and destroying
 them is the one operation that cannot be undone. The same rule holds past the database: what the provider writes
-to a transport leaves sealed too.
+to a transport of Messenger leaves sealed too.
 
 ## What is sealed
 
@@ -186,13 +186,13 @@ afterwards. It cannot be undone.
 
 ## Past the database
 
-**What leaves the process on a transport leaves sealed.** The body of every message the provider writes to a
-transport, an event, a command or a notification, is a JWE to the `MESSAGE-SEAL` key of the tenant, under
-`ECDH-ES+A256KW` and `A256GCM`, its protected header naming the tenant, so a body moved to the queue of another
-tenant does not open there. The serializer that seals it is the default one of every transport, the failure
-transport included, so the table of a transport and a backup of it hold nothing readable. What stays
-in the clear on a message is what makes a failed one readable: the class of the message, its stamps and the slug of
-the tenant it was written under, nothing of a person among them.
+**What leaves the process on a transport of Messenger leaves sealed.** The body of every message the provider
+writes to a transport, an event, a command or a notification, is a JWE to the `MESSAGE-SEAL` key of the tenant,
+under `ECDH-ES+A256KW` and `A256GCM`, its protected header naming the tenant, so a body moved to the queue of
+another tenant does not open there. The serializer that seals it is the default one of every transport, the failure
+transport included, so the table of a transport and a backup of it hold nothing readable. What stays in the clear
+on a message is what makes a failed one readable: the class of the message, its stamps and the slug of the tenant
+it was written under, nothing of a person among them.
 
 The journal of the acts, what a client was given at each of them, what a record used to say and the archive a person
 asks for are sealed where they sit like every other column of a person.

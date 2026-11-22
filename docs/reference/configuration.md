@@ -172,8 +172,9 @@ The two budgets every request is counted against. A request over a budget is ans
 
 How a logout token reaches a client that registered a `backchannel_logout_uri`. The four `retry_*` options
 are the schedule of every notification the provider carries to a third party, on the `async_notifications`
-transport of the application: logout tokens, the notifications of the backchannel authentication flow, and
-the pushes that tell a person something waits for them or that a way of signing in to their account changed.
+transport of the application: logout tokens, the notifications of the backchannel authentication flow, the
+pushes that tell a person something waits for them or that a way of signing in to their account changed, and the
+mails and texts that tell them a request waits.
 
 | Option | Variable | Type | In the image | What it decides |
 |---|---|---|---|---|
@@ -201,6 +202,19 @@ verifies.
 |---|---|---|---|---|
 | `subject` | `BEFFROI_WEB_PUSH_SUBJECT` | string, not empty | `mailto:operator@op.localhost`, the contact of the development stack | The `sub` of the token the provider signs for a push service (RFC 8292 §2.1): a `mailto:` or `https:` URI at which the operator of the deployment can be reached. Naming one turns web push on, with the application server key of the tenant, a P-256 key the key commands call `VAPID`; empty, no push leaves the deployment, and the page where a browser would subscribe says so. The one of `.env` turns web push on, so a deployment names its own contact or empties the variable |
 | `timeout` | `BEFFROI_WEB_PUSH_TIMEOUT` | number, 0.1 or more | `3` | Seconds one push to one push service is given, connection included. It is retried on the schedule of `back_channel_logout` |
+
+## `mail`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `dsn` | `BEFFROI_MAIL_DSN` | string, not empty | empty: none, no mail | The transport of `symfony/mailer` a mail leaves through: SMTP, `smtp://user:password@host:port` or `smtps://`, the one a mail leaves the image through, or the scheme of a bridge the application installs, none in the image. Naming one turns mail on, to the email address of a person marked verified and to no other. A DSN no installed factory reads writes no mail, and the log says why at each one. A mail the transport did not take comes back on the schedule of `back_channel_logout` while no other channel reached the person |
+| `sender` | `BEFFROI_MAIL_SENDER` | string, not empty | empty: none | The address a mail is written from, alone or behind a name, as `Example <no-reply@example.com>`. Without one, or with one that is no address, no mail is written, and the log says why at each one |
+
+## `sms`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `dsn` | `BEFFROI_SMS_DSN` | string, not empty | empty: none, no text | The texter transport of `symfony/notifier` a text leaves through, by the scheme of a bridge the application installs, the number or the name it is sent from among its options. Naming one turns SMS on, to the phone number of a person marked verified and to no other. The image installs no bridge, so a deployment of it sends no text: a DSN no installed factory reads sends nothing, and the log says why at each one |
 
 ## `client_authentication`
 
