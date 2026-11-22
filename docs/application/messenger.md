@@ -39,7 +39,7 @@ What the lanes carry out:
 |---|---|
 | `async_priority_low` | Every act written to the journal; where a session was seen from, enriched; the tokens of an ended session revoked, and again for a refresh that was in flight; the clients of an ended session handed a logout token to carry; the date a client was last used; what a client was given of a person; the archive a person asked for, built; the part of a SAML service provider in a session, recorded; the client of an answered backchannel request handed its notification to carry |
 | `async_priority_medium` | A password that just signed somebody in, looked up in a list of compromised passwords; the language a person chose, written on their account; and every step of [the schedule](#what-time-does-on-its-own) |
-| `async_notifications` | A logout token posted to a client (Back-Channel Logout 1.0 §2.5), a backchannel request whose client is told it was answered (CIBA Core §10.2), a person told that a request waits for them, through the channels the deployment wires, [web push](web-push.md) among them |
+| `async_notifications` | A logout token posted to a client (Back-Channel Logout 1.0 §2.5), a backchannel request whose client is told it was answered (CIBA Core §10.2), a person told that a request waits for them or that a way of signing in to their account changed, through the channels the deployment wires, [web push](web-push.md) among them |
 
 ## The contract of the provider
 

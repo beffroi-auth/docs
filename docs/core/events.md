@@ -95,6 +95,12 @@ page of a code says apart when too many codes have been tried.
 | `group_membership.added` | `GroupMembershipAdded` | A person is made a member of a group, a membership the tenant holds itself | The subject, the name of the group, and the administrator who added them |
 | `group_membership.removed` | `GroupMembershipRemoved` | A person is taken out of such a group | The same |
 
+### The tenant
+
+| Act | Class | Raised when | Carries beyond the four |
+|---|---|---|---|
+| `tenant.contact_changed` | `TenantContactChanged` | An administrator sets or takes back, through the administration API, [the contact the tenant gives its people](tenants.md#the-contact-it-gives-its-people) | The administrator who changed it. It concerns no person |
+
 ### Keys and data keys
 
 | Act | Class | Raised when | Carries beyond the four |

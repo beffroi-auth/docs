@@ -7,8 +7,11 @@ description: Reaching a person through the push service of a browser they signed
 
 A deployment that names a push subject reaches a person through the push service of a browser they signed in
 with (RFC 8030): the person subscribes that browser on a page of their account, and the provider pushes to it
-when a request waits for their answer. It is how a backchannel authentication request (CIBA Core §7) reaches
-the person it names without a second application. Nothing in a notification names the request it is about.
+when a request waits for their answer and when a way of signing in to their account changes. It is how a
+backchannel authentication request (CIBA Core §7) reaches the person it names without a second application,
+and how a person learns, outside the request that made it, that a way into their account was added or taken
+away (NIST SP 800-63B §4.1.2.1, §4.5). Nothing in a notification names the request or the credential it is
+about.
 
 ## Turning it on
 
@@ -21,10 +24,10 @@ Two variables of the environment fill `beffroi.web_push`:
 
 **Without a subject, web push serves nothing.** Its services and its routes are always wired, and the subject
 is read when the container builds what web push changes: naming one or taking it away asks for a restart of the
-processes and not for a new image. Without one, its channel is not in the lane of notifications, no push leaves
-the deployment, the tenant draws no application server key, and the page where a browser would subscribe says
-that the provider does not tell browsers. A key drawn before the subject was taken away is read by nothing until
-a subject is named again.
+processes and not for a new image. Without one, its two channels are not in the lane of notifications, no push
+leaves the deployment, the tenant draws no application server key, and the page where a browser would subscribe
+says that the provider does not tell browsers. A key drawn before the subject was taken away is read by nothing
+until a subject is named again.
 
 ## The application server key
 
@@ -72,13 +75,32 @@ endpoint, which carries the unique constraint with the person.
 
 ## What a notification carries
 
-When a client makes a backchannel authentication request that names a person, the provider answers the
-client and puts the message that tells the person on the lane of notifications. The lane hands it to every
-channel the application wires; web push is the only one, in the lane while a subject is named. A person who
-has subscribed no browser is told nothing, and finds the request where requests are answered.
+Two messages reach a person this way, a request that waits for their answer and a change to the ways their
+account signs in. Each is put on the lane of notifications, which hands it to the channels the application
+wires for it; web push is the only one the application wires for either, in the lane while a subject is named.
+Every browser the person subscribed is pushed to, and each push carries three strings and nothing else,
+`title`, `body` and `url`, in the language of the record of the person when the deployment serves it, and in the
+default language otherwise.
 
-Every browser the person subscribed is pushed to, and each push carries three strings and nothing else, in
-the language the person reads:
+No identifier and no link that acts: the notification says that something waits or changed, and the person
+goes to a page of the provider they already know, where what it is about is found by who they are. The service
+worker shows the notification until it is dismissed, and a tap opens that page, or brings forward a window
+already on it.
+
+The payload is encrypted to the two keys the browser gave in `aes128gcm` (RFC 8291 §4), padded to 1024 octets
+before it is encrypted, so that a push service learns nothing of a payload that fits in them, not even how long a
+binding message or a contact was. A longer one is sent at its own length: a name or a contact written outside ASCII
+can make one, each such character being escaped in six octets or more. The request is signed by the application
+server key the subscription is bound to, with the subject as its `sub` (RFC 8292 §2.1). It is sent with
+`Urgency: high` (RFC 8030 §5.3), and a `TTL` that is the time the message is still worth delivering, which each
+message below names (RFC 8030 §5.2), and never less than zero. The provider follows no redirection a push service
+answers with.
+
+### A request waits for an answer
+
+When a client makes a backchannel authentication request that names a person, the provider answers the
+client and puts the message that tells the person on the lane. A person who has subscribed no browser is told
+nothing, and finds the request where requests are answered.
 
 | Member | What it says |
 |---|---|
@@ -86,17 +108,38 @@ the language the person reads:
 | `body` | The name of the client and what it asks the person to approve, a sign-in or the binding message the client wrote when it wrote one, and that the answer is given in their account |
 | `url` | The page of the account where waiting requests are answered, `/account/approvals` |
 
-No identifier of the request and no link that answers it: the notification says that something waits, and
-the person goes to a page of the provider they already know, where the request is found by who they are. The
-service worker shows the notification until it is dismissed, and a tap opens that page, or brings forward a
-window already on it.
+It is worth delivering until the backchannel request expires.
 
-The payload is encrypted to the two keys the browser gave in `aes128gcm` (RFC 8291 §4), padded to 1024 octets
-before it is encrypted, so that a push service learns nothing of it, not even how long the binding message
-was. The request is signed by the application server key the subscription is bound to, with the subject as
-its `sub` (RFC 8292 §2.1). It is sent with `Urgency: high` (RFC 8030 §5.3), and a `TTL` that is the time left
-before the backchannel request expires (RFC 8030 §5.2), and never less than zero. The provider follows no
-redirection a push service answers with.
+### A way of signing in changed
+
+When a way of signing in is added to an account or taken away from it, its password is changed, a link to add a
+passkey to it is issued or its backup codes are renewed, the provider puts the message that tells its person on
+the lane once the act is done, whoever did it. [Credentials](../core/credentials/index.md#what-the-person-is-told)
+say which acts are told. Every browser the person subscribed is told, the one the change was made from
+included when it is one of them: what the provider could tell that browser by, its session or a cookie,
+whoever took the session holds as well. A person who has subscribed no browser is told nothing, and finds the
+change on the page of their acts.
+
+| Member | What it says |
+|---|---|
+| `title` | The name of the tenant |
+| `body` | What changed and when, on the clock of the person with its zone named, then what to do if it was not them: open their account, and contact the tenant by the contact [it gives](../core/tenants.md#the-contact-it-gives-its-people) when it gives one |
+| `url` | The home of the account, `/account` under the issuer, a page that acts on nothing |
+
+In English, what changed is one of these sentences:
+
+| Act | What the body says |
+|---|---|
+| `credential.enrolled` | "A passkey was added to your account on" and the date; "An authenticator app was" or "A password was" in place of "A passkey was" for the other kinds |
+| `credential.revoked` | "A passkey was removed from your account on" and the date; "An authenticator app was" for the other kind |
+| `password.changed` | "The password of your account was changed on" and the date |
+| `enrolment_ticket.issued` | "A link to add a passkey to your account was issued on" and the date |
+| `backup_codes.renewed` | "The backup codes of your account were renewed on" and the date |
+
+It is followed by "If it was not you, open your account and contact" and the contact of the tenant, or by "If
+it was not you, open your account." when the tenant gives none. The message is worth delivering as long as the
+journal keeps the act it tells of, `BEFFROI_JOURNAL_RETENTION` days after it happened, which is as long as the
+page of the acts of the account shows it.
 
 ## What comes back
 

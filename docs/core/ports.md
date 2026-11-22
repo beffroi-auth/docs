@@ -50,7 +50,7 @@ being in it, and a list a role switches takes as well the services of that role 
 | Port | Methods | What it answers | Wired to |
 |---|---|---|---|
 | `UserRepositoryInterface` | `find`, `findBySubject`, `findByUsername`, `findAllByEmail`, `save` | The users of a tenant, a username and an address being found by their blind indexes | `DoctrineUserRepository` (application) |
-| `TenantRepositoryInterface` | `save` | Where what a tenant decided of itself is written, the floor of its logins | `DoctrineTenantRepository` (application) |
+| `TenantRepositoryInterface` | `save` | Where what a tenant decided of itself is written, the floor of its logins and the contact it gives its people | `DoctrineTenantRepository` (application) |
 | `AmbientTenantInterface` | `provide` | The tenant of the unit of work in progress, for what is not a use case, such as a column type; it names that tenant or throws | `TenantProvider` (application) |
 | `LinkedIdentityRepositoryInterface` | `find`, `save` | A linked identity by its provider and its subject | `DoctrineLinkedIdentityRepository` (application) |
 | `LinkedIdentitiesOfAPersonInterface` | `of` | The linked identities of one person, for their archive | `DoctrineLinkedIdentityRepository` (application) |
@@ -101,6 +101,7 @@ being in it, and a list a role switches takes as well the services of that role 
 | `EnrolmentTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The enrolment tickets of a person | `DoctrineEnrolmentTicketRepository` (application) |
 | `PasswordTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The password tickets of a person | `DoctrinePasswordTicketRepository` (application) |
 | `TotpTicketRepositoryInterface` | `find`, `unspentOf`, `save`, `forget` | The tickets of a person for an authenticator application | `DoctrineTotpTicketRepository` (application) |
+| `CredentialChangeNotifierInterface` | `tell` | Where a change to the ways a person signs in is handed once it is done, to be [told to that person](credentials/index.md#what-the-person-is-told): the act, the kind of the credential when it changed one, when, and the person, and no identifier of what changed | `QueuedCredentialChangeNotifier` (application), which puts it on the lane of notifications |
 
 ## Sessions
 

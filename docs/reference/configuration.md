@@ -173,7 +173,7 @@ The two budgets every request is counted against. A request over a budget is ans
 How a logout token reaches a client that registered a `backchannel_logout_uri`. The four `retry_*` options
 are the schedule of every notification the provider carries to a third party, on the `async_notifications`
 transport of the application: logout tokens, the notifications of the backchannel authentication flow, and
-the pushes that tell a person something waits for them.
+the pushes that tell a person something waits for them or that a way of signing in to their account changed.
 
 | Option | Variable | Type | In the image | What it decides |
 |---|---|---|---|---|

@@ -29,7 +29,7 @@ titles below are the ones the English catalogue carries.
 | Where you are signed in | `/account/sessions` | Where this person is signed in at this moment, what each session proved, and where it was last seen |
 | Your password | `/account/password` | When the password was last written, and the form that replaces it |
 | What happened to your account | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the account and of its means of signing in, the applications they agreed to and the consents taken back, what they did of their own record, and what an administrator of their organisation consulted or changed of them, said by that role alone and never by a name, a place or a client. A read they made of themselves through the administration API is not listed. Its card counts the refusals among the last twenty attempts to sign in as them, since a failure is what somebody comes to look for: a refusal leaves the count once twenty attempts have followed it |
-| Notifications | `/account/notifications` | The browsers this provider can reach by web push |
+| Notifications | `/account/notifications` | The browsers this provider reaches by web push, to tell this person of a request that waits for them and of a change to the ways their account signs in |
 | Your data | `/account/archive` | The one file holding everything the provider knows of them, and where their last request for it has got to |
 
 The subject identifier clients know this person by is on none of them. It is the `sub` of a token, not
@@ -160,6 +160,18 @@ What a reader learns of one table serves them on the others.
 | Your passkeys | Revoke | Revokes that credential. The line stays, listed as revoked |
 | Two-factor authentication | Remove | Revokes the authenticator. The sessions it completed stay as they are |
 | Notifications | Revoke | Drops that subscription, and this provider stops reaching that browser |
+
+## When a way in changes
+
+What these pages change of the ways the account signs in, a passkey or the authenticator application added or
+removed, the password replaced, backup codes drawn again, is told to the person, and so are the other acts
+[credentials](../core/credentials/index.md#what-the-person-is-told) list, those of an administrator and of a ticket
+among them. While the deployment names a push subject, every browser the person subscribed on the notifications
+page is pushed a notice that says what changed and when, and, if it was not them, to open their account and to
+contact the tenant, by the contact it gives when it gives one. The notice opens the home of the account, and the
+page of the acts says what happened.
+
+[:beffroi-arrow-right: Web push](web-push.md#a-way-of-signing-in-changed)
 
 ## Your data
 

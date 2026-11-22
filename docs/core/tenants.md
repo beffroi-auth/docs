@@ -1,6 +1,6 @@
 ---
 title: Tenants
-description: The unit everything belongs to, the variables that declare it and its row in the database, the acr vocabulary it answers with, and the floor of its logins.
+description: The unit everything belongs to, the variables that declare it and its row in the database, the acr vocabulary it answers with, the floor of its logins, and the contact it gives its people.
 ---
 
 # Tenants
@@ -67,7 +67,9 @@ passkey, while the timed steps wait. Changing one of the seven is therefore a re
 the new value, and the command run in one of them. The issuer is the one thing the command never changes: every
 token a tenant issued names it, so the command refuses another, and another issuer is another tenant, under
 another slug. What a command decides with a date, the floor of its logins below, is written on the row and
-nowhere else.
+nowhere else, and so is what an administrator decides through the administration API, [the contact it gives its
+people](#the-contact-it-gives-its-people), which `beffroi:tenant:synchronize` leaves as it is and no process
+compares with its environment.
 
 ## The classes it answers with
 
@@ -134,6 +136,30 @@ gives nobody back what was forgotten.
 A person created after the floor was raised has nothing to sign in with yet. An [enrolment
 ticket](credentials/passkeys.md#a-first-passkey-from-a-ticket) gives them their first passkey without a
 password ever existing.
+
+## The contact it gives its people
+
+When the provider tells a person that a way of signing in to their account changed, it tells them what to do if
+it was not them, and NIST SP 800-63B §4.6 asks for contact information there: the contact of the tenant, one
+line the tenant writes, an address, a number or a page, which the notice writes as it is. A tenant that gives
+none sends its people to their account alone, and nothing is written in its place.
+
+No variable names it and no command sets it. An administrator of the tenant sets it through the
+[administration API](../oidc/resources.md#the-administration-api):
+
+- `PUT /tenant/contact`, with the JSON object `{"contact": "security@example.com"}`, sets it, and answers the
+  contact the tenant gives once it is written, `{"contact": "security@example.com"}`;
+- `DELETE /tenant/contact` takes it back, and answers `{"contact": null}`;
+- `GET /tenant` reads it as `contact`, null while the tenant gives none.
+
+The request of a `PUT` is a JSON object, sent as `application/json`, whose member `contact` is a string. A body the
+provider does not read as such an object, or a member of another type, is refused with `400` and `invalid_request`,
+and so is a contact that is empty, longer than 255 characters, begins or ends with a space of any kind, or holds a
+line or paragraph separator or a character of the Unicode category C: a control, a format character such as a
+bidirectional override or a zero-width space, a private use or an unassigned code point. The description of the
+refusal says which. Each change is an act of the tenant, `tenant.contact_changed`, which names the administrator
+and no person. Setting the contact the tenant gives already, or taking it back while it gives none, changes nothing
+and is no act.
 
 ## The domains it federates
 

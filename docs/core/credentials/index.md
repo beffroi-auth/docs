@@ -1,6 +1,6 @@
 ---
 title: Credentials
-description: Several per person, each of a kind of its own, each declaring what it can do and what it proves.
+description: Several per person, each of a kind of its own, each declaring what it can do and what it proves, and what the person is told when they change.
 ---
 
 # Credentials
@@ -85,6 +85,38 @@ new password does, each passkey with its name, its dates and its state, and the 
 its dates and the number of backup codes left. The archive a
 person asks for lists every credential with its kind, its identifier, its name, its credential ID when it has
 one, and its dates, and never a hash, a secret or a public key.
+
+## What the person is told
+
+Five acts on the ways a person signs in are told to that person once they are done, outside the request that
+did them, and whoever did them: the person on their account or with a ticket, an administrator through the
+administration API, or the operator at the console (NIST SP 800-63B §4.1.2.1, §4.5).
+
+| Act | Told when |
+|---|---|
+| `credential.enrolled` | A passkey or an authenticator application is enrolled, or a password ticket poses the first password of the person |
+| `credential.revoked` | A passkey or an authenticator application is revoked, the one a ticket for an authenticator application replaces included |
+| `password.changed` | The password is replaced, on the account or with a password ticket |
+| `enrolment_ticket.issued` | A link to add a passkey is issued for the person |
+| `backup_codes.renewed` | The backup codes are drawn again |
+
+The core hands each one to `CredentialChangeNotifierInterface`, with the name the journal writes it under, the
+kind of the credential when it changed one, when it happened and the person, and nothing that identifies what
+changed: the person reads that on their account, signed in. An act that is refused tells nothing, and neither
+does revoking a credential already revoked, which changes nothing. Nothing else is told, these changes among
+them:
+
+- the issuance of a password ticket or of a ticket for an authenticator application, whose spending is told by
+  the acts it writes;
+- a credential the floor of the tenant forgets;
+- a linked identity `beffroi:user:link` adds, and a password `beffroi:user:set-password` poses, neither of which
+  writes an act.
+
+The application puts what the port is handed on the lane of notifications, which hands it to every class
+implementing `App\Credential\CredentialChangeChannelInterface` and tagged `beffroi.credential_change_channel`, none
+in the application, then to [web push](../../application/web-push.md#a-way-of-signing-in-changed) while web push is
+on: its page says what the notice carries, [the contact of the
+tenant](../tenants.md#the-contact-it-gives-its-people) among it.
 
 ## Adding a kind
 
