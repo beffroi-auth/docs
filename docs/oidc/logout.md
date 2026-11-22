@@ -115,8 +115,8 @@ since that is the one the client knows how to verify (§2.6). Its header names `
 
 A client that registered the encryption of its ID tokens, `id_token_encrypted_response_alg` and
 `id_token_encrypted_response_enc`, receives it signed, then encrypted with that `alg`, that `enc` and the key
-its ID tokens are encrypted to (§2.4, §2.6), since §2.6 has such a client reject a logout token in clear: a
-nested JWT, the header of the JWE saying `cty: JWT` (RFC 7519 §5.2) and replicating `iss` (RFC 7519 §5.3).
+its ID tokens are encrypted to (§2.4, §2.6), since §2.6 says such a client should reject a logout token in
+clear: a nested JWT, the header of the JWE saying `cty: JWT` (RFC 7519 §5.2) and replicating `iss` (RFC 7519 §5.3).
 Every other client receives it signed only. Its registration alone decides: nothing of the logout token is
 registered or set on its own.
 
@@ -137,17 +137,17 @@ it ([discovery and JWKS](discovery-and-jwks.md)).
 
 ### Its delivery
 
-The token is minted on the lane of the events once the session has ended, and carried to the client on the
-lane of the notifications: a client that cannot be reached holds no logout back, and nothing a client does
+A token is minted on the lane of the events once the session has ended, save one whose key could not be
+obtained then, and carried to the client on the lane of the notifications: a client that cannot be reached holds no logout back, and nothing a client does
 reaches the person, whose session is already closed.
 
 **A token that cannot be encrypted is not sent in clear.** When the key of a client that encrypts its ID
 tokens cannot be obtained as the session ends, its `jwks_uri` unreadable or its set holding no key the
-registered `alg` can be addressed to, the other clients of the session are told, and the issue of that
-client's token goes to the lane of the notifications, tried again on the schedule of a delivery below and given
-up as a delivery is. A token issued late carries its own `iat`, and an `exp` one budget later. A set that was
-read and holds no fitting key is kept, and read again only after `BEFFROI_JWKS_URI_TTL` seconds, a day in the
-image, so such a client is given up once the schedule runs out; a `jwks_uri` that could not be read is read
+registered `alg` can be addressed to, the other clients of the session are told, and issuing that
+client's token is left to the lane of the notifications, tried again on the schedule of a delivery below and
+given up as a delivery is. A token issued late carries its own `iat`, and an `exp` one budget later. A set that was
+read and holds no fitting key is kept as [encryption](tokens/encryption.md#the-key-it-is-encrypted-to) says,
+so such a client is in practice given up once the schedule runs out; a `jwks_uri` that could not be read is read
 again at each attempt. A client the provider no longer serves, or a session it no longer holds, receives
 nothing.
 

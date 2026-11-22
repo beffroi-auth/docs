@@ -229,7 +229,7 @@ its grants do not call for, or call for and lack; the rule a public client's loo
 - `tls_client_auth` comes with exactly one of the five certificate values, and every other method with none.
 - `tls_client_certificate_bound_access_tokens: true` (RFC 8705 §3.4) is refused while `BEFFROI_MTLS_ORIGIN`
   names no host, no method that reads a certificate being wired then.
-- `dpop_bound_access_tokens` (RFC 9449 §5.2) is refused to a client whose tokens are bound to its certificate
+- `dpop_bound_access_tokens: true` (RFC 9449 §5.2) is refused to a client whose tokens are bound to its certificate
   (RFC 8705 §3), by `tls_client_certificate_bound_access_tokens` or by a method that authenticates with a
   certificate: a token is bound to one thing, the `cnf` of a token representing a single proof-of-possession key
   (RFC 7800 §3.1).
