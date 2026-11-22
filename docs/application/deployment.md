@@ -157,10 +157,11 @@ plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two suites of FAPI
 `TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384`. TLS 1.2 is the floor Caddy already holds.
 
 **The host that asks for a client certificate is a host of its own** (RFC 8705 §5). It is served when
-`CADDY_EXTRA_CONFIG` imports `mtls.Caddyfile`, under the name `MTLS_SERVER_NAME` gives it, and announced to
-clients through `BEFFROI_MTLS_ORIGIN`. Its listener asks for a certificate and serves the connection when none
-is presented, so a client that authenticates another way never fails at the handshake. The ordinary host asks
-for nothing.
+`CADDY_EXTRA_CONFIG` imports `mtls.Caddyfile`, under the name `MTLS_SERVER_NAME` gives it, and named to the
+application in `BEFFROI_MTLS_ORIGIN`, which announces it to clients and wires the two methods that read a
+certificate and the binding of a token to one. Its listener asks for a certificate and serves the connection
+when none is presented, so a client that authenticates another way never fails at the handshake. The ordinary
+host asks for nothing.
 
 - **The certificate reaches PHP in a server variable, `SSL_CLIENT_CERT`, and never in a header.** A client
   sets every header of its request and no variable of the process that serves it. A request carrying a
