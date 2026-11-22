@@ -4095,13 +4095,12 @@
 
 
 <h1 id="web-push">Web push<a class="headerlink" href="#web-push" title="Link to this section">&para;</a></h1>
-<p>A deployment that names a push subject reaches a person through the push service of a browser they signed in
-with (RFC 8030): the person subscribes that browser on a page of their account, and the provider pushes to it
-when a request waits for their answer and when a way of signing in to their account changes. It is how a
-backchannel authentication request (CIBA Core §7) reaches the person it names without a second application,
-and how a person learns, outside the request that made it, that a way into their account was added or taken
-away (NIST SP 800-63B §4.1.2.1, §4.5). Nothing in a notification names the request or the credential it is
-about.</p>
+<p>A deployment that names a push subject reaches a person through the push service of a browser they signed in with
+(RFC 8030): the person subscribes that browser on a page of their account, and the provider pushes to it when a
+request waits for their answer and when a way of signing in to their account changes. It is one way a backchannel
+authentication request (CIBA Core §7) reaches the person it names without a second application, beside mail and
+SMS, and how a person learns, outside the request that made it, that a way into their account was added or taken
+away (NIST SP 800-63B §4.1.2.1, §4.5). Nothing in a notification names the request or the credential it is about.</p>
 <h2 id="turning-it-on">Turning it on<a class="headerlink" href="#turning-it-on" title="Link to this section">&para;</a></h2>
 <p>Two variables of the environment fill <code>beffroi.web_push</code>:</p>
 <table>
@@ -4167,12 +4166,12 @@ endpoint, which carries the unique constraint with the person.</p>
 <p><a href="../persistence/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Persistence</a></p>
 <h2 id="what-a-notification-carries">What a notification carries<a class="headerlink" href="#what-a-notification-carries" title="Link to this section">&para;</a></h2>
-<p>Two messages reach a person this way, a request that waits for their answer and a change to the ways their
-account signs in. Each is put on the lane of notifications, which hands it to the channels the application
-wires for it; web push is the only one the application wires for either, in the lane while a subject is named.
-Every browser the person subscribed is pushed to, and each push carries three strings and nothing else,
-<code>title</code>, <code>body</code> and <code>url</code>, in the language of the record of the person when the deployment serves it, and in the
-default language otherwise.</p>
+<p>Two messages reach a person this way, a request that waits for their answer and a change to the ways their account
+signs in. Each is put on the lane of notifications, which hands it to the channels the application wires for it,
+web push among them while a subject is named: the only one for a change to the ways in, and one of three for a
+request that waits, beside mail and SMS. Every browser the person subscribed is pushed to, and each push carries
+three strings and nothing else, <code>title</code>, <code>body</code> and <code>url</code>, in the language of the record of the person when the
+deployment serves it, and in the default language otherwise.</p>
 <p>No identifier and no link that acts: the notification says that something waits or changed, and the person
 goes to a page of the provider they already know, where what it is about is found by who they are. The service
 worker shows the notification until it is dismissed, and a tap opens that page, or brings forward a window
@@ -4186,9 +4185,12 @@ server key the subscription is bound to, with the subject as its <code>sub</code
 message below names (RFC 8030 §5.2), and never less than zero. The provider follows no redirection a push service
 answers with.</p>
 <h3 id="a-request-waits-for-an-answer">A request waits for an answer<a class="headerlink" href="#a-request-waits-for-an-answer" title="Link to this section">&para;</a></h3>
-<p>When a client makes a backchannel authentication request that names a person, the provider answers the
-client and puts the message that tells the person on the lane. A person who has subscribed no browser is told
-nothing, and finds the request where requests are answered.</p>
+<p>When a client makes a backchannel authentication request that names a person, the provider answers the client and
+puts the message that tells the person on the lane. A person who has subscribed no browser is pushed nothing: a
+mail reaches them when the deployment names a transport and a sender and their address is marked verified, and a
+text when it installs a bridge of <code>symfony/notifier</code>, which the image does not, names its DSN and their number is
+marked verified, as <a href="../../oidc/grants/backchannel-authentication/#reaching-the-person">backchannel authentication</a>
+says. The request waits where requests are answered.</p>
 <table>
 <thead>
 <tr>
@@ -4303,7 +4305,8 @@ page of the acts of the account shows it.</p>
 <p>A subscription whose application server key has retired is treated as gone without asking the push service,
 which would refuse a request signed by any other key. When no browser of the person was reached and at least
 one push failed, the message goes back to the lane, which sends it again after the waits of its schedule; one
-browser reached is a person told, and the message is done.</p>
+browser reached is a person told, and the message is done. A request that waits goes back only when no other
+channel reached the person either, and its retry calls every channel again.</p>
 <p><a href="../messenger/#the-contract-of-the-provider"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The lane of notifications</a></p>
 <h2 id="what-the-deployment-allows">What the deployment allows<a class="headerlink" href="#what-the-deployment-allows" title="Link to this section">&para;</a></h2>
@@ -4331,7 +4334,7 @@ them: it names <code>'self'</code> in <code>script-src</code>, <code>connect-src
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:44:26 UTC">November 22, 2026</span>
   </span>
 
     

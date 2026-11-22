@@ -4267,7 +4267,7 @@ starts it again.</p>
 </tr>
 <tr>
 <td><code>async_notifications</code></td>
-<td>What the provider carries to somebody it does not own: logout tokens (Back-Channel Logout 1.0 §2.5), the notification that a backchannel request was answered (CIBA Core §10.2), and web push to the browsers of a person (RFC 8030)</td>
+<td>What the provider carries to somebody it does not own: logout tokens (Back-Channel Logout 1.0 §2.5), the notification that a backchannel request was answered (CIBA Core §10.2), web push to the browsers of a person (RFC 8030), and a mail or a text to the address or the number of a person, when it is marked verified</td>
 </tr>
 <tr>
 <td><code>async_priority_high</code></td>
@@ -4478,7 +4478,8 @@ development environment, where it would pin every <code>.localhost</code> name o
 <h2 id="what-leaves-the-provider">What leaves the provider<a class="headerlink" href="#what-leaves-the-provider" title="Link to this section">&para;</a></h2>
 <p>A deployment that filters what goes out reads it here. No outbound redirect is followed, whoever asks, but
 two, each to the one host the application names: a download of MaxMind is followed to its storage, and a
-revocation list of the test service of the FIDO Alliance to the host that serves it.</p>
+revocation list of the test service of the FIDO Alliance to the host that serves it. The image sends no text,
+installing no bridge of <code>symfony/notifier</code>, whatever <code>BEFFROI_SMS_DSN</code> names.</p>
 <table>
 <thead>
 <tr>
@@ -4534,6 +4535,11 @@ revocation list of the test service of the FIDO Alliance to the host that serves
 <td>When a backchannel request waits on the person who subscribed that browser, and when a way of signing in to their account changes</td>
 </tr>
 <tr>
+<td>The worker</td>
+<td>The mail server <code>BEFFROI_MAIL_DSN</code> names, when it names one and <code>BEFFROI_MAIL_SENDER</code> names a sender</td>
+<td>When a backchannel request waits on a person whose address is marked verified</td>
+</tr>
+<tr>
 <td>The worker, the console</td>
 <td>The metadata of the SAML peers given by URL</td>
 <td>Every hour, and on <code>beffroi:saml:*:refresh</code></td>
@@ -4575,7 +4581,7 @@ revocation list of the test service of the FIDO Alliance to the host that serves
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:44:26 UTC">November 22, 2026</span>
   </span>
 
     

@@ -3847,6 +3847,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#mail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mail
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#client_authentication" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4365,6 +4387,28 @@
     <span class="md-ellipsis">
       
         web_push
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mail
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sms
       
     </span>
   </a>
@@ -5090,8 +5134,9 @@ key of the tenant but its SAML keys, which take theirs from <a href="#samlkeys">
 <h2 id="back_channel_logout"><code>back_channel_logout</code><a class="headerlink" href="#back_channel_logout" title="Link to this section">&para;</a></h2>
 <p>How a logout token reaches a client that registered a <code>backchannel_logout_uri</code>. The four <code>retry_*</code> options
 are the schedule of every notification the provider carries to a third party, on the <code>async_notifications</code>
-transport of the application: logout tokens, the notifications of the backchannel authentication flow, and
-the pushes that tell a person something waits for them or that a way of signing in to their account changed.</p>
+transport of the application: logout tokens, the notifications of the backchannel authentication flow, the
+pushes that tell a person something waits for them or that a way of signing in to their account changed, and the
+mails and texts that tell them a request waits.</p>
 <table>
 <thead>
 <tr>
@@ -5197,6 +5242,55 @@ verifies.</p>
 <td>number, 0.1 or more</td>
 <td><code>3</code></td>
 <td>Seconds one push to one push service is given, connection included. It is retried on the schedule of <code>back_channel_logout</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="mail"><code>mail</code><a class="headerlink" href="#mail" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Variable</th>
+<th>Type</th>
+<th>In the image</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dsn</code></td>
+<td><code>BEFFROI_MAIL_DSN</code></td>
+<td>string, not empty</td>
+<td>empty: none, no mail</td>
+<td>The transport of <code>symfony/mailer</code> a mail leaves through: SMTP, <code>smtp://user:password@host:port</code> or <code>smtps://</code>, the one a mail leaves the image through, or the scheme of a bridge the application installs, none in the image. Naming one turns mail on, to the email address of a person marked verified and to no other. A DSN no installed factory reads writes no mail, and the log says why at each one. A mail the transport did not take comes back on the schedule of <code>back_channel_logout</code> while no other channel reached the person</td>
+</tr>
+<tr>
+<td><code>sender</code></td>
+<td><code>BEFFROI_MAIL_SENDER</code></td>
+<td>string, not empty</td>
+<td>empty: none</td>
+<td>The address a mail is written from, alone or behind a name, as <code>Example &lt;no-reply@example.com&gt;</code>. Without one, or with one that is no address, no mail is written, and the log says why at each one</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sms"><code>sms</code><a class="headerlink" href="#sms" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Variable</th>
+<th>Type</th>
+<th>In the image</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dsn</code></td>
+<td><code>BEFFROI_SMS_DSN</code></td>
+<td>string, not empty</td>
+<td>empty: none, no text</td>
+<td>The texter transport of <code>symfony/notifier</code> a text leaves through, by the scheme of a bridge the application installs, the number or the name it is sent from among its options. Naming one turns SMS on, to the phone number of a person marked verified and to no other. The image installs no bridge, so a deployment of it sends no text: a DSN no installed factory reads sends nothing, and the log says why at each one</td>
 </tr>
 </tbody>
 </table>
@@ -6191,7 +6285,7 @@ providers</a> is how one is declared.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:44:26 UTC">November 22, 2026</span>
   </span>
 
     

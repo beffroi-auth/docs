@@ -4696,6 +4696,21 @@ say what each one decides.</p>
 <td>The seconds one push is given, a tenth of a second at least</td>
 </tr>
 <tr>
+<td><code>BEFFROI_MAIL_DSN</code></td>
+<td>empty</td>
+<td>The transport of <code>symfony/mailer</code> a mail leaves through, as <code>smtp://user:password@smtp.example.com:587</code>: SMTP, <code>smtp://</code> or <code>smtps://</code>, the one a mail leaves the image through, or the scheme of a bridge the application installs, none in the image. Naming one turns mail on, to the address of a person marked verified and to no other, and empty turns it off: no mail leaves the deployment. A DSN no installed factory reads writes no mail, and the log says why at each one</td>
+</tr>
+<tr>
+<td><code>BEFFROI_MAIL_SENDER</code></td>
+<td>empty</td>
+<td>The address a mail is written from, alone or behind a name, as <code>Example &lt;no-reply@example.com&gt;</code>. Without one, or with one that is no address, no mail is written, and the log says why at each one</td>
+</tr>
+<tr>
+<td><code>BEFFROI_SMS_DSN</code></td>
+<td>empty</td>
+<td>The texter transport of <code>symfony/notifier</code> a text leaves through, by the scheme of a bridge the application installs, the number or the name it is sent from among the options of the DSN. Naming one turns SMS on, to the number of a person marked verified and to no other, and empty turns it off. The image installs no bridge, so a deployment of it sends no text: a DSN no installed factory reads sends nothing, and the log says why at each one</td>
+</tr>
+<tr>
 <td><code>BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT</code></td>
 <td><code>5</code></td>
 <td>The seconds one attempt to send a logout token to a client is given, a tenth of a second at least (Back-Channel Logout 1.0 §2.5)</td>
@@ -4727,8 +4742,8 @@ say what each one decides.</p>
 </tr>
 </tbody>
 </table>
-<p>The four figures of the returns are the schedule of the whole lane of notifications, which carries the pushes
-and the notifications of the backchannel flow as well as the logout tokens.</p>
+<p>The four figures of the returns are the schedule of the whole lane of notifications, which carries the pushes,
+the mails, the texts and the notifications of the backchannel flow as well as the logout tokens.</p>
 <h2 id="saml">SAML<a class="headerlink" href="#saml" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5105,7 +5120,7 @@ fixtures. A production kernel reads none of them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:44:26 UTC">November 22, 2026</span>
   </span>
 
     

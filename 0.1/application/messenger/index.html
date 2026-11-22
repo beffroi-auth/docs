@@ -4039,14 +4039,14 @@
 
 
 <h1 id="messenger">Messenger<a class="headerlink" href="#messenger" title="Link to this section">&para;</a></h1>
-<p>What the protocol or the page needs in the same request, a code or a token issued, a session opened, a
-credential dated by the login that used it, a passkey renamed, is written by the use case in that request. The
-rest travels on a lane and a worker carries it out: the acts of the journal, the enrichment of where a request
-came from, the revocations that follow the end of a session, the calls to clients and push services. No
-message of the application travels on the synchronous transport. The buses, their middleware, where each
-message goes and how it is written are a contract, <code>App\Messenger\MessengerContract</code>, which the extension of the
-<code>beffroi:</code> tree, <code>App\DependencyInjection\BeffroiExtension</code>, prepends to the configuration of Messenger; what a
-deployment chooses is where the lanes go.</p>
+<p>What the protocol or the page needs in the same request, a code or a token issued, a session opened, a credential
+dated by the login that used it, a passkey renamed, is written by the use case in that request. The rest travels on
+a lane and a worker carries it out: the acts of the journal, the enrichment of where a request came from, the
+revocations that follow the end of a session, the calls to clients, push services and the mail server. No message
+of the application travels on the synchronous transport. The buses, their middleware, where each message goes and
+how it is written are a contract, <code>App\Messenger\MessengerContract</code>, which the extension of the <code>beffroi:</code> tree,
+<code>App\DependencyInjection\BeffroiExtension</code>, prepends to the configuration of Messenger; what a deployment chooses
+is where the lanes go.</p>
 <h2 id="what-leaves-the-request">What leaves the request<a class="headerlink" href="#what-leaves-the-request" title="Link to this section">&para;</a></h2>
 <p>Every message of the application implements one marker, every event of the packages one interface, and that is
 what decides where it goes.</p>
@@ -4110,7 +4110,7 @@ the lane carries it to a worker, and nothing listens to an event in the process 
 </tr>
 <tr>
 <td><code>async_notifications</code></td>
-<td>A logout token posted to a client (Back-Channel Logout 1.0 §2.5), a backchannel request whose client is told it was answered (CIBA Core §10.2), a person told that a request waits for them or that a way of signing in to their account changed, through the channels the deployment wires, <a href="../web-push/">web push</a> among them</td>
+<td>A logout token posted to a client (Back-Channel Logout 1.0 §2.5), a backchannel request whose client is told it was answered (CIBA Core §10.2), a person told that a request waits for them or that a way of signing in to their account changed, through the channels the deployment wires: <a href="../web-push/">web push</a> for both, and a mail or a text for a request that waits</td>
 </tr>
 </tbody>
 </table>
@@ -4340,7 +4340,7 @@ into a failed message nobody would replay.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:44:26 UTC">November 22, 2026</span>
   </span>
 
     
