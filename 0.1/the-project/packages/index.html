@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The eight packages of Beffroi, what each one depends on, and which one you need.">
+        <meta name="description" content="The packages of Beffroi and its application, what each one depends on, and which one you need.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -82,7 +82,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Packages">
-  <meta property="og:description" content="The eight packages of Beffroi, what each one depends on, and which one you need.">
+  <meta property="og:description" content="The packages of Beffroi and its application, what each one depends on, and which one you need.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3974,8 +3974,9 @@
 
 <h1 id="packages">Packages<a class="headerlink" href="#packages" title="Link to this section">&para;</a></h1>
 <p>Beffroi is developed as one monorepo, <a href="https://github.com/beffroi-auth/beffroi"><code>beffroi-auth/beffroi</code></a>, and
-published as eight packages. Each package is split read-only into its own repository, so you can read the
-history of one part without the rest.</p>
+split read-only into eight repositories, one per part, so you can read the history of one part without the
+rest. Seven parts are packages published on Packagist. The application, <code>beffroi/beffroi</code>, is not: it is
+deployed from its image, <code>ghcr.io/beffroi-auth/beffroi</code>.</p>
 <table>
 <thead>
 <tr>
@@ -4040,7 +4041,7 @@ history of one part without the rest.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="i-want-a-provider" name="__tabbed_1" type="radio" /><input id="i-run-a-symfony-application" name="__tabbed_1" type="radio" /><input id="i-want-it-inside-code-of-my-own" name="__tabbed_1" type="radio" /><input id="i-only-need-to-read-and-write-saml" name="__tabbed_1" type="radio" /><input id="i-administer-an-instance-from-a-terminal" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="i-want-a-provider">I want a provider</label><label for="i-run-a-symfony-application">I run a Symfony application</label><label for="i-want-it-inside-code-of-my-own">I want it inside code of my own</label><label for="i-only-need-to-read-and-write-saml">I only need to read and write SAML</label><label for="i-administer-an-instance-from-a-terminal">I administer an instance from a terminal</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p>Deploy <code>beffroi/beffroi</code>, the application. It holds the protocols, the identity model, the pages, the
+<p>Deploy <code>beffroi/beffroi</code>, the application, from its image <code>ghcr.io/beffroi-auth/beffroi</code>. It holds the protocols, the identity model, the pages, the
 persistence and the console, on FrankenPHP, and a deployment sets it through its environment.</p>
 <p><a href="../../application/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The application</a></p>
@@ -4075,6 +4076,10 @@ SAML.</p>
 <div class="tabbed-block">
 <p><code>beffroi/tui</code> is the terminal client of the administration API of an instance: a client of the provider like
 any other, which talks to it over HTTP and installs none of the packages above.</p>
+<p>Each <a href="https://github.com/beffroi-auth/beffroi/releases">release</a> carries it as <code>beffroi-tui.phar</code>, for PHP 8.4
+or later, and as an executable that carries its own PHP, for Linux on x86_64 and on arm64 and for macOS on
+Apple silicon. <code>SHA256SUMS</code> holds their digests, and <code>SHA256SUMS.asc</code> is its signature by the key that signs
+the release tags. There is no Windows build: the client drives the terminal through <code>stty</code>.</p>
 <p><a href="../../reference/endpoints/#the-administration-plane"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The administration plane</a></p>
 </div>
@@ -4111,7 +4116,7 @@ not.</p>
 <tbody>
 <tr>
 <td>PHP</td>
-<td>8.4 or later, with <code>intl</code>; <code>zip</code> for the application; <code>dom</code>, <code>libxml</code> and <code>openssl</code> for the XML of SAML, <code>zlib</code> for its HTTP-Redirect binding; <code>mbstring</code>, <code>openssl</code> and <code>sodium</code> for the terminal client</td>
+<td>8.4 or later, with <code>intl</code>; <code>zip</code> for the application; <code>dom</code>, <code>libxml</code> and <code>openssl</code> for the XML of SAML, <code>zlib</code> for its HTTP-Redirect binding; <code>dom</code>, <code>filter</code>, <code>iconv</code>, <code>libxml</code>, <code>mbstring</code>, <code>openssl</code>, <code>simplexml</code>, <code>sodium</code> and <code>zlib</code> for the PHAR of the terminal client, whose executables carry their own PHP</td>
 </tr>
 <tr>
 <td>Symfony</td>
@@ -4123,7 +4128,7 @@ not.</p>
 </tr>
 <tr>
 <td>Licence</td>
-<td>MIT, for all eight packages</td>
+<td>MIT, for every package and for the application</td>
 </tr>
 </tbody>
 </table>
@@ -4155,7 +4160,7 @@ buys.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 15:03:50 UTC">November 22, 2026</span>
   </span>
 
     
