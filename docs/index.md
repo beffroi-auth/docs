@@ -22,10 +22,8 @@ Beffroi paints that last box the same colour as the other two.</p>
 
 !!! info "Beffroi is 0.x"
 
-    This documentation follows `0.0.x`, released as `0.0.0`. Until `1.0` the public API may change between
-    minor versions, and only the latest release is supported ([versions](the-project/versions.md)). Every
-    page here states what the code does in that branch. What is not written yet is marked as a stub rather
-    than guessed at.
+    These pages document `0.0.x`, released as `0.0.0`. Until `1.0`, the public API may change between minor
+    versions, and only the latest release is supported ([versions](the-project/versions.md)).
 
 <div class="grid cards" markdown>
 
