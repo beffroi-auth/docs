@@ -4,39 +4,39 @@ The public documentation of [Beffroi](https://github.com/beffroi-auth/beffroi), 
 Symfony ecosystem: the identity core, the OAuth 2.0 and OpenID Connect module, the SAML 2.0 module and the
 application built on them.
 
-Published with [MkDocs](https://www.mkdocs.org/) and
-[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) on GitHub Pages:
+Built with [Zensical](https://zensical.org/) and published on GitHub Pages:
 **<https://doc.beffroi.tech/>**
 
 ## Writing
 
 ```bash
 make install   # the toolchain, in .venv, from requirements.txt
-make serve     # http://127.0.0.1:8000, rebuilt as you save
-make check     # the strict build continuous integration runs
+make serve     # http://localhost:8000, rebuilt as you save
+make check     # the checks and the strict build continuous integration runs
 ```
 
 `make check` is the gate: a broken internal link, an anchor that does not exist, a page absent from the
-navigation or a navigation entry without a page fails the build.
+navigation or a navigation entry without a page fails it.
 
-Without Python at hand, a preview with no plugins is one command:
+Without Python at hand, a preview is one command:
 
 ```bash
-docker run --rm -p 8000:8000 -v "$PWD":/docs squidfunk/mkdocs-material
+docker run --rm -p 8000:8000 -v "$PWD":/docs zensical/zensical
 ```
 
 ## Where things are
 
 | Path | What it is |
 |---|---|
-| `mkdocs.yml` | The site: theme, extensions, plugins, and the whole navigation |
+| `mkdocs.yml` | The site: theme, extensions, plugins, and the whole navigation. Zensical reads it as it is |
 | `docs/` | The pages, one directory per section of the navigation |
 | `docs/assets/stylesheets/beffroi.css` | The look, from the brand guidelines. The tokens at the top of the file carry the colours, the type, the rules and the cuts |
 | `docs/assets/fonts/`, `docs/assets/images/` | The typefaces with their licences, the logo, the favicons and the share image, copied from the brand kit |
 | `docs/overrides/` | Theme partials: the logo in the colourway of the ground, and the head of every page |
 | `docs/overrides/.icons/beffroi/` | The icons of the brand the pages use, written `:beffroi-<name>:` |
 | `requirements.txt` | The toolchain, pinned. Continuous integration installs exactly this |
-| `.github/workflows/check.yml` | The strict build, on every pull request |
+| `.github/workflows/check.yml` | The checks and the strict build, on every pull request |
+| `tools/` | The checks the build does not make: the front matter of every page, and the navigation against the pages |
 | `.github/workflows/pages.yml` | The publication: one version per branch, through mike |
 | `.github/workflows/default-branch.yml` | A new version branch becomes the default branch |
 

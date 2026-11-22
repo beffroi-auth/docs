@@ -3,12 +3,9 @@
 
     python3 -I tools/front-matter.py docs
 
-MkDocs reads the block between the two "---" lines as YAML. A value holding a colon followed by a
+Zensical reads the block between the two "---" lines as YAML. A value holding a colon followed by a
 space ("for PHP: signing") or a backslash ("Cose\\...Tag") is not a plain scalar, so the block fails
-to parse and is rendered as the content of the page: the description comes out as the first heading
-and the page loses its title in the navigation.
-
-"mkdocs build --strict" does not catch this, which is why it is checked here. Quote the value with
+to parse. The build stops at the first such page; this lists every one of them. Quote the value with
 single quotes, doubling any inner one; double quotes do not work, a backslash being an escape there.
 
 This belongs in Spomky-Labs/docs/tools with the other shared tools once the other sites adopt it.
