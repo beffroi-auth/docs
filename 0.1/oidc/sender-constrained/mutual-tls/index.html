@@ -3997,13 +3997,14 @@
 
 
 <h1 id="mutual-tls">Mutual TLS<a class="headerlink" href="#mutual-tls" title="Link to this section">&para;</a></h1>
-<p>RFC 8705 has two halves, and the provider serves both. A client authenticates with the certificate it
+<p>RFC 8705 has two halves, and the provider serves both while <code>BEFFROI_MTLS_ORIGIN</code> names a host. A client authenticates with the certificate it
 presents at the TLS handshake (§2), and the tokens it receives are bound to that certificate (§3), so that a
 token presented over a connection without it is refused wherever the binding is checked. The certificate is
 the one the TLS listener of the deployment received, handed to PHP by that listener and never read from a
 header of the request.</p>
 <h2 id="authenticating-with-a-certificate">Authenticating with a certificate<a class="headerlink" href="#authenticating-with-a-certificate" title="Link to this section">&para;</a></h2>
-<p>Two methods recognise a client by its certificate, and both are wired in the application. Either way the
+<p>Two methods recognise a client by its certificate, and both are wired in the application while
+<code>BEFFROI_MTLS_ORIGIN</code> names a host. Either way the
 request names the client in <code>client_id</code> and presents the certificate at the handshake: a request without a
 certificate presents neither method.</p>
 <table>
@@ -4127,7 +4128,7 @@ the two that have Caddy serve it (<a href="#how-the-certificate-reaches-the-appl
 <tr>
 <td><code>BEFFROI_MTLS_ORIGIN</code></td>
 <td>empty</td>
-<td>The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Empty, it announces none, which is what a deployment serving one host leaves</td>
+<td>The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Empty, the provider serves no mutual TLS: no alias, neither method that reads a certificate, and no token bound to one</td>
 </tr>
 </tbody>
 </table>
@@ -4146,8 +4147,8 @@ other origin, for six endpoints.</p>
 </span></code></pre></div>
 <p>The issuer does not change, and neither does anything else the document says: an alias is another way to
 the same provider. The backchannel authentication endpoint reads a certificate as well, and is not among the
-aliases. Independently of the origin, the document announces <code>tls_client_certificate_bound_access_tokens</code>
-as <code>true</code> whenever a method that authenticates by certificate is wired, which the application does.</p>
+aliases. The two methods that read a certificate are wired with the origin and only with it, so the document
+announces <code>tls_client_certificate_bound_access_tokens</code> as <code>true</code> with an origin and as <code>false</code> without one.</p>
 <h2 id="how-the-certificate-reaches-the-application">How the certificate reaches the application<a class="headerlink" href="#how-the-certificate-reaches-the-application" title="Link to this section">&para;</a></h2>
 <p>The application reads the certificate in one place, the server variable <code>SSL_CLIENT_CERT</code>, named after the one
 mod_ssl sets: the leaf certificate in its PEM envelope, set by the TLS listener from the handshake it carried
@@ -4188,8 +4189,8 @@ for nothing.</p>
 </tr>
 </tbody>
 </table>
-<p><code>.env</code> leaves <code>BEFFROI_MTLS_ORIGIN</code> empty, so the image announces no alias until a deployment names the origin
-of its own host. The development stack names <code>https://mtls.op.localhost</code> in its <code>.env.local</code>.</p>
+<p><code>.env</code> leaves <code>BEFFROI_MTLS_ORIGIN</code> empty, so the image serves no mutual TLS until a deployment names the
+origin of its own host. The development stack names <code>https://mtls.op.localhost</code> in its <code>.env.local</code>.</p>
 <p>Caddy terminates the TLS of that host in every deployment, including one whose proxy terminates the TLS of the
 host of <code>SERVER_NAME</code>: the certificate is presented in the handshake, so a proxy in front of that host passes
 its connections through without terminating them.</p>
@@ -4227,7 +4228,7 @@ taught to trust: the image carries this one alone.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 15:14:43 UTC">November 22, 2026</span>
   </span>
 
     

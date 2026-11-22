@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The seven methods a client may register, what each one reads of a request and checks, and how a refusal is answered.">
+        <meta name="description" content="The methods a client may register, what each one reads of a request and checks, and how a refusal is answered.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -82,7 +82,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Client authentication">
-  <meta property="og:description" content="The seven methods a client may register, what each one reads of a request and checks, and how a refusal is answered.">
+  <meta property="og:description" content="The methods a client may register, what each one reads of a request and checks, and how a refusal is answered.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -4046,7 +4046,8 @@ request</a> endpoint, the device authorization endpoint and the backchannel
 authentication endpoint. A request that presents another method than the registered one is refused exactly
 as a request that presents a wrong secret is.</p>
 <h2 id="the-methods">The methods<a class="headerlink" href="#the-methods" title="Link to this section">&para;</a></h2>
-<p>The application wires seven, in this order:</p>
+<p>The application wires five, in this order, then the two that read a certificate while the deployment names the
+host that asks for one, <code>BEFFROI_MTLS_ORIGIN</code>:</p>
 <table>
 <thead>
 <tr>
@@ -4082,6 +4083,12 @@ as a request that presents a wrong secret is.</p>
 <td>A secret</td>
 </tr>
 <tr>
+<td><code>none</code></td>
+<td><code>client_id</code> alone (RFC 6749 §2.1)</td>
+<td>Nothing: the client names itself</td>
+<td>Nothing</td>
+</tr>
+<tr>
 <td><code>tls_client_auth</code></td>
 <td><code>client_id</code>, and a certificate at the TLS handshake (RFC 8705 §2.1)</td>
 <td>The one value of RFC 8705 §2.1.2 it registered, read out of the certificate</td>
@@ -4092,12 +4099,6 @@ as a request that presents a wrong secret is.</p>
 <td><code>client_id</code>, and a certificate at the TLS handshake (RFC 8705 §2.2)</td>
 <td>That the certificate is one the client publishes</td>
 <td><code>jwks</code> or <code>jwks_uri</code></td>
-</tr>
-<tr>
-<td><code>none</code></td>
-<td><code>client_id</code> alone (RFC 6749 §2.1)</td>
-<td>Nothing: the client names itself</td>
-<td>Nothing</td>
 </tr>
 </tbody>
 </table>
@@ -4114,11 +4115,11 @@ wiring is neither accepted nor announced.</p>
 <tbody>
 <tr>
 <td><code>token_endpoint_auth_methods_supported</code>, <code>revocation_endpoint_auth_methods_supported</code></td>
-<td>The seven methods, in the order above</td>
+<td>The wired methods, in the order above</td>
 </tr>
 <tr>
 <td><code>introspection_endpoint_auth_methods_supported</code></td>
-<td>The six that authenticate a client: <code>none</code> is refused there (RFC 7662 §2.1)</td>
+<td>The wired methods that authenticate a client: <code>none</code> is refused there (RFC 7662 §2.1)</td>
 </tr>
 <tr>
 <td><code>token_endpoint_auth_signing_alg_values_supported</code> and its two siblings</td>
@@ -4348,7 +4349,7 @@ TLS</a></p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 15:14:43 UTC">November 22, 2026</span>
   </span>
 
     

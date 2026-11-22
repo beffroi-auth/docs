@@ -4507,7 +4507,7 @@ type and its bounds.</p>
 <tr>
 <td><a href="#mutual_tls"><code>mutual_tls</code></a></td>
 <td>The host that asks a client for its certificate</td>
-<td><code>BEFFROI_MTLS_ORIGIN</code>, empty: no alias announced</td>
+<td><code>BEFFROI_MTLS_ORIGIN</code>, empty: no mutual TLS</td>
 </tr>
 <tr>
 <td><a href="#tokens"><code>tokens</code></a></td>
@@ -4782,10 +4782,13 @@ a private signature key.</p>
 </span> Passkeys</a></p>
 <h2 id="mutual_tls"><code>mutual_tls</code><a class="headerlink" href="#mutual_tls" title="Link to this section">&para;</a></h2>
 <p>For a deployment whose clients authenticate with a certificate (RFC 8705) on a host whose TLS listener asks
-for one. Named, the discovery document announces every endpoint again under that host, in
+for one. Named, the discovery document announces six endpoints again under that host, in
 <code>mtls_endpoint_aliases</code>. The file reads the origin from <code>BEFFROI_MTLS_ORIGIN</code>, as
-<code>https://mtls.op.example.com</code>, and <code>.env</code> leaves it empty: no alias is announced, which is what a deployment
-serving one host does.</p>
+<code>https://mtls.op.example.com</code>, and <code>.env</code> leaves it empty: the provider then serves no mutual TLS, so no
+alias is announced, <code>tls_client_auth</code> and <code>self_signed_tls_client_auth</code> are neither announced nor registered,
+and no token is bound to a certificate. A deployment whose listener writes the certificate in
+<code>SSL_CLIENT_CERT</code> on the host of the issuer itself, which the site of <code>SERVER_NAME</code> never does, names that
+host.</p>
 <div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">beffroi</span><span class="p">:</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">mutual_tls</span><span class="p">:</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">origin</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_MTLS_ORIGIN)%'</span>
@@ -5118,7 +5121,7 @@ refuses it.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:37:58 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 15:14:43 UTC">November 22, 2026</span>
   </span>
 
     

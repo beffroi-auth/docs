@@ -4827,8 +4827,8 @@ key of the tenant but its SAML keys, which take theirs from <a href="#samlkeys">
 <td><code>origin</code></td>
 <td><code>BEFFROI_MTLS_ORIGIN</code></td>
 <td>string</td>
-<td>empty: no alias</td>
-<td>The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as <code>https://mtls.op.example.com</code>. The endpoints are announced under it in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, no alias is announced, and a client authenticating by certificate reaches the ordinary endpoints</td>
+<td>empty: no mutual TLS</td>
+<td>The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as <code>https://mtls.op.example.com</code>. The endpoints are announced under it in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, the provider serves no mutual TLS: <code>tls_client_auth</code> and <code>self_signed_tls_client_auth</code> are not wired, and no token is bound to a certificate. A deployment whose listener writes the certificate in <code>SSL_CLIENT_CERT</code> on the host of the issuer itself, which the site of <code>SERVER_NAME</code> never does, names that host</td>
 </tr>
 </tbody>
 </table>
@@ -5509,7 +5509,7 @@ one</a>).</p>
 <td><code>token_endpoint_auth_method</code></td>
 <td>string</td>
 <td>the first wired method, <code>client_secret_basic</code></td>
-<td>How the client authenticates (OIDC Core §9), among the wired methods: <code>client_secret_basic</code>, <code>client_secret_post</code>, <code>private_key_jwt</code>, <code>client_secret_jwt</code>, <code>tls_client_auth</code>, <code>self_signed_tls_client_auth</code> and <code>none</code> in the application. <code>none</code> makes a public client</td>
+<td>How the client authenticates (OIDC Core §9), among the wired methods: <code>client_secret_basic</code>, <code>client_secret_post</code>, <code>private_key_jwt</code>, <code>client_secret_jwt</code> and <code>none</code> in the application, then <code>tls_client_auth</code> and <code>self_signed_tls_client_auth</code> while <code>mutual_tls.origin</code> names a host. <code>none</code> makes a public client</td>
 </tr>
 <tr>
 <td><code>requires_consent</code></td>
@@ -5539,7 +5539,7 @@ one</a>).</p>
 <td><code>tls_client_certificate_bound_access_tokens</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>The tokens of the client are bound to the certificate it presents at the TLS handshake, whichever way it authenticated (RFC 8705 §3.4), and a token request that proves no certificate is refused. A client authenticating by certificate gets bound tokens either way</td>
+<td>The tokens of the client are bound to the certificate it presents at the TLS handshake, whichever way it authenticated (RFC 8705 §3.4), and a token request that proves no certificate is refused. A client authenticating by certificate gets bound tokens either way. <code>true</code> is refused while <code>mutual_tls.origin</code> names no host, no method that reads a certificate being wired then</td>
 </tr>
 <tr>
 <td><code>dpop_bound_access_tokens</code></td>
@@ -6191,7 +6191,7 @@ providers</a> is how one is declared.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:37:58 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 15:14:43 UTC">November 22, 2026</span>
   </span>
 
     
