@@ -184,9 +184,10 @@ html :focus-visible {
   color: var(--bf-text);
 }
 
-/* The lockup is the name: the site name next to it would spell it a second time. */
-.md-header__title .md-header__topic:first-child {
-  visibility: hidden;
+/* The lockup is the name: the site name next to it would spell it a second time. The theme writes the version
+   selector into the same topic, so only the name goes. */
+.md-header__title .md-header__topic:first-child > .md-ellipsis {
+  display: none;
 }
 
 .md-header__topic {
