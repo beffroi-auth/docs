@@ -63,7 +63,7 @@ not its own. [Conformance](conformance.md) says which plans run and what they co
 
 ## Where to go next
 
-- [Packages](packages.md), if you want to know which of the eight you need.
+- [Packages](packages.md), if you want to know which one you need.
 - [Getting started](../getting-started/installation.md), if you want a provider answering on your machine.
 - [OAuth 2.0 and OpenID Connect](../oidc/index.md), or [SAML 2.0](../saml/index.md), if you came for a
   protocol.
