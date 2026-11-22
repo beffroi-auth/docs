@@ -289,18 +289,19 @@ Symfony locks the session and keeps them apart.
 
 ## The reference application
 
-[beffroi-auth/oidc-demo](https://github.com/beffroi-auth/oidc-demo) is this guide grown into everything Beffroi
-serves. It is a Symfony application on `oidc_login`, laid out as a tree of the features of the provider,
-grouped: signing in, client authentication, tokens, protecting an API, documents, signing out, the grants that
-need no browser, and FAPI 2.0. Each feature faces a client, shows the configuration of that client, runs it
-against the provider and shows what travelled. Around the tree:
+[beffroi-auth/oidc-demo](https://github.com/beffroi-auth/oidc-demo) is this guide grown into a demonstration of
+the provider. It is a Symfony application whose reference client is `oidc_login`, laid out as a tree of the
+features of the provider, grouped: signing in, client authentication, tokens, protecting an API, documents,
+signing out, the grants whose client has no browser, and FAPI 2.0. Each feature faces a client, shows the
+configuration that makes it, runs it against the provider and shows what travelled.
 
-- an API Platform API that verifies an access token addressed to it on its own (RFC 8707 §2, RFC 9068) and
-  asks Beffroi about any other (RFC 7662), whose Swagger UI signs in with the authorization code and PKCE as a
-  public client;
-- routes that check the access token of the session several ways: introspected, introspected with a signed
-  answer, verified offline, and bound by DPoP;
-- a page where you compose a client option by option and register it on the spot (RFC 7591).
+The group that protects an API faces an API Platform API, which verifies an access token addressed to it on
+its own (RFC 8707 §2, RFC 9068) and asks Beffroi about any other, as each client whose secret it holds
+(RFC 7662), and whose Swagger UI signs in with the authorization code and PKCE as a public client. The tree
+ends on a page where you compose a client option by option and register it on the spot (RFC 7591). Beside the
+tree, six routes check an access token one way each: the token of the session introspected, introspected with
+a signed answer and verified offline; a token bound by DPoP, introspected or verified offline; and a token
+obtained by exchange and addressed to that route (RFC 8693).
 
 From a working copy of the monorepo with oidc-demo checked out beside it, `castor demo` points it at
 [the development stack](the-standalone-application.md#on-your-machine) and starts it on
