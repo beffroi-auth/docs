@@ -204,8 +204,8 @@ write to them twice. What a transport of the lane keeps of a refused mail or tex
 the class of the refusal and, for a mail, its code, never what the server answered, which may quote the address or
 the number.
 
-The image installs no bridge of `symfony/mailer` or `symfony/notifier`: a mail leaves through SMTP, which
-`symfony/mailer` carries, and a deployment of the image sends no text. A deployment that turns the three
+Of the bridges of `symfony/mailer` and `symfony/notifier`, the image installs only that of Sweego, for texts: a
+mail leaves through SMTP, which `symfony/mailer` carries, and a text through Sweego. A deployment that turns the three
 channels off still serves this flow: the person finds the request on the page where requests are answered,
 which is where any channel sends them anyway.
 
