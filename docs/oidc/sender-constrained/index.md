@@ -30,12 +30,12 @@ the same member in its record, which [introspection](../introspection-and-revoca
 server that verifies an `at+jwt` offline reads the binding in the token; one that introspects reads it in the
 answer.
 
-**A token is bound to one thing.** A token request that proves a certificate the tokens would be bound to, and
-a DPoP key as well, is refused with `invalid_dpop_proof`, status `400`, rather than arbitrated: a token names
-one thing in its `cnf`, and the provider does not choose for the client. A certificate presented only because
-the listener asked for one binds
-nothing (see [mutual TLS](mutual-tls.md#tokens-bound-to-the-certificate)), so a client that authenticates
-another way may send a DPoP proof over that connection.
+**A token is bound to one thing.** A token request that proves a certificate the tokens would be bound to, and a
+DPoP key as well, is refused with `invalid_dpop_proof`, status `400`, rather than arbitrated: a token names one
+thing in its `cnf`, a single proof-of-possession key (RFC 7800 §3.1), and the provider does not choose for the
+client. A certificate presented only because the listener asked for one binds nothing (see [mutual
+TLS](mutual-tls.md#tokens-bound-to-the-certificate)), so a client that authenticates another way may send a DPoP
+proof over that connection.
 
 ## Refresh tokens
 

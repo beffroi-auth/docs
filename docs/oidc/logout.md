@@ -5,13 +5,13 @@ description: A client asking for a session to end, the clients told through the 
 
 # Logout
 
-Three specifications, and they are not interchangeable. RP-Initiated Logout 1.0 is a client asking for a
-session to end; Front-Channel Logout 1.0 tells the other clients of that session through the browser; and
-Back-Channel Logout 1.0 tells them server to server, with a signed logout token. A provider that implements
-only the first one has not logged anybody out of anywhere else. The provider implements the three, and
-announces them in its discovery document: `end_session_endpoint`, and `frontchannel_logout_supported`,
-`frontchannel_logout_session_supported`, `backchannel_logout_supported` and
-`backchannel_logout_session_supported` set to `true`.
+Three specifications, and they are not interchangeable. RP-Initiated Logout 1.0 is a client asking for a session
+to end; Front-Channel Logout 1.0 tells the other clients of that session through the browser; and
+Back-Channel Logout 1.0 tells them server to server, with a logout token, signed, and encrypted for a client
+that encrypts its ID tokens. A provider that implements only the first one has not logged anybody out of
+anywhere else. The provider implements the three, and announces them in its discovery document:
+`end_session_endpoint`, and `frontchannel_logout_supported`, `frontchannel_logout_session_supported`,
+`backchannel_logout_supported` and `backchannel_logout_session_supported` set to `true`.
 
 ## The end session endpoint
 
@@ -113,6 +113,13 @@ A JWT signed by the active key of the tenant, under the algorithm the client reg
 since that is the one the client knows how to verify (§2.6). Its header names `typ: logout+jwt`, `alg` and
 `kid`.
 
+A client that registered the encryption of its ID tokens, `id_token_encrypted_response_alg` and
+`id_token_encrypted_response_enc`, receives it signed, then encrypted with that `alg`, that `enc` and the key
+its ID tokens are encrypted to (§2.4, §2.6), since §2.6 has such a client reject a logout token in clear: a
+nested JWT, the header of the JWE saying `cty: JWT` (RFC 7519 §5.2) and replicating `iss` (RFC 7519 §5.3).
+Every other client receives it signed only. Its registration alone decides: nothing of the logout token is
+registered or set on its own.
+
 | Claim | Value |
 |---|---|
 | `iss` | The issuer |
@@ -134,6 +141,16 @@ The token is minted on the lane of the events once the session has ended, and ca
 lane of the notifications: a client that cannot be reached holds no logout back, and nothing a client does
 reaches the person, whose session is already closed.
 
+**A token that cannot be encrypted is not sent in clear.** When the key of a client that encrypts its ID
+tokens cannot be obtained as the session ends, its `jwks_uri` unreadable or its set holding no key the
+registered `alg` can be addressed to, the other clients of the session are told, and the issue of that
+client's token goes to the lane of the notifications, tried again on the schedule of a delivery below and given
+up as a delivery is. A token issued late carries its own `iat`, and an `exp` one budget later. A set that was
+read and holds no fitting key is kept, and read again only after `BEFFROI_JWKS_URI_TTL` seconds, a day in the
+image, so such a client is given up once the schedule runs out; a `jwks_uri` that could not be read is read
+again at each attempt. A client the provider no longer serves, or a session it no longer holds, receives
+nothing.
+
 **One request per attempt:** a `POST` of `application/x-www-form-urlencoded` whose only parameter is
 `logout_token` (§2.5), with no cookie and no authentication, read for its status code and nothing else. No
 redirect is followed: the URI a client registered is where the token goes, and nobody else moves it.
@@ -145,7 +162,8 @@ redirect is followed: the URI a client registered is where the token goes, and n
 | A redirection | Gives up at once: the same answer would come back every time, and the provider follows none. The client registers the URL it redirects to instead |
 | Any other status, or nothing within the timeout | Sends it again later, waiting longer each time and never more than `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY` seconds |
 
-A client that refuses the token is given up on, and that is said, never kept quiet: an act of the journal,
+A client that refuses the token, one still out of reach when the schedule runs out, and one whose token could
+not be issued by then are given up on, and that is said, never kept quiet: an act of the journal,
 `logout_token.given_up`, naming the client and the person, so that somebody can see that a client was left
 believing its user signed in.
 

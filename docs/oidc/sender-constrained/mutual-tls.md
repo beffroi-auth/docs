@@ -154,7 +154,7 @@ for nothing.
 |---|---|---|
 | `MTLS_SERVER_NAME` | Caddy | The name of the host that asks for a certificate |
 | `CADDY_EXTRA_CONFIG` | Caddy | `import mtls.Caddyfile`, which adds that site block |
-| `BEFFROI_MTLS_ORIGIN` | The application | The origin of that host, which the discovery document announces the aliases under |
+| `BEFFROI_MTLS_ORIGIN` | The application | The origin of that host, which the discovery document announces the aliases under, and which wires the two methods that read a certificate and the binding of a token to one |
 
 `.env` leaves `BEFFROI_MTLS_ORIGIN` empty, so the image serves no mutual TLS until a deployment names the
 origin of its own host. The development stack names `https://mtls.op.localhost` in its `.env.local`.
