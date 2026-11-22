@@ -74,7 +74,8 @@ registration below needs an `ES256` key, which `beffroi:keys:generate --algorith
 
 The key is the active signing key of the tenant for that algorithm, published in the JWK Set under the `kid`
 the header names ([keys](../../core/keys.md)). The logout tokens of a client are signed with the algorithm it
-registered for its ID tokens, since that is the one it knows how to verify.
+registered for its ID tokens, since that is the one it knows how to verify, and encrypted as its ID tokens are
+when it registered their encryption ([logout](../logout.md#the-logout-token)).
 
 ## Encryption
 

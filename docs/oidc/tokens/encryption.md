@@ -1,22 +1,25 @@
 ---
 title: Encryption
-description: The three documents the provider encrypts for a client that asks, the algorithms it encrypts with, the key it encrypts to, and what happens when that key cannot be read.
+description: The documents the provider encrypts for a client that asks, the algorithms it encrypts with, the key it encrypts to, and what happens when that key cannot be read.
 ---
 
 # Encryption
 
 A client may ask for three of the documents the provider hands it to be encrypted to a key of its own: its ID
-token, its UserInfo answer, and its signed authorization responses. The provider encrypts for the client that
-registered it and for nobody else, and a client that registered nothing receives its documents unencrypted.
+token, its UserInfo answer, and its signed authorization responses. Its logout tokens follow its ID tokens. The
+provider encrypts for the client that registered it and for nobody else, and a client that registered nothing
+receives its documents unencrypted.
 
 | Document | The pair a client registers | Signed before it is encrypted |
 |---|---|---|
 | [ID token](id-tokens.md) (OIDC Core §3.1.3.7) | `id_token_encrypted_response_alg`, `id_token_encrypted_response_enc` | Always |
 | [UserInfo](../userinfo.md) answer (OIDC Core §5.3.2) | `userinfo_encrypted_response_alg`, `userinfo_encrypted_response_enc` | When the client also registered `userinfo_signed_response_alg`; otherwise what is encrypted is the plain JSON of the claims |
 | Signed [authorization response](../response-modes.md) (JARM §3) | `authorization_encrypted_response_alg`, `authorization_encrypted_response_enc` | Always |
+| [Logout token](../logout.md#the-logout-token) (Back-Channel Logout 1.0 §2.4, §2.6) | None of its own: the pair of the ID token, and the key the ID tokens are encrypted to | Always |
 
-Access tokens, refresh tokens and logout tokens are never encrypted. A logout token is signed with the
-algorithm the client registered for its ID tokens, and travels in clear.
+Access tokens and refresh tokens are never encrypted. A logout token is signed with the algorithm the client
+registered for its ID tokens, then encrypted when the client registered their encryption, the header of the JWE
+replicating `iss` (Back-Channel Logout 1.0 §2.4, RFC 7519 §5.3).
 
 **Signed, then encrypted, never the other way round** (OIDC Core §16.14). The signature says who wrote the
 document and travels inside what hides it, so that a client that opens the JWE finds something to verify
@@ -92,9 +95,12 @@ publishes the new one and keeps the private half of the old one for `BEFFROI_JWK
 ## When the key cannot be read
 
 **No document leaves in clear.** When the set behind the `jwks_uri` cannot be read, or holds no key the
-registered algorithm can be addressed to, the provider writes nothing for that client, and the request that
-was to carry the document fails: the token request that was to carry the ID token, once the code, the device
-code or the `auth_req_id` it presented has been spent, the UserInfo request, or the authorization response.
+registered algorithm can be addressed to, the provider writes nothing for that client, and the request that was
+to carry the document fails: the token request that was to carry the ID token, before the code, the device code,
+the `auth_req_id` or the refresh token it presented is spent, so that the same request is served once the set
+can be read; the UserInfo request; or the authorization response. A logout token is issued later: the other
+clients of the session are told, and the issue of that client's token is tried again on the schedule of a
+delivery and given up as one is ([logout](../logout.md#its-delivery)).
 
 A read is given `BEFFROI_JWKS_URI_TIMEOUT` seconds, 3 in the image, and `BEFFROI_JWKS_URI_MAX_SIZE` bytes,
 65536 in the image, before it counts as a set that cannot be read

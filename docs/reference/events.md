@@ -39,7 +39,7 @@ The other listeners of the application each hear one event, or an interface a fe
 
 | Listener | Hears | What it does |
 |---|---|---|
-| `BackChannelLogoutHandler` | `session.ended` | Mints a logout token for each client of the session that registered a back-channel logout URI (Back-Channel Logout 1.0 §2.6), each one raising `logout_token.issued` |
+| `BackChannelLogoutHandler` | `session.ended` | Mints a logout token for each client of the session that registered a back-channel logout URI (Back-Channel Logout 1.0 §2.6), each one raising `logout_token.issued`, and hands a client whose key cannot be obtained to the notifications lane, which issues its token later |
 | `RevokeTheTokensOfTheSessionHandler` | `session.ended` | Revokes the refresh tokens of the session and removes its opaque access tokens, dated by the end of the session |
 | `RevokeWhatOutlivedTheSessionHandler` | `refresh_token.outlived_its_session` | The same again, dated by the end of the session, for what a refresh in flight had saved |
 | `EnrichTheProvenanceHandler` | `user.authenticated`, through `SessionProvenanceInterface` | Finds the place of the two provenances of the session and writes it on its row |
@@ -51,8 +51,9 @@ The other listeners of the application each hear one event, or an interface a fe
 | `RecordTheServiceProviderOfTheSessionHandler` | `saml.service_provider.signed_in` | Records the part of the service provider in the session, for the logout the identity provider starts |
 
 A logout token its client refuses is given up at once. One that cannot be delivered is tried again on the
-schedule of `beffroi.back_channel_logout`, and goes to the failure transport once that schedule runs out. Either
-way, `logout_token.given_up` is raised.
+schedule of `beffroi.back_channel_logout`, and goes to the failure transport once that schedule runs out, and so
+does the issue of one for a client whose key cannot be obtained, tried again on the same schedule. Either way,
+`logout_token.given_up` is raised.
 
 ## The events of the core
 
@@ -113,7 +114,7 @@ way, `logout_token.given_up` is raised.
 | `introspection.answered` | `IntrospectionAnswered` | A resource server is told who an active token names (RFC 7662 §2.2). An inactive token, or one naming nobody, raises nothing | The client that asked, the subject | A person, a client |
 | `userinfo.answered` | `UserInfoAnswered` | A client is answered the claims of a person (OIDC Core §5.3) | The client, the subject; never which claims | A person, a client |
 | `logout_token.issued` | `LogoutTokenIssued` | A logout token is minted for a client of a session that ended (Back-Channel Logout 1.0 §2.6) | The client, the subject, the logout URI, the session, the token | A person, a client |
-| `logout_token.given_up` | `LogoutTokenGivenUp` | A logout token is refused by its client, or could not be delivered within the retries (Back-Channel Logout 1.0 §2.8) | The client, the subject, the session, what the last attempt came back with; never the token | A person, a client |
+| `logout_token.given_up` | `LogoutTokenGivenUp` | A logout token is refused by its client (Back-Channel Logout 1.0 §2.8), or could not be delivered, or issued for a client whose key could not be obtained, within the retries | The client, the subject, the session, what the last attempt came back with; never the token | A person, a client |
 | `backchannel_request.answered` | `BackchannelRequestAnswered` | A backchannel request is answered, yes or no, for a client registered to be called (CIBA Core §10.2) | The client, the subject, null when the request named nobody, the notification endpoint, the identifier of the request, the notification token | A person or nobody, a client |
 | `pushed_request.refused` | `PushedRequestRefused` | A `request_uri` presented at the authorization endpoint grants nothing (RFC 9126 §4) | The reason, the client that presented it, the client it was pushed by; never the reference | Nobody |
 | `registered_client.deleted` | `RegisteredClientDeleted` | A client that registered itself is gone: deleted at its configuration endpoint (RFC 7592 §2.3), by `beffroi:client:delete`, by an administrator through the administration API, or dropped for want of use | The client, and the administrator when one deleted it | A client |
