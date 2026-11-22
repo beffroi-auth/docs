@@ -5,7 +5,7 @@ description: A client recognised by the certificate of its connection, the token
 
 # Mutual TLS
 
-RFC 8705 has two halves, and the provider serves both. A client authenticates with the certificate it
+RFC 8705 has two halves, and the provider serves both while `BEFFROI_MTLS_ORIGIN` names a host. A client authenticates with the certificate it
 presents at the TLS handshake (§2), and the tokens it receives are bound to that certificate (§3), so that a
 token presented over a connection without it is refused wherever the binding is checked. The certificate is
 the one the TLS listener of the deployment received, handed to PHP by that listener and never read from a
@@ -13,7 +13,8 @@ header of the request.
 
 ## Authenticating with a certificate
 
-Two methods recognise a client by its certificate, and both are wired in the application. Either way the
+Two methods recognise a client by its certificate, and both are wired in the application while
+`BEFFROI_MTLS_ORIGIN` names a host. Either way the
 request names the client in `client_id` and presents the certificate at the handshake: a request without a
 certificate presents neither method.
 
@@ -106,7 +107,7 @@ BEFFROI_MTLS_ORIGIN=https://mtls.op.example.com
 
 | Variable | In the image | What it decides |
 |---|---|---|
-| `BEFFROI_MTLS_ORIGIN` | empty | The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Empty, it announces none, which is what a deployment serving one host leaves |
+| `BEFFROI_MTLS_ORIGIN` | empty | The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Empty, the provider serves no mutual TLS: no alias, neither method that reads a certificate, and no token bound to one |
 
 With an origin, the discovery document carries `mtls_endpoint_aliases` (RFC 8705 §5): the same paths, on the
 other origin, for six endpoints.
@@ -126,8 +127,8 @@ other origin, for six endpoints.
 
 The issuer does not change, and neither does anything else the document says: an alias is another way to
 the same provider. The backchannel authentication endpoint reads a certificate as well, and is not among the
-aliases. Independently of the origin, the document announces `tls_client_certificate_bound_access_tokens`
-as `true` whenever a method that authenticates by certificate is wired, which the application does.
+aliases. The two methods that read a certificate are wired with the origin and only with it, so the document
+announces `tls_client_certificate_bound_access_tokens` as `true` with an origin and as `false` without one.
 
 ## How the certificate reaches the application
 
@@ -153,8 +154,8 @@ for nothing.
 | `CADDY_EXTRA_CONFIG` | Caddy | `import mtls.Caddyfile`, which adds that site block |
 | `BEFFROI_MTLS_ORIGIN` | The application | The origin of that host, which the discovery document announces the aliases under |
 
-`.env` leaves `BEFFROI_MTLS_ORIGIN` empty, so the image announces no alias until a deployment names the origin
-of its own host. The development stack names `https://mtls.op.localhost` in its `.env.local`.
+`.env` leaves `BEFFROI_MTLS_ORIGIN` empty, so the image serves no mutual TLS until a deployment names the
+origin of its own host. The development stack names `https://mtls.op.localhost` in its `.env.local`.
 
 Caddy terminates the TLS of that host in every deployment, including one whose proxy terminates the TLS of the
 host of `SERVER_NAME`: the certificate is presented in the handshake, so a proxy in front of that host passes

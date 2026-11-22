@@ -39,7 +39,7 @@ beffroi:
 | [`tenant`](#tenant) | The issuer, the name and the look of the tenant, the claims its people change, its `acr` vocabulary, the scopes of its APIs, the groups that administer it and its administration API, and what the enrolment of its passkeys asks | Required. `BEFFROI_ISSUER`, `BEFFROI_TENANT_SLUG` and the `BEFFROI_TENANT_*` variables |
 | [`keys`](#keys) | The client that seals the keys, where they are kept, what binds the data keys, and how keys rotate | Required. `op` and `var/keys` written in the file, `BEFFROI_KMS_KEY_ID`, `BEFFROI_DATA_KEY_SECRETS` and three variables of rotation |
 | [`webauthn`](#webauthn) | Where the FIDO metadata are kept | `var/webauthn` written in the file, no variable |
-| [`mutual_tls`](#mutual_tls) | The host that asks a client for its certificate | `BEFFROI_MTLS_ORIGIN`, empty: no alias announced |
+| [`mutual_tls`](#mutual_tls) | The host that asks a client for its certificate | `BEFFROI_MTLS_ORIGIN`, empty: no mutual TLS |
 | [`tokens`](#tokens) | How long everything the provider issues stands | Eleven variables, short lifetimes |
 | [`load`](#load) | The request budget of an address and of a client | Four `BEFFROI_LOAD_*` variables: 2400 and 1200 a minute |
 | [`journal`](#journal) | How long an act is kept | `BEFFROI_JOURNAL_RETENTION`: 180 days |
@@ -236,10 +236,13 @@ Where the FIDO metadata a passkey's attestation is checked against are kept: wha
 ## `mutual_tls`
 
 For a deployment whose clients authenticate with a certificate (RFC 8705) on a host whose TLS listener asks
-for one. Named, the discovery document announces every endpoint again under that host, in
+for one. Named, the discovery document announces six endpoints again under that host, in
 `mtls_endpoint_aliases`. The file reads the origin from `BEFFROI_MTLS_ORIGIN`, as
-`https://mtls.op.example.com`, and `.env` leaves it empty: no alias is announced, which is what a deployment
-serving one host does.
+`https://mtls.op.example.com`, and `.env` leaves it empty: the provider then serves no mutual TLS, so no
+alias is announced, `tls_client_auth` and `self_signed_tls_client_auth` are neither announced nor registered,
+and no token is bound to a certificate. A deployment whose listener writes the certificate in
+`SSL_CLIENT_CERT` on the host of the issuer itself, which the site of `SERVER_NAME` never does, names that
+host.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
