@@ -368,11 +368,11 @@ OP plan, a SAML service provider with the peers it is judged by, an authority wh
 accepts and an issuer of assertions it trusts. Its lists replace the JSON documents the environment carries for
 them.
 
-Their variables are read in the development environment: the `CONFORMANCE_*`, `OIDC_DEMO_*` and `DEMO_*`
-secrets and key sets, `BEFFROI_DEV_USER_SUBJECT`, `BEFFROI_DEMO_HOST_IP`, `APP_PROFILER` and
-`VAR_DUMPER_SERVER`. The development stack writes the secrets and the key sets into `.env.local`, `open`
-there for `BEFFROI_REGISTRATION_MODE` and its host of mutual TLS for `BEFFROI_MTLS_ORIGIN`, which it reads as
-every deployment does. The demonstration of the flows is wired in
-the test environment of the application's own suite as well, so three of them are read there too,
-`DEMO_SERVICE_SECRET`, `DEMO_CIBA_POLL_SECRET` and `BEFFROI_DEV_USER_SUBJECT`, which `.env.test` gives as
-fixtures. A production kernel reads none of them.
+Their variables are read in the development environment: the `CONFORMANCE_*`, `OIDC_DEMO_*` and `DEMO_*` secrets
+and key sets, `BEFFROI_DEV_USER_SUBJECT`, `BEFFROI_DEMO_HOST_IP`, `APP_PROFILER` and `VAR_DUMPER_SERVER`. The
+development stack writes the secrets, the key sets and `BEFFROI_DEV_USER_SUBJECT` into `.env.local`, with `open`
+for `BEFFROI_REGISTRATION_MODE` and its host of mutual TLS for `BEFFROI_MTLS_ORIGIN`, two variables the application
+reads as every deployment does. The demonstration of the flows is wired in the test environment of the
+application's own suite as well, so three of them are read there too, `DEMO_SERVICE_SECRET`,
+`DEMO_CIBA_POLL_SECRET` and `BEFFROI_DEV_USER_SUBJECT`, which `.env.test` gives as fixtures. A production kernel
+reads none of them.

@@ -60,7 +60,7 @@ refuse with `invalid_request`, status `400`.
 |---|---|---|
 | `require_sender_constrained_tokens` | A certificate its tokens are bound to, or a DPoP key, whichever (FAPI 2.0 Security Profile §5.3.2.1) | The initial access token the client registered with, issued with `--require-sender-constrained-tokens`. It is a member of the deployment: a client that registers itself and sends it is refused with `invalid_client_metadata` ([what the image does not set](../clients.md#what-the-image-does-not-set)) |
 | `tls_client_certificate_bound_access_tokens` | The certificate of its connection, whatever way it authenticates (RFC 8705 §3.4) | The client, when it registers, RFC 8705 §3.4 making it a member of a registration |
-| `dpop_bound_access_tokens` | A DPoP key (RFC 9449 §5.2) | The client, when it registers. It is refused beside `tls_client_certificate_bound_access_tokens` and beside a method that authenticates with a certificate, whose tokens are bound to the certificate |
+| `dpop_bound_access_tokens` | A DPoP key (RFC 9449 §5.2) | The client, when it registers. `true` is refused beside `tls_client_certificate_bound_access_tokens: true` and beside a method that authenticates with a certificate, whose tokens are bound to the certificate |
 
 A client that registers itself and must bind registers one of the last two, or is given the first by its
 initial access token ([dynamic registration](../dynamic-registration.md)):

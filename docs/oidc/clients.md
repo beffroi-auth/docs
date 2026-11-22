@@ -124,7 +124,7 @@ set](#what-the-image-does-not-set) says what every client of the image has other
 | Member | What it decides |
 |---|---|
 | `access_token_format` | *Deployment.* The shape of its access tokens: `jwt` or `opaque`. See [access tokens](tokens/access-tokens.md) |
-| `require_sender_constrained_tokens` | *Deployment.* A token request that proves neither a certificate nor a key is refused with `invalid_request` rather than answered with bearer tokens |
+| `require_sender_constrained_tokens` | *Deployment.* A token request that proves neither a certificate its tokens are bound to nor a DPoP key is refused with `invalid_request` rather than answered with bearer tokens |
 | `tls_client_certificate_bound_access_tokens` | Its tokens are bound to the certificate of its connection whichever way it authenticated (RFC 8705 §3.4), and a token request that presents none is refused with `invalid_request` |
 | `dpop_bound_access_tokens` | Its tokens are bound to a key it proves with DPoP (RFC 9449 §5.2), and a token request that carries no DPoP proof is refused with `invalid_request`. `false` by default. A client whose tokens are bound to its certificate cannot register it. See [sender-constrained tokens](sender-constrained/index.md#a-client-that-must-bind) |
 | `id_token_signed_response_alg` | The algorithm its ID tokens and logout tokens are signed with. Left out, `RS256`, the first algorithm wired |
