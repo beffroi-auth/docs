@@ -76,9 +76,10 @@ initial access token ([dynamic registration](../dynamic-registration.md)):
 ```
 
 Its token requests go to the token endpoint of the host that asks for a certificate, the ordinary host asking
-for none ([mutual TLS](mutual-tls.md#the-endpoint-aliases)). The image serves that host once a deployment
-turns it on, with `CADDY_EXTRA_CONFIG` and `MTLS_SERVER_NAME`: until then no host asks for a certificate, and
-every token request of such a client is refused with `invalid_request`.
+for none ([mutual TLS](mutual-tls.md#the-endpoint-aliases)). Until `BEFFROI_MTLS_ORIGIN` names that host,
+such a registration is refused with `invalid_client_metadata` (RFC 8705 §3.4). Once it names it, the
+deployment serves the host with `CADDY_EXTRA_CONFIG` and `MTLS_SERVER_NAME`, or every token request of such a
+client is refused with `invalid_request`.
 `tls_client_certificate_bound_access_tokens` and `dpop_bound_access_tokens` default to `false`, and no
 variable binds the tokens of every client. A client that registers `dpop_bound_access_tokens: true` has every
 token request that carries no DPoP proof refused with `invalid_request` (RFC 9449 §5.2). A registration that
@@ -96,6 +97,6 @@ TLS](mutual-tls.md#tokens-bound-to-the-certificate) say what each one compares.
 
 **What the provider announces.** The discovery document always carries `dpop_signing_alg_values_supported`,
 the signature algorithms the provider is wired with. It carries `tls_client_certificate_bound_access_tokens`
-set to `true` because a client authentication method that proves a certificate is wired, which the
-application does. The bare challenge of UserInfo, answered to a request that carries no token at all, is what
+set to `true` while a client authentication method that proves a certificate is wired, which the application
+does while `BEFFROI_MTLS_ORIGIN` names a host, and to `false` otherwise. The bare challenge of UserInfo, answered to a request that carries no token at all, is what
 is read from the bindings themselves, both wired in the application: `WWW-Authenticate: Bearer, DPoP`.
