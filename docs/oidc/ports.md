@@ -22,7 +22,7 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 |---|---|
 | `RandomnessInterface` | Draws every value it hands out and recognises later: codes, tokens, references, user codes |
 | `UuidGeneratorInterface` | Names what it records, grants, consents and families of refresh tokens among them, and the `jti` of a logout token |
-| `JwsSignerInterface` | Signs what the tenant issues: ID tokens, `at+jwt`, logout tokens, signed UserInfo, introspection and authorization responses |
+| `JwsSignerInterface` | Signs the answer of an introspection asked as a JWT (RFC 9701) |
 | `JwsVerifierInterface` | Verifies what the tenant signed and is handed back: an `at+jwt`, an `id_token_hint` |
 | `JweDecrypterInterface` | Opens a request object encrypted to the tenant |
 | `PublicKeySetProviderInterface` | The JWK Set it publishes |
@@ -33,7 +33,7 @@ the use cases read the time from, and the event dispatcher of PSR-14, which ever
 | `LinkedIdentityRepositoryInterface` | The person the assertion of a trusted issuer is about (RFC 7523 §3) |
 | `PasswordHasherInterface`, `PasswordAlgorithmsInterface` | The secrets of the clients, hashed when they are kept and read back by the algorithm they name |
 | `SubjectsOfSessionsInterface` | The subject of the person a session names, so that announcing a replayed code, a reused refresh token or a token a client gave back asks nothing of the key management service |
-| `SigningKeyOpenerInterface` | Opens the active key of an algorithm before a grant or the authorization endpoint spends what it cannot get back |
+| `SigningKeyOpenerInterface` | Opens the active key of an algorithm before a grant or the authorization endpoint spends what it cannot get back, and signs with it what the tenant issues a client: ID tokens, `at+jwt`, logout tokens, signed UserInfo and authorization responses |
 | `AdministratorGroupsInterface`, `GroupsOfAPersonInterface` | Who [administers the tenant](../core/groups.md#who-administers-the-tenant), read from the groups of the person, for the audience of the [administration API](resources.md#the-administration-api) and the requests it serves |
 | `GroupsOfATenantInterface`, `MembersOfAGroupInterface` | The groups of the tenant and their members, which an administrator reads through the administration API |
 | `CanPageActsOfAPersonInterface` | The journal of a person, which an administrator reads through the administration API |
@@ -132,6 +132,7 @@ share](../application/deployment.md#what-the-processes-share)).
 | Port | What it answers | In the application |
 |---|---|---|
 | `PendingApprovalNotifierInterface` | Telling a person that a backchannel request waits for them | A message on the lane of the notifications |
+| `LogoutTokenRetriesInterface` | The issue of a logout token for a client whose key could not be obtained when the session ended, tried again on the schedule of its delivery and given up with it | A message on the lane of the notifications |
 | `LogoutTokenDeliveryInterface` | The budget a logout token is written for, which its `exp` and the retirement of its signing key read. It bounds the token and not the sending: a send that comes after it carries an expired token | The waits of the retry policy of that lane and the timeout of the sender, from the `BEFFROI_BACK_CHANNEL_LOGOUT_*` variables ([logout](logout.md#its-delivery)) |
 
 ## What the wiring says
