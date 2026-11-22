@@ -266,7 +266,7 @@ revocation list of the test service of the FIDO Alliance to the host that serves
 | The worker | The list of compromised passwords, when one is named | After a login, for a password already posed |
 | The worker | The `backchannel_logout_uri` of a client | When a session that client signed in ends |
 | The worker | The `backchannel_client_notification_endpoint` of a client | When a backchannel request in `ping` mode is answered |
-| The worker | The push service of a browser | When a backchannel request waits on the person who subscribed that browser |
+| The worker | The push service of a browser | When a backchannel request waits on the person who subscribed that browser, and when a way of signing in to their account changes |
 | The worker, the console | The metadata of the SAML peers given by URL | Every hour, and on `beffroi:saml:*:refresh` |
 | The worker, the console | MaxMind, when a licence key is named | Every week, and on `beffroi:geoip:refresh` |
 | The console | The FIDO Metadata Service, and the revocation lists the certificates of the chain of its BLOB name | On `beffroi:webauthn:mds-refresh` |

@@ -93,6 +93,7 @@ compromised values rather than a composition rule. [Passwords](../core/credentia
 | RFC 8030 | Web push, the message a push service carries | [Web push](../application/web-push.md) |
 | RFC 8291 | The encryption of that message, which only the browser can open | [Web push](../application/web-push.md) |
 | RFC 8292 | VAPID, the application server key a tenant draws and signs with | [Web push](../application/web-push.md) |
+| NIST SP 800-63B §4.1.2.1, §4.5, §4.6 | Telling a person that a way of signing in to their account was added or taken away, outside the request that did it, with what to do and whom to contact when it was not them | [Credentials](../core/credentials/index.md#what-the-person-is-told), [web push](../application/web-push.md#a-way-of-signing-in-changed), [tenants](../core/tenants.md#the-contact-it-gives-its-people) |
 
 ## What is deliberately not implemented
 
