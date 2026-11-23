@@ -117,7 +117,8 @@ Core §3.1.2.6), and nothing the identity provider wrote reaches the client.
 
 Every refusal is a page that names the rule and never a value of the response, opens no session and writes
 nothing of the person. A response the service provider does not take, a person it may not sign in and a login
-under the floor of the tenant are each written to the journal as a refused login, with the method `fed`.
+under the floor of the tenant are each written to the journal as a refused login, with the method `fed` and
+its reason: `upstream_response_refused`, `upstream_person_refused`, `disabled_user` or `below_the_floor`.
 
 ## The person
 

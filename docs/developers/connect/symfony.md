@@ -174,7 +174,9 @@ security:
 - The `cache` pool remembers the ended sessions, for a day by default. Every server of your application has to
   share it.
 - The worker of Beffroi is what calls that address. It must reach it over HTTPS, or over plain HTTP on a
-  loopback host.
+  loopback host. An address of a private network, loopback included, is reached only when the deployment of
+  Beffroi names that network in `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS`; an application on the public
+  internet needs nothing.
 
 [:beffroi-arrow-right: Logout](../oidc/logout.md)
 

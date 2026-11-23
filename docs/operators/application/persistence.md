@@ -1,6 +1,6 @@
 ---
 title: Persistence
-description: The Doctrine mapping of the model, the tables, the migrations, the DBAL types, and what a sealed column changes about a query.
+description: The Doctrine mapping of the model, the tables, the migrations, the DBAL types, what a sealed column changes about a query, the chained records and the role the processes connect as.
 ---
 
 # Persistence
@@ -23,8 +23,10 @@ One XML file per class, named after it, as `Identity.User.orm.xml`. A person of 
 
 ## The tables
 
-Every table is prefixed `beffroi_`, and every table of the mapping but `beffroi_tenant` carries the tenant
-it belongs to, by a foreign key on `tenant_id`.
+Every table of the model is prefixed `beffroi_`, and every table of the mapping but `beffroi_tenant` carries
+the tenant it belongs to, by a foreign key on `tenant_id`. Beside them, the transport of Messenger keeps its
+queues in `messenger_messages`, which a migration creates as the owner of the tables, no transport creating
+it.
 
 === "Identity"
 
@@ -78,6 +80,13 @@ it belongs to, by a foreign key on `tenant_id`.
     |---|---|
     | `beffroi_data_key` | A data key of a tenant, wrapped by its master key, with the client and the master key that wrapped it. No mapping describes it: it is the table of the data key store, created by a migration of the application and declared to the schema the ORM assembles, so that a comparison of the schema does not offer to drop it |
 
+=== "Chains"
+
+    | Table | What a row is |
+    |---|---|
+    | `beffroi_chain_link` | The link of one row of a [chained record](#the-chained-records): its chain, its position, the hash of the link before it and its own hash |
+    | `beffroi_chain_head` | The last link of one chain of the tenant, which a write locks to take the next position |
+
 The keys of the tenant are not in the database. Each one is a file of `beffroi.keys.storage`, its private
 half sealed by the [key management service](key-management.md).
 
@@ -91,7 +100,8 @@ bin/console doctrine:migrations:migrate
 ```
 
 **They are written for PostgreSQL**, and each one stops on another platform with `This migration is written
-for PostgreSQL.`
+for PostgreSQL.` The server of the image plays them each time it starts, as [the role that owns the
+tables](#the-role-the-processes-connect-as).
 
 **A migration that seals columns says two things before it runs.** It refuses a table that holds rows,
 naming the table and the count: a sealed column is binary and refuses a null, and nothing puts a value in
@@ -102,7 +112,7 @@ before it reads those columns with the type they had.
 ## A value object in one column
 
 **A value object a column holds whole goes in one column**, with a DBAL type of the application: the tree
-declares thirty-seven of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
+declares thirty-nine of them, `beffroi_subject`, `beffroi_scopes`, `beffroi_request_context` or
 `beffroi_password_hash` among them. What the column holds is written by the object itself, in the package
 that owns it, and read back through its constructor, so a row edited by hand into something the object
 refuses fails when it is loaded, as a conversion error naming the type, and never further down.
@@ -175,9 +185,47 @@ lists, moves to another client and erases.
   checks, not the width of the column, and an option that describes the stored value no longer holds: no
   query reads into the JSON of `beffroi_user.address`, which is a ciphertext.
 - **A ciphertext is bound to its tenant, not to its row.** Within one tenant and one family, a value copied
-  into another row of the same column opens there.
+  into another row of the same column opens there. In a chained record the chain sees it, the link of a row
+  being computed from its sealed bytes.
 
 [:beffroi-arrow-right: Personal data](../tenant/personal-data.md)
+
+## The chained records
+
+Three records are read as history, and are chained so that a row changed, added or removed in the database
+after the provider wrote it is seen: the journal, `beffroi_journal`, the history of claims,
+`beffroi_claim_change`, and what clients were given, `beffroi_disclosure`. Each tenant has one chain per
+record, `journal`, `claim_history` and `disclosures`.
+
+- **Each row takes the next position of its chain.** Its link is the SHA-256 of the link before it and of the
+  row as the database holds it, its sealed columns as their bytes. The row and its link are written in one
+  transaction, under the lock of the head of the chain, so writers at once take positions that follow each
+  other.
+- **The head is signed, and the signature kept outside the database.** Every five minutes, and at each cut of
+  a retention, the worker signs the head of each chain with the active key of the default signature algorithm.
+  The signature is a file beside the keys of the tenant, `var/keys/<slug>/chains/<chain>.jws`, and a line of
+  the log channel `chain`, which a deployment keeps outside the instance.
+- **The chain is checked.** `beffroi:doctor` checks each one since its last signature, and
+  `beffroi:chain:verify` walks it whole: [the console](console-commands.md#the-chains-of-records) says what to
+  do with a chain that does not follow.
+
+### The role the processes connect as
+
+The role that owns the tables can rewrite any row: the chain shows it, and does not prevent it. The processes
+of a deployment may therefore connect as another role, which appends to the chained records and rewrites none
+of them:
+
+| Variable | What it names |
+|---|---|
+| `DATABASE_URL` | The database and the role the server, the worker and the console connect as |
+| `BEFFROI_MIGRATIONS_DATABASE_URL` | The same database under the role that owns the tables, or the file `BEFFROI_MIGRATIONS_DATABASE_URL_FILE` names. Read by the entrypoint of the image alone, and `DATABASE_URL` when neither is set |
+
+Each time the server starts, it plays the migrations under `BEFFROI_MIGRATIONS_DATABASE_URL`, then, when the
+role of `DATABASE_URL` is another one, grants it with [`beffroi:database:grant`](console-commands.md#the-role-of-the-database):
+what the processes serve, no update and no deletion of the three chained tables and of `beffroi_chain_link`,
+and no deletion of `beffroi_tenant`. Such a role forgets the rows of a chain only through
+`beffroi_forget_chained_rows`, a function a migration writes, which runs as the owner of the tables and deletes
+the oldest rows of one chain up to a position.
 
 ## What goes away, and when
 
@@ -189,10 +237,15 @@ taking what it left.
 | Step | Every | What it drops |
 |---|---|---|
 | The rows that are dead | Hour | Interactions, pushed requests, codes, device and backchannel requests, refresh tokens, opaque access tokens, tickets of every kind and sessions that nothing alive needs any more |
-| The journal | Day | The acts older than `beffroi.journal.retention` days, 180 by default, and the disclosures with them |
+| The journal | Day | The acts older than `beffroi.journal.retention` days, 180 by default, and the disclosures as old |
 | The history of a record | Day | The changes of claims older than `beffroi.history.retention` days, 180 by default |
 | The archives | Hour | The archives past their expiry, a week after they were asked for |
 | The unused clients | Hour | The clients that registered themselves and went unused longer than `client_registration.keep_a_client_unused_for`, ninety days by default, or were never used within `keep_a_client_never_used_for`, seven days by default |
+
+A chained record is forgotten in the order of its chain. The step walks the whole chain against its signature
+first, then forgets the oldest rows up to the first one still inside the window, a thousand at most per run,
+and signs the cut: a row whose date was moved back goes no sooner than the rows written before it. A chain that
+does not follow is not cut, and the log says why at `error`.
 
 A session is dropped last: the codes, refresh tokens and access tokens of a login name it under a foreign key
 that cascades, and their own time is past before the session's. The SAML store of messages already accepted

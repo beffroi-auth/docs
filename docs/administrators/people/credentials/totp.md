@@ -82,18 +82,18 @@ application; anything else is read as a backup code.
 |---|---|
 | The login is held for five minutes | A code typed later. The password is asked again, before any code is read |
 | Five codes per person in a sliding window of one minute, counted with the user codes they get wrong on the device page | The sixth, before the secret is even opened. An attempt is counted once the secret is open, so a key management service that does not answer costs the person nothing |
-| A code is accepted once, and the accepted step only moves forward | A code already accepted, and the code of an earlier step after a later one was accepted (RFC 6238 §5.2), whatever the drift |
+| A code is accepted once, and the accepted step only moves forward | A code already accepted, by another request at the same instant included, and the code of an earlier step after a later one was accepted (RFC 6238 §5.2), whatever the drift |
 | The window | A code of no step of the window |
 | A disabled account | Its code, after the code was checked, so the refusal costs what a wrong code costs |
 | A person of a federated domain | Any code, before it is read |
 
-A code accepted writes the act `totp.used`, or `backup_code.used` for a backup code, and once the form token of
-the page holds, the session opens on `pwd` and `otp`, both dated when the code was accepted. Every refusal of a
-code is written as a refused login with its reason, and the page never says that reason: it says that the code,
-or the backup code, was refused, by the shape of what was typed, and too many codes tried is the one reason it
-names. A post with no code, or from a browser with no login waiting, is refused before any of it and writes
-nothing. When the key management service does not open the secret, the page answers `503` with a `Retry-After`
-of ten seconds, and nothing is counted.
+A code accepted writes the act `totp.used`, or `backup_code.used` for a backup code, and the session opens on
+`pwd` and `otp`, both dated when the code was accepted. Every refusal of a code is written as a refused login
+with its reason and its method, and the page never says that reason: it says that the code, or the backup code,
+was refused, by the shape of what was typed, and too many codes tried is the one reason it names. A post
+without the token of its form, with no code, or from a browser with no login waiting, is refused before any of
+it: nothing is counted, no code is spent and nothing is written. When the key management service does not open
+the secret, the page answers `503` with a `Retry-After` of ten seconds, and nothing is counted.
 
 ## Removing it
 

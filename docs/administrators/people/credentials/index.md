@@ -62,7 +62,8 @@ federated signs them in no more.
 **A revoked credential keeps its row.** It never authenticates again, it stays listed with the date it was revoked
 in `beffroi:user:show` and in the archive of the person, and a revoked passkey on the page of the passkeys too,
 where a revoked TOTP leaves the page of the second factor. The first revocation wins: revoking it again changes
-nothing and announces nothing. A person revokes their own on [the pages of their
+nothing and announces nothing, and through the administration API answers the credential as it is, which is a
+read of the person, `administration.person_read`. A person revokes their own on [the pages of their
 account](../../../operators/application/account.md#taking-it-back), an administrator any of them through the administration
 API, the act `credential.revoked` then naming them, and an operator any of them:
 
@@ -120,6 +121,17 @@ to an address marked verified and SMS to a number marked verified. The person ca
 out on every channel the deployment wires.
 The page of web push says what the notice carries, [the contact of the
 tenant](../../../operators/tenant/tenants.md#the-contact-it-gives-its-people) among it.
+
+Each channel is tried on its own, on a schedule of its own: thirty-one attempts over twenty-five hours in the
+image, which the deployment sets in `BEFFROI_NOTICE_RETRIES`, `BEFFROI_NOTICE_RETRY_DELAY`,
+`BEFFROI_NOTICE_RETRY_MULTIPLIER` and `BEFFROI_NOTICE_RETRY_MAX_DELAY`. A mail of a tenant that signs its mail,
+or of a person who asked for it encrypted, never leaves unsigned or in the clear: an attempt that cannot sign or
+encrypt it fails, and comes back. A channel that spends its attempts writes the act `credential_change.not_told`
+to the journal of the person, which the Monitoring section of the [terminal
+client](../../terminal-client.md#the-sections) counts among the failures, as "change notifications not
+delivered". In the browser of the sign-in that follows, the person is told once, before the request goes on or
+on the home of their account, that a change to how they sign in could not be notified to them, with a link to
+their activity.
 
 ## Adding a kind
 

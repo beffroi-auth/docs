@@ -48,6 +48,10 @@ The consent page, `/consent`, says who is asking and what for, in the language o
 | Links to the client's pages | `policy_uri`, `tos_uri` and `client_uri`, in that order, each only when registered, opened in a new tab with no referrer |
 | Two buttons, Allow and Deny | |
 
+The logo and the three pages of a client that registered itself are shown only when they are on the scheme
+and the host of one of its redirect URIs (RFC 7591 §5); one elsewhere is left out, and the registration
+keeps it. Those a deployment declares, or a software statement attests, are shown wherever they are.
+
 The page lists every scope the request asks for, those already agreed to included, and every authorization
 detail. Of the claims a request names one by one in its `claims` parameter (OIDC Core §5.5), it lists those a
 scope the client registered stands for and no scope of the request does: a claim a scope of the request
@@ -104,7 +108,9 @@ takes it back, the same thing happens, and **what was issued under the consent g
 - the consent is taken back, so the next authorization request of that client asks again;
 - every grant this person left to this client is revoked, an authorization code, a device code they approved
   and a backchannel request naming them alike, so no access token that descends from one opens UserInfo or
-  is described as active by the introspection endpoint any more;
+  is described as active by the introspection endpoint any more, and none of them not yet exchanged gives a
+  token: the token endpoint answers `invalid_grant`. A backchannel request nobody had answered leaves the page
+  of pending requests;
 - every refresh token the client holds for this person is revoked, so nothing renews;
 - every opaque access token the client holds for this person is removed, and an unknown token is an invalid
   one (RFC 6750 §3.1).

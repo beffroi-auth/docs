@@ -39,20 +39,23 @@ beffroi:
 | [`tenant`](#tenant) | The issuer, the name and the look of the tenant, the claims its people change, its `acr` vocabulary, the scopes of its APIs, the groups that administer it and its administration API, and what the enrolment of its passkeys asks | Required. `BEFFROI_ISSUER`, `BEFFROI_TENANT_SLUG` and the `BEFFROI_TENANT_*` variables |
 | [`keys`](#keys) | The client that seals the keys, where they are kept, what binds the data keys, and how keys rotate | Required. `op` and `var/keys` written in the file, `BEFFROI_KMS_KEY_ID`, `BEFFROI_DATA_KEY_SECRETS` and three variables of rotation |
 | [`webauthn`](#webauthn) | Where the FIDO metadata are kept | `var/webauthn` written in the file, no variable |
-| [`mutual_tls`](#mutual_tls) | The host that asks a client for its certificate | `BEFFROI_MTLS_ORIGIN`, empty: no mutual TLS |
+| [`mutual_tls`](#mutual_tls) | The host that asks a client for its certificate, and the authorities whose certificates `tls_client_auth` accepts | `BEFFROI_MTLS_ORIGIN`, empty: no mutual TLS; `BEFFROI_MTLS_CERTIFICATE_AUTHORITIES`, `[]` |
 | [`tokens`](#tokens) | How long everything the provider issues stands | Eleven variables, short lifetimes |
 | [`load`](#load) | The request budget of an address and of a client | Four `BEFFROI_LOAD_*` variables: 2400 and 1200 a minute |
+| [`confirmation`](#confirmation) | How many confirmations of an address go out for a person and to an address | Three `BEFFROI_CONFIRMATION_SENDS_*` variables: 5 and 10 a day |
+| [`administrator`](#administrator) | How many persons the administration API delivers to one administrator | Two `BEFFROI_ADMINISTRATOR_PERSONS_*` variables: 600 an hour |
 | [`journal`](#journal) | How long an act is kept | `BEFFROI_JOURNAL_RETENTION`: 180 days |
 | [`history`](#history) | How long a change of a claim is kept | `BEFFROI_HISTORY_RETENTION`: 180 days |
 | [`geoip`](#geoip) | The databases that place an address, and the key they are downloaded under | `GEOIP_LICENSE_KEY`, empty: an address, no place |
 | [`passwords`](#passwords) | The list of compromised passwords a new one is compared with | `BEFFROI_BREACHED_PASSWORDS_ENDPOINT`, empty: no list asked |
 | [`interaction`](#interaction) | How the `login_hint` of an authorization request is read | `BEFFROI_INTERACTION_LOGIN_HINT`: as a `sub` |
 | [`locales`](#locales) | The languages the pages and the messages are served in | `BEFFROI_LOCALES`, `[]`: every language the application ships |
-| [`back_channel_logout`](#back_channel_logout) | How long a notification to a third party is tried | Five `BEFFROI_BACK_CHANNEL_LOGOUT_*` variables: six retries, 235 seconds in all |
+| [`back_channel_logout`](#back_channel_logout) | How long a notification to a third party is tried, a notice of a change to the credentials aside | Five `BEFFROI_BACK_CHANNEL_LOGOUT_*` variables: six retries, 235 seconds in all |
 | [`backchannel_authentication`](#backchannel_authentication) | How the `login_hint` of a backchannel request is read, and how long a call to a client may take | `BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT`: as a `sub`; `BEFFROI_CLIENT_NOTIFICATION_TIMEOUT`: 3 seconds |
 | [`web_push`](#web_push) | Whether the provider reaches people through their browsers | `BEFFROI_WEB_PUSH_SUBJECT`: on, with the contact of the development stack |
 | [`mail`](#mail) | Whether the provider writes to people at the address marked verified | `BEFFROI_MAIL_DSN` and `BEFFROI_MAIL_SENDER`, empty: no mail |
 | [`sms`](#sms) | Whether the provider texts people at the number marked verified | `BEFFROI_SMS_DSN`, empty: no text |
+| [`notices`](#notices) | How long a notice of a change to the credentials of an account is tried | Four `BEFFROI_NOTICE_*` variables: thirty retries, about 25 hours in all |
 | [`client_authentication`](#client_authentication) | What a client assertion and a published key set are held to | `BEFFROI_CLIENT_ASSERTION_*` and `BEFFROI_JWKS_URI_*` |
 | [`request_objects`](#request_objects) | What a request object and its `request_uri` are held to | `BEFFROI_REQUEST_OBJECT_*` |
 | [`dpop`](#dpop) | What a proof of possession is held to | `BEFFROI_DPOP_*`: no nonce asked |
@@ -60,6 +63,7 @@ beffroi:
 | [`clients`](#clients) | The clients a file of the application declares | Empty, no variable: a client registers itself |
 | [`self_client`](#self_client) | The application as a client of its own provider | Not written, no variable: the application is no client |
 | [`client_registration`](#client_registration) | Whether and how a client registers itself | `BEFFROI_REGISTRATION_*`, an empty mode: no registration endpoint |
+| [`outbound`](#outbound) | The networks of the deployment a request whose URL a third party chose may reach | `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS`, `[]`: none |
 | [`saml`](#saml) | The SAML roles of the tenant, the peers of each and the SAML keys | `BEFFROI_SAML_*`: an identity provider, no peer |
 
 ## When a mistake is caught
@@ -118,7 +122,7 @@ same way.
 | `doctrine` | The DBAL types of the application, and three XML mappings, `BeffroiCore`, `BeffroiOidc` and `BeffroiSaml`, for the model of the three packages, read from `config/beffroi/doctrine/core`, `config/beffroi/doctrine/oidc` and `config/beffroi/doctrine/saml`. The types that seal a column are registered when the kernel boots |
 | `doctrine_migrations` | The directory of the migrations, `migrations/`, under the namespace `DoctrineMigrations` |
 | `security` | The password hasher of `App\Security\SecurityUser`, which is `App\Security\CorePasswordHasher`, the hasher of the core |
-| `rate_limiter` | Two limiters, `beffroi_code_attempts` and `beffroi_password_attempts`: five attempts per user in a sliding window of one minute |
+| `rate_limiter` | Four limiters. `beffroi_code_attempts`, `beffroi_password_attempts` and `beffroi_password_change_attempts`: five attempts per person in a sliding window of one minute, counted under the lock factory `lock.factory`. `beffroi_archive_requests`: five requests for an archive per person in a sliding window of one hour |
 | `framework` | Eight cache pools on `cache.app`: `beffroi.client_keys`, `beffroi.issuer_keys`, `beffroi.client_assertions`, `beffroi.issuer_assertions`, `beffroi.software_statements`, `beffroi.request_objects`, `beffroi.dpop` and `beffroi.load` |
 | `messenger` | The three buses, their middleware, the routing of every message, the serializer that seals a body, and the transports: the four lanes on `BEFFROI_MESSENGER_DSN`, a queue of the database per lane unless it names another, and the failure transport in the database |
 | `scheduler` | `use_messenger_routing: true`, so that the recurring messages of the provider are routed by their class like every other message |
@@ -201,7 +205,7 @@ beffroi:
     keys:
         kms: op
         key_id: '%env(BEFFROI_KMS_KEY_ID)%'
-        data_key_secrets: '%env(default:app.data_key_secrets:json:BEFFROI_DATA_KEY_SECRETS)%'
+        data_key_secrets: '%env(default:app.data_key_secrets:json:beffroi_secret:BEFFROI_DATA_KEY_SECRETS)%'
         storage: '%kernel.project_dir%/var/keys'
         jwks_max_age: '%env(int:BEFFROI_JWKS_MAX_AGE)%'
         staging_delay: '%env(BEFFROI_KEY_STAGING_DELAY)%'
@@ -210,12 +214,14 @@ beffroi:
 
 `storage` is the directory of the sealed key files and of the pairwise salt of the tenant, sealed the same
 way, which the file writes and no variable moves. The salt is drawn on first use and never again, and every
-pairwise subject of the tenant is computed from it, so the directory is part of what a deployment backs up.
+pairwise subject of the tenant is computed from it, so the directory is part of what a deployment backs up. It
+also holds the last signed head of each chain of the records of the tenant, under `<slug>/chains/`.
 
 `data_key_secrets` lists the secrets every data key of personal data is bound to its row under, which the
-database does not hold. `BEFFROI_DATA_KEY_SECRETS` carries them as a JSON list, and while it is not set, as in
-`.env`, the secret of the kernel, `APP_SECRET`, binds them alone. The first binds a new key and a key bound
-under any of them opens, so a secret is replaced by writing the new one first, as [personal
+database does not hold. `BEFFROI_DATA_KEY_SECRETS` carries them as a JSON list, or the file
+`BEFFROI_DATA_KEY_SECRETS_FILE` names ([a secret in a file](configuration.md#a-secret-in-a-file)), and while
+neither is set, as in `.env`, the secret of the kernel, `APP_SECRET`, binds them alone. The first binds a new
+key and a key bound under any of them opens, so a secret is replaced by writing the new one first, as [personal
 data](../tenant/personal-data.md#rotating-the-secret-that-binds-them) says.
 
 The three other options time the rotation of every key but the SAML keys, which [`saml`](#saml) times. A
@@ -250,7 +256,14 @@ the site of `SERVER_NAME` never does, names that host.
 beffroi:
     mutual_tls:
         origin: '%env(BEFFROI_MTLS_ORIGIN)%'
+        certificate_authorities: '%env(json:BEFFROI_MTLS_CERTIFICATE_AUTHORITIES)%'
 ```
+
+The listener asks for a certificate and judges none: it hands the provider the leaf alone. `tls_client_auth`
+(RFC 8705 §2.1) is therefore validated by the provider, against the authorities `certificate_authorities` names,
+a JSON list of PEM certificates in `BEFFROI_MTLS_CERTIFICATE_AUTHORITIES`, each the authority that signs the
+client certificates itself. `.env` names none, and `tls_client_auth` is then neither announced nor registered,
+while `self_signed_tls_client_auth` and the tokens bound to a certificate follow `origin` alone.
 
 [:beffroi-arrow-right: Mutual TLS](../../developers/oidc/sender-constrained/mutual-tls.md)
 
@@ -266,15 +279,16 @@ polls thirty seconds, and a refresh token never slides past the absolute lifetim
 
 The lifetimes of what a key signs are also how long that key stays published once another key takes over from
 it, so that a token still in use verifies: ten minutes for a signing key with the values of `.env`. A longer
-`BEFFROI_ACCESS_TOKEN_TTL` keeps a retiring key in the JWK Set for longer.
+`BEFFROI_ACCESS_TOKEN_TTL` keeps a retiring key in the JWK Set for longer. A rotation for a compromise retires
+it at once instead ([a compromised key](operating.md#a-compromised-key)).
 
 [:beffroi-arrow-right: Tokens](../../developers/oidc/tokens/index.md)
 
 ## `load`
 
 Every request is counted against two budgets, and the section sets their numbers, never whether they exist.
-The first counts the address of the client, on every route of the three planes and before anything is verified;
-the second counts a client of a tenant once it has authenticated. A request over a budget is answered `429`
+The first counts the address of the client, an IPv6 address by its /64, on every route of the three planes and
+before anything is verified; the second counts a client of a tenant once it has authenticated. A request over a budget is answered `429`
 with a `Retry-After` header. The file reads the four numbers from `BEFFROI_LOAD_ORIGIN_LIMIT`,
 `BEFFROI_LOAD_ORIGIN_INTERVAL`, `BEFFROI_LOAD_CLIENT_LIMIT` and `BEFFROI_LOAD_CLIENT_INTERVAL`, which `.env`
 sets to 2400 requests a minute from an address and 1200 from a client.
@@ -285,6 +299,48 @@ counts live in the `beffroi.load` cache pool, on `cache.app`, so two containers 
 its directory ([what the processes share](deployment.md#what-the-processes-share)). A number too low on
 `/token` or on `/jwks` refuses the deployment's own clients, so a deployment sets them from what its own
 clients send.
+
+## `confirmation`
+
+How many confirmations of an address, a code and a link sent by mail or by SMS to an address nobody verified
+yet, go out in a window. Each is a mail or a text the deployment pays for, so two budgets count them, whose
+numbers the section sets and never whether they exist: one for the person who asks, by tenant, and one for the
+address they go to, whatever the tenant, which takes more than a person so that one person never spends it
+alone. Past either, nothing is sent, the page says so, and the refusal is an act of the person.
+
+``` yaml title="config/packages/beffroi.yaml"
+beffroi:
+    confirmation:
+        sends:
+            person_limit: '%env(int:BEFFROI_CONFIRMATION_SENDS_PERSON_LIMIT)%'
+            address_limit: '%env(int:BEFFROI_CONFIRMATION_SENDS_ADDRESS_LIMIT)%'
+            interval: '%env(int:BEFFROI_CONFIRMATION_SENDS_INTERVAL)%'
+```
+
+`.env` sends five confirmations a day for a person and ten to an address. An address is counted whatever its
+case and the spaces, dots, hyphens and brackets a person writes in a number, under a keyed hash the store never
+holds in clear.
+
+## `administrator`
+
+How many persons the administration API delivers to one administrator of the tenant in a window, a budget that
+always exists and whose numbers the section sets. A person read, their sessions, their journal or their consents
+count one, a page of the members of a group one per member, and an answer that changes a person and gives them
+back one. A read past it delivers nobody and is answered `429` with `Retry-After`, and the refusal is an act of
+the administrator.
+
+``` yaml title="config/packages/beffroi.yaml"
+beffroi:
+    administrator:
+        persons:
+            limit: '%env(int:BEFFROI_ADMINISTRATOR_PERSONS_LIMIT)%'
+            interval: '%env(int:BEFFROI_ADMINISTRATOR_PERSONS_INTERVAL)%'
+```
+
+`.env` delivers 600 persons an hour, twelve pages of fifty members or a hundred and fifty persons read whole. The
+limit is a hundred at least, the largest page of members.
+
+[:beffroi-arrow-right: The administration API](../../developers/oidc/resources.md#the-administration-api)
 
 ## `journal`
 
@@ -309,11 +365,12 @@ place.
 beffroi:
     geoip:
         storage: '%kernel.project_dir%/var/geoip'
-        license_key: '%env(GEOIP_LICENSE_KEY)%'
+        license_key: '%env(beffroi_secret:GEOIP_LICENSE_KEY)%'
 ```
 
-`.env` leaves `GEOIP_LICENSE_KEY` empty. Once a deployment names its key, a weekly timed step downloads the
-databases, and `bin/console beffroi:geoip:refresh` does it at once.
+`.env` leaves `GEOIP_LICENSE_KEY` empty. Once a deployment names its key, in the variable or in the file
+`GEOIP_LICENSE_KEY_FILE` names, a weekly timed step downloads the databases, and `bin/console
+beffroi:geoip:refresh` does it at once. A download stops at 512 MiB, and so does the database it unpacks.
 
 ## `passwords`
 
@@ -344,7 +401,10 @@ How the `login_hint` of an authorization request is read (OIDC Core §3.1.2.1), 
 `BEFFROI_INTERACTION_LOGIN_HINT` names: `sub`, the subject the provider issued to that client, as in `.env`;
 `username`, the name a person signs in with; or `none`, which leaves the hint to a class tagged
 `beffroi.oidc.login_hint`, and the application tags none, so the image then reads no hint. It is read one way
-and never searched, and the login page offers the name of the person it names.
+and never searched. Under `username`, the login page offers the hint as the client sent it, whether an account
+holds it or not. Under `sub`, it offers the username of the person the hint names, and only when the client
+would be told who she is without asking her: a client registered with `requires_consent: false`, or one she gave
+a consent still in force. Otherwise it offers nothing, as for a hint that names nobody.
 
 [:beffroi-arrow-right: Interactions](../../developers/oidc/interactions.md)
 
@@ -365,8 +425,9 @@ which five variables time, `BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT` and the four of
 `.env`, five seconds an attempt, then six retries, two seconds after the first failure and three times longer each
 time, a minute at most. The retry schedule is the one of every notification the provider carries to a third party,
 on the `async_notifications` transport of the application: the logout tokens, the notifications of the backchannel
-authentication flow, the pushes that tell a person something waits for them or that a way of signing in to their
-account changed, and the mails and texts that tell them a request waits.
+authentication flow, the pushes, mails and texts that tell a person a request waits for them, and the
+confirmations of an address. A notice of a change to the credentials of an account is the one message of that
+transport on a schedule of its own, [`notices`](#notices).
 
 The schedule is also the `exp` of a logout token, 235 seconds with the values of `.env`, and a retiring
 signing key stays published that long at least, so that the provider stops trying when what it sends stops
@@ -414,14 +475,15 @@ bin/console beffroi:keys:generate --algorithm=VAPID
 ## `mail`
 
 Whether the provider writes to people, at the email address marked verified and at no other, through a
-transport of `symfony/mailer`. Naming a `dsn` turns it on, and the file reads it from `BEFFROI_MAIL_DSN`, which
-`default::` makes no DSN at all when it is empty: no mail then leaves the deployment. A mail is written from
+transport of `symfony/mailer`. Naming a `dsn` turns it on, and the file reads it from `BEFFROI_MAIL_DSN`, or from
+the file `BEFFROI_MAIL_DSN_FILE` names, which `default::` makes no DSN at all when it is empty: no mail then leaves
+the deployment. A mail is written from
 the `sender`, `BEFFROI_MAIL_SENDER`, an address alone or behind a name.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
     mail:
-        dsn: '%env(default::BEFFROI_MAIL_DSN)%'
+        dsn: '%env(default::beffroi_secret:BEFFROI_MAIL_DSN)%'
         sender: '%env(default::BEFFROI_MAIL_SENDER)%'
 ```
 
@@ -442,14 +504,15 @@ domain in the management of the domains, and no header of a message turns it off
 ## `sms`
 
 Whether the provider texts people, at the phone number marked verified and at no other, through a texter transport
-of `symfony/notifier`. Naming a `dsn` turns it on, and the file reads it from `BEFFROI_SMS_DSN`, which `default::`
-makes no DSN at all when it is empty: no text then leaves the deployment. The DSN names the scheme of a bridge of
+of `symfony/notifier`. Naming a `dsn` turns it on, and the file reads it from `BEFFROI_SMS_DSN`, or from the file
+`BEFFROI_SMS_DSN_FILE` names, which `default::` makes no DSN at all when it is empty: no text then leaves the
+deployment. The DSN names the scheme of a bridge of
 `symfony/notifier`, with the number or the name a text is sent from among its options.
 
 ``` yaml title="config/packages/beffroi.yaml"
 beffroi:
     sms:
-        dsn: '%env(default::BEFFROI_SMS_DSN)%'
+        dsn: '%env(default::beffroi_secret:BEFFROI_SMS_DSN)%'
 ```
 
 `.env` names none. The image installs one bridge of `symfony/notifier`, that of Sweego (`symfony/sweego-notifier`),
@@ -467,12 +530,35 @@ itself, drops the text and counts the person reached.
 
 [:beffroi-arrow-right: Reaching the person of a backchannel request](../../developers/oidc/grants/backchannel-authentication.md#reaching-the-person)
 
+## `notices`
+
+How long a notice of a change to the credentials of an account comes back to a channel that did not take it, a
+mail server or an SMS provider that is down for hours. Whatever its channel, push, mail or text, such a notice is
+the one message of the `async_notifications` transport that is not retried on the schedule of
+[`back_channel_logout`](#back_channel_logout), which stops within minutes, but on this one, which the file reads
+from four variables:
+
+``` yaml title="config/packages/beffroi.yaml"
+beffroi:
+    notices:
+        retries: '%env(int:BEFFROI_NOTICE_RETRIES)%'
+        retry_delay: '%env(int:BEFFROI_NOTICE_RETRY_DELAY)%'
+        retry_multiplier: '%env(int:BEFFROI_NOTICE_RETRY_MULTIPLIER)%'
+        retry_max_delay: '%env(int:BEFFROI_NOTICE_RETRY_MAX_DELAY)%'
+```
+
+With the values of `.env`, thirty returns, a minute after the first failure and twice longer each time, an hour
+at most: 31 attempts over 25 hours. Once they are spent, the notice not delivered is an act of the person.
+
+[:beffroi-arrow-right: Messenger](messenger.md)
+
 ## `client_authentication`
 
 What a client assertion is held to (RFC 7523 §3), how far ahead its `exp` may be and how much clock it is
-allowed, and what one read of a `jwks_uri` may cost: its timeout, its size, how long its keys are kept and how
-often an unknown `kid` may read it again. The bounds of a read are those of every published key set the
-provider reads, the clients' and the trusted issuers'. The file reads them from
+allowed, and what one read of a `jwks_uri` may cost: its timeout, its size, how long its keys are kept, and how
+long one read waits after the one before, which follows a read that failed or a `kid` the kept set does not hold.
+The bounds of a read are those of every published key set the provider reads, the clients' and the trusted
+issuers'. The file reads them from
 `BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME`, `BEFFROI_CLIENT_ASSERTION_LEEWAY` and the four `BEFFROI_JWKS_URI_*`
 variables. Which methods a client may authenticate with is the wiring and its registration, and nothing of
 this section.
@@ -618,6 +704,29 @@ registers with PKCE required, as [what the image does not set](../../developers/
 says.
 
 [:beffroi-arrow-right: Dynamic registration](../../developers/oidc/dynamic-registration.md)
+
+## `outbound`
+
+Which networks of the deployment the requests of the protocol may reach, whoever wrote their URL: a `jwks_uri`,
+a trusted issuer's included, a `sector_identifier_uri`, a `request_uri`, a back-channel logout URI, a CIBA
+notification endpoint and the endpoint of a push subscription. Every private, loopback, link-local or reserved
+address is refused, once the name is resolved and on every address the request connects to, but those of the
+networks `reachable_private_networks` names, IP addresses or networks in CIDR notation, which the file reads as a
+JSON list:
+
+``` yaml title="config/packages/beffroi.yaml"
+beffroi:
+    outbound:
+        reachable_private_networks: '%env(json:BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS)%'
+```
+
+`.env` names none, `[]`. A deployment whose clients answer on its own networks names those and no wider, as
+`'["10.20.0.0/16"]'`, and anything in the list that is neither an address nor a network is refused. The
+requests whose URL the deployment fixes, to the key management service, the FIDO metadata, the list of passkey
+providers the community keeps, the GeoLite2 databases, the list of compromised passwords, the SAML metadata and
+the bridge of mail and SMS, are not held to it.
+
+[:beffroi-arrow-right: What leaves the provider](deployment.md#what-leaves-the-provider)
 
 ## `saml`
 

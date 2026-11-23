@@ -29,8 +29,10 @@ changed here either: they follow what your organisation holds.
 
 A detail you may correct is a field. Type in it, and press **Save**, which appears beside the field while you point
 at it or type in it. **Empty a field to remove it.** **Date of birth** takes a full date; when your account holds
-only the year, the field takes text instead, written like **1815-12-10, or 1815**. A value the field does not accept
-is answered **This value is not valid.**
+only the year, the field takes text instead, written like **1815-12-10, or 1815**. **Profile page**, **Picture** and
+**Website** take a full web address, starting with https:// or http://. Any other detail is one line of at most 255
+characters, and a phone number of at most 64. A value the field does not accept is answered **This value is not
+valid.**
 
 When there is nothing you may correct, the page says **This information cannot be changed here.**
 
@@ -60,9 +62,13 @@ a code** beside each.
 A code sent by email is valid for 24 hours, a code sent by text message for 10 minutes. Five wrong codes end it, and
 **Send another code** replaces it with a new one. If you did not ask for a code, ignore the message.
 
+The number of codes sent is limited, for your account and for each address. Past the limit, nothing is sent, the code
+sent before stays valid, and [Account activity](activity.md) lists **Confirmation code not sent: limit reached**.
+
 | The page says | What to do |
 |---|---|
 | **Wrong or expired code. Check it or ask for another one.** | Check the code, or press **Send another code** |
+| **Too many codes sent. Try again later.** | Type the code you received last, or ask for another one later |
 | **This link was already used, has expired or was replaced. Send a new code from your account.** | Press **Send a code** on **Your information** again |
 
 A phone number you correct yourself is **not verified** until you confirm it.

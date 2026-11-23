@@ -18,6 +18,11 @@ them by hand:
 bin/console doctrine:migrations:migrate
 ```
 
+They are played as the role that owns the tables. A deployment whose processes connect as another role names
+the owner in `BEFFROI_MIGRATIONS_DATABASE_URL`: the server plays the migrations as that role, then grants the
+role of `DATABASE_URL` what the processes serve with `beffroi:database:grant`. By hand, both run with
+`DATABASE_URL` set to the URL of the owner: [the role the processes connect as](../application/persistence.md#the-role-the-processes-connect-as).
+
 ## The tenant
 
 The tenant is declared by the variables of the deployment, `BEFFROI_ISSUER` and the `BEFFROI_TENANT_*`

@@ -84,7 +84,7 @@ Their names, `beffroi_fido_conformance_*` and `beffroi_ciba_conformance_approval
 |---|---|---|---|
 | Protocol | `beffroi_protocol_*` | A client or a resource server, server to server | The discovery document and the RFC 8414 metadata, the JWK Set, the token, UserInfo, introspection, revocation, pushed authorization, device authorization, backchannel authentication and registration endpoints, and the metadata of both SAML roles |
 | Interaction | `beffroi_interaction_*` | A browser, with a person in front of it | The pages and the redirections a browser follows, and what those pages fetch: the authorization endpoint, the login, the consent, the logout, the device page, third party initiated login, the pages a ticket opens, where a person poses a passkey, a new password or an authenticator application without a session, the choice of a language and of a theme, the pages of the account and the archive they hand over as a file, the options of a passkey ceremony in JSON, the scripts the pages load, and the SAML services a browser carries messages to |
-| Administration | `beffroi_administration_*` | A client of the administration API, with the token of an administrator of the tenant | The tenant and the contact it gives its people, its clients and deleting one that registered itself, its initial access tokens, its signing keys, the keys that sign its mail, the statistics and the health of the instance, its groups and their members, and the people of the tenant: finding, creating, changing, disabling and enabling one, their open sessions and ending one, revoking a credential, their journal, the applications they agreed to and taking a consent back, and the tickets that let a person pose a passkey, a new password or an authenticator application |
+| Administration | `beffroi_administration_*` | A client of the administration API, with the token of an administrator of the tenant | The tenant and the contact it gives its people, its clients and deleting one that registered itself, its initial access tokens, its signing keys, the keys that sign its mail, the statistics and the health of the instance, its groups and their members, a page at a time, and the people of the tenant: finding, creating, changing, disabling and enabling one, their sessions that have not ended, one past its expiry included, and ending one, revoking a credential, their journal, the applications they agreed to and taking a consent back, and the tickets that let a person pose a passkey, a new password or an authenticator application |
 
 [:beffroi-arrow-right: Every route, with its method and path](../../developers/reference/endpoints.md)
 
@@ -161,7 +161,9 @@ The discovery document announces six of them in `mtls_endpoint_aliases`: the tok
 revocation, pushed authorization request and device authorization endpoints. The issuer does not change: an alias
 is another way to the same provider, not another provider. With no origin named, the provider serves no mutual TLS:
 the document announces no alias, neither `tls_client_auth` nor `self_signed_tls_client_auth` is wired, and no token
-is bound to a certificate. A deployment whose listener writes the certificate in `SSL_CLIENT_CERT` on the host of
-the issuer itself, which the site of `SERVER_NAME` never does, names that host.
+is bound to a certificate. With an origin, `tls_client_auth` is wired only while
+`BEFFROI_MTLS_CERTIFICATE_AUTHORITIES` names the authorities whose certificates the provider accepts for it
+([TLS and the hosts](deployment.md#tls-and-the-hosts)). A deployment whose listener writes the certificate in
+`SSL_CLIENT_CERT` on the host of the issuer itself, which the site of `SERVER_NAME` never does, names that host.
 
 [:beffroi-arrow-right: Mutual TLS](../../developers/oidc/sender-constrained/mutual-tls.md)

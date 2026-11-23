@@ -29,7 +29,13 @@ Every parameter is read the same way at every endpoint of the provider (RFC 6749
 parameter sent empty is a parameter not sent, a parameter the provider does not read is ignored, and nothing
 is converted into anything else. A parameter the provider reads, sent twice in a query or in a body of
 `Content-Type: application/x-www-form-urlencoded`, is refused with `invalid_request`, with one exception,
-`resource`, which RFC 8707 §2 lets a client send once per resource.
+`resource`, which RFC 8707 §2 lets a client send once per resource. Two spellings PHP files under one name,
+`grant_type` and `grant.type` for instance, are that parameter sent twice.
+
+A list holds 100 values at most, counted before any value is read: a `scope` of more than 100 scopes is
+`invalid_scope`, and more than 100 values of `ui_locales`, `acr_values` or `resource` are `invalid_request`,
+at every endpoint that reads the parameter, each refusal sent back or shown where the parameter's other
+refusals are.
 
 Two kinds of request take their parameters from elsewhere than the query or the form:
 
@@ -150,6 +156,7 @@ and beneath it the `error` and the `error_description` for whoever develops the 
 | `invalid_target` | A resource that is not an absolute URI, or that the client did not register |
 | `invalid_authorization_details` | A detail of a type the provider does not serve or the client did not register, or that its type refuses |
 | `login_required`, `consent_required` | A page was needed and the request said `prompt=none` |
+| `login_required` | Whatever the `prompt`: the `id_token_hint`, or the `sub` the `claims` parameter asks the ID token for with a `value`, names no end user of the client, or the two name two different people (OIDC Core §3.1.2.2, §5.5.1) |
 | `unmet_authentication_requirements` | An essential `acr` that cannot be met (OIDC Core §5.5.1.1) |
 | `access_denied` | The person refused on the consent page, or the request names the [administration API](resources.md#the-administration-api) of the tenant and the person signed in does not administer it |
 

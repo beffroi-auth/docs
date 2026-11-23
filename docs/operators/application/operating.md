@@ -12,7 +12,10 @@ container of the image, or with `castor console` on the development stack.
 
 ## At every deployment
 
-1. **The migrations** are played by the HTTP server each time it starts, before it serves anything. A process
+1. **The migrations** are played by the HTTP server each time it starts, before it serves anything, as the
+   role that owns the tables, `BEFFROI_MIGRATIONS_DATABASE_URL`, or `DATABASE_URL` when that is not set. The
+   server then grants the role of `DATABASE_URL`, when it is another one, what the processes serve and no
+   rewriting of the [chained records](persistence.md#the-role-the-processes-connect-as). A process
    that booted before a migration changing the type of a column reads that column with the type it booted
    with, and a worker runs for an hour, so a migration played by hand is followed by a restart of the server
    and of the workers. `castor console` does that on the development stack whenever the command it runs is
@@ -47,13 +50,14 @@ container of the image, or with `castor console` on the development stack.
 Some of it is not operated at all, because time does it: one timed step per thing that comes round, handed to
 the lane of the writes like any other, so a deployment that runs [the worker](deployment.md#the-worker) runs
 them. A step that forgets reads a bounded number of rows and leaves the rest to the next run, and logs a line
-only when it did something.
+only when it did something or could not.
 
 | Every | What it does |
 |---|---|
 | minute | Advances the lifecycle of the keys: stages a successor for a key that has worked its age, activates a staged key whose delay has elapsed, retires a key past its date |
+| five minutes | Signs the head of each chain of records, the journal, the history of claims and what clients were given, and writes a copy of each signature to the log channel `chain` |
 | hour | Drops the clients that registered themselves and that nobody uses any more, forgets the archives past their week, drops the rows that can no longer do anything, and reads again the metadata of the SAML service providers and upstream identity providers |
-| day | Forgets the acts of the journal past their retention, with what a client was given at each, and the changes of a record past theirs |
+| day | Walks each chain of records whole against its signature, then forgets the acts of the journal and what clients were given past the retention of the journal, and the changes of a record past theirs, in the order of each chain |
 | week | Refreshes the GeoLite2 databases of addresses, which is the cadence MaxMind publishes them at |
 
 ## Keys
@@ -82,9 +86,10 @@ sixty seconds then refuses the new tokens, or encrypts to the old key, until its
 bin/console beffroi:keys:rotate --compromised
 ```
 
-The new key takes over at once, and the compromised one leaves the JWK Set with no window: nothing bound to it
-is honoured from then on. `--algorithm` names the key when it is not one of the default signature algorithm.
-A key that is already retiring is taken out of the JWK Set before its date by
+The new key takes over at once, and the compromised one leaves the JWK Set with no window, with every other key
+of its algorithm, staged or still retiring: nothing bound to any of them is honoured from then on, and the JWK
+Set holds the new key alone for that algorithm. `--algorithm` names the key when it is not one of the default
+signature algorithm. A retiring key of another algorithm is taken out of the JWK Set before its date by
 `beffroi:keys:retire <kid> --force`.
 
 ## Data keys
@@ -126,25 +131,42 @@ blind index with them.
 ## When something fails
 
 **`beffroi:doctor` is what to ask first.** It reads, writes nothing, and is safe on a provider serving
-traffic. What it looks at is what is wired, and in this application that is two points: whether every client
-is signed for with an algorithm the tenant holds an active key for, and whether a logout token is retried for as
-long as it stays verifiable. No variable sends the notifications to another transport or retries them on
-another schedule, so the second point holds on a deployment of the image; a configuration of the application
-that did either would keep a provider that works and logout tokens a client may refuse when they
+traffic. What it looks at is what is wired, and in this application that is five points: whether every client
+is signed for with an algorithm the tenant holds an active key for; for each of the three chains of records,
+whether it follows from its last signature and was signed and walked on time; and whether a logout token is
+retried for as long as it stays verifiable. No variable sends the notifications to another transport or retries
+them on another schedule, so the last point holds on a deployment of the image; a configuration of the
+application that did either would keep a provider that works and logout tokens a client may refuse when they
 arrive late, after a rotation or after the client restarts, which nothing else shows.
 
+**A chain that does not follow is seen, and a person decides.** A row of the journal, of the history of claims
+or of what clients were given that was changed, added or removed in the database is seen by its position, never
+by what it holds. The doctor reads, at each check, the signature beside the keys, the row it signs, the first
+row kept and the rows written since. The walk of the whole chain its retention makes each day reads the rest: a
+position it finds broken is carried by every later signature, and a row outside the chain, counted and never
+named, stops the walk, which the doctor then shows as late. A chain found broken is cut by no retention, and the
+doctor stays red until the database and `var/keys` are restored from the same backup, or the chain is
+[signed anew](console-commands.md#the-chains-of-records) once the finding is read. A chain that is late, signed more than ten minutes ago or walked whole more than two days ago, waits for a worker
+that consumes the schedule, whose log says at `error` why a chain was not signed or cut.
+
 **A message that fails is tried again, then kept.** The three lanes of the provider's own writes retry it on
-the numbers the application prepends to Messenger; the lane of the notifications retries it on the schedule of
-the back-channel logout, which is also how long a logout token stays verifiable.
+the numbers the application prepends to Messenger. The lane of the notifications retries a notice of a change
+to the credentials of an account on the schedule of the notices, about a day, and every other message on the
+schedule of the back-channel logout, which is also how long a logout token stays verifiable.
 
 | Lanes | Retries | First wait | Multiplier | Longest wait |
 |---|---|---|---|---|
 | `async_priority_high`, `async_priority_medium`, `async_priority_low` | 4 | 1 second | 4 | 30 seconds |
-| `async_notifications` | 6 | 2 seconds | 3 | 60 seconds |
+| `async_notifications`, a notice of a change to the credentials | 30 | 60 seconds | 2 | 3600 seconds |
+| `async_notifications`, every other message | 6 | 2 seconds | 3 | 60 seconds |
 
-What is still failing after that lands in the failure transport, `failed`, a table of the database. Its body
-stays sealed there; the class of the message, its stamps and its tenant are in the clear, so that
-`messenger:failed:show` names a failed message, dates it and says why without opening it.
+A logout token or a notice the lane gives up on is an act of the journal, `logout_token.given_up` or
+`credential_change.not_told`. What is still failing after that lands in the failure transport, `failed`, a
+queue of the table `messenger_messages`. Its body stays sealed there; the class of the message, its stamps and
+its tenant are in the clear, so that `messenger:failed:show` names a failed message, dates it and says why
+without opening it. The message key it is sealed to waits for it, unless it is retired by force or rotated as
+compromised: `messenger:failed:retry` replays it however long it waited, and `messenger:failed:remove` lets the
+key retire.
 
 **A key management service that does not answer is a `503`.** Wherever a request needed it, the answer is
 `503 Service Unavailable` with `Retry-After: 10`: nothing was refused to the person, counted against them or
@@ -159,17 +181,19 @@ journal, `load.budget_spent`.
 
 ## What to back up
 
-One directory to back up, one key management service and one secret to keep.
+One database and one directory to back up, one key management service and one secret to keep, and one log to
+keep outside the instance.
 
 | What | Where | What it holds |
 |---|---|---|
 | The database | PostgreSQL | Everything the model writes, the personal data sealed in their columns, and the data keys wrapped by the master key |
-| The sealed keys | `var/keys` | One file per key of the tenant, and the pairwise salt of the tenant beside them, each sealed by the key management service |
+| The sealed keys | `var/keys` | One file per key of the tenant, and the pairwise salt of the tenant beside them, each sealed by the key management service; and the last signature of each chain of records, in `<slug>/chains` |
 | The master key | The key management service | What opens all of the above |
 | The secret of the kernel | `APP_SECRET`, in the environment of every process | What every data key is bound to its row under: under another secret, none of the personal data sealed in the database opens, and no lookup by a blind index works |
+| The copies of the signatures of the chains | The log channel `chain`, written in production to the standard error of the process that signs: the worker, or the console for `beffroi:chain:sign-anew` | A copy of each signed head that neither the database nor `var/keys` holds, which `beffroi:chain:verify --against` compares a chain with |
 
-No command restores a deployment: a restore is the database and `var/keys` put back together, under the same
-master key and the same `APP_SECRET`. The pairwise subjects of OpenID Connect and the persistent identifiers of SAML are computed from
+No command restores a deployment: a restore is the database and `var/keys` put back together, from the same
+backup, under the same master key and the same `APP_SECRET`. The pairwise subjects of OpenID Connect and the persistent identifiers of SAML are computed from
 the salt and never drawn, so they are the same after a restore that brings the salt back with the database. The GeoLite2
 databases in `var/geoip`, and the FIDO metadata and the list of the community in `var/webauthn`, are written
 again by the commands that wrote them.

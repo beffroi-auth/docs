@@ -11,15 +11,21 @@ needs PostgreSQL, which holds the lanes of Messenger as well as the model, and a
 
 ## The image
 
-`apps/beffroi/Dockerfile` builds on `dunglas/frankenphp:1-php8.5` and adds the extensions the provider needs:
-`apcu`, `intl`, `opcache`, `zip`, `pdo_pgsql`, `gmp`, `sodium` and `uuid`. Its build context is the
-root of the monorepo, because the application installs the packages beside it through path repositories.
+`apps/beffroi/Dockerfile` builds on `dunglas/frankenphp:1.14.0-php8.5-trixie` and adds the extensions the
+provider needs, `apcu`, `intl`, `opcache`, `zip`, `pdo_pgsql`, `gmp`, `sodium` and `uuid`, and the program
+`gpg`, which encrypts the mail written to a person who gave an OpenPGP key. Its build context is the root of
+the monorepo, because the application installs the packages beside it through path repositories.
 
 | Stage | What it is |
 |---|---|
-| `frankenphp_base` | The extensions, the PHP settings of the application, the entrypoint and the Caddy configuration |
+| `frankenphp_base` | The extensions, `gpg`, the PHP settings of the application, the entrypoint and the Caddy configuration |
 | `frankenphp_dev` | The development image, into which the stack mounts the monorepo, running FrankenPHP with `--watch` |
-| `frankenphp_prod` | The production image: the packages are copied to `/src` and the application to `/app`, installed without the development dependencies, with an authoritative class map, the `.env` of the repository compiled for production, the stylesheet built and the assets compiled |
+| `frankenphp_prod_builder` | Where the production image is built: the packages are copied to `/src` and the application to `/app`, installed without the development dependencies, with an authoritative class map, the `.env` of the repository compiled for production, the stylesheet built and the assets compiled |
+| `frankenphp_prod` | The production image, on `debian:13.7-slim`: FrankenPHP, PHP, the extensions and the libraries they load, `gpg`, the packages and the application, and no compiler, Composer or Node. Every process runs as `www-data`, uid 33 |
+
+Each base image is named by its version and pinned by the digest of that tag, so a build of a commit takes the
+PHP, FrankenPHP and Debian that commit names, and a rebuild of the same tag upstream reaches the image as a
+change of the digest in the repository.
 
 ``` bash
 docker build --file apps/beffroi/Dockerfile --target frankenphp_prod .
@@ -34,7 +40,17 @@ repository holds, and a deployment sets its own: [configuration](configuration.m
 The production image sets `APP_ENV=prod`, reads `php.ini-production`, preloads `config/preload.php` into
 OPcache, and turns worker mode on: the kernel is booted once per worker and serves every request that worker
 takes, so a signing key opened with the key management service stays open in it, and the service is asked once
-per key and per worker rather than once per signature.
+per key and per worker rather than once per signature. By default, the provider runs four such threads and the
+administration API two, whatever the cores of the host, each holding its own connection to PostgreSQL for as
+long as it lives: a server that serves the administration API and the worker that consumes the lanes hold seven
+connections at rest ([`FRANKENPHP_WORKER_NUM`](configuration.md#the-web-server)).
+
+**A secret may be a file.** Each of the ten variables that carry a secret, `APP_SECRET`, `DATABASE_URL` and
+`BEFFROI_KMS_DSN` among them, may be given as a file instead, which `docker inspect` does not show: its `_FILE`
+twin names the file, such as one a secret of Compose or Swarm mounts ([a secret in a
+file](configuration.md#a-secret-in-a-file)). `gpg`, the one
+program the provider starts, starts with none of the environment of the provider: the `gpg` the processes find,
+`/usr/local/bin/gpg`, hands Debian's its `PATH` and its `GNUPGHOME` and nothing else.
 
 ## The HTTP server
 
@@ -45,11 +61,17 @@ entrypoint checks the sizes that bound a request, below, then does three things 
 1. it waits for the database, sixty attempts one second apart, and stops at once on an error it cannot
    recover from;
 2. it plays the migrations, `doctrine:migrations:migrate --no-interaction --all-or-nothing`, every time the
-   server starts. The migrations of the application, in `migrations/`, are written for PostgreSQL and refuse
-   any other platform;
+   server starts, as the role `BEFFROI_MIGRATIONS_DATABASE_URL` names, or as the role of `DATABASE_URL` when
+   that variable is not set. The migrations of the application, in `migrations/`, are written for PostgreSQL
+   and refuse any other platform. When the role of `DATABASE_URL` is another, it then grants that role what
+   the processes serve, `beffroi:database:grant`: [the role the processes connect as](persistence.md#the-role-the-processes-connect-as);
 3. it writes the row of the tenant its environment describes, `beffroi:tenant:synchronize`, which changes
    only what changed. A configuration the tenant refuses, or that moved its issuer, stops the container
    before it serves, at every start.
+
+The production image runs Caddy without its own administration API, which answers whoever reaches its address
+with no credential and can stop or reconfigure the server. A deployment that wants it, for the metrics Caddy
+serves there, names its address in `CADDY_ADMIN`.
 
 Caddy bounds the size of a request before it reaches the provider. On the listeners of its sites, a request
 whose request line and headers go over the bound, as the Go server Caddy is built on counts them, is answered
@@ -149,8 +171,8 @@ The worker is therefore the one process that calls a client back, and the one th
 [journal](observability.md). A provider whose worker stops goes on answering requests, and the lanes keep the
 messages until a worker consumes them.
 
-The lanes are four queues of the table `messenger_messages` of the database, one per lane, which the transport
-creates the first time it reaches it. The application requires the transport of no broker, and the image
+The lanes are four queues of the table `messenger_messages` of the database, one per lane, which a migration
+creates as the owner of the tables, no transport creating it. The application requires the transport of no broker, and the image
 carries the PHP extension of none. What fails for good lands in the failure transport, `failed`, a queue of the
 same table.
 
@@ -161,7 +183,7 @@ so some state has to be the same for all of them.
 
 | What | Where | Written by | Read by |
 |---|---|---|---|
-| The sealed keys of the tenant, and its pairwise salt | `var/keys` | `beffroi:keys:*`, the timed step of the key lifecycle, and the first process that needs the salt | Every process that signs, decrypts or seals |
+| The sealed keys of the tenant, its pairwise salt, and the last signed head of each of its [chains](observability.md#the-chains), in `<slug>/chains/` | `var/keys` | `beffroi:keys:*`, the timed step of the key lifecycle, the first process that needs the salt, and what signs a chain: its timed step, the daily steps of retention and `beffroi:chain:sign-anew` | Every process that signs, decrypts or seals, or checks a chain |
 | The key of the file backend, when that is the key management service | The directory its DSN names, `var/kms` on the development stack and in the Compose file of the image | Whoever provisions it | Every process |
 | The GeoLite2 databases of addresses | `var/geoip` | `beffroi:geoip:refresh`, the weekly step | The worker, which enriches a provenance |
 | The FIDO metadata, and the list of passkey providers of the community in its directory `community/` | `var/webauthn` | `beffroi:webauthn:mds-refresh`, `beffroi:webauthn:mds-import`, and `beffroi:webauthn:aaguids-refresh` for the list | The page of the passkeys and `beffroi:user:show`, which name the authenticator of a passkey from both, and the enrolment of a passkey under the `direct` or `enterprise` policy of the tenant, which reads them for the model and its status reports |
@@ -188,17 +210,24 @@ Each of them is on `cache.app`, which the application leaves on the filesystem a
 `%kernel.share_dir%/pools/app`. The share directory carries the environment, so with the `APP_SHARE_DIR` of
 `.env` the pools of a production kernel are in `var/share/prod/pools/app`. Two containers share these pools
 when they share that directory, which the volume of `var/share` of the Compose file of the image does, and
-each holds its own otherwise: no variable points the pools at another store. The attempts at a password and at
-a code are counted per person, five in a sliding window of one minute, by two limiters,
-`beffroi_password_attempts` and `beffroi_code_attempts`, whose counts Symfony keeps in `cache.rate_limiter`, a
-pool on `cache.app` as well: they are shared as these pools are.
+each holds its own otherwise: no variable points the pools at another store. The counts of the
+[limits on guesses and of the budgets of a person or an administrator](security.md#attempts-and-budgets) are
+kept by Symfony in `cache.rate_limiter`, a pool on `cache.app` as well: they are shared as these pools are.
 
-**The session of a browser is in the database**, in `beffroi_session`, which every process reaches. The server
-keeps it on the connection of Doctrine, under advisory locks of PostgreSQL, each row under the SHA-256 of the
-identifier its cookie carries and its data sealed under a data key of the tenant, as personal data is. So the
-session no longer ties a browser to the server that opened it: servers behind one proxy that share the
-database, the volumes above and the key management service each read the sessions the others wrote, and a
-redeployment that replaces them one at a time signs nobody out.
+**The locks are in the database.** The counts of those limits and budgets, and the identifiers the guards
+against replay remember in the pools of the assertions, the software statements, the request objects and DPoP,
+are read and written under a lock every process of the deployment shares, an advisory lock of PostgreSQL on
+the connection of Doctrine (`config/packages/lock.yaml`). Requests at once, on one server or on several, are
+counted one after the other, and an identifier presented twice at once is taken once. The load budgets take no
+lock.
+
+**The session of a browser is in the database**, in `beffroi_session`, which every process reaches. A session
+opens on the connection Doctrine holds at that moment, under an advisory lock of PostgreSQL, each row under the
+SHA-256 of the identifier its cookie carries and its data sealed under a data key of the tenant, as personal
+data is, bound to that hash: a row moved under another identifier opens as no session. A browser is therefore
+tied to no server: servers behind one proxy that share the database, the volumes above and the key management
+service each read the sessions the others wrote, and a redeployment that replaces them one at a time signs
+nobody out.
 
 ## TLS and the hosts
 
@@ -221,12 +250,17 @@ host asks for nothing.
   certificate in `Ssl-Client-Cert`, `X-Ssl-Client-Cert`, `X-Client-Cert` or `X-Forwarded-Client-Cert` is
   refused with `invalid_request` (RFC 6749 §5.2) at an endpoint that reads a certificate. The TLS connection
   of that host therefore ends at this listener.
-- **Only the leaf reaches PHP**, so no chain is validated there. The handshake proves that the client holds
-  the private key of what it presented (RFC 8446 §4.4.3), which is what `self_signed_tls_client_auth`
-  (RFC 8705 §2.2) needs. The `client_auth` block of `mtls.Caddyfile` carries no `trust_pool`, so no chain is
-  validated at the edge either. A deployment that authenticates clients with `tls_client_auth` (RFC 8705
-  §2.1) writes the site block of that host in `CADDY_EXTRA_CONFIG`, in place of the import, with a
-  `trust_pool` in its `client_auth`, so the chain is validated at the edge.
+- **The listener judges no certificate, and only the leaf reaches PHP.** Its `client_auth` asks for a
+  certificate in `mode request`, under which Caddy validates no chain, a `trust_pool` included. The handshake
+  proves that the client holds the private key of what it presented (RFC 8446 §4.4.3), which is what
+  `self_signed_tls_client_auth` (RFC 8705 §2.2) needs.
+- **The provider validates the leaf of `tls_client_auth` itself** (RFC 8705 §2.1, §7.4), against the
+  authorities `BEFFROI_MTLS_CERTIFICATE_AUTHORITIES` names, a JSON list of PEM certificates: a certificate one
+  of them signed, valid at the moment of the request and carrying the name its client registered,
+  authenticates that client. Each authority is therefore the one that signs the client certificates itself,
+  intermediate or root, and a certificate that is no certificate authority (RFC 5280 §4.2.1.9) is refused.
+  Revocation is not checked. With no authority named, the default, `tls_client_auth` is neither announced nor
+  registered, and a client of that method is refused like any client of a method the provider does not wire.
 
 ### The host of the administration API
 
@@ -260,8 +294,8 @@ The TLS a client meets on the host of `SERVER_NAME` is then the one of the proxy
 
 The scheme and the address of a request are read by Symfony behind the proxies it trusts, and the application
 names none: `framework.trusted_proxies` reads `SYMFONY_TRUSTED_PROXIES`. That address is what the load budget
-of an origin is counted under, 2400 requests a minute by default before a `429`, and what every session and
-every act of the journal records as where it came from. Behind a proxy that is not named there, every request
+of an origin is counted under, an IPv6 address by its /64, 2400 requests a minute by default before a `429`,
+and what every session and every act of the journal records as where it came from. Behind a proxy that is not named there, every request
 reads as plain HTTP and has the address of the proxy: a request of a safe method, a `GET` or a `HEAD` among
 them, is sent to the same address over HTTPS, without end, and the others, a `POST` among them, are
 served as they came, under the address of the proxy.
@@ -319,10 +353,21 @@ two, each to the one host the application names: a download of MaxMind is follow
 revocation list of the test service of the FIDO Alliance to the host that serves it. A text leaves for Sweego
 alone, the one bridge of `symfony/notifier` the image installs.
 
+**A URL of the protocol reaches no network of the deployment, whoever wrote it.** The `jwks_uri` of a client or
+of a trusted issuer, a `request_uri`, a `sector_identifier_uri`, a `backchannel_logout_uri`, a
+`backchannel_client_notification_endpoint` and the endpoint of a push subscription are refused a private,
+loopback, link-local or reserved address, IPv4 mapped in IPv6 included: the address is checked once the name is
+resolved and on every address the request connects to, and the one checked is the one connected to, so a name
+that resolves twice cannot rebind. A deployment whose clients answer on its own networks names those networks,
+and no wider, in `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS`, a JSON list of IP addresses or networks in CIDR
+notation, `[]` by default: `'["10.20.0.0/16"]'`. The requests whose URL the deployment fixes, to the key
+management service, the SAML peers, MaxMind, the FIDO metadata, the list of passkey providers the community
+keeps, the list of compromised passwords and the bridge of mail and SMS, are not held to it.
+
 | From | To | When |
 |---|---|---|
 | Every process | The key management service | To open a key, a salt or a data key, and to seal one |
-| The server | The `jwks_uri` of a client or of a trusted issuer | To read its keys, which are then kept a day, and again when an assertion names a key the kept set does not hold |
+| The server | The `jwks_uri` of a client or of a trusted issuer | To read its keys, which are then kept a day, and again when an assertion names a key the kept set does not hold, never less than five minutes after the last read, one that failed included |
 | The server | The `request_uri` of a client | When an authorization request names one |
 | The server | The `sector_identifier_uri` of a client | When a client registers or replaces itself |
 | The server, the console | The list of compromised passwords, when one is named | When a password is written, and the answer is waited for |
@@ -330,9 +375,9 @@ alone, the one bridge of `symfony/notifier` the image installs.
 | The worker | The `backchannel_logout_uri` of a client | When a session that client signed in ends |
 | The worker | The `backchannel_client_notification_endpoint` of a client | When a backchannel request in `ping` mode is answered |
 | The worker | The push service of a browser | When a backchannel request waits on the person who subscribed that browser, and when a way of signing in to their account changes |
-| The worker | The mail server `BEFFROI_MAIL_DSN` names, when it names one and `BEFFROI_MAIL_SENDER` names a sender | When a backchannel request waits on a person whose address is marked verified |
-| The worker | The API of Sweego, `api.sweego.io` unless the DSN names another host, when `BEFFROI_SMS_DSN` names one | When a backchannel request waits on a person whose phone number is marked verified |
+| The worker | The mail server `BEFFROI_MAIL_DSN` names, when it names one and `BEFFROI_MAIL_SENDER` names a sender | When a backchannel request waits on a person whose address is marked verified, when a way of signing in to their account changes, and when a person asks for the code that confirms an address they wrote |
+| The worker | The API of Sweego, `api.sweego.io` unless the DSN names another host, when `BEFFROI_SMS_DSN` names one | The same three, for a phone number |
 | The worker, the console | The metadata of the SAML peers given by URL | Every hour, and on `beffroi:saml:*:refresh` |
-| The worker, the console | MaxMind, when a licence key is named | Every week, and on `beffroi:geoip:refresh` |
+| The worker, the console | MaxMind, when a licence key is named | Every week, and on `beffroi:geoip:refresh`. A download, and what it unpacks to, stops and is refused past 512 MiB |
 | The console | The FIDO Metadata Service, and the revocation lists the certificates of the chain of its BLOB name | On `beffroi:webauthn:mds-refresh` |
 | The console | The list of passkey providers the community keeps, the `aaguid.json` of `passkeydeveloper/passkey-authenticator-aaguids` on `raw.githubusercontent.com` | On `beffroi:webauthn:aaguids-refresh` |

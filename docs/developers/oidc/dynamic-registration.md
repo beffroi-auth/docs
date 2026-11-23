@@ -77,11 +77,11 @@ that are wired.
     ```
 
     `beffroi:client:token:issue` prints the value once, and the provider keeps its SHA-256 and never the
-    value: a token that was lost is replaced by issuing another. It is worth one registration and thirty days
-    unless the command says otherwise, a day at least. Its options name what it gives the clients it
-    registers: `--resource`, once per API (RFC 8707 §2); `--access-token-format`;
-    `--require-sender-constrained-tokens`; `--exchange-subject-token-type`, once per type (RFC 8693 §3), with
-    `--exchange-for-a-user` when they may exchange a token somebody signed in for; and
+    value: a token that was lost is replaced by issuing another. Its name is plain text of 255 characters at
+    most. It is worth one registration and thirty days unless the command says otherwise, a day at least. Its
+    options name what it gives the clients it registers: `--resource`, once per API (RFC 8707 §2);
+    `--access-token-format`; `--require-sender-constrained-tokens`; `--exchange-subject-token-type`, once per
+    type (RFC 8693 §3), with `--exchange-for-a-user` when they may exchange a token that names a person; and
     `--may-act` (RFC 8693 §4.4). What a token gives is read when it is issued, and a token that gives what the
     provider does not serve is not issued. `beffroi:client:token:list` shows what each token has served of
     what it is worth, what it gives, and whether it still authorises anything. `beffroi:client:token:revoke`
@@ -115,8 +115,9 @@ that are wired.
     The statement is verified before any of it is read as metadata. Its signature is checked against the keys
     of the authority its `iss` names, under one of the algorithms pinned for it. Its `aud` names the issuer of
     the tenant, once. Its `exp` is present, not past, and no further ahead than
-    `BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME`. Its `iat` is present and not in the future. Its `jti` is
-    present and never seen before, remembered until the `exp`, so one statement registers one client. RFC 7591
+    `BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME`. Its `iat` is present and not in the future, and so is its
+    `nbf` when it carries one. Its `jti` is present and never seen before, remembered until the `exp` plus
+    `BEFFROI_REGISTRATION_STATEMENT_LEEWAY`, so one statement registers one client. RFC 7591
     §2.3 asks none of this of a statement; the provider asks it of every signed thing it takes back. Whatever
     fails, the answer is the same `invalid_software_statement`.
 
@@ -139,9 +140,10 @@ that are wired.
     the reader, the policy and the refusals, is the same. A credential presented anyway is read by nothing and
     spent by nothing.
 
-    A client nobody vouched for chooses the name and the logo a person reads on the consent page, and a tenant
-    that names this mode for its real users lets anybody write them. The development stack names it, for the
-    conformance suite to register its clients.
+    A client nobody vouched for chooses the name a person reads on the consent page, and the logo and the
+    pages shown there from the host of its redirect URIs ([who is asking](clients.md#who-is-asking)), and a
+    tenant that names this mode for its real users lets anybody write them. The development stack names it,
+    for the conformance suite to register its clients.
 
 ## The request
 
@@ -174,6 +176,9 @@ What a client may register is what the specifications define, and what the tenan
   `resources`, `access_token_format`, `require_sender_constrained_tokens`, `token_exchange` and `may_act`, from
   the initial access token it registered with alone, and `requires_consent` and `requires_pkce` from nothing a
   deployment of the image sets ([what the image does not set](clients.md#what-the-image-does-not-set)).
+- **A request object is never read unsigned for a client that registers itself**:
+  `request_object_signing_alg: none`, in the body or in a software statement, is refused. Only the
+  configuration that declares a client writes it ([request objects](request-objects.md)).
 - **A member nobody reads is refused**, `client_id` and `client_secret` included: the provider draws both.
 - **What a member names is one the provider is wired with**: a grant, a method, an algorithm, a mode of
   delivery, a kind of subject, a type of authorization detail.
@@ -182,12 +187,15 @@ What a client may register is what the specifications define, and what the tenan
   `id_token_signed_response_alg`, `authorization_signed_response_alg` or `userinfo_signed_response_alg` is one
   the tenant holds an active key for, at the registration and at every replacement. An algorithm left out is
   the default one, whose key is the deployment's to draw and never a reason to refuse the client.
-- **A `sector_identifier_uri` is proven**: the provider reads the document behind it once, with one `GET`,
-  no redirect followed, within the seconds and the bytes the two `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_*`
-  variables give it, and the document
-  is the JSON array of URIs of OIDC Registration §5 that lists every redirect URI of the client, or its
-  `jwks_uri` when it registers no redirect URI (CIBA Core §4). A document that cannot be read, or that leaves
-  one out, refuses the registration ([pairwise subjects](pairwise-subjects.md)).
+- **A `sector_identifier_uri` is proven**: the document behind it is the JSON array of URIs of OIDC
+  Registration §5 that lists every URI the sector of the client could be judged on, its redirect URIs and its
+  `initiate_login_uri`, or the `jwks_uri` of the key it authenticates with ([the
+  sector](pairwise-subjects.md#the-sector)). A client that publishes none of these is refused before
+  anything is read. Otherwise the provider reads the document once, with one `GET`, no redirect followed,
+  within the seconds and the bytes the two `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_*` variables give it, and
+  never at an address of a private network of the deployment it does not name. A document that leaves one of
+  those URIs out refuses the registration, and so does one that cannot be read, with a description that names
+  the URL and says nothing of what the read met.
 
 What a client leaves out takes the defaults of RFC 7591 §2: the `authorization_code` grant alone, the `code`
 response type that goes with it, and `client_secret_basic`. A scope left out is the `default_scope` of the
@@ -275,8 +283,9 @@ to it at the token endpoint, and the provider deletes the ones nobody uses any m
 runs every hour: a client used, but not for `BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR` seconds, and a
 client never used and registered more than `BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR` seconds ago.
 One run deletes a hundred clients at most, and the next run takes the rest; what it deleted is written to the
-log. A tenant that registers nobody deletes nothing, and a client the configuration declares, which the image
-holds none of, is never deleted.
+log. A tenant that stops registering clients, its `BEFFROI_REGISTRATION_MODE` emptied, still deletes the ones it
+registered on the same two durations, and a client the configuration declares, which the image holds none of,
+is never deleted.
 
 Each deletion, by the step, by the client itself, by `beffroi:client:delete` or by an administrator through the
 administration API, emits the same `RegisteredClientDeleted` event, which names the administrator when one

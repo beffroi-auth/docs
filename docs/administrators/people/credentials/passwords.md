@@ -26,9 +26,10 @@ password the person already holds, and ends none of their sessions.
 A person replaces their own on [the password page of their
 account](../../../operators/application/account.md#what-the-password-page-says): they type the one in use, which is
 verified, then the one they want, twice. A password that is not the one in use is refused, and so is the one they
-already hold; every other browser signed in as them is signed out, and the one they asked from stays. Typing the
-wrong password there costs nothing against the attempts of the login, since only somebody signed in as that
-person can try.
+already hold; every other browser signed in as them is signed out, and the one they asked from stays. The
+password in use typed there is counted on a limit of its own, five attempts per person in a sliding window of one
+minute, the sixth refused before anything is verified and the count emptied once the right one is typed. It is
+not the limit of the login, so guesses made from a session never keep its owner from signing in.
 
 A person who lost the one in use, or who never held one, is handed a password ticket, issued at the console or
 by an administrator through the administration API:
@@ -71,11 +72,12 @@ core read the same number. A password already stored is left as it is when the f
 to the other, since a hash says nothing of the length behind it; a floor that holds no password forgets it, row
 and hash. Both numbers are in the code and not in a configuration.
 
-**How easy to guess is an estimate of the search space**, counted over the bytes of the password. The pool is
-the sum of the alphabets the password draws from, ten for the digits, twenty-six for the lower-case letters,
-twenty-six for the capitals, thirty-three for the other printable characters, thirty-three for the control
-characters and 128 for the bytes beyond ASCII. Each distinct byte is worth the base-2 logarithm of that pool, and
-each byte written again the logarithm of the number of distinct ones. Under sixty bits, the password is refused.
+**How easy to guess is an estimate of the search space**, counted over the characters of the password, each
+code point one, as its length is. The pool is the sum of the alphabets the password draws from, ten for the
+digits, twenty-six for the lower-case letters, twenty-six for the capitals, thirty-three for the other printable
+characters, thirty-three for the control characters and 128 for the characters beyond ASCII. Each distinct
+character is worth the base-2 logarithm of that pool, and each character written again the logarithm of the
+number of distinct ones. Under sixty bits, the password is refused.
 The length and the estimate are two rules and neither absorbs the other: the estimate is what refuses
 `passwordpassword`, or one letter typed sixteen times, which no length catches.
 
@@ -136,7 +138,7 @@ read, refused where the row is read rather than taken for an algorithm nobody ch
 |---|---|
 | `argon2id` | Makes every new hash, with the parameter set of RFC 9106 §4: 64 MiB of memory and four lanes, and the four passes PHP takes by default, one more than that set asks. The hasher refuses parameters below these |
 | `argon2i`, `bcrypt` | Verifies a hash of them, then stores the password again as `argon2id` at the next successful login |
-| `pbkdf2-sha256`, `pbkdf2-sha512` | Reads the hash back and names it. No hasher the application wires verifies one |
+| `pbkdf2-sha256`, `pbkdf2-sha512` | Verifies a hash of them as Keycloak stores one (RFC 8018 §5.2), the derived key in base64 with its `salt` in base64 and its `iterations` beside it, then stores the password again as `argon2id` at the next successful login. A hash whose key, salt or iterations cannot be read verifies no password |
 
 A hash that is not of the algorithm and the parameters the hasher makes, another algorithm or other parameters,
 is replaced at the next successful login, and the act `password.rehashed` goes to the journal of the person: the
@@ -161,13 +163,16 @@ The login page and the use case of the core play one order, written once:
    username nobody holds is counted nowhere, so a limiter cannot be filled with what an attacker types.
 4. The hash is verified. A refusal reached before this step, an unknown username, too many attempts or a person
    who holds no password, still pays the verification of a hash the hasher made of a value nobody knows, so the
-   time of the answer does not say whether the account exists.
+   time of the answer does not say whether the account exists. A hash the hasher would replace, of another
+   algorithm or other parameters, is verified in no less time than that decoy takes, measured in the process
+   that answers, so its answer does not say it either.
 5. A disabled account, and a person of a federated domain, are refused after the password, as a wrong password is.
 6. The count of attempts is emptied, the password dated as used and stored again when its hash is not the one the
    hasher makes, and the act `password.used` written. A person who holds an active TOTP is then held at the code page rather than signed in:
    [authentication sessions](../authentication-sessions.md#opening-one) say what follows.
 
-Every refusal of these steps is announced with the request it came from, and the person is told the same thing
+Every refusal of these steps is announced with the request it came from, and written to the journal as a refused
+login, `authentication.failed`, with its reason and its method, `pwd`; the person is told the same thing
 whatever the reason. A form without its token, or with an empty field, is refused by the login page before any of
 them: it is not an attempt on an account, and costs the person it names nothing.
 

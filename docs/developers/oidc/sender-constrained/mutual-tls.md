@@ -13,13 +13,15 @@ that listener and never read from a header of the request.
 
 ## Authenticating with a certificate
 
-Two methods recognise a client by its certificate, and both are wired in the application while
-`BEFFROI_MTLS_ORIGIN` names a host. Either way the request names the client in `client_id` and presents the
-certificate at the handshake: a request without a certificate presents neither method.
+Two methods recognise a client by its certificate. `self_signed_tls_client_auth` is wired in the application
+while `BEFFROI_MTLS_ORIGIN` names a host, and `tls_client_auth` while it names one and
+`BEFFROI_MTLS_CERTIFICATE_AUTHORITIES` names at least one authority. Either way the request names the client
+in `client_id` and presents the certificate at the handshake: a request without a certificate presents
+neither method.
 
 | `token_endpoint_auth_method` | The certificate | What makes it the client's |
 |---|---|---|
-| `tls_client_auth` (RFC 8705 §2.1) | Issued by a certificate authority the TLS listener trusts, which the block the image delivers names none of ([below](#how-the-certificate-reaches-the-application)) | The one value the client registered, read out of the certificate and compared |
+| `tls_client_auth` (RFC 8705 §2.1) | Issued by one of the authorities `BEFFROI_MTLS_CERTIFICATE_AUTHORITIES` names, and valid at the instant the request is received ([below](#the-authorities-a-certificate-is-judged-against)) | The one value the client registered, read out of the certificate and compared |
 | `self_signed_tls_client_auth` (RFC 8705 §2.2) | Any, self-signed included | The client publishes it in its JWK Set, `jwks` or `jwks_uri`: the first certificate of the `x5c` of one of its keys (RFC 7517 §4.7), or the `x5t#S256` of one of them (§4.9) |
 
 **A `tls_client_auth` client registers exactly one of the five values of RFC 8705 §2.1.2**, and a client
@@ -46,11 +48,10 @@ registration](../dynamic-registration.md)):
 }
 ```
 
-**The provider judges no chain.** Only the leaf certificate reaches PHP, so what makes a certificate
-trustworthy, its chain, its validity period and its revocation, is judged by the TLS listener during the
-handshake, against the authorities the deployment names there. A self-signed certificate is trusted for
-what the client published and for nothing else, as the keys of `private_key_jwt` are; a client that renews
-its certificate publishes the new one before it presents it.
+**The provider judges the certificate of `tls_client_auth` itself**, the listener handing PHP the leaf alone
+and judging nothing ([below](#the-authorities-a-certificate-is-judged-against)). A self-signed certificate is
+trusted for what the client published and for nothing else, as the keys of `private_key_jwt` are; a client
+that renews its certificate publishes the new one before it presents it.
 
 **A certificate beside another credential** does not make two methods. A client reaching the host that asks
 for a certificate presents one because it was asked: the credential its request carries, a secret or an
@@ -58,9 +59,11 @@ assertion, authenticates it, and the certificate authenticates only a client reg
 methods above.
 
 A request that names a client and does not prove it is refused with `invalid_client`, status `401`, and the
-same description whatever the cause: a certificate that is not the registered one, a certificate the client
-does not publish, a certificate that cannot be read, no certificate from a client registered for one. Each
-refusal is an act of the journal, `client_authentication.failed`.
+same description whatever the cause: a certificate that is not the registered one, a certificate no named
+authority issued or that is not valid at that instant, a certificate the client does not publish, a
+certificate that cannot be read, no certificate from a client registered for one. Each refusal is an act of
+the journal, `client_authentication.failed`, which says why, `untrusted_certificate` for a certificate no
+named authority vouches for.
 
 ## Tokens bound to the certificate
 
@@ -107,6 +110,7 @@ BEFFROI_MTLS_ORIGIN=https://mtls.op.example.com
 | Variable | In the image | What it decides |
 |---|---|---|
 | `BEFFROI_MTLS_ORIGIN` | empty | The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Empty, the provider serves no mutual TLS: no alias, neither method that reads a certificate, and no token bound to one |
+| `BEFFROI_MTLS_CERTIFICATE_AUTHORITIES` | `[]` | The authorities whose certificates `tls_client_auth` accepts, a JSON list of PEM certificates ([below](#the-authorities-a-certificate-is-judged-against)). Empty, `tls_client_auth` is not wired, whatever the origin |
 
 With an origin, the discovery document carries `mtls_endpoint_aliases` (RFC 8705 §5): the same paths, on the
 other origin, for six endpoints.
@@ -126,10 +130,12 @@ other origin, for six endpoints.
 
 The issuer does not change: an alias is another way to the same provider. The backchannel authentication
 endpoint reads a certificate as well, and is not among the aliases. The two methods that read a certificate
-are wired with the origin and only with it, so with an origin the document lists them in
+are wired with the origin and only with it, `tls_client_auth` with an authority besides, so with an origin
+the document lists `self_signed_tls_client_auth`, and `tls_client_auth` while an authority is named, in
 `token_endpoint_auth_methods_supported`, `revocation_endpoint_auth_methods_supported` and
-`introspection_endpoint_auth_methods_supported` and announces `tls_client_certificate_bound_access_tokens` as
-`true`; without one it lists neither and announces `false`.
+`introspection_endpoint_auth_methods_supported`, and announces `tls_client_certificate_bound_access_tokens` as
+`true`; without one it lists neither and announces `false`. A method that is not wired is refused to a
+client that registers it.
 
 ## How the certificate reaches the application
 
@@ -169,10 +175,26 @@ the signature of the handshake that proves its holder has the private key (RFC 8
 handed to PHP as `SSL_CLIENT_CERT`, empty when the client presented none.
 
 The block verifies no chain, so it accepts a certificate whatever authority issued it, which is what
-`self_signed_tls_client_auth` needs, and it names no authority a chain could be judged against. A deployment
-whose clients authenticate with `tls_client_auth` writes the site block of that host in `CADDY_EXTRA_CONFIG`,
-in place of `import mtls.Caddyfile`: the block of the image with a `trust_pool` of the authorities it accepts
-in its `client_auth`. That is where the chain is judged, and nowhere else.
+`self_signed_tls_client_auth` needs. A `trust_pool` added to it would change nothing: under `mode request`
+Caddy verifies no certificate against one, and `verify_if_given` would refuse every self-signed certificate.
+
+### The authorities a certificate is judged against
+
+The provider validates the certificate of a `tls_client_auth` client itself, before it compares the name the
+client registered (RFC 8705 §2.1, §7.4). Only the leaf reaches PHP, so each authority
+`BEFFROI_MTLS_CERTIFICATE_AUTHORITIES` names is the one that signs the client certificates itself,
+intermediate or root, taken as a trust anchor (RFC 5280 §6.1): a certificate one of them signed, valid at the
+instant the request is received, goes on to have its name compared, and any other is refused. Revocation is
+not checked, which RFC 8705 §2.1 leaves to the deployment. A certificate named as an authority that is not the certificate
+of a certificate authority (RFC 5280 §4.2.1.9), or that is no certificate, is refused by the first request
+that reads the authorities.
+
+``` dotenv
+BEFFROI_MTLS_CERTIFICATE_AUTHORITIES='["-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"]'
+```
+
+`self_signed_tls_client_auth` and the binding of a token to a certificate do not read these authorities, and
+follow `BEFFROI_MTLS_ORIGIN` alone.
 
 What reads `SSL_CLIENT_CERT` is `App\Http\Tls\EdgeClientCertificateResolver`, the implementation of
 `App\Http\Tls\ClientCertificateResolverInterface` the application is delivered with, which returns the

@@ -1,16 +1,16 @@
 ---
 title: Console commands
-description: 'What the commands of the application need explained beyond their help: the rotation of a key, the data keys, and the doctor.'
+description: 'What the commands of the application need explained beyond their help: the rotation of a key, the data keys, the chains of records, the role of the database, and the doctor.'
 ---
 
 # Console commands
 
 The application has commands for the tenant, the statistics of the instance, the people and their journal,
-groups, clients, keys, data keys, the metadata of SAML peers, the databases of addresses and the metadata of
-FIDO. [The
-reference](../reference/console-commands.md) lists every one of them; `bin/console <command> --help` gives its
-arguments and options. This page explains the ones a help screen does not: the rotation of a key, the data
-keys, and the doctor.
+groups, clients, keys, data keys, the chains of records, the role of the database, the metadata of SAML peers,
+the databases of addresses and the metadata of FIDO. [The reference](../reference/console-commands.md) lists
+every one of them; `bin/console <command> --help` gives its arguments and options. This page explains the ones
+a help screen does not: the rotation of a key, the data keys, the chains of records, the role of the database,
+and the doctor.
 
 ## What every command shares
 
@@ -29,6 +29,12 @@ Run "beffroi:tenant:synchronize" first.
 from: `beffroi-console/<command> (<user>@<host>)`, the user being the one behind `sudo` before the one of the
 shell. A step of the schedule is written as `beffroi-scheduler/beffroi (<host>)`.
 
+**What a command did not write is printed as text.** A name a person, a client, an administrator or a
+directory chose, and what a remote source answered, reach the terminal without their control characters, the
+bidirectional ones included, and with the markup of the console escaped: nothing they hold moves the cursor,
+sets the title or the clipboard, or reads as another name. What the operator typed and what the code writes
+are printed as they are.
+
 ## Rotating a key
 
 A key of the tenant is staged, then active, then retiring, then retired. Of the keys it publishes, the JWK Set
@@ -40,7 +46,7 @@ it once another has taken over. [Keys](../tenant/keys.md) says what each key of 
 | `beffroi:keys:generate` | Draws a key, seals it and makes it the active one of its algorithm at once. The right command for a tenant that has no key of that algorithm, and a rotation with no staging delay on one that has |
 | `beffroi:keys:rotate` | Stages a key: published at once, active once the staging delay has elapsed. On a tenant that has no active key of the algorithm, the key is active at once |
 | `beffroi:keys:activate <kid>` | Makes a staged key active before its delay has elapsed |
-| `beffroi:keys:retire <kid>` | Takes a retiring key out of the JWK Set once its retirement date has passed, or before it with `--force`; `--due` retires every key past its date |
+| `beffroi:keys:retire <kid>` | Takes a retiring key out of the JWK Set once its retirement date has passed, or before it with `--force`; `--due` retires every key past its date that nothing holds |
 | `beffroi:keys:list` | The keys in service with their use, status and dates, or every key with `--all`; `--check` is described below |
 
 ``` bash
@@ -59,7 +65,10 @@ The step `AdvanceKeyLifecycle` of [the schedule](messenger.md#what-time-does-on-
 does, in this order, what the commands do by hand: it stages a successor for every active key that has worked
 for its age, activates every staged key whose delay has elapsed, and retires every retiring key past its date.
 A tenant nobody watches does not sign with the same key for ever, and the tick that stages a successor is never
-the one that activates it.
+the one that activates it. A staged key whose delay elapses while a newer key of its algorithm is active is not
+activated by the step: it starts retiring, with the window of its use, without having signed anything.
+`beffroi:keys:activate` naming it before the step reaches it is the one way it still takes over. A message key past
+its date stays retiring while a message waiting in the failure transport is sealed to it.
 
 | Figure | In the image | Set by |
 |---|---|---|
@@ -80,15 +89,20 @@ figures of its own, seven days of staging and a year of age in the image, `BEFFR
 party whose copy of the JWK Set is younger than sixty seconds refuses the new tokens, or encrypts to the old
 key, until its copy is that old. It is for an operator who knows every relying party is cold.
 
-**`--compromised` leaves no window.** The new key takes over at once and the compromised one leaves the JWK
-Set at the same moment: nothing bound to it is honoured from then on.
+**`--compromised` leaves no window.** The new key takes over at once, and the compromised one leaves the JWK
+Set at the same moment with every other key of its algorithm, those waiting to take over and those still
+retiring: nothing bound to any of them is honoured from then on, and the JWK Set holds the new key alone for
+that algorithm.
 
 ``` bash
 bin/console beffroi:keys:rotate --compromised --algorithm=RS256
 ```
 
 **`beffroi:keys:retire --force`** takes a retiring key out before its date, after a compromise or when
-everything bound to it is known to have expired; the journal says it was retired before its date.
+everything bound to it is known to have expired; the journal says it was retired before its date. Without
+`--force`, a message key a message of the failure transport is sealed to is refused, the refusal saying what
+holds it, until `messenger:failed:retry` replays the message or `messenger:failed:remove` removes it; with
+`--force`, the key retires all the same, and that message then does not open.
 
 ### Checking the keys
 
@@ -159,6 +173,56 @@ envelopes sealed under its master key are not touched.
 
 [:beffroi-arrow-right: Key management](key-management.md#moving-to-another-client)
 
+## The chains of records
+
+The journal, the history of claims and what clients were given are three chains, `journal`, `claim_history`
+and `disclosures`: each row is linked to the one before it, and the worker signs the head of each chain every
+five minutes ([persistence](persistence.md#the-chained-records)). The last signature of a chain is the file
+`var/keys/<slug>/chains/<chain>.jws`, and each signature is also a line of the log channel `chain`, whose
+`context.checkpoint` is the compact JWS: a deployment that collects its logs keeps a copy that neither the
+database nor `var/keys` holds.
+
+``` bash
+bin/console beffroi:chain:verify
+bin/console beffroi:chain:verify journal --against=head.json
+```
+
+**`beffroi:chain:verify`** walks every chain whole against its last signature, or the one it names, and says
+which positions each keeps and up to where its signature holds. It fails at the first position that does not
+follow, naming the position and never what the row holds, and on rows that sit outside the chain. It reads and
+writes nothing. `--against` names a file holding a signed head of the chain named, the compact JWS or the line
+of the log that carries it, and fails when the chain ends before that head or holds another row at its
+position: a database put back to an earlier moment, with an older signature beside it, is seen there.
+
+**`beffroi:chain:sign-anew`** links one chain again as the database holds it, and signs it, once a person has
+read what its check found: whatever was changed, added or removed before cannot be told from the rest afterwards,
+so it prints what the whole walk finds first, and refuses until the slug of the tenant is typed back. The act
+`tenant.chain_signed_anew` names the positions linked again. It rewrites the links of the chain, which a role
+granted by [`beffroi:database:grant`](#the-role-of-the-database) cannot do: on a deployment whose processes run
+as such a role, it is run with `DATABASE_URL` naming the role that owns the tables.
+
+``` bash
+bin/console beffroi:chain:sign-anew journal default
+```
+
+A chain found broken is cut by no retention until one of two things is done: the database and the key storage
+restored from the same backup, or the chain signed anew.
+
+## The role of the database
+
+``` bash
+bin/console beffroi:database:grant beffroi_runtime
+```
+
+**`beffroi:database:grant`** grants the role the server and the worker connect as what they serve, and on the
+chained records nothing but appending: no update and no deletion of `beffroi_journal`, `beffroi_claim_change`,
+`beffroi_disclosure` and `beffroi_chain_link`, no deletion of `beffroi_tenant`, and the function the
+retentions forget through. It runs as the role that owns the tables, after the migrations, and prints the
+statements it played. It refuses a role named otherwise than in lowercase letters, digits and underscores, the
+role it runs as, and a database other than PostgreSQL. The server of the image runs it at every start, after
+the migrations, when `BEFFROI_MIGRATIONS_DATABASE_URL` names a role other than the one of `DATABASE_URL`
+([persistence](persistence.md#the-role-the-processes-connect-as)).
+
 ## The doctor
 
 ``` bash
@@ -170,15 +234,26 @@ before it answers, prints one line per point, explains the ones it does not answ
 red, so a deployment pipeline can ask the question. A point is a class tagged `beffroi.doctor_check`, so a
 point added is a class added; a run with nothing tagged fails rather than answering for nothing.
 
-The application tags two points. `App\Doctor\ClientsSignedWithHeldKeys` reads every client of the tenant,
-declared or registered, and is red when one receives its ID tokens, its authorization responses or its UserInfo
-responses signed with an algorithm the tenant holds no active key for, the default one counting for a client
-that names none: the first of them it asks for would fail with a server error. Its finding names the client,
-the documents and the algorithm, and says that `bin/console beffroi:keys:generate --algorithm=<algorithm>` draws
-the missing key. `App\Doctor\NotificationsLanePatience` says whether the lane a logout token is sent on is
-retried on the schedule the token is written for, the one `beffroi.back_channel_logout` sets. On a deployment
-that holds a key for every algorithm its clients are signed with, and keeps the lane of notifications the
-application declares, `async_notifications`, with the defaults of that section, the run reads:
+The application tags five points, looked at in this order.
+
+- `App\Doctor\ClientsSignedWithHeldKeys` reads every client of the tenant, declared or registered, and is red
+  when one receives its ID tokens, its authorization responses or its UserInfo responses signed with an
+  algorithm the tenant holds no active key for, the default one counting for a client that names none: the
+  first of them it asks for would fail with a server error. Its finding names the client, the documents and the
+  algorithm, and says that `bin/console beffroi:keys:generate --algorithm=<algorithm>` draws the missing key.
+- `App\Doctor\ChainHoldsTogether`, once for each [chain of records](#the-chains-of-records), `journal`,
+  `claim_history` and `disclosures`, checks the last signature of the chain, the row it signs, the first row kept
+  and the rows written since, in a time that does not grow with the chain. It is red on a signature that does not
+  verify, at the first position that does not follow among the rows it reads, on rows outside a chain nobody has
+  signed yet, and on a break the daily walk of the whole chain found, until the chain is restored or signed anew. It is red as well when the schedule has
+  stopped: the chain last signed more than two passes ago, ten minutes, its first row waiting as long with no
+  signature, or the chain last walked whole more than two days ago.
+- `App\Doctor\NotificationsLanePatience` says whether the lane a logout token is sent on is retried on the
+  schedule the token is written for, the one `beffroi.back_channel_logout` sets.
+
+On a deployment that holds a key for every algorithm its clients are signed with, and keeps the lane of
+notifications the application declares, `async_notifications`, with the defaults of that section, the first
+point and the last read:
 
 ``` text
  [ok] Clients: the keys their documents are signed with
@@ -189,7 +264,7 @@ application declares, `async_notifications`, with the defaults of that section, 
 ```
 
 The two figures are the budget a logout token is written for; [Messenger](messenger.md#what-the-application-writes)
-says what that budget bounds. The second point is red when the notifications are routed to a lane retried on
+says what that budget bounds. The last point is red when the notifications are routed to a lane retried on
 another schedule, or to no lane at all.
 
 [:beffroi-arrow-right: Messenger](messenger.md)

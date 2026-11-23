@@ -38,30 +38,34 @@ The client authenticates beside them with the method it registered.
 
 ## What is checked
 
-In this order. The first six refusals are `invalid_grant`, all with the one description `The refresh token
+In this order. The first seven refusals are `invalid_grant`, all with the one description `The refresh token
 is invalid.`:
 
 1. The token is one this provider issued, to the client that authenticated, and it has not been revoked.
 2. It has not been replaced. A token that was rotated and is presented again is a reuse
-   (RFC 9700 §4.13.2): its whole family is revoked, the successor the client holds included, and the act
+   (RFC 9700 §4.14.2): its whole family is revoked, the successor the client holds included, and the act
    `refresh_token.reuse_detected` is written in the journal of the person.
 3. The session it descends from has not ended. A session that merely expired does not stop a refresh,
-   renewing while the person is away being what the token is for; a session that ended does, however it
-   ended, and the act `refresh_token.outlived_its_session` is written.
+   renewing while the person is away being what the token is for, save for an access token for the
+   administration API, below; a session that ended does, however it ended, and the act
+   `refresh_token.outlived_its_session` is written.
 4. It has not expired. Its own lifetime never reaches past the absolute lifetime of its family.
 5. A token bound to a key or to a certificate is refreshed by a request that proves that key or presents that
    certificate again (RFC 9449 §5, RFC 8705 §4).
 6. The person it was issued for is not disabled.
-7. `scope` names nothing the token does not carry: `invalid_scope` otherwise. A `scope` that is not a list of
+7. The grant it descends from has not been revoked: a consent taken back and a code presented twice revoke
+   it, whether or not the refresh token itself has been revoked yet.
+8. `scope` names nothing the token does not carry: `invalid_scope` otherwise. A `scope` that is not a list of
    scope tokens is `invalid_scope` too, before the token is even looked up.
-8. `resource` and `authorization_details` narrow and never widen: `invalid_target` and
+9. `resource` and `authorization_details` narrow and never widen: `invalid_target` and
    `invalid_authorization_details` otherwise. An access token for the [administration
    API](../resources.md#the-administration-api) of the tenant is refused with `invalid_target` once the person
-   has left the groups that administer it.
+   has left the groups that administer it, and with `invalid_grant` once the session they signed in with has
+   expired.
 
 ## Rotation
 
-**A refresh token is replaced where nothing else tells it from a copy of itself** (RFC 9700 §4.13.2). Three
+**A refresh token is replaced where nothing else tells it from a copy of itself** (RFC 9700 §4.14.2). Three
 things can: the authentication of a confidential client, the key or the certificate the token is bound to,
 and rotation. One is enough, so the provider rotates exactly where the other two are missing:
 
@@ -70,6 +74,10 @@ and rotation. One is enough, so the provider rotates exactly where the other two
 | Confidential | Stands. The answer carries no `refresh_token`, and the client keeps the one it holds until it expires |
 | Public, the token bound to a DPoP key or to a certificate | Stands, for the same reason |
 | Public, the token bound to nothing | Rotates. The token presented is marked replaced, and the answer carries its successor |
+
+**A token rotates once.** Of two requests presenting the same token at once, one replaces it, and the other
+presented a token already replaced: it is a reuse, refused with `invalid_grant`, and the whole family is
+revoked, the successor the first request received included. Neither holder is told which one held the copy.
 
 A successor belongs to the same family. It carries the whole authorization, whatever this request narrowed
 for its access token, and what the session had proven when the authorization was granted. Its own lifetime,

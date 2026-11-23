@@ -72,7 +72,7 @@ token refused because it was not issued here is told so and nothing more.
 | Code | Status | Where | Sent back |
 |---|---|---|---|
 | `invalid_request` | `400` | Every endpoint: a parameter missing, repeated or of the wrong shape, a client authentication that cannot be read, a client certificate in a header | At the authorization endpoint, after the first stage |
-| `invalid_client` | `401` | Every endpoint that authenticates a client, and the introspection endpoint for a public client | Never |
+| `invalid_client` | `401` | Every endpoint that authenticates a client; for a public client, the introspection endpoint and the backchannel authentication endpoint | Never |
 | `invalid_grant` | `400` | `/token`: what the grant presents, a code, a refresh token, a device code, a backchannel request, a token or an assertion, grants nothing | Never |
 | `unauthorized_client` | `400` | `/token`, for a grant the client is not registered for; `/device_authorization` and `/backchannel_authentication`, for a client not registered for that flow | Never |
 | `unsupported_grant_type` | `400` | `/token`, for a grant the provider is not wired with | Never |
@@ -125,7 +125,9 @@ sentences are replaced.
 Two budgets bound what the provider takes, and both always exist:
 
 - **the budget of an address**, counted on every route of the three planes, before any work is done:
-  before a session is opened, a password hashed, an assertion or a proof verified;
+  before a session is opened, a password hashed, an assertion or a proof verified. An IPv6 address is
+  counted by its `/64`, the prefix before the interface identifier (RFC 4291 §2.5.1) a host draws
+  itself (RFC 8981 §3.3.1);
 - **the budget of a client**, counted where its authentication succeeded, at the endpoints that
   authenticate a client. A public client proves nothing and is bounded by the budget of its address.
 
@@ -146,7 +148,7 @@ BEFFROI_LOAD_CLIENT_INTERVAL=60
 
 | Variables | In the image | What they decide |
 |---|---|---|
-| `BEFFROI_LOAD_ORIGIN_LIMIT`, `BEFFROI_LOAD_ORIGIN_INTERVAL` | `2400` requests in `60` seconds | What one address may send, whatever it asks for. It is not counted per tenant: it bounds the load on the machine |
+| `BEFFROI_LOAD_ORIGIN_LIMIT`, `BEFFROI_LOAD_ORIGIN_INTERVAL` | `2400` requests in `60` seconds | What one IPv4 address or one IPv6 `/64` may send, whatever it asks for. It is not counted per tenant: it bounds the load on the machine |
 | `BEFFROI_LOAD_CLIENT_LIMIT`, `BEFFROI_LOAD_CLIENT_INTERVAL` | `1200` requests in `60` seconds | What one authenticated client of one tenant may ask |
 
 A number too low on `/token` or on `/jwks` is an outage a deployment inflicts on itself, so a deployment
@@ -158,7 +160,7 @@ Among the refusals of the protocol, these are acts of the journal:
 
 | Refusal | Act | Whom the act names |
 |---|---|---|
-| A client that fails to authenticate, `invalid_client`, or `invalid_request` when the authentication cannot be read | `client_authentication.failed` | Nobody |
+| A client that fails to authenticate, `invalid_client`, or `invalid_request` when the authentication cannot be read | `client_authentication.failed` | The client the request named, when the tenant holds it, and nobody otherwise |
 | The `request_uri` of a pushed request that grants nothing, `invalid_request_uri` | `pushed_request.refused` | Nobody |
 | An authorization code presented a second time, `invalid_grant`; the tokens issued from it are revoked | `authorization_code.replayed` | The person |
 | A rotated refresh token presented again, `invalid_grant`; its family is revoked | `refresh_token.reuse_detected` | The person and the client |
@@ -167,5 +169,7 @@ Among the refusals of the protocol, these are acts of the journal:
 | A logout token its client refused | `logout_token.given_up` | The person and the client |
 
 An act says which act it is, when it happened, the address and the user agent of the request with the place
-derived from the address, and the person and the client it names; it does not say which check failed. The
-other refusals of the protocol are answered, and leave nothing in the journal.
+derived from the address, and the person and the client it names. A refused client authentication also says
+why and which method the request presented, both in words of the provider and never in a value of the
+request: a reason such as `unknown_client`, `invalid_secret`, `invalid_assertion`, `replayed_assertion` or
+`untrusted_certificate`. The other refusals of the protocol are answered, and leave nothing in the journal.

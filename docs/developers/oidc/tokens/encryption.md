@@ -53,7 +53,10 @@ tokens](id-tokens.md#signing)):
 - **Each name is one the provider is wired with**, below, and any other is refused.
 - **The client publishes its keys**, in `jwks` or behind a `jwks_uri`, and a client that registers an
   encryption and publishes neither is refused. A `jwks` written down is read at registration and has to hold
-  a key the registered algorithm can be addressed to; a set behind a URL is read when a document is minted.
+  a key the registered algorithm can be addressed to, and that key has to receive a JWE under the registered
+  pair: an `EC` key whose point is not on its curve, or on a curve the algorithm does not take, is refused
+  (RFC 7518 §4.6). An `RSA` key of a set, whatever it is for, holds a modulus of 2048 bits at least
+  (RFC 7518 §4.3). A set behind a URL is read when a document is minted.
 
 A registration that breaks one of these rules is refused with `invalid_client_metadata`.
 
@@ -84,18 +87,22 @@ The provider encrypts to a key the client publishes, chosen by what the keys say
 A client that publishes several keys therefore chooses the one it is encrypted to by saying more about it.
 
 A set behind a `jwks_uri` is read with one `GET`, over HTTPS or in plain HTTP on a loopback host, no redirect
-followed. What is read is kept for `BEFFROI_JWKS_URI_TTL` seconds, a day in the image, in a pool the workers
-share, under the URL it was read from. Encrypting a document never reads it again before that, a document
-addressed to a client naming no `kid` the provider could find missing. The kept set serves every use of the
-keys of the client, though, and a signature of the client whose header names a `kid` the set does not hold,
-the assertion of `private_key_jwt` or a request object, reads it again, at most once per
-`BEFFROI_JWKS_URI_REFETCH_COOLDOWN`, 300 seconds in the image. A client that replaces its encryption key
-publishes the new one and keeps the private half of the old one for `BEFFROI_JWKS_URI_TTL` after that.
+followed, and never on a private, loopback, link-local or reserved address that
+`BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS` does not name. What is read is kept for `BEFFROI_JWKS_URI_TTL`
+seconds, a day in the image, in a pool the workers share, under the URL it was read from. Encrypting a
+document never reads it again before that, a document addressed to a client naming no `kid` the provider
+could find missing. The kept set serves every use of the keys of the client, though, and a signature of the
+client whose header names a `kid` the set does not hold, the assertion of `private_key_jwt` or a request
+object, reads it again, at most once per `BEFFROI_JWKS_URI_REFETCH_COOLDOWN`, 300 seconds in the image. A read
+that fails is kept as well: a URL that answered nothing is not read again before that cooldown, and a set
+already kept stays kept when a later read fails. A client that replaces its encryption key publishes the new
+one and keeps the private half of the old one for `BEFFROI_JWKS_URI_TTL` after that.
 
 ## When the key cannot be read
 
-**No document leaves in clear.** When the set behind the `jwks_uri` cannot be read, or holds no key the registered
-algorithm can be addressed to, the provider writes nothing for that client, and the request that was to carry the
+**No document leaves in clear.** When the set behind the `jwks_uri` cannot be read, holds no key the registered
+algorithm can be addressed to, or holds one that receives no JWE under the registered pair, the provider writes
+nothing for that client, and the request that was to carry the
 document fails: the token request that was to carry the ID token, before the code, the device code, the
 `auth_req_id` or the refresh token it presented is spent, so that the client can present it again, in a new
 request, while it is still valid; the UserInfo request; or the authorization response. A logout token is issued

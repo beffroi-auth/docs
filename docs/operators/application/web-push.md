@@ -62,8 +62,16 @@ last pushed to, and it marks the browser reading the page when that browser is o
    the endpoint it already had, and that is the same browser: its row is what changes, and a row its owner had
    taken out is in use again.
 
+**A person keeps ten browsers at most.** Every browser of a person is pushed to at each message, one after
+another, so when a browser subscribes, or subscribes again, the others beyond nine are taken out, revoked, those
+that first subscribed longest ago, and never the one that has just subscribed. A browser past the tenth is not
+refused.
+
 The endpoint is taken as the browser gave it, and refused unless it is `https`; the two keys are refused
-unless they are base64url; a name longer than 255 characters is dropped. A browser is renamed at
+unless they are base64url; a name that is not plain text of 255 characters at most, with no control, line
+separator or format character, is dropped. A push reaches the endpoint only on a public address: one whose
+host resolves to a network of the deployment fails, unless `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS` names
+that network ([what leaves the provider](deployment.md#what-leaves-the-provider)). A browser is renamed at
 `POST /account/notifications/{id}/name` and taken out at `POST /account/notifications/{id}/revoke`, which keeps
 the row, marked revoked.
 
@@ -157,6 +165,15 @@ which would refuse a request signed by any other key. When no browser of the per
 one push failed, the message goes back to the lane, which sends it again after the waits of its schedule; one
 browser reached is a person told, and the message is done. A request that waits goes back only when no other
 channel reached the person either, and its retry calls every channel again.
+
+A change of a way of signing in follows a schedule of its own, `BEFFROI_NOTICE_*`, 31 attempts over 25 hours
+by default, each channel retried on its own. Once the schedule is spent, the notice not delivered is the act
+`credential_change.not_told` of the person, on the page of their acts, and the browser they next sign in with
+tells them once, on the login page of the interaction or on the home of their account, whichever it reaches
+first, that a change could not be notified to them, with a link to that act.
+
+The endpoint is written to no log: a push that fails is logged with the subscription and what failed, the
+endpoint named "the endpoint".
 
 [:beffroi-arrow-right: The lane of notifications](messenger.md#the-contract-of-the-provider)
 

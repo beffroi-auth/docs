@@ -39,7 +39,7 @@ first that answers sends the browser to the login page:
 | | The request | The browser is sent to log in |
 |---|---|---|
 | 1 | Any | When it holds no session of this tenant, or one that has ended or expired |
-| 2 | `id_token_hint` | When the `sub` of the hint, read for the client of the request, names another person than the one signed in, or nobody |
+| 2 | `id_token_hint`, or a `sub` the `claims` parameter asks the ID token for by its `value` | When the person it names, read for the client of the request, is another than the one signed in |
 | 3 | `acr_values` or `claims` asking for an `acr` | When the session satisfies none of the classes asked for, and a credential of this person would: a step-up |
 | 4 | `prompt=login` | Always |
 | 5 | `prompt=select_account` | Always: there is no account chooser, so it is a login again |
@@ -50,13 +50,19 @@ round again for having signed in a moment ago. The login page says why it is sho
 continue." for a reason other than the absence of a session, and, for a step-up, that the client requires a
 stronger sign-in than the one the person has, with the credentials they hold that would satisfy it, a passkey,
 the password, or the password followed by a code. A login of the person already signed in adds what it proved
-to the session the browser holds; a login of somebody else ends that session first.
+to the session the browser holds; a login of somebody else ends that session first. When a channel gave up on
+the notice of a change to the ways the person signs in since the sign-in before this one, a page says so once,
+after the login and with a link to their activity, and the request then goes on as it would have
+(NIST SP 800-63B §4.6).
 
 The `sub` of an `id_token_hint` is the one the provider gave the client of the request, and it is read for
 that client, as every `sub` this provider gave a client is
 ([the way back](pairwise-subjects.md#the-way-back)): the subject the account carries for a client of the
-`public` kind, the identifier of its sector for a [pairwise](pairwise-subjects.md) one. A `sub` that names
-nobody for that client is a hint of another person.
+`public` kind, the identifier of its sector for a [pairwise](pairwise-subjects.md) one. A `sub` the request
+asks the ID token for in `claims` is read the same way, since a positive answer is about that person and no
+other (OIDC Core §3.1.2.2, §5.5.1). Before any page, a hint or a `sub` asked for that names nobody for that
+client, a value that is no subject among them, and a hint and a `sub` that name two people, are answered
+`login_required` at the redirect URI.
 
 ### The class asked for
 
@@ -99,11 +105,15 @@ password." for the form and "The passkey did not work. Try again." for a passkey
 accounts exist.
 
 **A `login_hint` is read one way, the one the deployment chooses**, and never searched for (OIDC Core
-§3.1.2.1). What it names fills the username field with the name that person signs in with, unless this
-browser has just typed another, and a hint that names nobody leaves the field empty, as a request without a
-hint would: the value the client sent appears nowhere on the login form. The step of the address, on a
-tenant that federates domains, below, is the exception: a hint that holds an `@` fills its field as the
-client wrote it.
+§3.1.2.1). A hint names only a person the client may be told of, one who gave it a consent still in force, or
+anybody for a client the configuration declares `requires_consent: false`: a client learns
+nothing of a person who never agreed to it. Read as a `sub`, what the hint names fills the username field with
+the name that person signs in with, and a hint that names nobody leaves the field empty, as a request without
+a hint would: the value the client sent appears nowhere on the login form. Read as a username, the hint fills
+the field as the client sent it, whoever it names or does not, so that the page never tells whether an
+account holds it. Either way, a name this browser has just typed comes first. The step of the address, on a
+tenant that federates domains, below, fills its field as the client wrote it too, for a hint that holds an
+`@`.
 
 The deployment names the way in a variable, here at the value of the image
 ([configuration](../../operators/application/configuration.md#clients-and-their-requests)):
@@ -115,7 +125,7 @@ BEFFROI_INTERACTION_LOGIN_HINT=sub
 | Value | What the hint is read as |
 |---|---|
 | `sub`, the value of the image | The `sub` this provider issued to that client, read for that client, so a [pairwise](pairwise-subjects.md) identifier names somebody only to a client of its sector |
-| `username` | The name the person signs in with |
+| `username` | The name the person signs in with, offered in the field as the client sent it |
 | `none` | Nothing: the hint names nobody. Another reading is code of the application, a class implementing `Beffroi\Oidc\Application\Hint\UserHintInterface` tagged `beffroi.oidc.login_hint`, which the image carries none of |
 
 `BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT` takes the same three names for the `login_hint` of the

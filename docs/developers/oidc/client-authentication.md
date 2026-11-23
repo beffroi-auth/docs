@@ -14,8 +14,9 @@ as a request that presents a wrong secret is.
 
 ## The methods
 
-The application wires five, in this order, then the two that read a certificate while the deployment names the
-host that asks for one, `BEFFROI_MTLS_ORIGIN`:
+The application wires five, in this order, then the two that read a certificate: `tls_client_auth` while the
+deployment names the host that asks for one, `BEFFROI_MTLS_ORIGIN`, and at least one authority that issues
+them, `BEFFROI_MTLS_CERTIFICATE_AUTHORITIES`, and `self_signed_tls_client_auth` while it names the host:
 
 | Method | What the request carries | What is checked | What the client registers |
 |---|---|---|---|
@@ -24,7 +25,7 @@ host that asks for one, `BEFFROI_MTLS_ORIGIN`:
 | `private_key_jwt` | `client_assertion`, a JWT it signed with a key of its own (RFC 7523 §2.2, OIDC Core §9) | The signature against the keys the client publishes, then the claims | `jwks` or `jwks_uri` |
 | `client_secret_jwt` | `client_assertion`, a JWT signed with its secret under `HS256` (OIDC Core §9) | The MAC with the secret the provider keeps, then the claims | A secret |
 | `none` | `client_id` alone (RFC 6749 §2.1) | Nothing: the client names itself | Nothing |
-| `tls_client_auth` | `client_id`, and a certificate at the TLS handshake (RFC 8705 §2.1) | The one value of RFC 8705 §2.1.2 it registered, read out of the certificate | One of the five `tls_client_auth_*` values |
+| `tls_client_auth` | `client_id`, and a certificate at the TLS handshake (RFC 8705 §2.1) | That an authority the deployment names issued the certificate, valid when it is presented, then the one value of RFC 8705 §2.1.2 it registered, read out of it | One of the five `tls_client_auth_*` values |
 | `self_signed_tls_client_auth` | `client_id`, and a certificate at the TLS handshake (RFC 8705 §2.2) | That the certificate is one the client publishes | `jwks` or `jwks_uri` |
 
 A client that registers no method takes `client_secret_basic`, the default of RFC 7591 §2. What the wiring
@@ -78,18 +79,25 @@ signature is verified first, and nothing the assertion says is believed before i
 | `aud` | One value, and only one: the issuer of the tenant. A client registered for the backchannel grant may name the token endpoint or the backchannel authentication endpoint instead, on either host the provider serves them on (CIBA Core §7.1) |
 | `exp` | Present, not past, and no further ahead than the lifetime the provider accepts |
 | `iat` | Present, and not in the future |
-| `jti` | Present, and never seen before for that client: it is remembered until the `exp` in the `beffroi.client_assertions` cache pool, which the processes share when they share its directory, as the Compose file of the image has them do ([what the processes share](../../operators/application/deployment.md#what-the-processes-share)) |
+| `nbf` | When present, not in the future |
+| `jti` | Present, and never seen before for that client: it is remembered until the `exp` plus the leeway, the last instant the assertion is accepted, in the `beffroi.client_assertions` cache pool, under a lock every process of the deployment shares, so that of two requests presenting one assertion at once, one is refused. The processes share the pool when they share its directory, as the Compose file of the image has them do ([what the processes share](../../operators/application/deployment.md#what-the-processes-share)) |
 
 **The key is the client's and nobody else's.** A `kid` in the header names one of the keys the client
-publishes, a header without one is tried against all of them, and a key that names another `alg`, or a `use`
-other than `sig`, is not tried. `jwk`, `jku` and `x5c` in the header are ignored (RFC 8725 §3.10).
+publishes, and a key that names another `alg`, or a `use` other than `sig`, or whose type the algorithm does
+not take, is not tried. A header without a `kid` is verified under the one key of the client that could have
+signed it, and refused when several could, by their type, their `alg` and their `use` (OIDC Core §10.1).
+`jwk`, `jku` and `x5c` in the header are ignored (RFC 8725 §3.10), and a header that carries `crit` or `b64`
+is refused: the provider understands no extension of JOSE (RFC 7515 §4.1.11).
 
 **Keys behind a `jwks_uri` are read and kept.** The URL is read with one `GET`, no redirect followed, any
-status but `2xx` refused, within a time and a size of its own. The set is kept in the `beffroi.client_keys`
-cache pool, filed under its URL, and read again when an assertion names a `kid` the kept set does not hold, at
-most once per cooldown: a client that rotates its key is followed at once, and one that signs with a key it
-never published cannot make the provider call it on every request. A set that cannot be read refuses the
-authentication, and the reason goes to the audit trail.
+status but `2xx` refused, within a time and a size of its own, and never at an address of a private network
+of the deployment it does not name in `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS` ([what leaves the
+provider](../../operators/application/deployment.md#what-leaves-the-provider)). The set is kept in the
+`beffroi.client_keys` cache pool, filed under its URL, and read again when an assertion names a `kid` the
+kept set does not hold, at most once per cooldown: a client that rotates its key is followed at once, and one
+that signs with a key it never published cannot make the provider call it on every request. A read that fails
+is kept too, so a URL is read at most once per cooldown, whether it answers or not. A set that cannot be read
+refuses the authentication, and the reason goes to the audit trail.
 
 Six variables bound the assertion and the reads, here at the values of the image
 ([configuration](../../operators/application/configuration.md#clients-and-their-requests)):
@@ -110,7 +118,7 @@ BEFFROI_JWKS_URI_REFETCH_COOLDOWN=300
 | `BEFFROI_JWKS_URI_TIMEOUT` | `3` | Seconds one read of a `jwks_uri` is given, connection included, a tenth of a second at least |
 | `BEFFROI_JWKS_URI_MAX_SIZE` | `65536` | Bytes a `jwks_uri` may answer before the read stops |
 | `BEFFROI_JWKS_URI_TTL` | `86400` | Seconds a set read from a `jwks_uri` is kept |
-| `BEFFROI_JWKS_URI_REFETCH_COOLDOWN` | `300` | Seconds between two reads of one `jwks_uri` when an assertion names an unknown `kid` |
+| `BEFFROI_JWKS_URI_REFETCH_COOLDOWN` | `300` | Seconds between two reads of one `jwks_uri`, after a read that failed or when an assertion names a `kid` the kept set does not hold |
 
 The same six variables bound the assertions of the issuers a tenant trusts for the [JWT bearer
 grant](grants/jwt-bearer.md), and the reads of the sets they publish.
@@ -121,19 +129,26 @@ grant](grants/jwt-bearer.md), and the reads of the sets they publish.
 and the client names itself in `client_id`. The certificate is the one the TLS listener in front of the
 provider writes in the `SSL_CLIENT_CERT` server variable, never a header: a request that carries
 `SSL-Client-Cert`, `X-SSL-Client-Cert`, `X-Client-Cert` or `X-Forwarded-Client-Cert` is refused with
-`invalid_request`. Only the leaf reaches the provider, so the chain, the validity period and the revocation of
-the certificate are judged by the listener, which is where a deployment that turns `tls_client_auth` on names
-the authorities it accepts: the block the image delivers names none ([mutual
-TLS](sender-constrained/mutual-tls.md#how-the-certificate-reaches-the-application)).
+`invalid_request`. The listener asks for a certificate and judges none of it, and only the leaf reaches the
+provider ([mutual TLS](sender-constrained/mutual-tls.md#how-the-certificate-reaches-the-application)).
 
-- **`tls_client_auth`** compares one value read out of the certificate with the one the client registered:
-  its subject distinguished name, written as RFC 4514 writes one and normalised when the client is read, so
-  that `openssl x509 -noout -subject -nameopt RFC2253` prints a name it can register as it is; or one entry
-  of its subject alternative name, a DNS name compared without regard to case, a URI compared as text, an IP
-  address compared as the octets it stands for, an email address compared as written.
-- **`self_signed_tls_client_auth`** authenticates a certificate the client publishes in its JWK Set, as the
-  first entry of the `x5c` of a key (RFC 7517 §4.7) or by its `x5t#S256` (§4.9). The certificate is compared,
-  not the key inside it, so a certificate reissued on the same key is published before it is presented.
+- **`tls_client_auth`** first validates the leaf itself (RFC 8705 §2.1, §7.4): one of the certificate
+  authorities the deployment names in `BEFFROI_MTLS_CERTIFICATE_AUTHORITIES`, a JSON list of PEM certificates,
+  issued it, and it is valid at the moment the request was received (RFC 5280 §6.1). Each authority is the
+  one that signs the client certificates itself, intermediate or root, since no intermediate reaches the
+  provider, and a certificate that is no certificate authority is refused when the list is read
+  (RFC 5280 §4.2.1.9). Revocation is not checked. The list is `[]` in the image, and without an authority the
+  method is neither wired nor announced, and no client registers it. A certificate no authority of the list
+  issued, or one outside its validity period, is refused with the reason `untrusted_certificate`.
+- **`tls_client_auth`**, once the leaf holds, compares one value read out of it with the one the client registered:
+  its subject distinguished name, written as RFC 4514 writes one and normalised when the client is read, so that
+  `openssl x509 -noout -subject -nameopt RFC2253` prints a name it can register as it is; or one entry of its
+  subject alternative name, a DNS name compared without regard to case, a URI compared as text, an IP address
+  compared as the octets it stands for, an email address compared as written.
+- **`self_signed_tls_client_auth`** judges no chain: it authenticates a certificate the client publishes in
+  its JWK Set, as the first entry of the `x5c` of a key (RFC 7517 §4.7) or by its `x5t#S256` (§4.9). The
+  certificate is compared, not the key inside it, so a certificate reissued on the same key is published
+  before it is presented.
 
 Both bind the tokens of the request to the certificate that authenticated it (RFC 8705 §3.1). A certificate
 presented beside a secret or an assertion authenticates nothing: the listener asked for it, the request did
@@ -143,11 +158,13 @@ deployment serves the host that asks for a certificate, and what a bound token i
 
 ## A public client
 
-`none` is not an authentication, and it is announced as what it is: the client names itself in `client_id`
-and proves nothing, which is what a native or a browser application can do. The introspection endpoint
-refuses it with `invalid_client`, describing a token only to a client that proves who it is (RFC 7662 §2.1),
-and a client that registers it is refused `client_credentials` and `requires_pkce: false`. What protects a
-public client is PKCE and its exact redirect URI, never this method.
+`none` is not an authentication, and it is announced as what it is: the client names itself in `client_id` and
+proves nothing, which is what a native or a browser application can do. The introspection endpoint refuses it with
+`invalid_client`, describing a token only to a client that proves who it is (RFC 7662 §2.1), and a client that
+registers it is refused the grants that require client authentication, `client_credentials`, the JWT bearer grant,
+the token exchange and the backchannel grant, and `requires_pkce: false`. The backchannel authentication endpoint
+and the token endpoint refuse a public client of the backchannel grant with `invalid_client` as well (CIBA Core
+§7.1, §10.1). What protects a public client is PKCE and its exact redirect URI, never this method.
 
 ## How a request is read, and refused
 
@@ -165,11 +182,12 @@ it is not read.
 | Two mechanisms at once | `invalid_request` | `400` |
 | A `client_id` in the body that names another client than the credentials | `invalid_request` | `400` |
 | An `Authorization` header no method reads, and nothing else that proves the client, or no credential at all | `invalid_client` | `401` |
-| An unknown client, a method other than the registered one, a wrong secret, an assertion refused or replayed, keys that cannot be read, a certificate that is not the client's | `invalid_client`, described `Client authentication failed.` | `401` |
+| An unknown client, a method other than the registered one, a wrong secret, an assertion refused or replayed, keys that cannot be read, a certificate that is not the client's or that no authority of the deployment issued | `invalid_client`, described `Client authentication failed.` | `401` |
 
 Every refusal of the last line reads the same, so an answer does not say whether a client exists or which
-method it registered; why it was refused goes to the audit trail, with the client and the method, as a
-`ClientAuthenticationFailed` event. A `401` carries `WWW-Authenticate: Basic realm="<issuer>"` when the client
+method it registered; why it was refused goes to the audit trail, with the method, and with the client when
+the tenant holds the one the request named, as a `ClientAuthenticationFailed` event: an identifier no client
+of the tenant answers to is written nowhere, the reason `unknown_client` saying what happened. A `401` carries `WWW-Authenticate: Basic realm="<issuer>"` when the client
 used the `Authorization` header, and no challenge otherwise (RFC 6749 §5.2).
 
 A client that authenticates counts one request against its own load budget, `BEFFROI_LOAD_CLIENT_LIMIT`

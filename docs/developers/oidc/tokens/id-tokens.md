@@ -88,7 +88,10 @@ be read.
 
 The provider takes an ID token it issued back as a hint. It reads one against the keys of the tenant, holds
 its `iss` to the issuer, and leaves its `exp` aside, a hint describing a past sign-in being the ordinary
-case:
+case. Only a JWT that carries what each of its ID tokens carries is taken for one: a header that names no
+`typ`, a `sub`, and an `exp`, an `iat` and an `auth_time` that are integers (OIDC Core §2, RFC 8725 §3.11).
+An access token, a logout token, a signed introspection answer or a signed UserInfo answer of the tenant is
+signed by the same keys, and is no hint:
 
 | Where | What the hint says |
 |---|---|
@@ -97,9 +100,9 @@ case:
 | `id_token_hint` of a backchannel authentication request | Who the request is for; it must have been issued to that client (CIBA Core §7.1) |
 
 At the authorization endpoint and at the backchannel authentication endpoint, a hint the tenant did not sign,
-or of another issuer, is refused with `invalid_request`. At the end session endpoint, a signed hint the
-provider cannot verify is read as no hint at all: the logout is not refused, and a browser that holds a
-session is asked to confirm it ([logout](../logout.md)).
+of another issuer, or that is no ID token, is refused with `invalid_request`. At the end session endpoint, a
+signed hint the provider cannot verify, or that is no ID token, is read as no hint at all: the logout is not
+refused, and a browser that holds a session is asked to confirm it ([logout](../logout.md)).
 
 The hint is read as a signed ID token: a client whose ID tokens are encrypted sends back the signed token it
 decrypted, and not one it encrypted again for the provider.

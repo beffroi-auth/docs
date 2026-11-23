@@ -12,12 +12,14 @@ say what each one carries beyond those four, and who it concerns:
 
 - **a person**, when it implements `ConcernsAPersonInterface` and names the subject of their account, never the
   `sub` a client was given;
-- **a client**, when it implements `ConcernsAClientInterface` and names the client by the identifier it was
-  registered under, never the client itself.
+- **a client**, when it implements `MayConcernAClientInterface`, or `ConcernsAClientInterface`, which extends it
+  and always names one, and names the client by the identifier it was registered under, never the client
+  itself. A refused client authentication names the client the request named only when the tenant holds it.
 
 An event that implements `NamesItsAuthorInterface` names, besides, the administrator who did the act through
 the administration API, by the subject of their account, and nobody when the person, the operator at the
-console or nobody did it.
+console or nobody did it. An event that implements `SaysWhyItWasRefusedInterface` names the reason of a
+refusal and the method it refused.
 
 ## Every event leaves the process
 
@@ -31,7 +33,9 @@ an event nothing listens to is announced all the same.
 
 **Every event is written to the journal.** `WriteTheActDownHandler` hears every event of the three packages
 and writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person,
-the client when it concerns a client and the administrator when one did it, and nothing else. A row is kept
+the client when it concerns a client, the administrator when one did it, and the reason and the method of a
+refusal, and nothing else. Each row takes the next position of the chain of the journal of its tenant, linked
+to the one before it. A row is kept
 `BEFFROI_JOURNAL_RETENTION` days, 180 in the image, and `beffroi:user:journal` and the administration API read
 it back for a person.
 
@@ -53,7 +57,8 @@ The other listeners of the application each hear one event, or an interface a fe
 A logout token its client refuses is given up at once. One that cannot be delivered is tried again on the schedule
 of `beffroi.back_channel_logout`, and goes to the failure transport once that schedule runs out, and so does the
 message that issues one for a client whose key cannot be obtained, tried again on the same schedule. Either way,
-`logout_token.given_up` is raised.
+`logout_token.given_up` is raised. A notice of a change to the ways a person signs in that no attempt delivered,
+on the schedule of the `BEFFROI_NOTICE_*` variables, raises `credential_change.not_told` the same way.
 
 ## The events of the core
 
@@ -78,10 +83,15 @@ message that issues one for a client whose key cannot be obtained, tried again o
 | `password.changed` | `PasswordChanged` | A person replaces their own password | The credential | A person |
 | `password.rehashed` | `PasswordRehashed` | A password is stored again under the algorithm and the parameters of the hasher | The credential | A person |
 | `backup_codes.renewed` | `BackupCodesRenewed` | A person draws another set of backup codes | The credential | A person |
+| `credential_change.not_told` | `CredentialChangeNotTold` | A channel gives up on the notice of a change to the ways a person signs in, every attempt of its schedule spent | The act of the change, the channel, the reason of its last failure | A person |
 | `enrolment_ticket.issued` | `EnrolmentTicketIssued` | An enrolment ticket is issued | The ticket, and the administrator | A person |
 | `password_ticket.issued` | `PasswordTicketIssued` | A password ticket is issued | The ticket, and the administrator | A person |
 | `totp_ticket.issued` | `TotpTicketIssued` | A ticket for an authenticator application is issued | The ticket, and the administrator | A person |
 | `person.described_themselves` | `PersonDescribedThemselves` | A person says something of themselves | The user, the name of the claim, whether it was taken back | A person |
+| `address.confirmation_sent` | `AddressConfirmationSent` | A confirmation is sent to an address a person gave | The user, the name of the claim | A person |
+| `address.confirmation_withheld` | `AddressConfirmationWithheld` | A confirmation a person asked for is not sent, its budget spent | The user, the name of the claim | A person |
+| `address.established` | `AddressEstablished` | A person gives back the confirmation sent to an address of theirs | The user, the name of the claim | A person |
+| `notification_channels.chosen` | `NotificationChannelsChosen` | A person chooses the channels that tell them | The subject, the names of what changed | A person |
 | `archive.asked` | `PersonAskedForTheirArchive` | A person asks for their archive | The identifier of the archive and the subject | A person |
 | `archive.taken` | `PersonTookTheirArchive` | A person downloads it | The same | A person |
 | `archive.dropped` | `PersonDroppedTheirArchive` | A person has it dropped | The same | A person |
@@ -89,6 +99,9 @@ message that issues one for a client whose key cannot be obtained, tried again o
 | `group_membership.added` | `GroupMembershipAdded` | A person is made a member of a group the tenant holds the members of | The subject, the name of the group, and the administrator | A person |
 | `group_membership.removed` | `GroupMembershipRemoved` | A person is taken out of such a group | The same | A person |
 | `tenant.contact_changed` | `TenantContactChanged` | An administrator sets or takes back the contact the tenant gives its people, through the administration API | The administrator | Nobody |
+| `tenant.mail_signing_key_set` | `MailSigningKeySet` | An administrator sets a key the tenant signs its mail with, through the administration API | The format, the fingerprint, and the administrator | Nobody |
+| `tenant.mail_signing_key_removed` | `MailSigningKeyRemoved` | An administrator removes one the same way | The same | Nobody |
+| `tenant.chain_signed_anew` | `ChainSignedAnew` | A chain of the tenant is linked and signed again as the database holds it, with `beffroi:chain:sign-anew` | The chain, the first and the last positions linked again | Nobody |
 | `tenant.key_staged` | `TenantKeyStaged` | A key is drawn and staged, published in the JWK Set when its algorithm is one the set carries | The key | Nobody |
 | `tenant.key_rotated` | `TenantKeyRotated` | A key takes over | The key activated, and the one it replaced | Nobody |
 | `tenant.key_retired` | `TenantKeyRetired` | A key leaves the service | The key, and why | Nobody |
@@ -105,33 +118,35 @@ message that issues one for a client whose key cannot be obtained, tried again o
 | `authorization_code.replayed` | `AuthorizationCodeReplayed` | A code is presented a second time (RFC 6749 §4.1.2), and the tokens issued from it are revoked | The hash of the code, the subject, the client it was issued to, the client that presented it, the hashes of the tokens revoked | A person |
 | `tokens.issued` | `TokensIssued` | The token endpoint answers a client, whatever the grant | The grant type and the grant, the client, the subject, null for a client acting for itself (RFC 6749 §4.4), the session, the scopes granted, when the access token expires, whether an ID token left, what the tokens are bound to, the hash of the refresh token, the claims asked for by name, the authorization details, the shape of the access token; never a token | A person or nobody, a client |
 | `refresh_token.rotated` | `RefreshTokenRotated` | A refresh token is replaced by its successor (RFC 6749 §6) | The client, the subject, the family, the hashes of both tokens, when the successor expires | A person, a client |
-| `refresh_token.reuse_detected` | `RefreshTokenReuseDetected` | A rotated refresh token is presented again, and its whole family revoked (RFC 9700 §4.13.2) | The client, the subject, the family, the hash presented, the hashes revoked | A person, a client |
+| `refresh_token.reuse_detected` | `RefreshTokenReuseDetected` | A rotated refresh token is presented again, or presented by two requests at once, and its whole family revoked (RFC 9700 §4.14.2) | The client, the subject, the family, the hash presented, the hashes revoked | A person, a client |
 | `refresh_token.outlived_its_session` | `RefreshTokenOutlivedItsSession` | A refresh token still recorded active is presented for a session that ended, and refused | The client, the subject, the session, when the session ended | A person, a client |
 | `token.revoked` | `TokenRevoked` | A client gives a token back at the revocation endpoint (RFC 7009 §2.1) | The client that revoked it, the subject, null for a token naming nobody, the type of the token, its hash, the grant, the access tokens revoked with a refresh token | A person, or nobody |
-| `client_authentication.failed` | `ClientAuthenticationFailed` | A client fails to authenticate, at any endpoint that authenticates one | The reason, the client identifier as typed, the method presented | Nobody |
+| `client_authentication.failed` | `ClientAuthenticationFailed` | A client fails to authenticate, at any endpoint that authenticates one | The reason, the client the request named when the tenant holds it, the method presented | A client, or nobody |
 | `consent.granted` | `ConsentGranted` | A person agrees, on the consent page, on the page that confirms a device code, or when answering a backchannel request | The consent, the client, the subject, the scopes, the authorization details, the consent it takes over from | A person, a client |
 | `consent.revoked` | `ConsentRevoked` | A consent is taken back, by the person on their account, at the console, or by an administrator through the administration API | The consent, the client, the subject, the grants revoked with it, the hashes of the refresh and access tokens revoked, and the administrator when one took it back | A person, a client |
 | `introspection.answered` | `IntrospectionAnswered` | A resource server is told who an active token names (RFC 7662 §2.2). An inactive token, or one naming nobody, raises nothing | The client that asked, the subject | A person, a client |
 | `userinfo.answered` | `UserInfoAnswered` | A client is answered the claims of a person (OIDC Core §5.3) | The client, the subject; never which claims | A person, a client |
-| `logout_token.issued` | `LogoutTokenIssued` | A logout token is minted for a client of a session that ended (Back-Channel Logout 1.0 §2.6) | The client, the subject, the logout URI, the session, the token | A person, a client |
-| `logout_token.given_up` | `LogoutTokenGivenUp` | A logout token is refused by its client (Back-Channel Logout 1.0 §2.8), or could not be delivered, or issued for a client whose key could not be obtained, within the retries | The client, the subject, the session, what the last attempt came back with; never the token | A person, a client |
+| `logout_token.issued` | `LogoutTokenIssued` | A logout token is minted for a client of a session that ended (Back-Channel Logout 1.0 §2.6) | The client, the subject, the logout URI, the session, the token, and the administrator who ended the session when one did | A person, a client |
+| `logout_token.given_up` | `LogoutTokenGivenUp` | A logout token is refused by its client (Back-Channel Logout 1.0 §2.8), or could not be delivered, or issued for a client whose key could not be obtained, within the retries | The client, the subject, the session, what the last attempt came back with, and the administrator who ended the session when one did; never the token | A person, a client |
 | `backchannel_request.answered` | `BackchannelRequestAnswered` | A backchannel request is answered, yes or no, for a client registered to be called (CIBA Core §10.2) | The client, the subject, null when the request named nobody, the notification endpoint, the identifier of the request, the notification token | A person or nobody, a client |
 | `pushed_request.refused` | `PushedRequestRefused` | A `request_uri` presented at the authorization endpoint grants nothing (RFC 9126 §4) | The reason, the client that presented it, the client it was pushed by; never the reference | Nobody |
 | `registered_client.deleted` | `RegisteredClientDeleted` | A client that registered itself is gone: deleted at its configuration endpoint (RFC 7592 §2.3), by `beffroi:client:delete`, by an administrator through the administration API, or dropped for want of use | The client, and the administrator when one deleted it | A client |
 | `initial_access_token.issued` | `InitialAccessTokenIssued` | An initial access token is issued, at the console or through the administration API | The identifier of the token, and the administrator who issued it | Nobody |
 | `initial_access_token.revoked` | `InitialAccessTokenRevoked` | An initial access token is revoked the same way | The identifier of the token, and the administrator who revoked it | Nobody |
-| `administration.person_read` | `PersonReadByAnAdministrator` | An administrator reads a person through the administration API | The client the administrator acts through, the subject of the person, the administrator | A person, a client |
-| `administration.sessions_read` | `SessionsReadByAnAdministrator` | An administrator reads the open sessions of a person | The same | A person, a client |
+| `administration.person_read` | `PersonReadByAnAdministrator` | An administrator reads a person through the administration API, or writes what changes nothing of them and is answered the person | The client the administrator acts through, the subject of the person, the administrator | A person, a client |
+| `administration.sessions_read` | `SessionsReadByAnAdministrator` | An administrator reads the sessions of a person that have not ended, those past their expiry included | The same | A person, a client |
 | `administration.journal_read` | `JournalReadByAnAdministrator` | An administrator reads the journal of a person | The same | A person, a client |
 | `administration.consents_read` | `ConsentsReadByAnAdministrator` | An administrator reads the applications a person agreed to | The same | A person, a client |
-| `administration.membership_read` | `MembershipReadByAnAdministrator` | An administrator reads the members of a group, one act per member | The same | A person, a client |
+| `administration.membership_read` | `MembershipReadByAnAdministrator` | An administrator reads the members of a group, a page at a time, one act per member | The same | A person, a client |
+| `administration.read_refused` | `ReadRefusedToAnAdministrator` | An administrator asks the administration API for more persons than the budget of their reads has left, and the request delivers nobody | The client the administrator acts through, and the administrator, whose own act it is | A person, a client |
 
 The reason of `client_authentication.failed` is one of `malformed_credentials`, `multiple_mechanisms`,
 `mismatched_client_id`, `unsupported_scheme`, `no_credentials`, `unknown_client`, `unexpected_method`,
-`invalid_secret`, `invalid_assertion`, `replayed_assertion`, `unreadable_client_keys`, `unexpected_certificate` and
-`unreadable_certificate`; the client is answered `invalid_request` or `invalid_client` (RFC 6749 §5.2) whatever it
-is. The reason of `pushed_request.refused` is one of `unknown_request_uri`, `expired_request_uri`,
-`already_used_request_uri` and `other_client`; the client is answered `invalid_request_uri` whatever it is.
+`invalid_secret`, `invalid_assertion`, `replayed_assertion`, `unreadable_client_keys`, `unexpected_certificate`,
+`untrusted_certificate` and `unreadable_certificate`; the client is answered `invalid_request` or `invalid_client`
+(RFC 6749 §5.2) whatever it is. The reason of `pushed_request.refused` is one of `unknown_request_uri`,
+`expired_request_uri`, `already_used_request_uri` and `other_client`; the client is answered `invalid_request_uri`
+whatever it is.
 
 ## The event of the SAML package
 

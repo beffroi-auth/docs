@@ -16,7 +16,8 @@ sign-in page comes first.
 
 Press **Add a passkey**, beside the title. Your browser asks your device to create the passkey and to confirm it is
 you. The new passkey is listed under the name **New passkey**: type the name you want in its line, such as the name
-of the device, and press **Rename**. A name is 1 to 255 characters.
+of the device, and press **Rename**. A name is 1 to 255 characters, with no line break, no control character
+and no invisible formatting character other than the joiners some scripts need.
 
 The button is shown only in a browser that can create a passkey. Another browser shows **This browser cannot create
 a passkey.**
@@ -28,7 +29,7 @@ a passkey.**
 | **This passkey was refused. Try another one.** | The sign-in service does not accept this passkey, for example one your account already holds, or one your organisation's rules do not allow |
 | **Only the keys your organisation gave you are accepted.** | Your organisation accepts only the security keys it hands out. Use one of those |
 | **This model is under a security alert and is no longer accepted. Use another one.** | That model of device was found to be unsafe. Use another one |
-| **Give the passkey a name of 1 to 255 characters.** | The name was empty or too long |
+| **Give the passkey a name of 1 to 255 characters.** | The name was empty, too long, or held a line break, a control character or an invisible formatting character other than the joiners some scripts need |
 
 Adding a passkey is [told to you](notifications.md) and listed in [Account activity](activity.md) as **Way of
 signing in added**.

@@ -54,9 +54,14 @@ refusal:
 3. **The grant type.** `grant_type` is looked up among the grants the provider is wired with, and a name
    none of them gives itself is `unsupported_grant_type`.
 
-4. **The registration.** A client that did not register that grant is `unauthorized_client`.
+4. **The registration.** A client that did not register that grant is `unauthorized_client`. A public client
+   registers none of the grants that require client authentication, client credentials, token exchange, the
+   JWT bearer grant and backchannel authentication, so it gets that answer for them.
 
 5. **The grant**, whose refusals are the errors of RFC 6749 §5.2 and of the specification it implements.
+
+Every parameter is read as [an authorization request](../authorization-request.md#how-a-request-is-read)
+reads one, a list holding 100 values at most.
 
 Of those errors, `invalid_client` is answered `401` and every other one `400`. A request refused because a
 load budget is spent, that of the address it comes from or that of the client once it has authenticated, is
@@ -85,7 +90,7 @@ holds the tokens.
 | Refresh token | With `openid` | Its successor, when the token rotates | Served |
 | Client credentials | Never, `openid` being refused | Never | Refused at registration |
 | Device code | With `openid` | When one is due | Served |
-| Backchannel authentication | Always, `openid` being required | When one is due | Served |
+| Backchannel authentication | Always, `openid` being required | When one is due | Refused at registration |
 | Token exchange | Never | Never | Refused at registration |
 | JWT bearer | Never, `openid` being refused | Never | Refused at registration |
 
@@ -105,10 +110,11 @@ names is read against the grants the provider is wired with, and against what ea
 - **`authorization_code`** needs at least one redirect URI. A client registered for no grant that sends a
   browser back to it registers no redirect URI and no `response_types`: a redirect URI nothing would ever
   use is refused.
-- **`client_credentials`, the JWT bearer grant and token exchange** need an authentication method that
-  proves something, so `none` is refused with any of them. A client of `client_credentials` or of token
-  exchange also needs a `client_id` that can be a `sub`, one to 255 visible ASCII characters and no space,
-  which the identifier the provider draws for a client that registers itself always is.
+- **`client_credentials`, the JWT bearer grant, token exchange and backchannel authentication** need an
+  authentication method that proves something, so `none` is refused with any of them. A client of
+  `client_credentials` or of token exchange also needs a `client_id` that can be a `sub`, one to 255 visible
+  ASCII characters and no space, which the identifier the provider draws for a client that registers itself
+  always is.
 - **Token exchange** needs the `token_exchange` member, and the member needs the grant. `token_exchange` is a
   member of the deployment, refused in a registration body: a client of the image is registered for the grant
   only when the initial access token it registered with gave it the member.
@@ -157,5 +163,5 @@ namespace, and never by a rule written about its name:
 | `RequiresClientAuthenticationInterface` | The client that uses it proves who it is | The rule on public clients, at the registration and at the token endpoint |
 | `ActsForTheClientItselfInterface` | Nobody is signed in behind it, and it requires client authentication | The rule on the `client_id`, which names the client where a subject is expected |
 | `AsksTheUserOnAnotherDeviceInterface` | Its flow starts at the device authorization endpoint | That endpoint, which refuses a client of no such grant |
-| `AsksTheUserThroughABackchannelInterface` | Its flow starts at the backchannel authentication endpoint | That endpoint, its metadata, and the audiences a client assertion may name |
+| `AsksTheUserThroughABackchannelInterface` | Its flow starts at the backchannel authentication endpoint, and it requires client authentication | That endpoint, its metadata, the audiences a client assertion may name, and the rule on public clients |
 | `ExchangesATokenInterface` | It takes a token and gives one back | The rule on `token_exchange` |

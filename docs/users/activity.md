@@ -27,14 +27,19 @@ administrator of your organisation**, and the dates under **Date**.
 | Kind | The events |
 |---|---|
 | Signing in | **Signed in**, **Sign-in refused**, **Password accepted**, **Passkey used**, **Authenticator code accepted**, **Backup code used**, **Session ended** |
-| Ways of signing in | **Way of signing in added**, **Way of signing in removed**, **Way of signing in renamed**, **Way of signing in deleted, as no longer allowed**, **Password changed**, **Backup codes renewed**, **Passkey set-up link issued**, **New password link issued**, **Authenticator app set-up link issued** |
-| Your account | **Account created**, **Account created through your organisation**, **Information changed**, **Account disabled**, **Account enabled again**, **Added to a group**, **Taken out of a group**, **Notification channels changed**, **Confirmation code sent**, **Address confirmed** |
+| Ways of signing in | **Way of signing in added**, **Way of signing in removed**, **Way of signing in renamed**, **Way of signing in deleted, as no longer allowed**, **Password changed**, **Backup codes renewed**, **Passkey set-up link issued**, **New password link issued**, **Authenticator app set-up link issued**, **Change notification not delivered** |
+| Your account | **Account created**, **Account created through your organisation**, **Information changed**, **Account disabled**, **Account enabled again**, **Added to a group**, **Taken out of a group**, **Notification channels changed**, **Confirmation code sent**, **Confirmation code not sent: limit reached**, **Address confirmed** |
 | Applications | **Application allowed**, **Application access revoked** |
 | Your data | **Copy of your data requested**, **Copy of your data downloaded**, **Copy of your data deleted** |
 | What an administrator looked at | **Account viewed**, **Sessions viewed**, **Group membership viewed**, **Allowed applications viewed**, **Account activity viewed** |
 
 **Way of signing in deleted, as no longer allowed** means your organisation stopped allowing a way you held, such as
 a password where it now asks for passkeys only.
+
+**Change notification not delivered** means a message telling you of a change to how you sign in never reached you
+on one of your channels: [Notifications](notifications.md#a-message-that-could-not-be-delivered) says what follows.
+**Confirmation code not sent: limit reached** means a code was asked for one of your addresses once the limit of codes
+sent was reached, and none was sent.
 
 An administrator of your organisation is never named, nor where they acted from. Lines are kept for a period your
 organisation sets, then deleted.

@@ -77,6 +77,7 @@ code here.
 | FIDO Metadata Service v3.1.1 | The metadata of the FIDO Alliance, the root a full attestation is checked up to and the status reports that put a model under a security alert (§3.1.4.2) | [Passkeys](../../administrators/people/credentials/passkeys.md#the-fido-metadata) |
 | RFC 4226, RFC 6238 | HOTP and TOTP, the second factor from an application | [TOTP](../../administrators/people/credentials/totp.md) |
 | RFC 9106 | Argon2, one of the password algorithms a hash names | [Passwords](../../administrators/people/credentials/passwords.md) |
+| RFC 8018 §5.2 | PBKDF2, the hashes an import brings, verified and replaced at the first sign-in | [Passwords](../../administrators/people/credentials/passwords.md) |
 | RFC 8176 | The authentication method references a session reports, `amr` | [Authentication sessions](../../administrators/people/authentication-sessions.md) |
 | OpenID Connect EAP ACR Values 1.0 | `phr` and `phrh`, the classes a passkey answers, and the predicates a tenant names the floor of its logins with | [Tenants](../../operators/tenant/tenants.md) |
 | RFC 7517, RFC 7515, RFC 7516, RFC 7518, RFC 7519 | JOSE: keys, signatures, encryption, algorithms, claims | [Keys](../../operators/tenant/keys.md) |

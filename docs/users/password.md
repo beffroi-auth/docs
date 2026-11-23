@@ -38,6 +38,7 @@ Nothing else is asked: no digit, capital or symbol is required.
 | The page says | What to do |
 |---|---|
 | **Wrong current password.** | Type the password you use today. A mistake here does not count against your sign-in attempts |
+| **Too many attempts. Wait a moment, then try again.** | A wrong current password was typed five times within a minute. Wait a minute, then try again |
 | **That is already your password. Choose another one.** | Choose a password you do not use yet |
 | **The two passwords do not match.** | Type the same new password in both fields |
 | **The password must be at least 15 characters long.**, or 12 where every sign-in asks for a second step | Make it longer |

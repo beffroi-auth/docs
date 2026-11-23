@@ -52,11 +52,11 @@ provider refuses rather than arbitrates.
 | `code_challenge_methods_supported` | The PKCE methods wired: `S256`. `plain` is wired nowhere |
 | `acr_values_supported` | The classes of the policy of the tenant that the logins it serves can prove, in the order the policy names them. [Tenants](../../operators/tenant/tenants.md) |
 | `subject_types_supported` | The kinds of `sub` the provider assigns: `public` and `pairwise`. [Pairwise subjects](pairwise-subjects.md) |
-| `token_endpoint_auth_methods_supported`, `token_endpoint_auth_signing_alg_values_supported` | The client authentication methods wired, in the order they are tried, and what their assertions may be signed with. [Client authentication](client-authentication.md) |
+| `token_endpoint_auth_methods_supported`, `token_endpoint_auth_signing_alg_values_supported` | The client authentication methods wired, in the order they are tried, `tls_client_auth` among them only while the deployment names the authorities that issue client certificates, and what their assertions may be signed with. [Client authentication](client-authentication.md) |
 | `id_token_signing_alg_values_supported`, `userinfo_signing_alg_values_supported` | The signature algorithms the provider is wired with that the tenant holds an active key for, among `RS256`, `PS256`, `ES256` and `EdDSA` in the application. Only an active key counts: a staged, a retiring or a retired one does not |
 | `id_token_encryption_*`, `userinfo_encryption_*`, `request_object_encryption_*` (`alg_values_supported`, `enc_values_supported`) | The encryption algorithms wired: `ECDH-ES+A256KW` and `RSA-OAEP-256`, with `A256GCM`. A provider wired with no key encryption or no content encryption algorithm announces none of these pairs rather than empty lists |
 | `request_parameter_supported`, `request_uri_parameter_supported`, `require_request_uri_registration` | `true` all three: a `request_uri` is read only from a URL its client registered |
-| `request_object_signing_alg_values_supported` | The signature algorithms wired, and `none` beside them only when a client of the tenant registered `request_object_signing_alg: none`. [Request objects](request-objects.md) |
+| `request_object_signing_alg_values_supported` | The signature algorithms wired, and `none` beside them only when the configuration declares a client of the tenant with `request_object_signing_alg: none`, which no client of the image is and no client that registers itself can be. [Request objects](request-objects.md) |
 | `authorization_response_iss_parameter_supported` | `true`: every authorization response carries `iss` (RFC 9207) |
 | `pushed_authorization_request_endpoint`, `require_pushed_authorization_requests` | The endpoint; `true` only when every client registered for the tenant requires pushed requests. [Pushed authorization requests](pushed-authorization-requests.md) |
 | `device_authorization_endpoint` | The endpoint where a device code is asked for (RFC 8628 §4) |
@@ -130,6 +130,8 @@ A rotation asks a client for nothing but to read the set again within its `max-a
 An operator can cut the first step short, and a client with a warm cache then meets a `kid` it does not know
 yet: a key activated before its delay has run, with `beffroi:keys:activate`, a key that takes over at once,
 with `beffroi:keys:rotate --now`, and a key that replaces a compromised one, with `--compromised`, after which
-the compromised key leaves the set at once, with no window.
+every other key of that algorithm, the compromised one, a key waiting to take over and a key still retiring,
+leaves the set at once, with no window: the set holds the new key of that algorithm alone, and what the others
+signed is refused from then on.
 [Keys](../../operators/tenant/keys.md) gives the commands that rotate, activate and retire a key, and the timed step that
 stages a successor once a key has worked its age.

@@ -14,7 +14,7 @@ their own file which door to knock on.
 
 | Field | What it holds |
 |---|---|
-| Name | Unique within the tenant and compared exactly, case included. In Unicode Normalization Form C, without whitespace at either end, 255 characters at most |
+| Name | Unique within the tenant and compared exactly, case included. [Plain text](users.md#plain-text) in Unicode Normalization Form C, without whitespace at either end, 255 characters at most |
 | Source | Where the group comes from: `local` for every group, a group being created here and never by a provider |
 | Created at | When it was created |
 
@@ -103,7 +103,11 @@ is given none.
 `beffroi:user:show` lists the groups of a person, each with the source of the membership and the date it was
 added, and the archive a person asks for carries the same three facts in its `groups` chapter. Through the
 administration API, an administrator lists the groups of the tenant with how many members each holds and
-whether they administer it, which delivers nobody, and reads the members of one, which is an act of each
-member, `administration.membership_read`.
+whether they administer it, which delivers nobody, and reads the members of one a page at a time, in the order
+they were added. `page` names the page, from 1, and `per_page` its size, from 1 to 100, fifty when it is not
+given; the answer says `page`, `per_page`, `pages` and `total`, and a value of either outside those is refused
+with `400`. Each member delivered is an act of theirs, `administration.membership_read`, and one person of the
+[budget of the administrator](../terminal-client.md#how-many-persons-you-read); a page past the last one holds
+nobody and delivers nobody.
 
 No claim of OpenID Connect and no SAML attribute carries the groups of a person to a client.

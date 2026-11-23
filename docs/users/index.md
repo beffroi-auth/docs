@@ -19,7 +19,9 @@ signed in, the pages ask you to [sign in](signing-in.md) first, then open **Your
 
 **Your account** is the home of your account: one card per page, each saying what the page is for and what your
 account holds there. A column beside every page lists the others; on a narrow screen, the menu button in the bar
-at the top shows it. Your username, in the same bar, opens a menu with **Your information** and **Sign out**.
+at the top shows it. Your username, in the same bar, opens a menu with **Your information** and **Sign out**. Above
+the cards, it tells you once of a change to how you sign in that [could not be notified to
+you](notifications.md#a-message-that-could-not-be-delivered).
 
 Opened in a browser that is not signed in, **Pending requests** takes you to the sign-in page, and the other pages of
 your account say **Sign in, then open this page again.**, with a **Sign in** link.

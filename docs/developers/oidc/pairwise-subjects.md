@@ -43,18 +43,27 @@ introspection of its tokens.
 
 ## The sector
 
-The sector is a host, never a URL, read from what the client registered, the first of these that answers:
+The sector is a host, never a URL, read from what the client registered, the first of these that answers. A
+host stands for the sector only where the identifiers of a person reach the client on it:
 
 | What the client registered | Its sector |
 |---|---|
 | A `sector_identifier_uri` | The host of that URI |
-| Redirect URIs, all on one host | That host |
-| No redirect URI, and a `jwks_uri` | The host of the `jwks_uri` (CIBA Core §4), which is how a client of the backchannel flow, sending no browser anywhere, has a sector |
+| Redirect URIs, and its `initiate_login_uri` when it registers one, all on one host, for a client no grant hands identifiers without a redirection | That host, where the code goes back (OIDC Core §8.1) and where `/initiate-login` sends the browser (OIDC Core §4) |
+| A `jwks_uri`, for a client that authenticates with a key published there, `private_key_jwt` or `self_signed_tls_client_auth`, and that registers no redirect URI or is registered for the device code or the backchannel grant | The host of the `jwks_uri` (CIBA Core §4): every token it is handed at the token endpoint proves it holds that key |
 
-A `pairwise` client whose redirect URIs are on several hosts and who registered no `sector_identifier_uri`
-names no sector, and neither does one that registered no redirect URI and no `jwks_uri`: both are refused when
-the client is read, rather than served an identifier computed from whichever value came first, because the
-sector decides which clients see a person under the same identifier.
+The device code and the backchannel grant hand the identifiers of a person at the token endpoint, with no
+redirection to vouch for a host, so the redirect URIs of a client registered for one of them name no sector. A
+`pairwise` client of one of those grants that registers itself therefore authenticates with a key published at
+its `jwks_uri`, whether its sector is the host of that URI or a `sector_identifier_uri` whose document lists
+it, and a public client of the device code that registers itself cannot be `pairwise`. The
+`sector_identifier_uri` of a client the deployment declares is not read: its host is the sector, whatever the
+client authenticates with.
+
+A `pairwise` client whose redirect URIs and login URI are on several hosts and who registered no
+`sector_identifier_uri` names no sector, and neither does one that matches no line of the table: both are
+refused when the client is read, rather than served an identifier computed from whichever value came first,
+because the sector decides which clients see a person under the same identifier.
 
 **Clients that must recognise the same people share a sector.** Clients whose redirect URIs are all on one
 host are of that host's sector already. Clients on several hosts register one `sector_identifier_uri` on a
@@ -63,14 +72,18 @@ of them (OIDC Registration §5): they are then of that host's sector, and see a 
 
 **A sector is a claim a registered client proves.** A client that [registers
 itself](dynamic-registration.md) with a `sector_identifier_uri` publishes behind it the JSON array of URIs of
-OIDC Registration §5, and the array lists every redirect URI the client registers, or its `jwks_uri` when it
-registers no redirect URI. The provider reads it once, when the registration or its replacement is written,
-with one `GET` that follows no redirect, within `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT` seconds,
-three in the image, and `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE` bytes, 65536 in the image
+OIDC Registration §5, and the array lists every URI the table above could judge the client on: its redirect
+URIs and its `initiate_login_uri`, or the `jwks_uri` of the key it authenticates with. A client that has none
+of these to list is refused with `invalid_client_metadata` before the document is read, since nothing in it
+could vouch for the client. Otherwise the provider reads it once, when the registration or its replacement is
+written, with one `GET` that follows no redirect and reaches no private network of the deployment it does not
+name, within `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT` seconds, three in the image, and
+`BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE` bytes, 65536 in the image
 ([configuration](../../operators/application/configuration.md#registration)). A document that cannot be read, that is not
 an array of strings, or that leaves one of those URIs out, refuses the registration with
-`invalid_client_metadata`. Without that proof, a client able to name any sector could put itself in
-another's and read its users under their identifiers.
+`invalid_client_metadata`, and the description of a document that cannot be read says nothing of what the
+read met. Without that proof, a client able to name any sector could put itself in another's and read its
+users under their identifiers.
 
 ## The salt
 
@@ -96,11 +109,13 @@ The first time an identifier is written for a sector, the provider records which
 sector, in the `beffroi_pairwise_subject` table, and reads it back from there. A `sub` is always read for the
 client that presents it, in that client's sector and in no other:
 
-- a `login_hint` read as a `sub` ([interactions](interactions.md)) names somebody only when the client sending
-  it was given that identifier, or a client of its sector was;
+- a `login_hint` read as a `sub` ([interactions](interactions.md#the-login-page)) names somebody only when the
+  client sending it was given that identifier, or a client of its sector was, and only a person that client
+  may be told of: one who gave it a consent still in force, or anybody for a client the configuration declares
+  `requires_consent: false`;
 - an `id_token_hint`, at the authorization endpoint ([interactions](interactions.md)) and at the end session
   endpoint ([logout](logout.md)), names the person signed in when its `sub` is the identifier the client it was
-  issued to holds of that person;
+  issued to holds of that person, and so does a `sub` a `claims` request asks the ID token for;
 - the hints of a [backchannel authentication](grants/backchannel-authentication.md) request are read the same
   way;
 - a self-contained access token somebody signed in for is found to be that person's by its `sub`, read for

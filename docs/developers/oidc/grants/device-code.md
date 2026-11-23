@@ -52,6 +52,12 @@ registers no redirect URI: nothing of this flow sends a browser back to the clie
 refused unless the client is also registered for `authorization_code`. A public client gets a refresh token
 only by asking for `offline_access` ([refresh token](refresh-token.md)).
 
+A device that takes [pairwise subjects](../pairwise-subjects.md) proves its sector with a key, no redirection
+carrying its identifiers: it authenticates with `private_key_jwt` or `self_signed_tls_client_auth` under a key
+it publishes behind a `jwks_uri`, and is of the sector of the host of that `jwks_uri`, or of the
+`sector_identifier_uri` it names, whose document then lists that `jwks_uri`. A device that authenticates any
+other way, a public one included, is refused pairwise subjects with `invalid_client_metadata`.
+
 ## Starting: the device authorization endpoint
 
 `POST /device_authorization` (RFC 8628 §3.1) authenticates the client exactly as the token endpoint does,
@@ -87,8 +93,9 @@ The answer is `200`, never cached (`Cache-Control: no-cache, no-store`, RFC 8628
 **The user code** is eight characters out of twenty consonants, `BCDFGHJKLMNPQRSTVWXZ`, shown in two groups
 of four. With no vowel it spells no word, and no character of it is read for another (RFC 8628 §6.1). Eight
 characters out of twenty are a little over 34 bits, which is worth something only because guessing it is
-slow (§5.1): the page below counts the codes that are refused. No two requests alive at once hold the same
-user code.
+slow (§5.1): the page below counts the codes that are refused. A user code is never one that a request the
+provider still keeps holds, expired or answered: the provider draws again, eight times at most, and fails the
+request when every draw is held.
 
 The provider keeps the SHA-256 of both codes, never the codes, beside the client, the scopes, the resources
 and where the device asked from.
@@ -137,7 +144,7 @@ come in the order the device can act on them (RFC 8628 §3.5):
 | `access_denied` | The person refused |
 | `slow_down` | Nobody has answered yet, and the device polled sooner than its interval allows: the interval grows by five seconds, for this request and for every poll after it |
 | `authorization_pending` | Nobody has answered yet |
-| `invalid_grant` | The person allowed, and the code was spent already, or the session they allowed with has ended or is past its expiry |
+| `invalid_grant` | The person allowed, and the code was spent already, the session they allowed with has ended or is past its expiry, or the person took back their consent to the client after allowing |
 | The tokens | The person allowed |
 
 Every poll is recorded, the refused ones included, so asking again buys no faster answer; a request that has

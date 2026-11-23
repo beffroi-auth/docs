@@ -37,6 +37,8 @@ theme of the pages.
 | `GET` | `/register/{client_id}` | `beffroi_protocol_client_configuration_read` | RFC 7592 §2.1 |
 | `PUT` | `/register/{client_id}` | `beffroi_protocol_client_configuration_update` | RFC 7592 §2.2 |
 | `DELETE` | `/register/{client_id}` | `beffroi_protocol_client_configuration_delete` | RFC 7592 §2.3 |
+| `GET` | `/mail/pgp-keys` | `beffroi_protocol_mail_pgp_keys` | RFC 3156 §7: the OpenPGP key the tenant signs its mail with, then the keys it replaced, newest first, so that a mail signed before a replacement still verifies; `404` for a tenant that holds none |
+| `GET` | `/mail/smime-certificate` | `beffroi_protocol_mail_smime_certificate` | RFC 8555 §9.1: the certificate the tenant signs its S/MIME mail with, then the chain above it; `404` for a tenant that holds none |
 
 The endpoints a deployment announces are the ones the application wires and its configuration turns on. The
 discovery document is built from what is wired, never from a list kept beside it, so an endpoint the
@@ -78,6 +80,9 @@ session rather than sending it to a login.
 | `GET` `POST` | `/account/approvals` | `beffroi_interaction_account_approvals` | What somebody is waiting on an answer for now, CIBA Core §7.1 |
 | `GET` | `/account/profile` | `beffroi_interaction_account_profile` | What the provider holds of this person, one line per claim |
 | `GET` | `/account/profile/changes` | `beffroi_interaction_account_profile_changes` | What those claims said before, when they changed, and whether the person or an administrator changed them |
+| `GET` | `/account/addresses/{claim}/confirmation` | `beffroi_interaction_account_address_confirmation` | Where the person types the code sent to an address of theirs |
+| `GET` | `/account/addresses/{claim}/{confirmation}/{value}` | `beffroi_interaction_account_address_link` | The page the link of a confirmation opens, which confirms nothing until its form is sent |
+| `GET` | `/account/mail-encryption` | `beffroi_interaction_account_mail_encryption` | Whether the mail of the provider is encrypted to this person, and to what |
 | `GET` | `/account/password` | `beffroi_interaction_account_password` | When the password was last written, and the form that replaces it |
 | `GET` | `/account/passkeys` | `beffroi_interaction_account_passkeys` | The passkeys of this person, with their names, dates and state |
 | `GET` | `/account/two-factor` | `beffroi_interaction_account_two_factor` | The second factor, and the backup codes that go with it |
@@ -100,6 +105,11 @@ the archive wrapped under a passphrase, which is the file.
 | Method | Path | Route |
 |---|---|---|
 | `POST` | `/account/profile/{claim}` | `beffroi_interaction_account_profile_describe` |
+| `POST` | `/account/addresses/{claim}/confirmation` | `beffroi_interaction_account_address_confirmation_send` |
+| `POST` | `/account/addresses/{claim}/confirmation/code` | `beffroi_interaction_account_address_confirmation_code` |
+| `POST` | `/account/addresses/{claim}/{confirmation}/{value}` | `beffroi_interaction_account_address_link_confirm` |
+| `POST` | `/account/mail-encryption` | `beffroi_interaction_account_mail_encryption_give` |
+| `POST` | `/account/mail-encryption/remove` | `beffroi_interaction_account_mail_encryption_remove` |
 | `POST` | `/account/password` | `beffroi_interaction_account_password_change` |
 | `POST` | `/account/passkeys/options` | `beffroi_interaction_account_passkeys_options` |
 | `POST` | `/account/passkeys` | `beffroi_interaction_account_passkeys_enrol` |
@@ -113,6 +123,7 @@ the archive wrapped under a passphrase, which is the file.
 | `POST` | `/account/sessions/{id}/revoke` | `beffroi_interaction_account_sessions_revoke` |
 | `POST` | `/account/sessions/revoke-others` | `beffroi_interaction_account_sessions_revoke_others` |
 | `POST` | `/account/notifications` | `beffroi_interaction_account_notifications_subscribe` |
+| `POST` | `/account/notifications/channels` | `beffroi_interaction_account_notifications_channels` |
 | `POST` | `/account/notifications/{id}/name` | `beffroi_interaction_account_notifications_name` |
 | `POST` | `/account/notifications/{id}/revoke` | `beffroi_interaction_account_notifications_revoke` |
 | `POST` | `/account/archive` | `beffroi_interaction_account_archive_ask` |
@@ -171,6 +182,10 @@ answered `404` once the token has been read.
 | `GET` | `/tenant` | `beffroi_administration_tenant` |
 | `PUT` | `/tenant/contact` | `beffroi_administration_tenant_contact` |
 | `DELETE` | `/tenant/contact` | `beffroi_administration_tenant_contact_removal` |
+| `GET` | `/tenant/mail-signing-keys` | `beffroi_administration_mail_signing_keys` |
+| `PUT` | `/tenant/mail-signing-keys/smime` | `beffroi_administration_mail_smime_signing_key` |
+| `POST` | `/tenant/mail-signing-keys/pgp` | `beffroi_administration_mail_pgp_signing_key` |
+| `DELETE` | `/tenant/mail-signing-keys/{format}/{fingerprint}` | `beffroi_administration_mail_signing_key_removal` |
 | `GET` | `/keys` | `beffroi_administration_keys` |
 | `GET` | `/statistics` | `beffroi_administration_statistics` |
 | `GET` | `/health` | `beffroi_administration_health` |

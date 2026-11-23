@@ -52,7 +52,7 @@ came from, and the list of what it asks for. Press **Allow** or **Refuse** under
 |---|---|
 | **Request allowed** | The application can use your account. Go back to where you started |
 | **Request refused** | The application has no access to your account. You can close the page |
-| **That request no longer needs an answer.** | It was answered already, or waited too long and expired |
+| **That request no longer needs an answer.** | It was answered already, waited too long and expired, or you revoked the access of its application |
 | **No pending request.** | Nothing waits for you |
 
 When the application asked for a stronger sign-in than the one you made, **Allow** takes you to the sign-in page

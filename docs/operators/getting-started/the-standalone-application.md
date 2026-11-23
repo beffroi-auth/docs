@@ -131,6 +131,24 @@ docker compose -f compose.prod.yaml up -d --wait op
   database and the key management service, written once for both. Compose hands a container nothing else of
   its `.env`, so any other variable is added to the environment of both processes:
   [one host](../application/examples.md#one-host).
+- **A secret may be a file**, which `docker inspect` does not show: a deployment replaces the line of a variable
+  that carries one, `APP_SECRET` for instance, with its `_FILE` twin naming a file a `secrets:` entry mounts
+  under `/run/secrets`, readable by uid 33, and never sets both. PostgreSQL reads `POSTGRES_PASSWORD_FILE` the
+  same way: [a secret in a file](../application/configuration.md#a-secret-in-a-file).
+- **The processes may connect as a role of their own**, which reads and writes what they serve and rewrites no
+  row of the journal, of the history of claims or of what clients were given. That role is created once, its
+  name made of lowercase letters, digits and underscores, its password of URL-safe characters, then named by
+  `BEFFROI_DATABASE_USER` and `BEFFROI_DATABASE_PASSWORD`:
+
+    ``` bash
+    docker compose -f compose.prod.yaml up -d --wait database
+    docker compose -f compose.prod.yaml exec database psql -U beffroi -c "CREATE ROLE beffroi_runtime LOGIN PASSWORD '<password>'"
+    ```
+
+    The server plays the migrations as `POSTGRES_USER`, the role that owns the tables, through
+    `BEFFROI_MIGRATIONS_DATABASE_URL`, and grants the other role. Left unset, the processes connect as
+    `POSTGRES_USER`, and whoever holds its password can rewrite any row.
+
 - **Only the server publishes ports**, 80 and 443 over TCP and 443 over UDP. PostgreSQL is reached by the two
   processes alone.
 - **The worker has a health check of its own**, that the consumer is the first process of its container: the
@@ -151,8 +169,9 @@ The order is the one of `castor provision`, and two of its constraints hold for 
 has a row before it has a key, and its first key is the one messages are sealed to.
 
 1. **The schema and the tenant.** The container that serves HTTP waits for the database, plays the
-   migrations and writes the row of the tenant its environment describes (`beffroi:tenant:synchronize`)
-   before FrankenPHP starts, every time it starts.
+   migrations as the role that owns the tables, grants the role the processes connect as when it is another,
+   and writes the row of the tenant its environment describes (`beffroi:tenant:synchronize`) before
+   FrankenPHP starts, every time it starts.
 2. **The keys of the tenant**, in a container of the image:
 
     ``` bash
