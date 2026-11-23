@@ -5157,9 +5157,11 @@ asking for <code>op.example.com</code>. The issuer and <code>SERVER_NAME</code> 
   server would answer every host. The
   TLS a client meets is the one of the proxy: <a href="../deployment/#behind-a-proxy">behind a proxy</a>.</li>
 <li><strong>The proxy is trusted for what it forwards.</strong> It sends <code>X-Forwarded-For</code>, <code>X-Forwarded-Proto</code> and
-  <code>X-Forwarded-Port</code>, and <code>SYMFONY_TRUSTED_PROXIES</code> names where it connects from: <code>private_ranges</code> for a
-  proxy on a private network, its address otherwise. Without it, every request comes from the proxy and over
-  plain HTTP, and the provider sends a <code>GET</code> to HTTPS again and again.</li>
+  <code>X-Forwarded-Port</code>, and <code>SYMFONY_TRUSTED_PROXIES</code> names where it connects from, with the loopback address
+  the <a href="../deployment/#the-health-check">health check</a> of the image asks from: <code>private_ranges</code> holds both for
+  a proxy on a private network, and a proxy elsewhere is named by its address beside <code>127.0.0.1</code>. Without
+  it, every request comes from the proxy and over plain HTTP, the provider sends a <code>GET</code> to HTTPS again and
+  again, and the container is unhealthy.</li>
 <li><strong><code>SYMFONY_TRUSTED_HOSTS</code> refuses with <code>400</code> any other host that reaches Symfony.</strong> Caddy answers a host
   other than <code>op.example.com</code> with an empty <code>200</code> before it does, and the variable is what holds the line under
   <code>SERVER_NAME: ":80"</code>. <code>$$</code> is how a Compose file writes a <code>$</code>.</li>
@@ -5182,22 +5184,22 @@ with two more variables:</p>
 </span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">      </span><span class="nt">TLS_TERMINATION</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">proxy</span>
 </span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">      </span><span class="nt">SYMFONY_TRUSTED_PROXIES</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">private_ranges</span>
 </span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">      </span><span class="nt">SYMFONY_TRUSTED_HOSTS</span><span class="p">:</span><span class="w"> </span><span class="s">'^op\.example\.com$$'</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">      </span><span class="nt">CADDY_GLOBAL_OPTIONS</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">        </span><span class="no">servers {</span>
-</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">          </span><span class="no">trusted_proxies static private_ranges</span>
-</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">          </span><span class="no">client_ip_headers CF-Connecting-IP X-Forwarded-For</span>
-</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">        </span><span class="no">}</span>
-</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">      </span><span class="nt">CADDY_SERVER_EXTRA_DIRECTIVES</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">request_header X-Forwarded-For {client_ip}</span>
-</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"> </span><span class="kt">!override</span>
-</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"127.0.0.1:8080:80"</span>
-</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">  </span><span class="nt">worker</span><span class="p">:</span>
-</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w"> </span><span class="nv">*deployment</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">      </span><span class="nt">CADDY_SERVER_OPTIONS</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">        </span><span class="no">trusted_proxies static private_ranges</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">        </span><span class="no">client_ip_headers CF-Connecting-IP X-Forwarded-For</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">      </span><span class="nt">CADDY_SERVER_EXTRA_DIRECTIVES</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">request_header X-Forwarded-For {client_ip}</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"> </span><span class="kt">!override</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"127.0.0.1:8080:80"</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">  </span><span class="nt">worker</span><span class="p">:</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w"> </span><span class="nv">*deployment</span>
 </span></code></pre></div>
-<p>Caddy reads the first of those headers the request carries when it comes from a proxy <code>trusted_proxies</code>
-names, and the address of the peer otherwise. FrankenPHP hands PHP the request as it arrived, so without
-<code>CADDY_SERVER_EXTRA_DIRECTIVES</code> Symfony never sees what Caddy read. Whoever reaches the proxy without going
-through the network that writes the header writes it at will: the address is worth what the filtering of the
-origin is worth.</p>
+<p><code>CADDY_SERVER_OPTIONS</code> holds the lines of the <code>servers</code> block the image writes for every listener of its
+sites, without the <code>servers { }</code> around them: a block of their own in <code>CADDY_GLOBAL_OPTIONS</code> would be a
+second one, which Caddy refuses as it starts. Caddy reads the first of the headers <code>client_ip_headers</code> names
+that the request carries when it comes from a proxy <code>trusted_proxies</code> names, and the address of the peer
+otherwise. FrankenPHP hands PHP the request as it arrived, so without <code>CADDY_SERVER_EXTRA_DIRECTIVES</code> Symfony
+never sees what Caddy read. Whoever reaches the proxy without going through the network that writes the
+header writes it at will: the address is worth what the filtering of the origin is worth.</p>
 <h2 id="lists-in-json">Lists in JSON<a class="headerlink" href="#lists-in-json" title="Link to this section">&para;</a></h2>
 <p>Thirteen lists of the configuration are a JSON document each, of the shape the
 <a href="../../reference/configuration/">configuration reference</a> gives the list. A document fits on one line in single
@@ -5245,7 +5247,7 @@ row as it starts:
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 14:48:25 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:39:48 UTC">November 23, 2026</span>
   </span>
 
     

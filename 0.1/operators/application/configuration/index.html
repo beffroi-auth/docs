@@ -5995,7 +5995,7 @@ on what its own clients send.</p>
 <tr>
 <td><code>SYMFONY_TRUSTED_PROXIES</code></td>
 <td>not set</td>
-<td>The proxies whose forwarded address and scheme Symfony reads, <code>framework.trusted_proxies</code>. The application names none. Behind a proxy that terminates TLS, a deployment names it: without it, every request reads as plain HTTP from the address of the proxy. Addresses or networks separated by commas, <code>private_ranges</code> standing for every private network</td>
+<td>The proxies whose forwarded address and scheme Symfony reads, <code>framework.trusted_proxies</code>. The application names none. Behind a proxy that terminates TLS, a deployment names it, and the loopback address the <a href="../deployment/#the-health-check">health check</a> of the image asks from: without the proxy, every request reads as plain HTTP from the address of the proxy, and without the loopback address the container is unhealthy. Addresses or networks separated by commas, <code>private_ranges</code> standing for every private network and the loopback address</td>
 </tr>
 <tr>
 <td><code>SYMFONY_TRUSTED_HEADERS</code></td>
@@ -6055,7 +6055,23 @@ container into, and <code>APP_LOG_DIR</code>, which moves its logs.</p>
 </tr>
 <tr>
 <td><code>CADDY_GLOBAL_OPTIONS</code></td>
-<td>Directives added to the global options of the <code>Caddyfile</code></td>
+<td>Directives added to the global options of the <code>Caddyfile</code>, a <code>servers</code> block aside: the image writes one for every listener of its sites. Caddy refuses a second one without an address as it starts, and one that names a listener replaces the block of the image on that listener, which then loses <code>CADDY_MAX_HEADER_SIZE</code> and <code>CADDY_SERVER_OPTIONS</code></td>
+</tr>
+<tr>
+<td><code>CADDY_SERVER_OPTIONS</code></td>
+<td>Options added to the <code>servers</code> block of the <code>Caddyfile</code>, which applies to every listener of its sites, written without the <code>servers { }</code> around them: behind a proxy, <code>trusted_proxies</code> and <code>client_ip_headers</code> (<a href="../examples/#behind-a-proxy-that-terminates-tls">an example</a>)</td>
+</tr>
+<tr>
+<td><code>CADDY_MAX_HEADER_SIZE</code></td>
+<td>The size of the request line and the headers of a request, <code>max_header_size</code> of that block, <code>16KiB</code> when it is not set. A request over it is answered <code>431</code> (RFC 6585 §5), as the Go server Caddy is built on counts it: over HTTP/1.1, that server reads 4 KiB beyond the bound before it refuses</td>
+</tr>
+<tr>
+<td><code>CADDY_REQUEST_BODY_MAX_SIZE</code></td>
+<td>The size of the body the site of <code>SERVER_NAME</code> and the host that asks for a client certificate read, <code>2MiB</code> when it is not set. A body over it is answered <code>413</code> (RFC 9110 §15.5.14), whether its length is announced or it is chunked</td>
+</tr>
+<tr>
+<td><code>CADDY_ADMINISTRATION_REQUEST_BODY_MAX_SIZE</code></td>
+<td>The size of the body the site of the administration API reads, <code>256KiB</code> when it is not set, answered as above</td>
 </tr>
 <tr>
 <td><code>CADDY_SERVER_EXTRA_DIRECTIVES</code></td>
@@ -6219,7 +6235,7 @@ reads none of them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 14:51:29 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:39:48 UTC">November 23, 2026</span>
   </span>
 
     

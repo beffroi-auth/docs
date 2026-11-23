@@ -5294,12 +5294,13 @@ PostgreSQL, whose table <code>messenger_messages</code> holds the queues of the 
 <li><strong>Only the server publishes ports</strong>, 80 and 443 over TCP and 443 over UDP. PostgreSQL is reached by the two
   processes alone.</li>
 <li><strong>The worker has a health check of its own</strong>, that the consumer is the first process of its container: the
-  one of the image asks Caddy, which the worker does not run.</li>
+  one of the image asks the provider through Caddy, which the worker does not run.</li>
 <li><strong>The host that asks for a client certificate is off</strong>, and three commented variables of the server turn it
   on: <code>CADDY_EXTRA_CONFIG</code>, <code>MTLS_SERVER_NAME</code> and <code>BEFFROI_MTLS_ORIGIN</code>.</li>
 <li><strong>Caddy terminates TLS</strong>, and two commented variables of the server hand it to a proxy in front of the
   image: <code>TLS_TERMINATION</code>, which serves the site of <code>SERVER_NAME</code> on plain HTTP, on port 80, to the proxy
-  that asks for that host, and <code>SYMFONY_TRUSTED_PROXIES</code>, which names the proxy to Symfony:
+  that asks for that host, and <code>SYMFONY_TRUSTED_PROXIES: private_ranges</code>, which names to Symfony a proxy
+  on a private network and the loopback address the health check of the image asks from:
   <a href="../../application/deployment/#behind-a-proxy">behind a proxy</a>.</li>
 </ul>
 <p>Its header gives the first start in the order below, the worker started last.</p>
@@ -5371,7 +5372,7 @@ development stack draws both.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 14:48:25 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:39:48 UTC">November 23, 2026</span>
   </span>
 
     

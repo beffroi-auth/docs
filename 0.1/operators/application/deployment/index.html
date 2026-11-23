@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The image, the HTTP server in worker mode, the worker, the planes, what the processes share, TLS and the host that asks for a client certificate.">
+        <meta name="description" content="The image, the HTTP server in worker mode and its health check, the worker, the planes, what the processes share, TLS and the host that asks for a client certificate.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -82,7 +82,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Deployment">
-  <meta property="og:description" content="The image, the HTTP server in worker mode, the worker, the planes, what the processes share, TLS and the host that asks for a client certificate.">
+  <meta property="og:description" content="The image, the HTTP server in worker mode and its health check, the worker, the planes, what the processes share, TLS and the host that asks for a client certificate.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3014,6 +3014,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#the-health-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The health check
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#the-planes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5120,6 +5131,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#the-health-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The health check
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#the-planes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5297,11 +5319,48 @@ entrypoint does three things when <code>.env</code> names a <code>DATABASE_URL</
    only what changed. A configuration the tenant refuses, or that moved its issuer, stops the container
    before it serves, at every start.</li>
 </ol>
-<p>The health check of the image asks the metrics endpoint of the Caddy admin API inside the container,
-<code>http://localhost:2019/metrics</code>, with PHP, the image carrying no <code>curl</code>, after a start period of sixty
-seconds. Only the server runs Caddy, so a container that runs the worker turns that check off or replaces it.
-The Compose file of the image gives its worker a check of its own, that the consumer is the first process of
-its container.</p>
+<p>Caddy bounds the size of a request before it reaches the provider. On the listeners of its sites, a request
+whose request line and headers go over the bound, as the Go server Caddy is built on counts them, is answered
+<code>431</code> (RFC 6585 §5). On each site, a body over the bound of that site is answered <code>413</code> (RFC 9110 §15.5.14),
+whether its length is announced or it is chunked. The defaults let through the largest SAML message the
+provider reads from a posted form, and the largest S/MIME key with its certificates the administration API
+takes: <a href="../configuration/#the-web-server">the variables of the web server</a>.</p>
+<h3 id="the-health-check">The health check<a class="headerlink" href="#the-health-check" title="Link to this section">&para;</a></h3>
+<p>The <code>HEALTHCHECK</code> of the production image runs <code>/usr/local/bin/docker-healthcheck</code>, a PHP script, with a start
+period of sixty seconds. It asks the site of <code>SERVER_NAME</code> for a document the provider serves, over the
+loopback address, <code>127.0.0.1</code>, under the host of the issuer: the discovery document, or <code>/copy.js</code> in a
+process whose <code>BEFFROI_PLANE</code> is <code>interaction</code>, which answers <code>404</code> on the discovery path.</p>
+<table>
+<thead>
+<tr>
+<th><code>TLS_TERMINATION</code></th>
+<th>The request of the check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>caddy</code></td>
+<td><code>https</code> on port 443, the host of the issuer in its <code>Host</code> header and its SNI. The certificate Caddy presents is not verified, the request never leaving the container</td>
+</tr>
+<tr>
+<td><code>proxy</code></td>
+<td><code>http</code> on port 80, the host of the issuer in its <code>Host</code> header, with <code>X-Forwarded-Proto: https</code>, as the proxy sends it</td>
+</tr>
+</tbody>
+</table>
+<p>A port that the first address of <code>SERVER_NAME</code> names replaces 443 or 80. Caddy answers an empty <code>200</code> to a host
+none of its sites names, so the check passes on a <code>200</code> with a body alone, and fails when the site of
+<code>SERVER_NAME</code> does not serve the host of the issuer. It follows no redirect and gives up after ten seconds
+without an answer. When it fails, it writes the URL, the host and what was answered, the status and any
+<code>Location</code>, or why nothing was, on its error output, which <code>docker inspect</code> shows in the health of the
+container. It reads <code>BEFFROI_ISSUER</code>, <code>SERVER_NAME</code>, <code>TLS_TERMINATION</code> and <code>BEFFROI_PLANE</code> as Symfony does,
+from the environment first, then from the <code>.env</code> the image compiled.</p>
+<p>Both documents read the row of the tenant, so the check fails while the server cannot reach the database, and
+while the kernel refuses its configuration, which fails every request. Behind a proxy, it passes only when
+Symfony reads its <code>X-Forwarded-Proto</code> from the loopback address: <a href="#behind-a-proxy">behind a proxy</a>.</p>
+<p>Only the server runs Caddy, so a container that runs the worker turns that check off or replaces it. The
+Compose file of the image gives its worker a check of its own, that the consumer is the first process of its
+container.</p>
 <h3 id="the-planes">The planes<a class="headerlink" href="#the-planes" title="Link to this section">&para;</a></h3>
 <p>Every route of the provider, the ones <code>config/beffroi/routes.php</code> imports, carries its plane in its name,
 <code>beffroi_protocol_*</code> for what a client or a resource server calls and <code>beffroi_interaction_*</code> for what a browser
@@ -5544,12 +5603,19 @@ every act of the journal records as where it came from. Behind a proxy that is n
 reads as plain HTTP and has the address of the proxy: a request of a safe method, a <code>GET</code> or a <code>HEAD</code> among
 them, is sent to the same address over HTTPS, without end, and the others, a <code>POST</code> among them, are
 served as they came, under the address of the proxy.</p>
+<p><a href="#the-health-check">The health check</a> asks the server from the loopback address, <code>127.0.0.1</code>, with the
+<code>X-Forwarded-Proto</code> the proxy would send, so <code>SYMFONY_TRUSTED_PROXIES</code> names that address as well, and
+<code>SYMFONY_TRUSTED_HEADERS</code>, when it is set, keeps <code>x-forwarded-proto</code>. Otherwise Symfony reads the check as
+plain HTTP, sends it to HTTPS, and the container is unhealthy. <code>private_ranges</code> holds the loopback address,
+and a deployment that names its proxy by its address adds <code>127.0.0.1</code>.</p>
 <p>A proxy that names the client in a header Symfony does not read, <code>CF-Connecting-IP</code> behind Cloudflare, has
-Caddy read it, with <code>client_ip_headers</code> and <code>trusted_proxies</code> in the <code>servers</code> block of <code>CADDY_GLOBAL_OPTIONS</code>,
-and write it into <code>X-Forwarded-For</code>, with <code>request_header X-Forwarded-For {client_ip}</code> in
-<code>CADDY_SERVER_EXTRA_DIRECTIVES</code>, and in <code>CADDY_ADMINISTRATION_EXTRA_DIRECTIVES</code> for the site of the
-administration API, each site carrying its own: FrankenPHP hands PHP the address of its peer and the headers as
-they arrived, whatever Caddy read.</p>
+Caddy read it, with <code>client_ip_headers</code> and <code>trusted_proxies</code> in <code>CADDY_SERVER_OPTIONS</code>, the options of the one
+<code>servers</code> block the image writes for every listener of its sites, and write it into <code>X-Forwarded-For</code>, with
+<code>request_header X-Forwarded-For {client_ip}</code> in <code>CADDY_SERVER_EXTRA_DIRECTIVES</code>, and in
+<code>CADDY_ADMINISTRATION_EXTRA_DIRECTIVES</code> for the site of the administration API, each site carrying its own:
+FrankenPHP hands PHP the address of its peer and the headers as they arrived, whatever Caddy read. A
+<code>servers { }</code> block written in <code>CADDY_GLOBAL_OPTIONS</code> is a second block for the same listeners, which Caddy
+refuses as it starts.</p>
 <p>The host that asks for a client certificate terminates its TLS in Caddy whatever <code>TLS_TERMINATION</code> says. A
 client presents its certificate in the handshake, so a proxy in front of that host passes its connections
 through without terminating them.</p>
@@ -5688,7 +5754,7 @@ alone, the one bridge of <code>symfony/notifier</code> the image installs.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 14:51:29 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:39:48 UTC">November 23, 2026</span>
   </span>
 
     
