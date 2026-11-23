@@ -163,7 +163,7 @@ origin is worth.
 
 ## Lists in JSON
 
-Twelve lists of the configuration are a JSON document each, of the shape the
+Thirteen lists of the configuration are a JSON document each, of the shape the
 [configuration reference](../reference/configuration.md) gives the list. A document fits on one line in single
 quotes, or spreads over several in a literal block. Both processes read the tenant, so its lists are written
 under `x-deployment`:

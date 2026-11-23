@@ -54,6 +54,7 @@ Three more decide what a deployment of real people does:
 | `BEFFROI_KMS_KEY_ID` | empty | The master key of that service the tenant is sealed under. `{tenant}` in it stands for the slug of the tenant, one master key per tenant |
 | `BEFFROI_KMS_DSN_SECOND` | empty | A second client, `second`, holding a key under the same identifier, for a run that moves the data keys from one to the other. Empty, the client is declared and never built |
 | `BEFFROI_DATA_KEY_SECRETS` | not set | The secrets every data key of personal data is bound to its row under, as a JSON list, the one that binds a new row first. Not set, `APP_SECRET` alone binds them. [Operating it](operating.md#data-keys) says how a rotation of `APP_SECRET` uses it |
+| `BEFFROI_LOCALES` | `[]` | The [languages](translations.md) the pages and the messages are served in, as a JSON list, `'["fr","en"]'`, `DEFAULT_LOCALE` among them. `[]` serves every language the application ships. A language without a catalogue, or a list that leaves out `DEFAULT_LOCALE`, is refused. The discovery document announces them in `ui_locales_supported` |
 | `BEFFROI_PLANE` | `provider` | The planes this process serves: `provider` (the interaction and protocol planes), `interaction` or `protocol`, and `administration`, the administration API alone, which the worker of `/etc/frankenphp/administration.Caddyfile` sets. In a process of the interaction or of the protocol plane, a route of the other answers `404` |
 | `BEFFROI_MESSENGER_DSN` | `doctrine://default?queue_name={lane}` | Where the four lanes go: one DSN for the four, `{lane}` in it standing for the name of each lane, so that each is a queue of its own. A DSN that names no `{lane}` is refused when the transport of a lane is built. The value of `.env` is a queue of the table `messenger_messages` per lane, which the transport creates the first time it reaches it. The image carries the transport of no broker, so a deployment of it keeps its lanes in the database. A message that fails stays in the database whatever this names |
 | `BEFFROI_MTLS_ORIGIN` | empty | The origin of the host that asks for a client certificate, announced in `mtls_endpoint_aliases` (RFC 8705 §5). Empty, the provider serves no mutual TLS: no alias, neither `tls_client_auth` nor `self_signed_tls_client_auth`, and no token bound to a certificate |
@@ -63,7 +64,7 @@ Three more decide what a deployment of real people does:
 
 ## The tenant
 
-Twelve variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
+Thirteen variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
 list has in the [configuration tree](../reference/configuration.md), `[]` or `{}` for none. An empty variable
 is no JSON document, and is refused.
 
@@ -219,7 +220,7 @@ on what its own clients send.
 | `APP_SECRET` | empty | The secret of the kernel, `framework.secret`. `.env.dev` and `.env.test` give one each, for their own environment, so a production environment names its own. While `BEFFROI_DATA_KEY_SECRETS` is not set, it is also the secret every data key of personal data is bound to its row under: the store of the data keys refuses an empty one the first time it is used, and changing it alone leaves the personal data unreadable: [operating it](operating.md#data-keys) says how it is replaced |
 | `APP_SHARE_DIR` | `var/share` | The share directory of Symfony, one per environment beneath it, `var/share/prod` for a production kernel. It holds the filesystem pool of `cache.app`, and with it the [caches the processes share](deployment.md#what-the-processes-share). It is compiled into the container when the image is built: set when a container starts, it moves nothing |
 | `DEFAULT_URI` | `https://op.localhost` | The URL Symfony generates absolute URLs under outside a request, in the console and in the worker, `framework.router.default_uri`: the issuer |
-| `DEFAULT_LOCALE` | `en` | The language a page falls back to, among the two the application serves, `en` and `fr` |
+| `DEFAULT_LOCALE` | `en` | The language a page falls back to, one of the languages the deployment serves |
 | `DATABASE_URL` | `postgresql://beffroi:beffroi@127.0.0.1:5432/beffroi?serverVersion=16&charset=utf8` | The PostgreSQL database. The entrypoint of the image waits for it, and the migrations refuse any other platform |
 | `SYMFONY_TRUSTED_PROXIES` | not set | The proxies whose forwarded address and scheme Symfony reads, `framework.trusted_proxies`. The application names none. Behind a proxy that terminates TLS, a deployment names it: without it, every request reads as plain HTTP from the address of the proxy. Addresses or networks separated by commas, `private_ranges` standing for every private network |
 | `SYMFONY_TRUSTED_HEADERS` | not set | The headers Symfony reads from those proxies, separated by commas. Not set, `x-forwarded-for`, `x-forwarded-port` and `x-forwarded-proto` |

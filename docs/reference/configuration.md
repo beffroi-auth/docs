@@ -168,6 +168,15 @@ The two budgets every request is counted against. A request over a budget is ans
 |---|---|---|---|---|
 | `login_hint` | `BEFFROI_INTERACTION_LOGIN_HINT` | `sub`, `username` or `none` | `sub` | What the `login_hint` of an authorization request names, read one way and never searched (OIDC Core §3.1.2.1): `sub`, the subject the provider issued to that client; `username`, the name the person signs in with; `none`, which leaves the hint to a class tagged `beffroi.oidc.login_hint`, and the application tags none, so the image then reads no hint. The login page offers the name of the person the hint names, and nothing when it names nobody |
 
+## `locales`
+
+The languages the pages and the messages are served in, a list of locales of `framework.enabled_locales`.
+`BEFFROI_LOCALES` carries the section whole, a JSON list, and `.env` writes `[]`, which serves every language
+the application ships. The default locale, `DEFAULT_LOCALE`, is one of them. A language without a catalogue,
+the default locale included, and a list that leaves out the default locale are refused when the provider first
+reads the languages it serves. The discovery document announces them in `ui_locales_supported` (OIDC
+Discovery 1.0 §3): [translations](../application/translations.md).
+
 ## `back_channel_logout`
 
 How a logout token reaches a client that registered a `backchannel_logout_uri`. The four `retry_*` options

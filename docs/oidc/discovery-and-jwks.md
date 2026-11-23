@@ -45,6 +45,7 @@ provider refuses rather than arbitrates.
 | `issuer`, `authorization_endpoint`, `token_endpoint`, `userinfo_endpoint`, `jwks_uri` | The issuer, and the routes under it. Always present |
 | `scopes_supported` | `openid`, the scopes the wired claims stand for, the scopes of the APIs `BEFFROI_TENANT_SCOPES` names, the scopes the clients of the tenant registered, and `offline_access` where a wired grant issues a refresh token and another spends one. [Scopes and claims](scopes-and-claims.md) |
 | `claims_supported`, `claims_parameter_supported` | `sub` and the claims the provider serves; `true` |
+| `ui_locales_supported` | The languages the pages are served in, the default first, as language tags (RFC 5646). [Translations](../application/translations.md) |
 | `response_types_supported` | `["code"]`, and nothing else: no implicit flow and no hybrid |
 | `response_modes_supported` | The response modes wired, `query`, `form_post`, `query.jwt` and `form_post.jwt` in the application, plus `jwt` when a signed mode is among them (JARM §2.1). [Response modes](response-modes.md) |
 | `grant_types_supported` | The grants the token endpoint is wired with, all seven in the application. [Grants](grants/index.md) |
