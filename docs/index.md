@@ -15,7 +15,7 @@ hide:
 the interface is Symfony, the API is API Platform, and the identity provider is always somewhere else.
 Beffroi paints that last box the same colour as the other two.</p>
 
-[Get started](getting-started/installation.md){ .md-button .md-button--primary }
+[Get started](operators/getting-started/installation.md){ .md-button .md-button--primary }
 [What is Beffroi?](the-project/what-is-beffroi.md){ .md-button }
 
 </div>
@@ -31,42 +31,45 @@ Beffroi paints that last box the same colour as the other two.</p>
 
     ---
 
-    What Beffroi is, what it refuses to do, and the packages it is made of.
+    What Beffroi is, what it refuses to do, the conformance it is tested for, and how it is versioned.
 
     [:beffroi-arrow-right: What is Beffroi?](the-project/what-is-beffroi.md)
 
--   :beffroi-server:{ .lg .middle } **Run a provider**
+-   :beffroi-code:{ .lg .middle } **Developers**
 
     ---
 
-    The application, a tenant, a signing key, a first client, a user who signs in.
+    For whoever writes an application that signs people in with Beffroi, a resource server that reads its
+    tokens, or code on its packages: the protocol, the clients, the tokens and the ports.
 
-    [:beffroi-arrow-right: Getting started](getting-started/installation.md)
+    [:beffroi-arrow-right: The documentation for developers](developers/index.md)
 
--   :beffroi-package:{ .lg .middle } **Inside the application**
-
-    ---
-
-    The provider page by page: its configuration, routes, persistence, security, pages and console.
-
-    [:beffroi-arrow-right: The application](application/index.md)
-
--   :beffroi-token:{ .lg .middle } **Read the protocol**
+-   :beffroi-server:{ .lg .middle } **Operators**
 
     ---
 
-    Clients, grants, tokens, discovery, logout, and what each endpoint answers.
+    For whoever installs, configures and runs an instance: the image, its variables, the tenant and its
+    keys, SAML partners, the console, operating and observing it.
 
-    [:beffroi-arrow-right: OAuth 2.0 and OpenID Connect](oidc/index.md)
+    [:beffroi-arrow-right: The documentation for operators](operators/index.md)
 
--   :beffroi-federation:{ .lg .middle } **Speak SAML**
+-   :beffroi-settings:{ .lg .middle } **Administrators**
 
     ---
 
-    The identity provider of the applications that speak SAML 2.0, and the service provider of the identity
-    provider of an organisation.
+    For whoever administers the tenants of an instance and their people, with the terminal client of the
+    administration API.
 
-    [:beffroi-arrow-right: SAML 2.0](saml/index.md)
+    [:beffroi-arrow-right: The documentation for administrators](administrators/index.md)
+
+-   :beffroi-user:{ .lg .middle } **Users**
+
+    ---
+
+    For a person with an account: signing in, passkeys and the second factor, the applications they allowed,
+    and what is held about them.
+
+    [:beffroi-arrow-right: The documentation for users](users/index.md)
 
 </div>
 
@@ -74,13 +77,13 @@ Beffroi paints that last box the same colour as the other two.</p>
 
 | Package | What it holds | Depends on |
 |---|---|---|
-| [`beffroi/core`](core/index.md) | Tenants, users, credentials, linked identities, groups, authentication sessions, keys. Pure PHP, no protocol, no HTTP, no Doctrine | PHP, PSR interfaces, a handful of libraries |
-| [`beffroi/oidc`](oidc/index.md) | OAuth 2.0 and OpenID Connect: clients, authorization requests, grants, tokens, discovery, JWKS, UserInfo, logout. Pure PHP | `beffroi/core` |
-| [`beffroi/saml`](saml/index.md) | SAML 2.0: the identity provider and the service provider of a tenant, their metadata, single logout on the session of the core. Pure PHP | `beffroi/core` and the three packages below |
-| [`beffroi/saml2-model`](saml/packages.md#saml2-model) | The SAML 2.0 messages, assertions and metadata, read strictly, validated and written. No HTTP | `beffroi/xml-security` |
-| [`beffroi/saml2-bindings`](saml/packages.md#saml2-bindings) | The HTTP-Redirect and HTTP-POST bindings, on strings and arrays | `beffroi/saml2-model` |
-| [`beffroi/xml-security`](saml/packages.md#xml-security) | A safe DOM, XML Signature and XML Encryption | PHP, with `dom`, `libxml` and `openssl` |
-| [`beffroi/beffroi`](application/index.md) | The provider: the application that serves the protocols, with its configuration, controllers, security, persistence, pages and console, on FrankenPHP | the core and both protocols, plus Symfony |
+| [`beffroi/core`](developers/core/index.md) | Tenants, users, credentials, linked identities, groups, authentication sessions, keys. Pure PHP, no protocol, no HTTP, no Doctrine | PHP, PSR interfaces, a handful of libraries |
+| [`beffroi/oidc`](developers/oidc/index.md) | OAuth 2.0 and OpenID Connect: clients, authorization requests, grants, tokens, discovery, JWKS, UserInfo, logout. Pure PHP | `beffroi/core` |
+| [`beffroi/saml`](operators/saml/index.md) | SAML 2.0: the identity provider and the service provider of a tenant, their metadata, single logout on the session of the core. Pure PHP | `beffroi/core` and the three packages below |
+| [`beffroi/saml2-model`](developers/saml/packages.md#saml2-model) | The SAML 2.0 messages, assertions and metadata, read strictly, validated and written. No HTTP | `beffroi/xml-security` |
+| [`beffroi/saml2-bindings`](developers/saml/packages.md#saml2-bindings) | The HTTP-Redirect and HTTP-POST bindings, on strings and arrays | `beffroi/saml2-model` |
+| [`beffroi/xml-security`](developers/saml/packages.md#xml-security) | A safe DOM, XML Signature and XML Encryption | PHP, with `dom`, `libxml` and `openssl` |
+| [`beffroi/beffroi`](operators/application/index.md) | The provider: the application that serves the protocols, with its configuration, controllers, security, persistence, pages and console, on FrankenPHP | the core and both protocols, plus Symfony |
 
 ## What it will not do
 

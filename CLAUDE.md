@@ -10,6 +10,16 @@ packages it is built on: `beffroi/core` (identity), `beffroi/oidc` (OAuth 2.0 an
 `beffroi/saml` (SAML 2.0) and the three packages under it. There is no bundle: nothing installs the provider
 inside another application. SCIM has a section, which says it is not implemented.
 
+The site is four documentations, one per reader, each a tab of its own after the home and the pages of
+the project:
+
+| Directory | Its reader |
+|---|---|
+| `docs/developers/` | Whoever writes an application that signs people in with Beffroi, a resource server that reads its tokens, or code on its packages |
+| `docs/operators/` | Whoever installs an instance, sets it through its environment and keeps it running, with the tenants, keys and SAML partners the environment declares |
+| `docs/administrators/` | Whoever administers the tenants of an instance and their people, through the administration API and its terminal client |
+| `docs/users/` | A person with an account at a tenant: signing in, their means of signing in, what they allowed, what is held about them |
+
 The code lives in `beffroi-auth/beffroi`, cloned at `~/Projects/idp/code`. Its design, its decisions and its
 spikes live in `beffroi-auth/design`, cloned at `~/Projects/idp`. **Neither of those is this repository, and
 neither is the audience of this one**: `design` is internal and in French, this site is public and in
@@ -29,9 +39,13 @@ through mike. `README.md` has the commands.
 - **What is not written yet says so.** `status: draft` in the front matter, and a stub that states the
   subject of the page and the specification it follows. Never a page that sounds finished and is not, and
   never a sentence invented to fill one.
-- **The audience is whoever installs Beffroi**, not the team that writes it. No spike number, no decision
-  number, no issue number, no internal date, no name of a person on any page.
-- **Specifications are cited by number and section**: `RFC 9449 §4.3`, `OIDC Core §3.1.3.7`.
+- **A page belongs to one documentation**, the one whose reader acts on what it says. A fact that two
+  readers need is written once, in the page of the one who acts on it, and the other page links it: the
+  page of an operator says what the tenant allows, the page of a user says what the person does with it.
+- **None of the readers is the team that writes Beffroi.** No spike number, no decision number, no issue
+  number, no internal date, no name of a person on any page.
+- **Specifications are cited by number and section** on the pages for developers, operators and
+  administrators: `RFC 9449 §4.3`, `OIDC Core §3.1.3.7`.
 - **English, full sentences, no dash used as punctuation** (no em dash, no en dash). Same house style as
   the design repository, in the other language.
 
@@ -51,19 +65,34 @@ description: One sentence, used by search engines and by the social card.
 
 - One page, one subject, named by its title. The navigation in `mkdocs.yml` is the table of contents, and a
   page absent from it fails the build.
-- Internal links are relative paths to the `.md` file (`../core/keys.md`), never to the built URL.
+- Internal links are relative paths to the `.md` file (`../tenant/keys.md`), never to the built URL.
 - Hints are Material admonitions, not GitBook `{% hint %}` blocks, and there are three: `!!! note` (or
   `info`, `tip`), `!!! warning` and `!!! danger`. Each one shows its word above its title.
 - Tabs for alternatives the reader chooses between (`=== "On your machine"`), a table for facts.
 - A code block carries its filename when the reader has to put it somewhere:
   ` ```yaml title="config/packages/beffroi.yaml" `.
 
+## The pages for users
+
+- They speak to the person, as "you". That person may not know the provider is called Beffroi, since the
+  sign-in pages show the look of their organisation: the tenant is "your organisation".
+- Every page, heading, button and message is quoted with the words of the English catalogue of the
+  application, so that the reader recognises what they see.
+- No environment variable, route, class, command, configuration key or specification section. What the
+  organisation decides is said as such ("if your organisation allows it"), and how it is set belongs to
+  the documentation for operators or for administrators.
+
 ## Adding a page
 
-1. Write `docs/<section>/<page>.md` with the front matter above.
-2. Add it to `nav:` in `mkdocs.yml`, in the place the reader would look for it.
+1. Write `docs/<documentation>/<section>/<page>.md` with the front matter above, in the documentation of
+   its reader.
+2. Add it to `nav:` in `mkdocs.yml`, under the tab of that documentation, in the place the reader would
+   look for it.
 3. `make check`. Strict mode fails on a broken link, a missing anchor, a page outside the navigation and a
    navigation entry without a page.
+
+A page that moves keeps its address: its former path goes to `redirect_maps` in `mkdocs.yml`, pointing at
+the new one.
 
 ## The look
 

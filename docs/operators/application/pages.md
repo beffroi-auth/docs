@@ -1,0 +1,251 @@
+---
+title: Pages
+description: The pages a person reads, what each one shows, what a deployment and a visitor change of their look, and what a template keeps of what they post.
+---
+
+# Pages
+
+The pages a person reads are Twig templates of the application, under `templates/beffroi/` in the `@Beffroi`
+namespace, translated. They carry the structure and the words, never a stylesheet: their look is a layout, two
+skeletons and one stylesheet of the application, which a deployment colours through its environment and a
+visitor reads in the theme they pick. The scripts they load are the application's own and served by it, so a
+deployment has nothing to build for them; the pages that post a form carry one line of script of their own,
+named by its hash.
+
+## Making them yours
+
+A deployment gives the pages the name, the logo and the two colours of its tenant, through its environment
+like everything else it sets:
+
+| Variable | What the pages show |
+|---|---|
+| `BEFFROI_TENANT_NAME` | The name of the tenant, the host of the issuer when the variable is empty |
+| `BEFFROI_TENANT_LOGO_URI` | The logo of the tenant, the placeholder mark the application serves at `/tenant-logo.svg` when the variable is empty |
+| `BEFFROI_TENANT_PRIMARY_COLOR` | The colour the buttons are drawn in, and the links mixed with the colour of the text |
+| `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | The colour of what is written on them, named with the one above or not at all |
+
+A change of one of them is written to [the row of the tenant](../tenant/tenants.md#its-row) by
+`beffroi:tenant:synchronize`, which the server of the image runs as it starts; until it is, a request that
+needs the tenant fails, naming the field that disagrees.
+
+[:beffroi-arrow-right: The variables of the tenant](configuration.md#the-tenant)
+
+A visitor reads the pages in the theme they pick, light, dark or the one their browser asks for, from a
+control beside the choice of a language on every page that extends the layout. The choice is a form and no
+script, posted to `/theme`, which sends the browser back to the page it was made on. It is kept for a year on
+[the cookie of the preferences](translations.md#how-a-person-chooses-one) of that browser and read on the
+server, so a page is rendered in the theme it was asked in.
+
+The templates themselves are code of the application. `templates/beffroi/layout.html.twig`, which every page
+extends but the four that carry a step of the protocol, picks one of the two skeletons of `templates/layout/`
+by the route: `account.html.twig` for a page of the account, which lists the pages of the account in a column
+beside it, and `interaction.html.twig` for every other page, which on a wide screen names the tenant in a
+panel beside the question. The error page sets `beffroi_refusal`, so that a refusal served on a route of the
+account is drawn in `interaction.html.twig` too. Both skeletons extend `document.html.twig`, which carries
+the language of the page, its theme, the two colours of the tenant and the one stylesheet, Tailwind and
+DaisyUI built from `assets/styles/app.css`.
+
+| Block | What the pages put in it |
+|---|---|
+| `title` | The title of the page, which `heading` repeats unless a page says otherwise |
+| `head` | The script a page needs: `passkey.js` on the login page, the page of passkeys and the enrolment by ticket, `push.js` on the page of notifications, `copy.js` where a value is handed over to copy, `password-strength.js` on the page of the password and on the page of a password ticket |
+| `heading` | The heading of the page |
+| `action` | The one action a page of the account offers beside its title, when it offers one |
+| `content` | The page itself |
+
+The stylesheet sits outside `head` in `document.html.twig`, since a page that loads a script fills that block
+and its own block replaces the whole of it. The skeletons include the logo of the tenant, `_brand.html.twig`,
+and the two controls of their bar, the language, `_locale_switcher.html.twig`, and the theme,
+`templates/_theme_switcher.html.twig`.
+
+The templates read what they show of the provider through these functions and filters, under `App\Twig\`:
+
+| Twig | What it gives |
+|---|---|
+| `beffroi_tenant()` | What the page shows of its tenant: `name`, `logoUri`, `primaryColor`, `primaryContentColor`, or nothing when the row of the tenant is missing or disagrees with the configuration. Reading it adds the origin of the logo to the `img-src` of the page ([below](#what-a-tenant-shows-of-itself)) |
+| `beffroi_locales()` | The languages the deployment serves, the default one first |
+| `beffroi_locale_choice()` | The same list, or none when the record of a signed-in person decided the language of the page |
+| `beffroi_moment` | A date, on the clock of the person, in the words of the language of the page, the zone always named |
+| `beffroi_place`, `beffroi_device` | Where a request came from, and the browser it named |
+| `trans_with_client` | A message translated with the name a client gave itself (OIDC Registration §2) set apart in it, in `<b data-client-name>`: the sentence, the name and every parameter are escaped, so nothing a client writes reaches the page as markup, and a reader tells what the client says of itself from what the provider says |
+| `beffroi_authenticator` | The make and model of the authenticator a passkey declared, as the first source that knows its AAGUID gives them, the FIDO metadata before the list of the community: a name, a logo when the source has one, a FIDO certification from the metadata alone, and the source. Nothing when no source knows the AAGUID, or when it is sixteen zero bytes. The page of the passkeys reads it from what the console stored, so it fetches nothing |
+
+Three more draw the page rather than the provider: `theme()`, the theme the document is rendered in, which
+`document.html.twig` and the control of the theme read, `account_navigation()`, the pages of the account under
+their headings, which the column beside a page of the account lists, and `account_cards()`, the card of each
+of those pages on the home of the account.
+
+[:beffroi-arrow-right: Translations](translations.md)
+
+## What a tenant shows of itself
+
+The logo of the tenant is on every page that extends the layout, with the name of the tenant as the text that
+stands in for it, so a reader who does not see the image is told who they came for. It is loaded by the
+browser of the visitor, never by the provider, and with no referrer. A deployment that names no logo shows the
+placeholder mark of the application.
+
+The two colours the tenant declares, the one the buttons are drawn in and the one of what is written on them,
+are written by `document.html.twig` as the two custom properties DaisyUI draws a primary surface from,
+`--color-primary` and `--color-primary-content`, for both themes, in a `style` element that carries the nonce
+of the response and comes after the stylesheet. A tenant that declares no colour leaves the element off, and
+the theme answers.
+
+Reading the tenant names the origin its logo is served from: every page that reads `beffroi_tenant()`, which
+every page that extends the layout does, adds that origin to the `img-src` of the policy its answer carries,
+and the consent page adds the origin of the logo of the asking client beside it. A deployment names neither
+origin anywhere, and the placeholder mark is served from the origin of the application, which `img-src 'self'`
+allows already.
+
+Every page but those of `/authorize`, `/login`, `/consent`, `/logout`, `/device` and `/initiate-login`, the
+pages of the account, the pages a ticket opens and the pages a SAML flow answers with among them, is
+also served `Cross-Origin-Embedder-Policy: require-corp`, under which a browser refuses an image of another
+origin whose answer does not let it in. A logo served from another host shows there when that host answers
+`Cross-Origin-Resource-Policy: cross-origin`. The pages of those six paths carry no
+`Cross-Origin-Embedder-Policy` (`config/packages/nelmio_security.yaml`).
+
+[:beffroi-arrow-right: What the configuration says of a tenant](../tenant/tenants.md#what-the-configuration-says)
+
+## The pages
+
+| Template | Served at | What it is |
+|---|---|---|
+| `login.html.twig` | `/login` | Where a person proves who they are |
+| `login_address.html.twig` | `/login` | The address asked first, on a tenant that federates domains |
+| `code.html.twig` | `/login/code` | The second step: a code of the authenticator application, or a backup code |
+| `consent.html.twig` | `/consent` | What a client asks for, and the answer |
+| `logout.html.twig` | `/logout` | The confirmation of a logout the request did not prove it may make |
+| `logged_out.html.twig` | `/logout`, and after the end of a session | Signed out, or still signed in after choosing to stay |
+| `device.html.twig`, `device_approval.html.twig`, `device_answered.html.twig` | `/device` | The code a device shows, what it asks for, and the answer given |
+| `approvals.html.twig`, `approval_answered.html.twig` | `/account/approvals` | What somebody waits on an answer for, and the answer given |
+| `enrolment_ticket.html.twig` | `/enrol/{ticket}/{value}` | A passkey, posed without a session |
+| `password_ticket.html.twig` | `/password/{ticket}/{value}` | A new password, posed without the one in use and without a session |
+| `totp_ticket.html.twig`, `totp_ticket_enrolled.html.twig` | `/two-factor/{ticket}/{value}` | An authenticator application set up in place of the one held, without a session, and the backup codes of the new one |
+| `error.html.twig` | Wherever a request stops | The refusal, when nothing may be sent back to a client |
+| `account/*.html.twig` | `/account` and below | [The account pages](account.md) |
+| `form_post.html.twig`, `saml_post.html.twig`, `post_again.html.twig` | Wherever an answer goes back in a form: an authorization response, a SAML message, a post from another site | A form the browser posts on its own |
+| `front_channel_logout.html.twig` | The end of a session whose clients registered a front-channel logout URI | The frames of Front-Channel Logout 1.0 §3 |
+
+`scopes.html.twig`, `claims.html.twig` and `authorization_details.html.twig` write the scopes, the claims
+asked for by name and the details the same way on the consent page and on the two pages of the account that
+list what a person agreed to, `account/consents.html.twig` and `account/application.html.twig`;
+`_brand.html.twig` and `_locale_switcher.html.twig` are included by the skeletons.
+
+### The login page
+
+**It offers what the tenant admits.** It shows the logins the firewall wires that the [floor of the
+tenant](../tenant/tenants.md#the-floor-of-its-logins) accepts: a tenant that signs its people in by passkey
+shows no password field and no username, the passkey naming its own user. A tenant that federates domains to
+[upstream identity providers](../saml/federated-sign-in.md#the-login-page-asks-for-the-address-first) asks for
+the address first, one field and nothing else, and sends an address of those domains to its provider.
+
+The password form comes first. The passkey form is hidden until the script finds a browser that can hold a
+passkey, then shows a button, and the username field offers the passkeys the browser holds when it can
+(`autocomplete="username webauthn"`). A refused login shows one message, whatever the reason. On a step-up
+the page names the classes the client accepts and says which kinds of credential the person holds would
+reach one. A login asked for by a page of the provider names no client.
+
+### The consent page
+
+Who is asking is what the client registered of itself: its name, its logo, and the pages a person may read
+before deciding, `policy_uri`, `tos_uri` and `client_uri` in that order, each opened with no referrer. Then
+the person signed in, every scope of the request, the standard scopes of OIDC Core §5.4 in words and any
+other by its value, the claims the request asks for by name that a scope the client registered stands for and
+no scope of the request does (OIDC Core §5.5),
+those of §5.1 in words and any other by its name, and what the request asks for beyond its scopes (RFC 9396
+§2) in the words of its type. Allowing ends with the code carried to the client, so the page adds the origin
+of its redirection URI to the `form-action` of its policy.
+
+[:beffroi-arrow-right: Which claims asked for by name the page lists](../../developers/oidc/consent.md#the-page)
+
+### The logout pages
+
+The logout asks for a confirmation when the request did not prove it is about the session the browser holds
+(OIDC RP-Initiated Logout 1.0 §2), and the form posts the same parameters back with the answer. After it, the
+page says the person is signed out, or still signed in when they chose to stay. When clients of the session
+registered a front-channel logout URI, the page that loads them in frames is served once the session has
+ended, and goes on to where the logout was going.
+
+[:beffroi-arrow-right: Logout](../../developers/oidc/logout.md)
+
+### The device pages
+
+The first page asks for the code a device shows, one field and nothing else, and one message when the code
+names no request awaiting an answer, whatever the reason. The second says what the code names: the provider
+that is asking, the person signed in, the client that asked and the code, where the device asked from, every
+scope of the request, and a warning that somebody who started nothing refuses. Nothing is approved on a
+`GET`: the answer is a post of that page.
+
+### The pages that post a form
+
+Three pages carry a message of the protocol rather than a page of the product: the answer of the
+authorization endpoint in `response_mode=form_post` (OAuth 2.0 Form Post Response Mode §2), a SAML message to a
+peer, and a form another site posted without the session cookie, posted again from the provider's own origin.
+None of them extends the layout. Each carries the policy `default-src 'none'` and submits itself with the one
+script that policy names by its hash, and keeps a button for a browser that runs no script; their words are
+translated like every other page's. The page of the front-channel logout is built the same way, its policy
+naming the frames it opens.
+
+!!! warning "The script of these pages is their policy"
+
+    Their templates can be changed like any other, as long as the script is kept exactly as it is given: the
+    hash in the `Content-Security-Policy` is the hash of that script, and a script that differs by a character
+    does not run.
+
+## The headers of a page
+
+Every page the application renders on the interaction plane carries these, and the pages that post a form
+carry their own policy in place of the floor:
+
+| Header | Value |
+|---|---|
+| `X-Frame-Options` | `DENY` |
+| `Content-Security-Policy` | `frame-ancestors 'none'` |
+| `Referrer-Policy` | `no-referrer` |
+| `Cache-Control` | `no-store`; `no-cache, no-store`, with `Pragma: no-cache`, on the page that posts a SAML message and on the page that posts a form again |
+
+`frame-ancestors 'none'` is a floor: it restricts framing and nothing else, and the application serves every
+page that carries it the whole policy of its `config/packages/nelmio_security.yaml` in its place, a
+redirection keeping the floor. A page that has something to say about the request it answers never writes a
+policy of its own: it adds what it needs to whichever policy the answer carries, the enforced one and the one
+that only reports, once that policy is written.
+
+- The login page, the code page and the consent page add the origin of the redirection URI of the client to
+  `form-action`, since a browser checks that directive over the whole chain of redirections of a submission,
+  the last of which carries the code to the client. The logout confirmation adds the origin of the
+  post-logout redirection URI, and the origin of the single logout service of each SAML service provider the
+  logout goes through.
+- Every page that reads the tenant adds the origin of its logo to `img-src`, and the consent page adds the
+  origin of the logo of the asking client as well.
+
+A policy that names no `form-action` is left alone, that directive falling back to no other; a policy that
+names `default-src` and no `img-src` gets an `img-src` written out of it, with the origins added.
+
+The scripts are served with `Cache-Control: public` for an hour and an `ETag`:
+
+| Path | Read by |
+|---|---|
+| `/passkey.js` | The login page, the enrolment of a passkey on the account and by ticket |
+| `/push.js`, `/push-worker.js` | The page of notifications, and the service worker it registers |
+| `/copy.js` | The pages that hand over a value to copy, the key of an authenticator application and the backup codes, on the account and from a ticket |
+| `/password-strength.js` | The page of the password, and the page of a password ticket |
+
+## What a template keeps
+
+A template is free to move, reword or restyle anything, and three things in it are read by something else.
+**The fields of a form**, which a controller or an authenticator reads by name. **The form tokens**, each
+rendered under its identifier with `csrf_token()`, or by the form component of Symfony in the forms of the
+page of the profile. **The `data-*` attributes the scripts read**, and the `?interaction=` the actions carry,
+or the `interaction` field of the consent form, which is how a post finds its interaction.
+
+| Form | Fields | Token |
+|---|---|---|
+| Password login | `_username`, `_password` | `_csrf_token`, `beffroi_login` |
+| Passkey login | `_passkey`, in a form marked `data-passkey="login"` naming its options in `data-options-url`, with a `data-passkey-button` and a `data-passkey-error` | `_csrf_token`, `beffroi_login` |
+| Second step | `_code` | `_csrf_token`, `beffroi_login` |
+| Address first | `_address` | `_token`, `beffroi_login_address` |
+| Consent | `interaction`, `answer` with `allow` or `deny` | `_token`, `beffroi_consent` |
+| Logout | The parameters of the request, `confirm` with `yes` or `no` | `_token`, `beffroi_logout` |
+| Device | `user_code`, and `answer` with `allow` or `deny` on the second page | `_token`, `beffroi_device` |
+| Language | `locale`, `target`, and `interaction` when there is one | `_token`, `beffroi_locale` |
+
+[:beffroi-arrow-right: Security](security.md#form-tokens)

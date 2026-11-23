@@ -29,7 +29,7 @@ code. There is no `insecure_` setting, no compatibility mode, and no global swit
 | Every end of a session revokes what was issued under it | However a session ends, at the end session endpoint, from the account, by the console, by an administrator through the administration API or by a SAML logout, its refresh tokens are revoked, its opaque access tokens removed, and the provider refuses every token of it from then on. What a resource server verifies offline, a self-contained access token, lasts until it expires, which is why it lives ten minutes by default |
 | A form another site posts a browser to the provider with is posted again from the provider's own origin, and a post from another site is never answered with a new session cookie | Under `SameSite=Lax` a cross-site `POST` arrives without the session. Answered with a new cookie, it would sign the browser out of the provider; posted again, it reaches the session the browser holds. Both rules read where the post comes from in `Sec-Fetch-Site`, and a browser that does not send it is answered as it always was |
 | A person of a domain an upstream identity provider answers for signs in there and nowhere else | A local password would outlive the person's departure from the directory of their organisation, so none is posed for them and none is accepted from them |
-| In SAML, every assertion the provider writes is signed, no signature under SHA-1 is accepted, nothing is encrypted in CBC, and no response is taken that nobody asked for | [SAML 2.0](../saml/index.md#what-is-always-true) gives the whole list, and why each rule is there |
+| In SAML, every assertion the provider writes is signed, no signature under SHA-1 is accepted, nothing is encrypted in CBC, and no response is taken that nobody asked for | [SAML 2.0](../operators/saml/index.md#what-is-always-true) gives the whole list, and why each rule is there |
 
 ## Where an exception exists
 
@@ -58,7 +58,7 @@ never a global switch. The shape they take:
 The floor of the logins of a tenant is a predicate, and a predicate only ever asks for more proofs: a tenant
 can require two factors or a passkey of every login, and no floor can forbid the stronger credential or let a
 login prove less than one factor. A floor that leaves out a kind of credential forgets every credential of
-that kind rather than leaving it dormant. [The floor of its logins](../core/tenants.md#the-floor-of-its-logins)
+that kind rather than leaving it dormant. [The floor of its logins](../operators/tenant/tenants.md#the-floor-of-its-logins)
 says what it changes.
 
 ## Keys and personal data
@@ -82,7 +82,7 @@ A person who wants it to leave under a passphrase of their own choosing says so 
 the floor on the length of that passphrase is refused rather than warned about, since what stands between
 that file and whoever took it is the length of what was typed.
 
-[:beffroi-arrow-right: Keys](../core/keys.md) and [personal data](../core/personal-data.md).
+[:beffroi-arrow-right: Keys](../operators/tenant/keys.md) and [personal data](../operators/tenant/personal-data.md).
 
 ## What a deployment answers with
 
@@ -93,7 +93,7 @@ on every answer. Where both name a header, the value is the same or the floor of
 deployment's policy is written, so one policy is sent: a header written twice is not replaced, it collides, two
 content policies intersect, two `Access-Control-Allow-Origin` are invalid and the response is rejected.
 
-What [the application](../application/index.md) answers with is therefore named in its configuration and
+What [the application](../operators/application/index.md) answers with is therefore named in its configuration and
 nowhere else:
 `nosniff` and `DENY` everywhere, `Referrer-Policy: no-referrer`, HSTS for a year with the subdomains and
 the preload list, a permissions policy whose whole set is written down with two entries open to this

@@ -1,0 +1,478 @@
+---
+title: Configuration reference
+description: Every option of the tree under `beffroi`, with the variable a deployment sets it with, its value in the image, its type and what it decides.
+---
+
+# Configuration reference
+
+Every option the application reads under `beffroi`, section by section, in the order the application builds
+the tree. Only the application writes the tree, in its own `config/packages/beffroi.yaml`, and its file reads
+every option a deployment chooses from an environment variable: each option below is given with that
+variable, or, when no variable sets it, with what the image holds. [The configuration
+tree](../application/configuration-tree.md) says what each section is for, and [the
+configuration](../application/configuration.md) lists the variables.
+
+!!! note "Your installation is the authority"
+
+    This page is written by hand from the configuration classes of the application, in `src/Configuration/`,
+    from its `config/packages/beffroi.yaml` and from its `.env`, and nothing generates it. The tree your
+    version validates is the one your own installation prints, with the defaults of the tree:
+
+    ``` bash
+    bin/console config:dump-reference beffroi
+    bin/console config:dump-reference beffroi tokens
+    ```
+
+    The second form prints one section. Where this page and the command disagree, the command describes
+    the version you run.
+
+## Reading the tables
+
+- **A path** is written from the section it belongs to: `look.logo_uri` under `tenant` is
+  `beffroi.tenant.look.logo_uri`.
+- **The variable** is the one the application's file reads the option from, and **in the image** is what the
+  option holds when a deployment does not set that variable: its value in `.env`, which the image is compiled
+  with, and what an empty value means where `.env` leaves it empty. An option whose variable is **None** is
+  one no variable sets: a deployment of the image does not change it, and the image holds what the file
+  writes, or the default of the tree where the file writes nothing.
+- **A duration** is in seconds, except the two retentions, which are in days.
+- **A bound** is in the type column. The tree refuses a value outside it, and a value a variable carries is
+  held to it when the container builds the service the value reaches, so the first request or command that
+  needs it refuses it, an age of a key, `keys.age`, below a second among them. The age of a key is held besides
+  to a rule no bound states: the timed step of the key lifecycle refuses it, when it comes to stage a successor,
+  if it is not longer than the retirement window of its use. An unknown key is refused at any level of the tree.
+- **required** means the configuration is refused without it. **none** means the option is absent until it
+  is written, and the last column says what its absence decides.
+- **A list a variable carries whole**, the trusted issuers, the authorities of software statements and the
+  peers of each SAML role, is one JSON document of the shape its table gives, `{}` for none. Its table gives
+  the options of one entry, and their **default** is what an entry gets for an option it leaves out. The two
+  sections no variable sets, `clients` and `self_client`, give the default of the tree the same way.
+- **A keyed section** holds one entry per key, and the key is a value, the `iss` of a trusted issuer for
+  instance. It is kept exactly as written, never normalised.
+- **A wired name** is checked against what the provider is wired with: an algorithm, a grant, a method of
+  client authentication. The table names what the application wires, and a refusal names the names that are
+  wired.
+
+## `tenant`
+
+The one tenant of the deployment: required. [Tenants](../tenant/tenants.md) is what a tenant is. A value the
+tenant cannot hold is refused when the provider builds the tenant, which it does before serving anything of
+it. The issuer and ten of these values are written in the row of the tenant, the four of the passkey enrolment
+together: a change to one of the ten is written there by `beffroi:tenant:synchronize`, which the server of the
+image runs as it starts, or the command run by hand outside the image, and which refuses another issuer than the
+one the row was written with, as [the tenant](../application/configuration.md#the-tenant) says.
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `issuer` | `BEFFROI_ISSUER` | string, not empty, required | `https://op.localhost`, the issuer of the development stack | The issuer identifier (OIDC Discovery 1.0 §3), and the URL every endpoint is served under: an absolute `https` URL with no query, no fragment, no credentials, no trailing slash and no path: the application serves the provider at the root, so the issuer is an origin. Plain `http` is accepted on a loopback host only: `localhost`, a name under it, `127.0.0.0/8` or `[::1]` |
+| `slug` | `BEFFROI_TENANT_SLUG` | string, not empty | `default` | The stable name of the tenant, from which its identifier is derived. Renaming it is creating another tenant |
+| `name` | `BEFFROI_TENANT_NAME` | string | empty: the host of the issuer | What the pages call the tenant |
+| `look.logo_uri` | `BEFFROI_TENANT_LOGO_URI` | string | empty: `/tenant-logo.svg` under the issuer, the placeholder mark the image serves | The logo every page shows: an absolute `https` URL with no fragment and no credentials, plain `http` on a loopback host only. The browser of the visitor loads it, never the provider. Every page that reads the tenant adds the origin of the logo to the `img-src` of the `Content-Security-Policy` the application sends, so no policy names it by hand. A logo served from another host shows on the pages served under `Cross-Origin-Embedder-Policy: require-corp`, every page but those of `/authorize`, `/login`, `/consent`, `/logout`, `/device` and `/initiate-login`, only when that host answers `Cross-Origin-Resource-Policy: cross-origin` |
+| `look.primary_color` | `BEFFROI_TENANT_PRIMARY_COLOR` | string | `#1f6feb` | The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: `#` and three or six hexadecimal digits, as `#1b4b8f`. Declared with `primary_content_color` or not at all, an empty variable being no colour |
+| `look.primary_content_color` | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | string | `#ffffff` | The colour of what is written on `primary_color`, in the same notation |
+| `self_served_claims` | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | list of strings | the fourteen claims the application wires | The claims of OIDC Core §5.1 the people of the tenant may change of themselves on the page of their account, among the claims the provider is wired with: `name`, `given_name`, `family_name`, `middle_name`, `nickname`, `preferred_username`, `birthdate`, `gender`, `locale`, `zoneinfo`, `profile`, `picture`, `website` and `phone_number` in the application. A tenant whose directory owns the data names `[]` |
+| `authentication_classes` | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | map of class name to predicate name | `{}`: the default policy | The `acr` vocabulary of the tenant, in the order a session is answered in, each class on a predicate the provider is wired with: `phishing_resistant_hardware`, `phishing_resistant`, `two_factors` and `single_factor` in the application. Left empty, the default policy answers: `phrh`, `phr`, `2` and `1`, on those four in that order. A policy names one class at least on a predicate every login satisfies, `single_factor` among the four, so that every session has an `acr`. It never names `0` (OIDC Core §2), and the names of OpenID Connect EAP ACR Values 1.0 keep their meaning: `phrh` stands on `phishing_resistant_hardware` only, `phr` on it or on `phishing_resistant` |
+| `scopes` | `BEFFROI_TENANT_SCOPES` | list of strings | `[]`: none | The scopes of the APIs the tenant protects, which stand for no claim, as `["invoices.read","invoices.pay"]`. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them in `scopes_supported`, and a client that registers itself may register them: the image declares no client, so nothing else makes such a scope exist in it. Each is a scope token of RFC 6749 §3.3, and `offline_access` is refused, the wired grants deciding it (OIDC Core §11) |
+| `administrators` | `BEFFROI_TENANT_ADMINISTRATORS` | list of strings | `[]`: nobody | The groups whose members [administer the tenant](../../administrators/people/groups.md#who-administers-the-tenant), by their names in the tenant, compared exactly: a local group `beffroi:group:add-member` fills, or a group an upstream provider or a directory holds the members of. A person taken out of the group stops administering the tenant at once: their next request to the administration API is refused, whatever token they hold. A name that is empty, or that begins or ends with whitespace, is refused; a name no group carries yet is accepted |
+| `administration_resource` | `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` | string | empty: none, which reserves nothing | The identifier of the [administration API](../../developers/oidc/resources.md#the-administration-api) of the tenant, the resource its tokens are addressed to (RFC 8707 §2): an absolute URI without a fragment, the URL the API is served at. The provider addresses a token to it only for a member of a group `administrators` names, signed in at the authorization endpoint by a session whose proofs satisfy `phishing_resistant` whatever the floor of the tenant, and bound to a key of the client (RFC 9449, RFC 8705 §3). The device authorization grant and backchannel authentication are refused it, and the discovery document never announces it |
+| `passkey_attestation` | `BEFFROI_TENANT_PASSKEY_ATTESTATION` | string, not empty, a wired name | `none` | What the enrolment of a passkey asks of its authenticator (WebAuthn Level 3 §5.4.7), by the name of a policy the provider is wired with: `none`, `direct` or `enterprise` in the application. [Passkeys](../../administrators/people/credentials/passkeys.md#what-the-enrolment-asks) says what each one enrols, refuses and keeps |
+| `passkey_attestation_roots` | `BEFFROI_TENANT_PASSKEY_ATTESTATION_ROOTS` | list of strings | `[]`: none | The roots of the enterprise attestations the tenant admits, one certificate in PEM each, read under `enterprise` only, a root named under `none` or `direct` being refused: an attestation that chains up to one of them carries the serial number of its authenticator (WebAuthn Level 3 §8.2.2) or is refused. A certificate of no certificate authority is refused (RFC 5280 §4.2.1.9), and so is `enterprise` with no root of either list |
+| `passkey_attestation_own_roots` | `BEFFROI_TENANT_PASSKEY_ATTESTATION_OWN_ROOTS` | list of strings | `[]`: none | The authorities of the tenant itself, the ones that sign the identities of its own devices, in PEM, under `enterprise` only. Under them no serial number is asked |
+| `passkey_compromised_models` | `BEFFROI_TENANT_PASSKEY_COMPROMISED_MODELS` | map of AAGUID to a day | `{}`: none | The models whose last status report in the FIDO metadata is a security notification (FIDO Metadata Service v3.1.1 §3.1.4.2) the tenant still enrols under `direct` and `enterprise`, each the AAGUID of its authenticator to the last day it does, as `{"<AAGUID>":"2027-03-31"}`, in UTC and included. A passkey of such a model enrols until then and is marked under alert |
+
+## `keys`
+
+Where the keys of the tenant are sealed, stored and rotated: required. The figures of rotation apply to every
+key of the tenant but its SAML keys, which take theirs from [`saml.keys`](#samlkeys).
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `kms` | None | string, not empty, required | `op` | The name of the key management client the private keys are sealed with, an entry of `key_management.clients`. The application names `op`, the client `config/packages/key_management.yaml` builds from `BEFFROI_KMS_DSN`, so a deployment chooses its backend with that variable. A name nothing is registered under fails the build of the container, naming the clients that are registered. The client seals and opens keys, and never signs |
+| `key_id` | `BEFFROI_KMS_KEY_ID` | string, not empty, required | empty, which every deployment replaces | The key of that client the keys of the tenant are sealed under, in the terms of its backend: the identifier of a sodium key, a Vault transit key name, an ARN. `{tenant}` in it stands for the slug of the tenant, one master key per tenant. The data keys that seal personal data are wrapped under the same key |
+| `data_key_secrets` | `BEFFROI_DATA_KEY_SECRETS` | list of strings, not empty, one at least | not set: the secret of the kernel, `APP_SECRET` | The secrets every data key of personal data is bound to its reference and its scope under, which the database does not hold, as a JSON list. The first binds a new key, a key bound under any of them opens, and one bound under a secret no longer listed opens nothing, nor does what it sealed. A secret is replaced by writing the new one first, then running `beffroi:data-keys:rewrap` towards the client that already wraps the keys, then dropping the old one: [personal data](../tenant/personal-data.md#rotating-the-secret-that-binds-them) |
+| `storage` | None | string, not empty | `%kernel.project_dir%/var/keys` | The directory of the sealed keys, one file per key and per tenant, and of the pairwise salt of each tenant beside them (OIDC Core §8.1) |
+| `jwks_max_age` | `BEFFROI_JWKS_MAX_AGE` | integer, 0 or more | `300`, five minutes | How long a relying party may keep the JWK Set (RFC 7517 §5): its `Cache-Control: public, max-age`, which the SAML metadata are served with as well. The staging delay derives from it while `BEFFROI_KEY_STAGING_DELAY` is empty |
+| `staging_delay` | `BEFFROI_KEY_STAGING_DELAY` | integer, 0 or more | empty: `jwks_max_age` plus 60, 360 | How long a new key is published before it signs. Empty, it covers a relying party holding a copy of the JWK Set as old as `jwks_max_age`, and the sixty seconds after which Symfony's `oidc_login` reads the set again for a `kid` it does not hold |
+| `age` | `BEFFROI_KEY_AGE` | integer, 1 or more | `7776000`, ninety days | How long a key works before the timed step stages a successor behind it, counted from its activation. It is longer than the time a retiring key stays published, the longest lifetime of what is bound to a key of that use, or the rotation refuses it |
+
+## `webauthn`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `metadata_storage` | None | string, not empty | `%kernel.project_dir%/var/webauthn` | The directory of the FIDO metadata an attestation is checked against: the documents `beffroi:webauthn:mds-refresh` verified and `beffroi:webauthn:mds-import` stored. It is empty until one of them runs, which enrolling a passkey does not need |
+
+## `mutual_tls`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `origin` | `BEFFROI_MTLS_ORIGIN` | string | empty: no mutual TLS | The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as `https://mtls.op.example.com`. Six endpoints are announced under it in `mtls_endpoint_aliases` (RFC 8705 §5). Empty, the provider serves no mutual TLS: `tls_client_auth` and `self_signed_tls_client_auth` are not wired, and no token is bound to a certificate. A deployment whose listener writes the certificate in `SSL_CLIENT_CERT` on the host of the issuer itself, which the site of `SERVER_NAME` never does, names that host |
+
+## `tokens`
+
+Lifetimes and intervals, in seconds.
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `authorization_code_ttl` | `BEFFROI_AUTHORIZATION_CODE_TTL` | integer, 1 to 600 | `60`, one minute | How long an authorization code can be spent. RFC 6749 §4.1.2 recommends ten minutes at most, which is the bound |
+| `access_token_ttl` | `BEFFROI_ACCESS_TOKEN_TTL` | integer, 1 or more | `600`, ten minutes | How long an access token is valid, in either shape: a JWT cannot be revoked, and an opaque token gets the same lifetime |
+| `id_token_ttl` | `BEFFROI_ID_TOKEN_TTL` | integer, 1 or more | `600`, ten minutes | How long an ID token is valid |
+| `request_uri_ttl` | `BEFFROI_REQUEST_URI_TTL` | integer, 1 to 600 | `60`, one minute | How long a `request_uri` answered by the pushed authorization request endpoint lives (RFC 9126 §2.2) |
+| `device_code_ttl` | `BEFFROI_DEVICE_CODE_TTL` | integer, 1 to 1800 | `600`, ten minutes | How long a device code and its user code live (RFC 8628 §3.2) |
+| `device_code_interval` | `BEFFROI_DEVICE_CODE_INTERVAL` | integer, 1 to 30 | `5` | How long a device waits between two polls of the token endpoint (RFC 8628 §3.2). One that polls sooner is answered `slow_down`, and its interval grows by five seconds (RFC 8628 §3.5) |
+| `backchannel_authentication_ttl` | `BEFFROI_BACKCHANNEL_AUTHENTICATION_TTL` | integer, 1 to 3600 | `300`, five minutes | How long a backchannel authentication request lives when the client sends no `requested_expiry` (CIBA Core §7.3), never longer than `backchannel_authentication_max_requested_expiry` |
+| `backchannel_authentication_max_requested_expiry` | `BEFFROI_BACKCHANNEL_AUTHENTICATION_MAX_REQUESTED_EXPIRY` | integer, 1 to 3600 | `1800`, thirty minutes | The longest lifetime a client may ask for with `requested_expiry` (CIBA Core §7.1). A request that asks for more is served this, not refused |
+| `backchannel_authentication_interval` | `BEFFROI_BACKCHANNEL_AUTHENTICATION_INTERVAL` | integer, 1 to 30 | `5` | How long a client waits between two polls of the token endpoint for a backchannel request (CIBA Core §7.3). One that polls sooner is answered `slow_down`, and its interval grows by five seconds (CIBA Core §11) |
+| `refresh_token_ttl` | `BEFFROI_REFRESH_TOKEN_TTL` | integer, 1 or more | `2592000`, thirty days | The sliding lifetime of a refresh token, renewed at each rotation. It is refused longer than `refresh_token_absolute_ttl` |
+| `refresh_token_absolute_ttl` | `BEFFROI_REFRESH_TOKEN_ABSOLUTE_TTL` | integer, 1 or more | `7776000`, ninety days | The lifetime of a family of refresh tokens, counted from the authorization that started it. No rotation extends it |
+
+## `load`
+
+The two budgets every request is counted against. A request over a budget is answered `429` with a
+`Retry-After` header (RFC 6585 §4). Both count over a sliding window, in the `beffroi.load` cache pool.
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `origin.limit` | `BEFFROI_LOAD_ORIGIN_LIMIT` | integer, 1 or more | `2400` | Requests taken from one client address in the window, on every route of the three planes and for every tenant of the deployment, counted before anything is verified |
+| `origin.interval` | `BEFFROI_LOAD_ORIGIN_INTERVAL` | integer, 1 or more | `60`, one minute | The window of that budget |
+| `client.limit` | `BEFFROI_LOAD_CLIENT_LIMIT` | integer, 1 or more | `1200` | Requests taken from one client of one tenant in the window, counted once the client has authenticated |
+| `client.interval` | `BEFFROI_LOAD_CLIENT_INTERVAL` | integer, 1 or more | `60`, one minute | The window of that budget |
+
+## `journal`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `retention` | `BEFFROI_JOURNAL_RETENTION` | integer, 1 or more | `180` | Days an act of the journal is kept before the timed step forgets it, and with it what a client was given of a person in that act |
+
+## `history`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `retention` | `BEFFROI_HISTORY_RETENTION` | integer, 1 or more | `180` | Days a change a person made to their claims is kept before the timed step forgets it |
+
+## `geoip`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `storage` | None | string, not empty | `%kernel.project_dir%/var/geoip` | The directory of the GeoLite2 databases that place the address of a request: the files `beffroi:geoip:refresh` and the weekly timed step store. Every flow is served while it is empty |
+| `license_key` | `GEOIP_LICENSE_KEY` | string | empty | The licence key of the MaxMind account the databases are downloaded under. Empty, nothing is downloaded, and a provenance says an address and no place |
+
+## `passwords`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `breached.endpoint` | `BEFFROI_BREACHED_PASSWORDS_ENDPOINT` | string | empty: nobody is asked | The base URL of a range endpoint in the shape of Pwned Passwords, as `https://api.pwnedpasswords.com/range/`: the first five hexadecimal characters of the SHA-1 of a password are appended to it, the rest is compared locally, and no API key is needed. Named, a password the list counts is refused, and one the list could not be asked about is not written either |
+| `breached.timeout` | `BEFFROI_BREACHED_PASSWORDS_TIMEOUT` | number, 0.1 or more | `2` | Seconds the whole exchange with the list may take where somebody waits for it: the command that sets a password, and the page where a person replaces their own |
+
+## `interaction`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `login_hint` | `BEFFROI_INTERACTION_LOGIN_HINT` | `sub`, `username` or `none` | `sub` | What the `login_hint` of an authorization request names, read one way and never searched (OIDC Core §3.1.2.1): `sub`, the subject the provider issued to that client; `username`, the name the person signs in with; `none`, which leaves the hint to a class tagged `beffroi.oidc.login_hint`, and the application tags none, so the image then reads no hint. The login page offers the name of the person the hint names, and nothing when it names nobody |
+
+## `locales`
+
+The languages the pages and the messages are served in, a list of locales of `framework.enabled_locales`.
+`BEFFROI_LOCALES` carries the section whole, a JSON list, and `.env` writes `[]`, which serves every language
+the application ships. The default locale, `DEFAULT_LOCALE`, is one of them. A language without a catalogue,
+the default locale included, and a list that leaves out the default locale are refused when the provider first
+reads the languages it serves. The discovery document announces them in `ui_locales_supported` (OIDC
+Discovery 1.0 §3): [translations](../application/translations.md).
+
+## `back_channel_logout`
+
+How a logout token reaches a client that registered a `backchannel_logout_uri`. The four `retry_*` options
+are the schedule of every notification the provider carries to a third party, on the `async_notifications`
+transport of the application: logout tokens, the notifications of the backchannel authentication flow, the
+pushes that tell a person something waits for them or that a way of signing in to their account changed, and the
+mails and texts that tell them a request waits.
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `timeout` | `BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT` | number, 0.1 or more | `5` | Seconds one attempt to post a logout token is given, connection included (Back-Channel Logout 1.0 §2.5) |
+| `retries` | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES` | integer, 0 or more | `6` | How many times a notification that did not reach its client is sent again |
+| `retry_delay` | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY` | integer, 1 or more | `2` | Seconds before the first retry |
+| `retry_multiplier` | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER` | integer, 1 or more | `3` | What each wait is multiplied by to give the next one |
+| `retry_max_delay` | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY` | integer, 1 or more | `60` | Seconds no wait exceeds |
+
+With the values of `.env` the waits are 2, 6, 18, 54, 60 and 60 seconds. The `exp` of a logout token is the
+whole schedule, its waits and one `timeout` per attempt, 235 seconds with those values, and a signing key
+another key takes over from stays in the JWK Set that long at least, so that a logout token still on its way
+verifies.
+
+## `backchannel_authentication`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `login_hint` | `BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT` | `sub`, `username` or `none` | `sub` | What the `login_hint` of a backchannel authentication request names (CIBA Core §7.1), under the three readings of `interaction.login_hint`; `none` leaves it to a class tagged `beffroi.oidc.ciba_user_hint`, and the one the application tags reads the `id_token_hint` instead. CIBA Core §15 asks for an identifier that says nothing outside the provider, which a `sub` is and a username is not |
+| `client_notification_timeout` | `BEFFROI_CLIENT_NOTIFICATION_TIMEOUT` | number, 0.1 or more | `3` | Seconds one call to the notification endpoint of a client in `ping` mode is given, connection included (CIBA Core §10.2). It is retried on the schedule of `back_channel_logout` |
+
+## `web_push`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `subject` | `BEFFROI_WEB_PUSH_SUBJECT` | string, not empty | `mailto:operator@op.localhost`, the contact of the development stack | The `sub` of the token the provider signs for a push service (RFC 8292 §2.1): a `mailto:` or `https:` URI at which the operator of the deployment can be reached. Naming one turns web push on, with the application server key of the tenant, a P-256 key the key commands call `VAPID`; empty, no push leaves the deployment, and the page where a browser would subscribe says so. The one of `.env` turns web push on, so a deployment names its own contact or empties the variable |
+| `timeout` | `BEFFROI_WEB_PUSH_TIMEOUT` | number, 0.1 or more | `3` | Seconds one push to one push service is given, connection included. It is retried on the schedule of `back_channel_logout` |
+
+## `mail`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `dsn` | `BEFFROI_MAIL_DSN` | string, not empty | empty: none, no mail | The transport of `symfony/mailer` a mail leaves through: SMTP, `smtp://user:password@host:port` or `smtps://`, the one a mail leaves the image through, or the scheme of a bridge the application installs, none in the image. Naming one turns mail on, to the email address of a person marked verified and to no other. A DSN no installed factory reads writes no mail, and the log says why at each one. A mail the transport did not take comes back on the schedule of `back_channel_logout` while no other channel reached the person |
+| `sender` | `BEFFROI_MAIL_SENDER` | string, not empty | empty: none | The address a mail is written from, alone or behind a name, as `Example <no-reply@example.com>`. Without one, or with one that is no address, no mail is written, and the log says why at each one |
+
+## `sms`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `dsn` | `BEFFROI_SMS_DSN` | string, not empty | empty: none, no text | The texter transport of `symfony/notifier` a text leaves through, by the scheme of a bridge the application installs, the number or the name it is sent from among its options. Naming one turns SMS on, to the phone number of a person marked verified and to no other. The image installs the bridge of Sweego and no other, `sweego://API_KEY@default?region=FR&campaign_type=transac&shorten_urls=false`, where `shorten_urls=false` keeps the links of a text as the provider wrote them: a DSN no installed factory reads sends nothing, and the log says why at each one |
+
+## `client_authentication`
+
+What a client assertion and a published key set are held to. The four `jwks_*` options bound every key set
+the provider reads behind a `jwks_uri`: the clients' and the [trusted issuers'](#trusted_issuers).
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `assertion_max_lifetime` | `BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME` | integer, 1 or more | `300`, five minutes | How far ahead of the request the `exp` of a client assertion may be (RFC 7523 §3). The assertions of a trusted issuer are held to the same |
+| `assertion_leeway` | `BEFFROI_CLIENT_ASSERTION_LEEWAY` | integer, 0 or more | `30` | Seconds allowed for the clock of a client or of a trusted issuer, both ways |
+| `jwks_timeout` | `BEFFROI_JWKS_URI_TIMEOUT` | number, 0.1 or more | `3` | Seconds one read of a `jwks_uri` is given, connection included |
+| `jwks_max_size` | `BEFFROI_JWKS_URI_MAX_SIZE` | integer, 1 or more | `65536` | Bytes a `jwks_uri` may answer before the read stops |
+| `jwks_ttl` | `BEFFROI_JWKS_URI_TTL` | integer, 1 or more | `86400`, one day | How long the keys read from a `jwks_uri` are kept, in the `beffroi.client_keys` and `beffroi.issuer_keys` cache pools |
+| `jwks_refetch_cooldown` | `BEFFROI_JWKS_URI_REFETCH_COOLDOWN` | integer, 0 or more | `300`, five minutes | Seconds between two reads of the same `jwks_uri` when a signature names a `kid` the kept set does not hold |
+
+## `request_objects`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `max_lifetime` | `BEFFROI_REQUEST_OBJECT_MAX_LIFETIME` | integer, 1 or more | `3600`, one hour | How long a request object may stand: its `exp` is at most this long after its `nbf` (RFC 9101 §4) |
+| `leeway` | `BEFFROI_REQUEST_OBJECT_LEEWAY` | integer, 0 or more | `30` | Seconds allowed for the clock of a client, both ways |
+| `timeout` | `BEFFROI_REQUEST_OBJECT_TIMEOUT` | number, 0.1 or more | `3` | Seconds one read of a `request_uri` is given, connection included, while the browser of a person waits. Only a URL the client registered is read, and no redirect is followed |
+| `max_size` | `BEFFROI_REQUEST_OBJECT_MAX_SIZE` | integer, 1 or more | `65536` | Bytes a `request_uri` may answer before the read stops |
+
+## `dpop`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `proof_max_age` | `BEFFROI_DPOP_PROOF_MAX_AGE` | integer, 1 or more | `60`, one minute | How long a proof stands, from its `iat` (RFC 9449 §4.3) |
+| `leeway` | `BEFFROI_DPOP_LEEWAY` | integer, 0 or more | `30` | Seconds allowed for the clock of a client, both ways |
+| `nonce.required` | `BEFFROI_DPOP_NONCE_REQUIRED` | boolean | `false` | Whether a proof carries a nonce of the provider (RFC 9449 §8). On, a proof without a valid one is refused with `use_dpop_nonce` and a fresh nonce in the `DPoP-Nonce` header. It is read once, when the port that checks the proofs is built |
+| `nonce.ttl` | `BEFFROI_DPOP_NONCE_TTL` | integer, 1 or more | `300`, five minutes | How long a nonce the provider issued is accepted |
+
+## `trusted_issuers`
+
+The issuers whose assertions the tenant accepts as an authorization grant (RFC 7523 §2.1), one entry per
+issuer. `BEFFROI_TRUSTED_ISSUERS` carries the section whole, a JSON document keyed by the `iss` of each
+issuer, and `.env` writes `{}`. The grant addresses a token to a resource the client holds, and a client of
+the image holds one only when its initial access token gave it ([JWT bearer](../../developers/oidc/grants/jwt-bearer.md)). A
+declaration that does not hold together is refused when the provider first reads the trusted issuers.
+
+| Option | Type | Default | What it decides |
+|---|---|---|---|
+| The key | string | | The `iss` of its assertions, compared byte for byte: an absolute URI without a fragment (RFC 7519 §4.1.1) |
+| `jwks` | JWK Set | none | The public keys of the issuer, inline (RFC 7517 §5), and the only keys an assertion of it is verified against, whatever its header names (RFC 8725 §3.10). One of `jwks` and `jwks_uri`, never both |
+| `jwks_uri` | string | none | Where the issuer publishes its JWK Set instead: `https`, or plain `http` on a loopback host. It is read with one `GET`, no redirect followed, kept, and read again at most once per `client_authentication.jwks_refetch_cooldown` for a `kid` the kept set does not hold |
+| `signing_algorithms` | list of strings | required | The JWS algorithms its assertions may be signed with, one at least, among those the provider verifies: `RS256`, `PS256`, `ES256` and `EdDSA` in the application |
+| `clients` | list of strings | required | The clients that may present its assertions at the token endpoint, by `client_id`, one at least: for a client of the image, the identifier the answer to its registration carried |
+| `identity_provider` | string | required | The source of the linked identities its subjects name: the `sub` of an assertion is a user of the tenant only when a linked identity of that source says so, and no user is ever created from one |
+| `trusted_scopes` | list of strings | required | What the issuer is trusted for, one scope at least. The scopes of a response are within these, within what the client registered and within what the request asked for; `openid` buys nothing here, the grant refusing it |
+
+## `clients`
+
+The clients a file of the application declares, one entry per client; none by default. The application's
+file writes `clients: []`, and no variable sets the section: the image declares no client, and a client of a
+deployment registers itself ([dynamic registration](../../developers/oidc/dynamic-registration.md)). The development
+configuration, which the image leaves out, declares clients here: those of the conformance suite and of the
+demonstrations. [Clients](../../developers/oidc/clients.md) is what a client is.
+
+Each entry is read like a registration of RFC 7591 §2 and OIDC Registration §2, by the reader that reads a
+registration, and a declaration that does not hold together is refused when the provider first reads its
+clients, naming the client, the option and the rule. A client that registers itself carries the same members
+in its registration, except the key and `secret`, which the provider draws for it, and the seven members
+marked *deployment*, which a registration is refused for: an initial access token may give five of those to
+the clients it registers, and [what the image does not set](../../developers/oidc/clients.md#what-the-image-does-not-set) says
+what every client of the image has otherwise. The default column is what a declared client gets for a member
+it leaves out, and a client that registers itself gets what RFC 7591 §2 says instead ([registering
+one](../../developers/oidc/clients.md#registering-one)).
+
+| Option | Type | Default | What it decides |
+|---|---|---|---|
+| The key | string | | The `client_id`, kept exactly as written: printable ASCII with no leading or trailing space (RFC 6749 appendix A.1) |
+| `client_name` | string | the `client_id` | The name a person reads on the consent page (OIDC Registration §2) |
+| `client_uri` | string | none | The home page of the client, linked from the consent page. Like every URL a client registers: absolute, `https` or plain `http` on a loopback host, no fragment, no credentials and no scheme of its own |
+| `logo_uri` | string | none | The logo the consent page shows for the client, loaded by the browser of the person and never by the provider |
+| `policy_uri` | string | none | How the client uses the data it is given, linked from the consent page |
+| `tos_uri` | string | none | The terms of service of the client, linked from the consent page |
+| `contacts` | list of strings | none | Ways to reach the people responsible for the client, typically e-mail addresses. No page shows them |
+| `secret` | string | none | The secret of a client authenticating with `client_secret_basic`, `client_secret_post` or `client_secret_jwt`, which need one, and that every other method refuses: 32 visible ASCII characters at least, generated rather than chosen. It is hashed when the client is first read, except for `client_secret_jwt`, which verifies a MAC with the secret itself |
+| `redirect_uris` | list of strings | none | Where the browser may be sent back, each compared byte for byte with the `redirect_uri` of a request (RFC 6749 §3.1.2.3). A public client writes plain `http` on `127.0.0.1` or `[::1]` only, never on a name, and such a URI matches on whatever port the request names (RFC 8252 §7.3). A client registered for `authorization_code` registers one at least, and a client registered for no such grant registers none |
+| `post_logout_redirect_uris` | list of strings | none | Where the browser may be sent after a logout, compared byte for byte with the `post_logout_redirect_uri` of the request (OIDC RP-Initiated Logout 1.0 §3), under the rules of `redirect_uris` |
+| `grant_types` | list of strings | `authorization_code` and `refresh_token` | What the client may ask for at the token endpoint (RFC 7591 §2), among the wired grants: `authorization_code`, `refresh_token`, `client_credentials`, `urn:ietf:params:oauth:grant-type:device_code`, `urn:openid:params:grant-type:ciba`, `urn:ietf:params:oauth:grant-type:token-exchange` and `urn:ietf:params:oauth:grant-type:jwt-bearer` in the application. `refresh_token` goes with a grant that issues one, and `client_credentials` with a method that authenticates the client |
+| `response_types` | list of strings | none | What the client asks the authorization endpoint to answer with (OIDC Registration §2): `code`, and nothing else. Left out, it is the one its grants answer with; `code` without `authorization_code` is refused |
+| `scope` | string | `openid profile email` | The closed list of scopes the client may ask for, space-delimited (RFC 7591 §2, RFC 6749 §3.3). A scope it did not register is refused with `invalid_scope` |
+| `token_endpoint_auth_method` | string | the first wired method, `client_secret_basic` | How the client authenticates (OIDC Core §9), among the wired methods: `client_secret_basic`, `client_secret_post`, `private_key_jwt`, `client_secret_jwt` and `none` in the application, then `tls_client_auth` and `self_signed_tls_client_auth` while `mutual_tls.origin` names a host. `none` makes a public client |
+| `requires_consent` | boolean | `true` | *Deployment.* Whether the person is asked to consent. `false` is for a first-party application, which is never shown the consent page, `prompt=consent` included |
+| `requires_pkce` | boolean | `true` | *Deployment.* Whether an authorization request of the client carries a PKCE challenge, `S256` being the only method. `false` is for a confidential client that cannot send one, and is refused for a public client; a challenge the client sends is verified all the same |
+| `require_pushed_authorization_requests` | boolean | `false` | The client starts an authorization request only by pushing it (RFC 9126 §6), and any other request of it is refused on a page before its redirect URI is read. The discovery document announces the requirement when every client of the tenant carries it |
+| `require_sender_constrained_tokens` | boolean | `false` | *Deployment.* A token request of the client proves a certificate its tokens are bound to (RFC 8705 §3) or a DPoP key (RFC 9449 §5), or it is refused rather than answered with bearer tokens (FAPI 2.0 Security Profile §5.3.2.1) |
+| `tls_client_certificate_bound_access_tokens` | boolean | `false` | The tokens of the client are bound to the certificate it presents at the TLS handshake, whichever way it authenticated (RFC 8705 §3.4), and a token request that proves no certificate is refused. A client authenticating by certificate gets bound tokens either way. `true` is refused while `mutual_tls.origin` names no host, no method that reads a certificate being wired then |
+| `dpop_bound_access_tokens` | boolean | `false` | The client always proves a key of its own with DPoP when it asks for a token (RFC 9449 §5.2): a token request of it that carries no DPoP proof is refused with `invalid_request`, before anything it came to spend is read. `true` beside `tls_client_certificate_bound_access_tokens: true`, or for a client that authenticates with a certificate, is refused: a token is bound to one thing |
+| `require_signed_request_object` | boolean | `false` | A request of the client is read only from a request object it signed, wherever the object arrives: an authorization request in the query, behind a `request_uri` or in a pushed request (RFC 9101 §10.5), and a backchannel authentication request in its body. An unsigned authorization request is refused on a page before its redirect URI is read, an unsigned backchannel one with `invalid_request`. A declaration that names it beside `request_object_signing_alg: none` is refused |
+| `id_token_signed_response_alg` | string | the default algorithm, `RS256` | The JWS algorithm the ID tokens and the logout tokens of the client are signed with (OIDC Registration §2), among the wired ones: `RS256`, `PS256`, `ES256` and `EdDSA` in the application, the first being the default |
+| `id_token_encrypted_response_alg` | string | none | The JWE key management algorithm the signed ID tokens and logout tokens are encrypted to a key of the client with (OIDC Core §3.1.3.7, Back-Channel Logout 1.0 §2.4), among the wired ones: `ECDH-ES+A256KW` and `RSA-OAEP-256` in the application. Named with `id_token_encrypted_response_enc` or not at all. Left out, both are signed and not encrypted |
+| `id_token_encrypted_response_enc` | string | none | The JWE content encryption algorithm of those tokens, among the wired ones: `A256GCM` in the application. OIDC Registration §2 defaults it to an algorithm the application does not wire, so it is written whenever `id_token_encrypted_response_alg` is |
+| `userinfo_signed_response_alg` | string | none | The JWS algorithm the UserInfo answer of the client is signed with (OIDC Core §5.3.2), among the wired ones. Named, the answer is a JWT served as `application/jwt`, with an `iss` and an `aud` beside the claims; left out, it is plain JSON |
+| `userinfo_encrypted_response_alg` | string | none | The JWE key management algorithm the UserInfo answer is encrypted to a key of the client with, named with `userinfo_encrypted_response_enc` or not at all. Without `userinfo_signed_response_alg`, what is encrypted is the plain JSON (OIDC Core §5.3.2) |
+| `userinfo_encrypted_response_enc` | string | none | The JWE content encryption algorithm of that answer |
+| `authorization_signed_response_alg` | string | the default algorithm, `RS256` | The JWS algorithm of the signed authorization responses of the client (JARM §3): the answers it asks for with the `response_mode` `jwt`, `query.jwt` or `form_post.jwt`, a refusal as well as a code |
+| `authorization_encrypted_response_alg` | string | none | The JWE key management algorithm the signed authorization response is encrypted to a key of the client with (JARM §3), named with `authorization_encrypted_response_enc` or not at all |
+| `authorization_encrypted_response_enc` | string | none | The JWE content encryption algorithm of that response |
+| `access_token_format` | string | the first wired shape, `jwt` | *Deployment.* The shape of the access tokens of the client: `jwt`, verified offline against the JWK Set (RFC 9068), or `opaque`, a reference the resource server introspects (RFC 7662) and that can be revoked at once |
+| `backchannel_logout_uri` | string | none | Where the provider posts a logout token when a session the client signed in ends (Back-Channel Logout 1.0 §2.2). Absent, the client is not told |
+| `backchannel_logout_session_required` | boolean | `false` | The client reads the `sid` of the logout token to know which session ended, and registers a `backchannel_logout_uri`. The provider sends the `sid` either way |
+| `frontchannel_logout_uri` | string | none | Loaded in a frame of the logout page when a session the client signed in ends (Front-Channel Logout 1.0 §3). It reaches the client only if the browser sends that client its cookies |
+| `frontchannel_logout_session_required` | boolean | `false` | The provider adds `iss` and `sid` to the logout URI of the client (Front-Channel Logout 1.0 §2), which then registers a `frontchannel_logout_uri` |
+| `jwks` | JWK Set | none | The public keys of the client, inline (RFC 7591 §2). One of `jwks` and `jwks_uri`, never both, is required of a client that authenticates with `private_key_jwt` or `self_signed_tls_client_auth`, names a `request_object_signing_alg` other than `none`, or asks for an encrypted response |
+| `jwks_uri` | string | none | Where the client publishes its JWK Set instead (RFC 7591 §2), read with no redirect followed, under the bounds of `client_authentication` |
+| `subject_type` | string | the first wired kind, `public` | The kind of `sub` the client sees for a person (OIDC Core §8): `public` or `pairwise` in the application. A `pairwise` client has a sector: its `sector_identifier_uri`, redirect URIs on one host, or, with no redirect URI, its `jwks_uri` |
+| `sector_identifier_uri` | string | none | A URL whose host is the sector of the client's pairwise subjects (OIDC Core §8.1). The document behind it is read when a client registers itself (OIDC Registration §5), and never for a declared client |
+| `initiate_login_uri` | string | none | Where a third party sends a person to have the client begin a login (OIDC Core §4): `https` on every host, a loopback host included (OIDC Registration §2) |
+| `request_object_signing_alg` | string | any wired algorithm | The JWS algorithm the request objects of the client are signed with (OIDC Registration §2), among the wired ones. Left out, any of them verifies an object, and an unsigned object is refused. `none` is the one exception: the objects of the client carry no signature and are read all the same, and a client with `require_signed_request_object` cannot name it |
+| `backchannel_token_delivery_mode` | string | none | How the client learns that a backchannel authentication request was answered (CIBA Core §4): `poll` or `ping` in the application. There is no default: a client that names none is not a client of that flow, and the backchannel authentication endpoint refuses it |
+| `backchannel_client_notification_endpoint` | string | none | Where the provider posts to a `ping` client once its request is answered (CIBA Core §7.1, §10.2). Required with `ping`, and refused with any other mode or with none |
+| `resources` | list of strings | none | *Deployment.* The resources the client may ask an access token for (RFC 8707 §2), each an absolute URI without a fragment; any other is refused with `invalid_target`. A client that registers none asks for none, and its tokens are addressed to itself |
+| `authorization_details_types` | list of strings | none | The types of authorization detail the client may ask for (RFC 9396 §2), among the wired ones; any other is refused with `invalid_authorization_details`. The image of the application wires none: a type is served by a class tagged `beffroi.oidc.authorization_detail_type` |
+| `token_exchange.subject_token_types` | list of strings | required in the block | *Deployment.* The token types the client may present as a `subject_token` or an `actor_token` (RFC 8693 §3), one at least, among the wired ones: `urn:ietf:params:oauth:token-type:access_token` in the application |
+| `token_exchange.may_act_for_a_user` | boolean | `false` | *Deployment.* Whether the client may present a token somebody signed in for. `false` for a service that only exchanges tokens of its own |
+| `may_act` | string | none | *Deployment.* Who may act for the subject of a token issued to the client (RFC 8693 §4.4), named as a subject. It is written on every token the client receives, and an exchange asked for by anybody else is refused |
+| `request_uris` | list of strings | none | The URLs a request object of the client is read from (OIDC Registration §2), compared byte for byte with the `request_uri` of a request, fragment included (OIDC Core §6.2). Any other is refused before anything is fetched |
+| `tls_client_auth_subject_dn` | string | none | The subject distinguished name of the certificate of a `tls_client_auth` client (RFC 8705 §2.1.2), in the string form of RFC 4514, as `openssl x509 -noout -subject -nameopt RFC2253` prints it |
+| `tls_client_auth_san_dns` | string | none | The `dNSName` of its certificate, compared without regard to case (RFC 4343 §1) |
+| `tls_client_auth_san_uri` | string | none | The `uniformResourceIdentifier` of its certificate, compared as written |
+| `tls_client_auth_san_ip` | string | none | The `iPAddress` of its certificate, in dotted decimal or colon-delimited hexadecimal, compared as the octets it stands for |
+| `tls_client_auth_san_email` | string | none | The `rfc822Name` of its certificate, compared as written (RFC 5321 §2.4) |
+
+The `token_exchange` block is declared by a client registered for the token exchange grant, and refused for
+any other. A `tls_client_auth` client names exactly one of the five `tls_client_auth_*` options, and a client
+authenticating otherwise names none of them.
+
+## `self_client`
+
+The application as a client of the provider it serves, so that a firewall of the application signs its users
+in there with Symfony's `oidc_login`. The application's file does not write the section and no variable sets
+it, so the image is no client of its own provider: its pages sign a person in with the logins of the provider
+itself.
+
+Written, the section is a source of clients of its own, holding one client the provider knows as an ordinary
+one: its redirect URI and its post-logout redirect URI are the URLs the router writes for the routes it names,
+in the context of the issuer, its scheme, its host and its port; it is never shown the consent page; and it
+takes the defaults of a declared client for every other member. What its firewall needs is exposed as three
+container parameters, `beffroi.self_client.issuer`, `beffroi.self_client.client_id` and
+`beffroi.self_client.secret`, so that the firewall names them rather than writing them again.
+
+| Option | Type | Default | What it decides |
+|---|---|---|---|
+| `client_id` | string, not empty | `app` | The identifier the application is known by, which no client of `clients` may carry as well |
+| `redirect_route` | string, not empty | required | The route the provider sends the browser back to with a code, the callback of the firewall of the application, `_oidc_login_callback_<firewall>` for `oidc_login`. Its URL is the one redirect URI the application registers, and a route the router writes no URL for is refused |
+| `post_logout_route` | string | none | The route the provider sends the browser back to after a logout the application asked for (OIDC RP-Initiated Logout 1.0 §3). Absent, the application registers no post-logout redirect URI |
+| `secret` | string, not empty | required | The secret the application authenticates with at the token endpoint: one environment variable, written `%env(NAME)%`, and never a secret written in a file, which is refused when the container is built. It is 32 visible ASCII characters at least, and never the secret of the kernel |
+
+## `client_registration`
+
+How a client nobody declared comes to exist (RFC 7591), which is how every client of the image comes to exist.
+Without a `mode`, the tenant registers nobody.
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `mode` | `BEFFROI_REGISTRATION_MODE` | string | empty: no registration endpoint | What authorises a registration, among the wired modes: `initial_access_token`, a token the tenant issues, limits and revokes (RFC 7591 §1.2); `open`, no credential at all (RFC 7591 §1.3), for a tenant with no real user; `software_statement`, a statement signed by an authority of `statement_issuers` (RFC 7591 §2.3). Empty, the tenant has no registration endpoint: none in its discovery document, and `404` on the wire. A name no wired mode answers to is refused when a registration arrives, naming the wired ones |
+| `keep_a_client_unused_for` | `BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR` | integer, 1 or more | `7776000`, ninety days | Seconds a registered client that was used may go unused before it is deleted |
+| `keep_a_client_never_used_for` | `BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR` | integer, 1 or more | `604800`, seven days | Seconds a registered client that was never used lives |
+| `sector_identifier_timeout` | `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT` | number, 0.1 or more | `3` | Seconds one read of a `sector_identifier_uri` is given, connection included (OIDC Registration §5), when a client registers or replaces itself |
+| `sector_identifier_max_size` | `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE` | integer, 1 or more | `65536` | Bytes such a document may answer before the read stops |
+| `statement_issuers` | `BEFFROI_REGISTRATION_STATEMENT_ISSUERS` | map | `{}`: none | The authorities whose software statements the tenant accepts, keyed by the `iss` they sign with, compared byte for byte, as one JSON document. With none, the `software_statement` mode registers nobody |
+| `statement_issuers.<iss>.jwks` | In that document | JWK Set | required in an entry | The public keys of the authority, inline (RFC 7517 §5), and the only keys a statement is verified against, whatever its header names (RFC 8725 §3.10) |
+| `statement_issuers.<iss>.signing_algorithms` | In that document | list of strings | required in an entry | The JWS algorithms its statements may be signed with, one at least, among those the provider verifies |
+| `statement_max_lifetime` | `BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME` | integer, 1 or more | `300`, five minutes | How far ahead of the request the `exp` of a software statement may be (RFC 7591 §2.3). A statement without an `exp` is refused |
+| `statement_leeway` | `BEFFROI_REGISTRATION_STATEMENT_LEEWAY` | integer, 0 or more | `30` | Seconds allowed for the clock of an authority, both ways |
+| `default_scope` | `BEFFROI_REGISTRATION_DEFAULT_SCOPE` | string | empty: `openid` alone | What a client that registers itself and names no `scope` is registered with, space-delimited (RFC 7591 §2, RFC 6749 §3.3). A client that names its own scopes keeps them, and a scope named here that the tenant does not offer refuses every registration that names none |
+| `exempt_confidential_clients_from_pkce` | None | boolean | `false` | Whether the confidential clients the tenant registers are registered without the PKCE requirement, for a tenant whose clients send no `code_challenge`. A public client is never exempted, `plain` does not exist, and a challenge a client sends is verified all the same. The application's file does not write it, so every client of the image registers with PKCE required: [what the image does not set](../../developers/oidc/clients.md#what-the-image-does-not-set) |
+
+## `saml`
+
+The SAML roles of the tenant, the peers of each and the SAML keys. The routes and services of both roles are
+in every image, and a role that is off serves nothing. Whether each role is on is a variable, read when the
+container builds what the role changes: `.env` turns the identity provider on and the service provider off.
+The peers of each role are a JSON document a variable carries whole, read at their first use, the hourly
+refresh of the metadata or the first login: a declaration that does not hold together is refused then, and so
+are the peers of a role that is off, the hourly refresh writing the refusal to the log as an error.
+
+### `saml.keys`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `staging_delay` | `BEFFROI_SAML_KEY_STAGING_DELAY` | integer, 0 or more | `604800`, seven days | How long a new SAML key is published in the metadata before it is used |
+| `age` | `BEFFROI_SAML_KEY_AGE` | integer, 1 or more | `31536000`, 365 days | How long a SAML key works before the timed step stages a successor behind it, counted from its activation |
+
+The two rotate every SAML key of the tenant, the signing key of both roles and the keys upstream identity
+providers encrypt for, whichever role is on, and turn neither role on. The keys of every other family keep the
+figures of [`keys`](#keys).
+
+### `saml.metadata`
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `cache_duration` | `BEFFROI_SAML_METADATA_CACHE_DURATION` | integer, 1 or more | `86400`, one day | The `cacheDuration` of the metadata of both roles (SAML Metadata §2.3.2), how long a peer keeps them before it reads them again. It is strictly shorter than `saml.keys.staging_delay`, or the configuration is refused |
+
+### `saml.identity_provider`
+
+[The identity provider](../saml/identity-provider.md) is the role.
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `enabled` | `BEFFROI_SAML_IDENTITY_PROVIDER` | boolean | `true` | Whether the tenant is a SAML identity provider: its metadata at `/saml/metadata`, and the service providers below. Off, the tenant serves no metadata and none of its service providers |
+| `want_authn_requests_signed` | `BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED` | boolean | `true` | What the metadata say in `WantAuthnRequestsSigned` (SAML Metadata §2.4.3). It announces, and decides nothing: whether a request needs a signature is decided per service provider |
+
+### `saml.service_provider`
+
+[Upstream identity providers](../saml/upstream-identity-providers.md) is the role.
+
+| Option | Variable | Type | In the image | What it decides |
+|---|---|---|---|---|
+| `enabled` | `BEFFROI_SAML_SERVICE_PROVIDER` | boolean | `false` | Whether the tenant is a SAML service provider to identity providers upstream of it. Off, it serves nothing, and its routes answer `404` |
+| `entity_id` | `BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID` | string, not empty | empty: the URL of its metadata | The entity ID of the service provider: an absolute URI of 1024 characters at most, with no whitespace, control, format or invisible character, and never the entity ID of the identity provider of the tenant |
+
+### `saml.service_providers`
+
+The service providers of the tenant, one entry per entity ID, which `BEFFROI_SAML_SERVICE_PROVIDERS` carries
+whole, `{}` in `.env`. [Service providers](../saml/service-providers.md) is how one is declared.
+
+| Option | Type | Default | What it decides |
+|---|---|---|---|
+| The key | string | | The entity ID of the service provider, compared exactly with the one of its metadata: 1024 characters at most, no whitespace |
+| `metadata` | string, not empty | required | Where its metadata are read from: an `https` URL, no redirect followed, or the absolute path of a file of the deployment |
+| `metadata_signers` | list of strings | none | The certificates its metadata are signed by, each the base64 of its DER, sixteen at most. Named, the metadata are verified under them and carry a `validUntil`; left empty, they are trusted by the channel they come through |
+| `attributes` | map | none | The claims sent to the service provider, keyed by the name of the attribute each one is sent as, 256 at most. A claim may be sent under several names |
+| `attributes.<name>.claim` | string, not empty | required | The claim sent under that name (OIDC Core §5.1), one the provider serves |
+| `attributes.<name>.name_format` | `uri`, `basic` or `unspecified` | `uri` | The name format of the attribute (SAML Core §8.2) |
+| `attributes.<name>.friendly_name` | string | none | A name a person reads (SAML Core §2.7.3.1), which nothing compares |
+| `encrypt_assertions` | boolean | `false` | Its assertions are encrypted for a key of its metadata, which then hold one for encryption or are refused |
+| `signs_authn_requests` | boolean | `true` | It signs its authentication requests, and its metadata hold a key for signing or are refused. `false` for one that cannot: its unsigned requests are then accepted, unless its metadata say it signs |
+
+### `saml.identity_providers`
+
+The upstream identity providers of the tenant, one entry per entity ID, which
+`BEFFROI_SAML_IDENTITY_PROVIDERS` carries whole, `{}` in `.env`. [Upstream identity
+providers](../saml/upstream-identity-providers.md) is how one is declared.
+
+| Option | Type | Default | What it decides |
+|---|---|---|---|
+| The key | string | | The entity ID of the identity provider, compared exactly with the one of its metadata, and never an entity ID of the tenant |
+| `metadata` | string, not empty | required | Where its metadata are read from: an `https` URL, no redirect followed, or the absolute path of a file of the deployment |
+| `metadata_signers` | list of strings | none | The certificates its metadata are signed by, each the base64 of its DER, sixteen at most. Named, the metadata are verified under them and carry a `validUntil` |
+| `domains` | list of strings | required | The e-mail domains it answers for, one at least and 256 at most: each the whole part of an address after its `@`, read without regard to case, a name outside ASCII written as its A-label. A domain answers to one identity provider of the tenant |
+| `email_attribute` | string, not empty | required | The attribute that carries the e-mail address of a person |
+| `profile` | map of attribute to claim | none | The attributes that fill the profile of a person, each naming the claim it fills, one attribute per claim, among the claims a person can describe themselves with |
+| `subject_attribute` | string | none | The attribute that names a person when the `NameID` of an assertion is not persistent: a value the identity provider keeps for that person, and never `email_attribute`. Left out, a person is named by a persistent `NameID` only |
+| `require_encrypted_assertions` | boolean | `false` | An assertion arrives encrypted for the key the tenant keeps for this identity provider, or it is refused |
+| `address_parameter` | string | none | The query parameter of its single sign-on service that takes the address a person typed, `login_hint` for Microsoft Entra ID: one to 64 unreserved characters of RFC 3986, and none of the parameters of the binding. Left out, no address is sent |
+| `groups.attribute` | string, not empty | required in the block | The attribute that carries the groups of a person |
+| `groups.map` | map of value to group name | none | The group of the tenant each value of that attribute stands for, compared exactly, 256 values at most. A value the map does not name is no group, and no group is ever created from one |
