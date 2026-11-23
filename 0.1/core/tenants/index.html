@@ -4152,11 +4152,13 @@ it admits under alert. One command makes the row say what the variables say:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>beffroi:tenant:synchronize
 </span></code></pre></div>
 <p>It creates the row the first time, afterwards writes those of the seven that changed, prints the tenant it
-synchronised, and is safe to run at every deployment. Every request, command and message compares the row with
+synchronised, and is safe to run at every deployment. The server of the image runs it every time it starts,
+right after the migrations. Every request, command and message compares the row with
 the environment of its process: while the two differ, each one that reads the tenant fails, and the log names
 the setting that differs, <code>look</code> for the logo and the colours, <code>passkey_attestation</code> for the enrolment of a
 passkey, while the timed steps wait. Changing one of the seven is therefore a restart of every process with
-the new value, and the command run in one of them. The issuer is the one thing the command never changes: every
+the new value, the server of the image writing the row as it starts, or the command run by hand where the
+application runs outside the image. The issuer is the one thing the command never changes: every
 token a tenant issued names it, so the command refuses another, and another issuer is another tenant, under
 another slug. What a command decides with a date, the floor of its logins below, is written on the row and
 nowhere else, and so is what an administrator decides through the administration API, <a href="#the-contact-it-gives-its-people">the contact it gives its
@@ -4206,7 +4208,7 @@ ones that are wired, and <code>phr</code> or <code>phrh</code> on a predicate th
 forbids using a registered name in another sense. So is a policy with no class on <code>single_factor</code>, the one
 predicate every login satisfies, since every session has an <code>acr</code>, and so is the name <code>0</code>. What the discovery
 document announces in <code>acr_values_supported</code> is the classes of this policy the tenant can actually prove. The
-classes are written in <a href="#its-row">the row</a>, so a change of them is followed by <code>beffroi:tenant:synchronize</code>.</p>
+classes are written in <a href="#its-row">the row</a>, which the server of the image writes as it starts.</p>
 <h2 id="the-floor-of-its-logins">The floor of its logins<a class="headerlink" href="#the-floor-of-its-logins" title="Link to this section">&para;</a></h2>
 <p>A tenant may require more of every login than a single factor, and name the predicate every login of its
 people has to satisfy:</p>
@@ -4285,7 +4287,7 @@ address first.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 14:51:29 UTC">November 23, 2026</span>
   </span>
 
     

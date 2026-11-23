@@ -4193,13 +4193,16 @@ takes, so a signing key opened with the key management service stays open in it,
 per key and per worker rather than once per signature.</p>
 <h2 id="the-http-server">The HTTP server<a class="headerlink" href="#the-http-server" title="Link to this section">&para;</a></h2>
 <p>The command of the image is <code>frankenphp run --config /etc/frankenphp/Caddyfile</code>. Before it starts, the
-entrypoint does two things when <code>.env</code> names a <code>DATABASE_URL</code>, which the one of the application does:</p>
+entrypoint does three things when <code>.env</code> names a <code>DATABASE_URL</code>, which the one of the application does:</p>
 <ol>
 <li>it waits for the database, sixty attempts one second apart, and stops at once on an error it cannot
    recover from;</li>
 <li>it plays the migrations, <code>doctrine:migrations:migrate --no-interaction --all-or-nothing</code>, every time the
    server starts. The migrations of the application, in <code>migrations/</code>, are written for PostgreSQL and refuse
-   any other platform.</li>
+   any other platform;</li>
+<li>it writes the row of the tenant its environment describes, <code>beffroi:tenant:synchronize</code>, which changes
+   only what changed. A configuration the tenant refuses, or that moved its issuer, stops the container
+   before it serves, at every start.</li>
 </ol>
 <p>The health check of the image asks the metrics endpoint of the Caddy admin API inside the container,
 <code>http://localhost:2019/metrics</code>, with PHP, the image carrying no <code>curl</code>, after a start period of sixty
@@ -4250,9 +4253,9 @@ that plane whatever <code>BEFFROI_PLANE</code> the container sets.</p>
 provider, in this order, which is the order it takes them in:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>messenger:consume<span class="w"> </span>scheduler_beffroi<span class="w"> </span>async_notifications<span class="w"> </span>async_priority_high<span class="w"> </span>async_priority_medium<span class="w"> </span>async_priority_low<span class="w"> </span>--time-limit<span class="o">=</span><span class="m">3600</span><span class="w"> </span>--memory-limit<span class="o">=</span>256M
 </span></code></pre></div>
-<p>Started with <code>bin/console</code>, the entrypoint waits for the database as it does for the server, and plays no
-migration: the server is the process that migrates, and the development stack starts the worker once the server
-reports healthy. The consumer stops after an hour, or once it holds 256 MB, and the restart policy of the stack
+<p>Started with <code>bin/console</code>, the entrypoint waits for the database as it does for the server, plays no
+migration and writes no tenant: the server does both, and the development stack starts the worker once the
+server reports healthy. The consumer stops after an hour, or once it holds 256 MB, and the restart policy of the stack
 starts it again.</p>
 <table>
 <thead>
@@ -4384,9 +4387,13 @@ when they share that directory, which the volume of <code>var/share</code> of th
 each holds its own otherwise: no variable points the pools at another store. The attempts at a password and at
 a code are counted per person, five in a sliding window of one minute, by two limiters,
 <code>beffroi_password_attempts</code> and <code>beffroi_code_attempts</code>, whose counts Symfony keeps in <code>cache.rate_limiter</code>, a
-pool on <code>cache.app</code> as well: they are shared as these pools are. The application names no session handler
-either, so the session of a browser lives where the native handler of PHP keeps it, in the container that
-served it.</p>
+pool on <code>cache.app</code> as well: they are shared as these pools are.</p>
+<p><strong>The session of a browser is in the database</strong>, in <code>beffroi_session</code>, which every process reaches. The server
+keeps it on the connection of Doctrine, under advisory locks of PostgreSQL, each row under the SHA-256 of the
+identifier its cookie carries and its data sealed under a data key of the tenant, as personal data is. So the
+session no longer ties a browser to the server that opened it: servers behind one proxy that share the
+database, the volumes above and the key management service each read the sessions the others wrote, and a
+redeployment that replaces them one at a time signs nobody out.</p>
 <h2 id="tls-and-the-hosts">TLS and the hosts<a class="headerlink" href="#tls-and-the-hosts" title="Link to this section">&para;</a></h2>
 <p>Caddy terminates TLS for the host of <code>SERVER_NAME</code>, unless a proxy in front of the image does
 (<a href="#behind-a-proxy">below</a>), and for the host that asks for a client certificate in every deployment. On these
@@ -4588,7 +4595,7 @@ alone, the one bridge of <code>symfony/notifier</code> the image installs.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:44:50 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 14:51:29 UTC">November 23, 2026</span>
   </span>
 
     

@@ -4110,13 +4110,14 @@ container of the image, or with <code>castor console</code> on the development s
    has nothing to take from a value in the clear.</li>
 <li><strong>The row of the tenant</strong> follows the environment: <code>beffroi:tenant:synchronize</code> creates it, or writes on it
    what the environment says of its name, its <code>acr</code> policy, its look, the claims its people may change of
-   themselves and what the enrolment of a passkey asks, then prints the row. The provider serves nothing while
+   themselves and what the enrolment of a passkey asks, then prints the row. The server of the image runs it
+   every time it starts, right after the migrations. The provider serves nothing while
    the row and the environment of a process disagree, and a request then fails with an exception naming the
    field that differs. A change of <code>BEFFROI_TENANT_NAME</code>, <code>BEFFROI_TENANT_LOGO_URI</code>,
    <code>BEFFROI_TENANT_PRIMARY_COLOR</code>, <code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code>, <code>BEFFROI_TENANT_SELF_SERVED_CLAIMS</code>,
    <code>BEFFROI_TENANT_AUTHENTICATION_CLASSES</code> or one of the four <code>BEFFROI_TENANT_PASSKEY_*</code> is therefore a restart
-   of every process with the new value and the command run in one of them. A changed <code>BEFFROI_ISSUER</code> is
-   refused: the issuer of a tenant does not change, every token issued so far names it, and another issuer is
+   of every process with the new value, the first server that starts writing the row. A changed
+   <code>BEFFROI_ISSUER</code> is refused, and stops the server before it serves: the issuer of a tenant does not change, every token issued so far names it, and another issuer is
    another tenant, under another <code>BEFFROI_TENANT_SLUG</code>.</li>
 <li><strong>Two questions for the pipeline</strong>, both of which write nothing and fail when the answer is no:
    <code>beffroi:keys:list --check</code> opens the keys in use and the ones about to be with the key management
@@ -4361,7 +4362,7 @@ again by the commands that wrote them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:08:03 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 14:48:25 UTC">November 23, 2026</span>
   </span>
 
     
