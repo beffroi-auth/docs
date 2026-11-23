@@ -146,13 +146,13 @@ The device authorization endpoint and the backchannel authentication endpoint re
 
 ## What the person reads
 
-The [consent page](consent.md) shows, under the scopes, "*the client* also asks to be allowed to:" and one
-line per detail, the message of its type rendered with the parameters the type chose. A consent covers a
-detail when it holds an identical one, the same type with the same members: RFC 9396 §7 leaves the comparison
-to whoever defines the type, and equality is the one answer that can never grant more than was agreed to. A
-request that changes anything in a detail asks again, and a request that asks for no detail is covered by a
-consent that holds its scopes. A new agreement adds its details to the ones the consent already held. The
-page of the account that lists the applications a person allowed renders the details the same way.
+The [consent page](consent.md) shows, under the scopes, "*the client* also asks to:" and one line per detail,
+the message of its type rendered with the parameters the type chose. A consent covers a detail when it holds
+an identical one, the same type with the same members: RFC 9396 §7 leaves the comparison to whoever defines
+the type, and equality is the one answer that can never grant more than was agreed to. A request that changes
+anything in a detail asks again, and a request that asks for no detail is covered by a consent that holds its
+scopes. A new agreement adds its details to the ones the consent already held. The page of the account that
+lists the applications a person allowed renders the details the same way.
 
 ## What the token carries
 
