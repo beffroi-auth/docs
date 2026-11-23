@@ -3996,8 +3996,13 @@
 
 <h1 id="translations">Translations<a class="headerlink" href="#translations" title="Link to this section">&para;</a></h1>
 <p>Every user-facing string goes through the translator, in XLIFF with <code>intl-icu</code> for plurals and parameters,
-in the <code>beffroi</code> domain. The application holds one catalogue per language it ships, seven of them: English
-(<code>en</code>), French (<code>fr</code>), German (<code>de</code>), Spanish (<code>es</code>), Italian (<code>it</code>), Dutch (<code>nl</code>) and Polish (<code>pl</code>):</p>
+in the <code>beffroi</code> domain. The application holds one catalogue per language it ships, thirty-one of them. They
+are the official languages of the European Union but Irish and Maltese, English being official in Ireland and
+Malta: Bulgarian (<code>bg</code>), Croatian (<code>hr</code>), Czech (<code>cs</code>), Danish (<code>da</code>), Dutch (<code>nl</code>), English (<code>en</code>), Estonian
+(<code>et</code>), Finnish (<code>fi</code>), French (<code>fr</code>), German (<code>de</code>), Greek (<code>el</code>), Hungarian (<code>hu</code>), Italian (<code>it</code>), Latvian
+(<code>lv</code>), Lithuanian (<code>lt</code>), Polish (<code>pl</code>), Portuguese (<code>pt</code>), Romanian (<code>ro</code>), Slovak (<code>sk</code>), Slovenian (<code>sl</code>),
+Spanish (<code>es</code>) and Swedish (<code>sv</code>). Then Albanian (<code>sq</code>), Bosnian (<code>bs</code>), Catalan (<code>ca</code>), Icelandic (<code>is</code>),
+Macedonian (<code>mk</code>), Norwegian Bokmål (<code>nb</code>), Serbian (<code>sr</code>), Turkish (<code>tr</code>) and Ukrainian (<code>uk</code>):</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>translations/beffroi+intl-icu.en.xlf
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>translations/beffroi+intl-icu.fr.xlf
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>translations/beffroi+intl-icu.de.xlf
@@ -4007,6 +4012,9 @@ in the <code>beffroi</code> domain. The application holds one catalogue per lang
 the same domain, holding every key of the English one and nothing else, its name in itself under
 <code>language.&lt;code&gt;</code> in every catalogue, which is how the language control names it, and
 <code>framework.enabled_locales</code> naming it in <code>config/packages/translation.yaml</code>.</p>
+<p>The English of the catalogue is British and its Portuguese that of Portugal, and a date is written as
+<code>en_GB</code> and <code>pt_PT</code> write one: "23 Nov 2026, 14:05 UTC" in English. Serbian is written in Cyrillic. The font of
+the pages draws every one of these languages, Greek and Cyrillic included.</p>
 <p>A deployment serves every language the application ships, or those <code>BEFFROI_LOCALES</code> names, as a JSON list
 (<code>'["fr","en"]'</code>). <code>DEFAULT_LOCALE</code> is the one a page falls back to, and it is one of them: a list that leaves
 it out is refused, and so is a language the application has no catalogue for. The discovery document
@@ -4140,7 +4148,7 @@ go through any of this, an administrator reading them beside a server.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 11:23:08 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 12:19:05 UTC">November 23, 2026</span>
   </span>
 
     
