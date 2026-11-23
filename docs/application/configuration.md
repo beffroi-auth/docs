@@ -91,8 +91,8 @@ the seven settings of [the row of the tenant](../core/tenants.md), the enrolment
 environment of its process: while the two differ, each one that reads the tenant fails, and the log names the
 setting that differs, `look` for the logo and the colours, `passkey_attestation` for the four of the passkey
 enrolment, while the timed steps wait. Changing one of them is therefore a restart of
-every process with the new value, and `bin/console beffroi:tenant:synchronize` run in one of them; a process
-still on the previous value stops serving from that moment.
+every process with the new value: the server of the image writes the row as it starts, and a process still on
+the previous value stops serving from that moment.
 
 The row holds two more settings, which no variable names and `beffroi:tenant:synchronize` leaves as they are:
 [the floor of its logins](../core/tenants.md#the-floor-of-its-logins), which `beffroi:tenant:login-floor` sets,

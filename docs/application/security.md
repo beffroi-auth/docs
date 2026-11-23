@@ -143,6 +143,7 @@ the firewall, one timestamp per method.
 ``` yaml title="config/packages/framework.yaml"
 framework:
     session:
+        handler_id: App\Http\DatabaseSessions
         name: '__Host-beffroi_session'
         cookie_secure: true
         cookie_httponly: true

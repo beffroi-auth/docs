@@ -58,8 +58,9 @@ configuration](../application/configuration.md) lists the variables.
 The one tenant of the deployment: required. [Tenants](../core/tenants.md) is what a tenant is. A value the
 tenant cannot hold is refused when the provider builds the tenant, which it does before serving anything of
 it. The issuer and ten of these values are written in the row of the tenant, the four of the passkey enrolment
-together: a change to one of the ten is followed by `beffroi:tenant:synchronize`, which refuses another issuer
-than the one the row was written with, as [the tenant](../application/configuration.md#the-tenant) says.
+together: a change to one of the ten is written there by `beffroi:tenant:synchronize`, which the server of the
+image runs as it starts, or the command run by hand outside the image, and which refuses another issuer than the
+one the row was written with, as [the tenant](../application/configuration.md#the-tenant) says.
 
 | Option | Variable | Type | In the image | What it decides |
 |---|---|---|---|---|

@@ -29,8 +29,9 @@ bin/console beffroi:tenant:synchronize
 ```
 
 It writes what the variables say of the tenant, its name, its look, the claims its people may change of
-themselves and the classes it answers with, and prints the tenant it synchronised. Run it on every
-deployment, and after a change of one of those variables. The issuer is the one thing it never changes: every
+themselves and the classes it answers with, and prints the tenant it synchronised. The image runs it when its
+server starts, right after the migrations; an application run otherwise runs it on every deployment, and after
+a change of one of those variables. The issuer is the one thing it never changes: every
 token a tenant issued names it, so an environment that gives a tenant another issuer is refused, by this
 command and by the provider, which serves nothing while its row and its environment disagree. Another issuer
 is another tenant, under another slug.
