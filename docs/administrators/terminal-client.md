@@ -24,10 +24,11 @@ Each [release](https://github.com/beffroi-auth/beffroi/releases) carries the cli
 
 There is no Windows build: the client drives the terminal through `stty`.
 
-`SHA256SUMS` holds the digests of the four files, and `SHA256SUMS.asc` is its signature by the key that signs
-the release tags, `Beffroi releases <releases@beffroi.tech>`, of fingerprint
-`FAFA 4D7E 39BA B0AE 08EE  4439 544F 6C79 29EA 07AF`. The client carries that key to verify its own updates.
-Check the file you downloaded before you run it:
+`SHA256SUMS` holds the digests of the four files and of a fifth, `release`, which holds the tag of the release
+followed by a line feed, so that the signature names the release it vouches for. `SHA256SUMS.asc` is its
+signature by the key that signs the release tags, `Beffroi releases <releases@beffroi.tech>`, of fingerprint
+`71E8 95E3 E2F6 1952 D190  87F5 8B4B A35E 2D61 91D9`. The client carries that key to verify its own updates.
+Download `release`, `SHA256SUMS` and `SHA256SUMS.asc` beside the file, and check it before you run it:
 
 === "Linux"
 
@@ -35,6 +36,7 @@ Check the file you downloaded before you run it:
     curl -fsSL https://raw.githubusercontent.com/beffroi-auth/beffroi/HEAD/apps/tui/resources/release-signing-key.gpg | gpg --import
     gpg --verify SHA256SUMS.asc SHA256SUMS
     sha256sum --check --ignore-missing SHA256SUMS
+    cat release
     chmod +x beffroi-tui-linux-x86_64
     ```
 
@@ -44,12 +46,14 @@ Check the file you downloaded before you run it:
     curl -fsSL https://raw.githubusercontent.com/beffroi-auth/beffroi/HEAD/apps/tui/resources/release-signing-key.gpg | gpg --import
     gpg --verify SHA256SUMS.asc SHA256SUMS
     shasum -a 256 --check --ignore-missing SHA256SUMS
+    cat release
     chmod +x beffroi-tui-macos-aarch64
     ```
 
-`gpg --verify` reports a good signature from `Beffroi releases <releases@beffroi.tech>`, and the check of the
-digests reports the file you downloaded `OK`. The commands on this page call the client `beffroi-tui`,
-whatever name you keep it under.
+`gpg --verify` reports a good signature from `Beffroi releases <releases@beffroi.tech>`, the check of the
+digests reports `release` and the file you downloaded `OK`, and `release` prints the tag of the release you
+meant to download, and no other. The commands on this page call the client `beffroi-tui`, whatever name you
+keep it under.
 
 ## Connecting it to an instance
 
@@ -85,7 +89,7 @@ profile.
 | Option | What it does |
 |---|---|
 | `--profile` | The name the registration is kept under, `default` when it is not given: lowercase letters, digits, `-` and `_`, 63 at most. One profile per instance you administer |
-| `--client-name` | The name the tenant lists the client under, `Beffroi TUI on` followed by the name of your machine when it is not given |
+| `--client-name` | The name the tenant lists the client under, `Beffroi TUI on` followed by the name of your machine when it is not given. The instance refuses a name of more than a hundred characters, or one that is not [plain text](people/users.md#plain-text) |
 | `--port` | The port of the loopback interface. A port free at registration is taken otherwise, and kept |
 | `--cafile` | A file of certificate authorities the instance is trusted under, in place of those of the system. A file the group or others may write is refused |
 
@@ -138,6 +142,12 @@ instance handed it a refresh token (RFC 6749 §6); without one, the API refuses 
 has expired, and the screen asks you to quit and sign in again. Quitting hands the tokens back to the instance
 (RFC 7009).
 
+No token for the administration API outlives the session of the provider you signed in with, which expires at
+most twelve hours after the login that opened it ([authentication sessions](people/authentication-sessions.md)). Once
+that session has ended or expired, the instance refuses to refresh, with `invalid_grant` (RFC 6749 §5.2), and the
+API refuses the access token already issued. The screen then says "The provider no longer renews the tokens of
+this session: quit, then sign in again."
+
 A sign-in that fails leaves the home page with what the instance answered, and Enter starts it again. Three
 refusals come with what to do:
 
@@ -156,7 +166,8 @@ from an administrator when:
   `BEFFROI_TENANT_ADMINISTRATORS`, whatever source holds the membership ([who administers the
   tenant](people/groups.md#who-administers-the-tenant));
 - you signed in at the authorization endpoint with a passkey, a proof of the class `phr`, whatever the floor of
-  the tenant, in a session that has not ended: a password is refused, with a second factor or without;
+  the tenant, in a session that has neither ended nor expired: a password is refused, with a second factor or
+  without;
 - the access token is addressed to the administration API, was issued to you and not on your behalf (RFC 8693
   §4.1), and is bound to a key that the request proves again (RFC 9449 §7.1).
 
@@ -241,11 +252,11 @@ one](people/users.md#creating-one)).
 | Key | What it does |
 |---|---|
 | `c` | Shows their credentials |
-| `s` | Reads their open sessions, with the proof, the dates and where each came from |
+| `s` | Reads their sessions that have not ended, one past its expiry included, with the proof, the dates and where each came from |
 | `j` | Reads their last acts |
 | `a` | Reads the applications they agreed to |
 | `x` on a credential | Asks to revoke it ([revoked and forgotten](people/credentials/index.md#revoked-and-forgotten)). A password is replaced, never revoked |
-| `x` on an open session | Asks to end it; the applications it signed in to are told ([ending one](people/authentication-sessions.md#ending-one)) |
+| `x` on a session | Asks to end it, past its expiry or not; the applications it signed in to are told ([ending one](people/authentication-sessions.md#ending-one)) |
 | `x` on an application | Asks to revoke the consent; an access token already issued stays valid until it expires |
 | `t` | Asks to issue the link that lets them add a [passkey](people/credentials/passkeys.md#a-first-passkey-from-a-ticket) |
 | `p` | Asks to issue the link that lets them set a new [password](people/credentials/passwords.md#setting-one) |
@@ -260,12 +271,13 @@ the screen when the focus moves, and Enter brings the person back.
 ### Groups
 
 The Groups section lists the groups of the tenant by name, source, number of members and whether they
-administer the tenant, which reads nobody. The members of a group are read only when you ask for them
-([groups](people/groups.md)).
+administer the tenant, which reads nobody. The members of a group are read only when you ask for them, fifty
+at a time ([groups](people/groups.md#reading-them)).
 
 | Key | What it does |
 |---|---|
-| Enter on a group | Reads its members, with the source and the date of each membership |
+| Enter on a group | Reads the first page of its members, with the source and the date of each membership. The heading says `Members of <group> · page <n> of <m>` once the group holds more than one page |
+| `]` and `[` on the members | Read the next page of members, and the one before |
 | `n` | Opens the field `New group:`, where Enter creates the group named |
 | `a` | Opens a field for a username, where Enter adds that person to the group chosen or shown |
 | `x` on a member | Asks to take them out. The question says so when the group administers the tenant, and you cannot take yourself out of such a group |
@@ -273,11 +285,27 @@ administer the tenant, which reads nobody. The members of a group are read only 
 ## Every act names you
 
 Each change you make through the client is an act of the journal that names you, by the subject of your
-account, and the line that says it was done ends with "Logged under your name." Reading a person, their open
+account, and the line that says it was done ends with "Logged under your name." Reading a person, their
 sessions, their last acts or the applications they agreed to, and reading the members of a group, are acts of
-each person read, which name you as well: the Users and Groups sections say so before the first read. Listing
-the groups, the clients and the keys, and reading the tenant and the monitoring, reads nobody
+each person read, which name you as well: the Users and Groups sections say so before the first read. So is a
+change that changes nothing, saving a form that says what the account already says, disabling or enabling a
+person already in that state, or revoking a credential already revoked: the answer delivers the person, or the
+credential, as they are, and is written as a read of the person, `administration.person_read`. Listing the groups, the clients and the
+keys, and reading the tenant and the monitoring, reads nobody
 ([the journal](../operators/application/observability.md#the-journal)).
+
+## How many persons you read
+
+The instance delivers one administrator a bounded number of persons, counted on a sliding window by tenant and by
+administrator, and shared by the processes of the deployment as its cache pools are: 600 persons an hour, unless the deployment sets
+`BEFFROI_ADMINISTRATOR_PERSONS_LIMIT`, a hundred at least, and `BEFFROI_ADMINISTRATOR_PERSONS_INTERVAL`, in
+seconds. Reading a person, their sessions, their last acts or their applications spends one person, and so do
+saving the form of their account, disabling or enabling them, and revoking a credential already revoked. A page of
+members spends one per member, and a page past the last one spends nothing.
+
+A request past the budget delivers nobody, changes nothing and writes no read: the API answers `429`, with
+`Retry-After`, and the screen shows what the instance answered, the seconds to wait included. The refusal is an act of your own journal,
+`administration.read_refused`, which the Monitoring section counts as "reads refused to an administrator".
 
 ## Keeping it up to date
 
@@ -293,9 +321,11 @@ beffroi-tui self-update
 ```
 
 `self-update` replaces the PHAR or the executable that runs by the same file of the newest release of its line,
-and runs the verification above for you. It downloads `SHA256SUMS` and `SHA256SUMS.asc` first, and `gpgv`
-checks the signature under the release key the client carries, never one fetched at run time. Only then is the
-file downloaded, and it must match its line of `SHA256SUMS`, or nothing is replaced.
+and runs the verification above for you. It downloads `SHA256SUMS` and `SHA256SUMS.asc` first: `gpgv` checks the
+signature under the release key the client carries, never one fetched at run time, and `SHA256SUMS` must name
+the tag of the release it installs, through the digest it gives `release`, so that the signed files of a release
+published again under another tag are refused. Only then is the file downloaded, and it must match its line of
+`SHA256SUMS`, or nothing is replaced.
 
 - It needs `gpgv` on the `PATH` and write access to the directory the program sits in. It asks for no more
   privileges, so a copy in a directory only root writes to, such as `/usr/local/bin`, is refused, and it has

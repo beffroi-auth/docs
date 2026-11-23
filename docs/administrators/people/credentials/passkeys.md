@@ -90,7 +90,8 @@ not one, or admitted twice; and a day written otherwise.
 
 The login page asks the browser for a discoverable credential: no username and no list of allowed passkeys, so
 the page says nothing of who holds one. The options are drawn for that browser and kept in its session until
-the assertion comes back.
+the assertion comes back. A post without the token of the login form is refused before the options are taken,
+and writes nothing.
 
 The assertion is verified against the passkey of the tenant its credential ID names, the signature first. Then,
 so that a refusal costs what a wrong signature costs, the provider refuses a passkey of another tenant, an
@@ -107,9 +108,12 @@ domain and a disabled person.
 Under a floor of `two_factors`, a passkey proves two factors only when the authenticator verified the user: a
 security key without a PIN proves the possession of a key, one factor, and that login is refused.
 
-**The counters are read, not trusted.** The sign count and the backup state of the assertion replace the stored
-ones (§7.2, step 26). When either count is not zero, a count that did not grow is told, by the event
-`passkey.used` that announces the login, and not refused, a synced passkey keeping its count at zero.
+**A count that did not grow is refused.** When the stored sign count or the one of the assertion is not zero,
+the assertion must carry a greater one than the passkey holds (§6.1.1), or it is refused as a wrong signature
+is; a synced passkey keeps its count at zero, and zero after zero passes. The count and the backup state of the
+assertion then replace the stored ones (§7.2, step 26), written only while the row holds a lower count, or zero
+for an assertion of zero: of two assertions carrying the same count above zero at once, one signs in and the
+other is refused.
 
 ## Synced or bound
 
@@ -156,9 +160,9 @@ hours, one at a time.
 
 ## Renaming and revoking
 
-A person renames a passkey in its line on the page of their passkeys, 1 to 255 characters once the whitespace
-around it is trimmed, and the event `credential.renamed` carries the name it had. A revoked passkey is a record of what was: its line offers no
-field to rename it.
+A person renames a passkey in its line on the page of their passkeys, 1 to 255 characters of [plain
+text](../users.md#plain-text) once the whitespace around it is trimmed, and the event `credential.renamed`
+carries the name it had. A revoked passkey is a record of what was: its line offers no field to rename it.
 
 Revoking one is asked for a proof made in the last five minutes, since it is the gesture that can leave somebody
 with no way in at all. The passkey never authenticates again and its line stays, listed as revoked with its date;

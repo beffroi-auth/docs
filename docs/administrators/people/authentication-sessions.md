@@ -114,14 +114,15 @@ login on the same session moves the session, and never a token already issued.
 | Close every other one, on the same page, which keeps the session reading it | `user` |
 | A password replaced on the page of the account, which ends every other session of the person | `user` |
 | `beffroi:user:revoke-session`, with the identifier `beffroi:user:sessions` lists | `user` |
-| An administrator, through the administration API, ending that session | `administrator` |
+| An administrator, through the administration API, ending that session, past its expiry or not | `administrator` |
 | `beffroi:user:disable`, which ends every session of the person | `user` |
 | An administrator disabling the person through the administration API, every session of theirs | `administrator` |
 | A password ticket or a ticket for an authenticator application, once spent, which ends every session of the person | `user` |
 | A login of another person on the same browser | `user` |
 
 The first end wins, and a session that has ended authenticates nothing afterwards. The act `session.ended`
-goes to the journal of the person, and names the administrator when one ended it.
+goes to the journal of the person, and names the administrator when one ended it, as do the acts of the logout
+tokens sent to its clients, `logout_token.issued` and `logout_token.given_up`.
 
 **Every end revokes what was issued under it.** On the lane of the events, beside the back-channel logout that
 tells the clients of the session ([logout](../../developers/oidc/logout.md)), its refresh tokens are revoked, rotated ones
@@ -136,9 +137,13 @@ verifies a self-contained access token offline accepts it until it expires, ten 
 
     A session past its twelve hours signs nobody in and is not offered to the browser that held it, and no
     option changes that duration. Nothing is announced when it passes, though, and nothing is revoked: the
-    refresh tokens and access tokens issued under it keep the lifetimes they were issued with. What has not
-    been exchanged yet, an authorization code, a device code or a backchannel request, is refused at the token
-    endpoint once its session has expired.
+    refresh tokens and access tokens issued under it keep the lifetimes they were issued with, until somebody
+    ends it, which `beffroi:user:revoke-session` and an administrator through the administration API do for a
+    session past its expiry as for any other. What has not been exchanged yet, an authorization code, a device
+    code or a backchannel request, is refused at the token endpoint once its session has expired. No token
+    addressed to the [administration API](../terminal-client.md#signing-in) outlives its session: once the
+    session has ended or expired, a refresh for that API is refused with `invalid_grant` (RFC 6749 §5.2), and the
+    API refuses an access token already issued.
 
 The row of a session, ended or not, is dropped by an hourly step once its expiry is older than the absolute
 lifetime of a refresh token family plus the lifetime of an access token, ninety days and ten minutes in the

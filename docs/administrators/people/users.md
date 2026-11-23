@@ -16,9 +16,9 @@ and the person names the source that created them. Their [credentials](credentia
 | Field | What it holds |
 |---|---|
 | Subject | The `sub` of OIDC Core §2: 1 to 255 printable ASCII characters, no space. Unique within the tenant, never changed and never given to anybody else |
-| Username | What the person types to name themselves: 1 to 255 bytes once the whitespace around it is trimmed, unique within the tenant and matched exactly, case included |
+| Username | What the person types to name themselves: 1 to 255 bytes of [plain text](#plain-text) once the whitespace around it is trimmed, unique within the tenant and matched exactly, case included |
 | Email address | Optional, a valid address, with a flag that says whether it was verified. An absent address cannot be verified. The mail that tells the person that [a backchannel request](../../developers/oidc/grants/backchannel-authentication.md#reaching-the-person) waits for them is written to it only while it is marked verified |
-| Phone number | Optional, with a flag of its own that says whether it was verified. The text that tells them so is sent to it only while it is marked verified |
+| Phone number | Optional, plain text of 64 characters at most, with a flag of its own that says whether it was verified. The text that tells them so is sent to it only while it is marked verified |
 | Address | The structured claim of OIDC Core §5.1.1. An address with no member is no address, and is not held |
 | Profile | The thirteen other claims of OIDC Core §5.1, below |
 | Source | Local, or the upstream provider that created the person and the claims it holds of them |
@@ -75,20 +75,34 @@ username, the address is verified, and the source says which provider created th
 | Claim | What it holds |
 |---|---|
 | `name`, `given_name`, `family_name`, `middle_name`, `nickname`, `preferred_username` | Names |
-| `profile`, `picture`, `website` | Three URLs |
+| `profile`, `picture`, `website` | Three URLs, each absolute, `https` or `http`, with a host, and 2048 characters at most. A space or a control character anywhere in it is refused, and so is any other scheme, `javascript:` and `data:` among them |
 | `gender` | A free string, OIDC Core §5.1 naming two values and allowing others |
-| `birthdate` | `YYYY-MM-DD`, or `YYYY` alone, `0000` standing for a year nobody knows. A value of another shape is refused, wherever it comes from; the shape is what is checked, four digits and two pairs of two, and not whether that month and that day exist |
+| `birthdate` | `YYYY-MM-DD`, a day the calendar holds, or `YYYY` alone, `0000` standing for a year nobody knows |
 | `zoneinfo` | The clock of the person, a name of the zoneinfo database |
 | `locale` | The language the person reads |
 | `email`, `email_verified` | The address and its flag |
 | `phone_number`, `phone_number_verified` | The number and its flag |
 | `address` | The six members of OIDC Core §5.1.1: `formatted`, `street_address`, `locality`, `region`, `postal_code`, `country` |
 
+The names, `gender`, `zoneinfo` and `locale` are [plain text](#plain-text) of 255 characters at most. The
+members of the address are plain text too: `formatted` and `street_address` hold 1024 characters at most, on
+lines separated by line feeds, and the four others 255. A value that breaks a rule of the table or of this
+paragraph is refused wherever it comes from.
+
 **A claim that is not set is absent.** The provider holds nothing under that name, and a client is never sent
 the claim with a null value: it is sent no claim at all. A flag goes with its value, so `email_verified` is
 sent only beside an address and `phone_number_verified` only beside a number, and an address with no member is
 no `address`. `updated_at`, the instant the record last changed, always has a value. Which claims a client
 receives, by scope or by name, is [scopes and claims](../../developers/oidc/scopes-and-claims.md).
+
+### Plain text
+
+What somebody writes of a person, a group or a client is plain text: valid UTF-8, with no control character, no
+line or paragraph separator, and no format character but the zero-width non-joiner and joiner that Persian and
+the Indic scripts write words with, so that nothing in it breaks, reorders or hides a part of the line it is
+shown on, and bounded in characters. The provider holds a value to it whatever path writes it, the pages of the
+account, the administration API, an upstream provider, a registration or the console, and the refusal names the
+rule: the administration API answers it with `400`, `invalid_request` and that sentence.
 
 ### Describing a user from the console
 
@@ -121,7 +135,9 @@ merge patch (RFC 7396) of the document that reads the person: a claim set to `nu
 address or number is unverified until the patch says it was verified. All of it is written or none of it. A
 username another person of the tenant holds is refused, and so is a value that changes what the source of the
 person holds. Each value that changed is a line of the history of the person, which names the administrator,
-and the patch is one act, `person.described`, which carries the names of what changed and never a value.
+and the patch is one act, `person.described`, which carries the names of what changed and never a value. A patch
+that changes nothing writes neither: it answers the person as they are, which is a read of them,
+`administration.person_read`.
 
 ### What a person says of themselves
 
@@ -209,4 +225,5 @@ bin/console beffroi:user:enable alice
 
 An administrator does the same through the administration API, and cannot disable the account they act with.
 Each is an act of the person, `person.disabled` or `person.enabled`. A person already in that state is left as
-they are, and nothing is written. `beffroi:user:show` says `disabled since` and the date.
+they are, and no change is written; through the administration API, the answer delivers them as they are, which
+is a read of them, `administration.person_read`. `beffroi:user:show` says `disabled since` and the date.

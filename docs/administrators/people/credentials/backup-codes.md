@@ -31,10 +31,11 @@ costs no hash until the first code of the application has confirmed it, so an en
 ## Spending one
 
 On the code page, anything other than six digits is read as a backup code. It is held to the limit of the codes of
-the application, five per person in a sliding window of one minute, and it is verified against every unspent code
-of the set without stopping at the first that matches, the first that matched being the one spent. A code spent is
-refused afterwards, as a code nobody issued is, and the page says that a backup code was refused and works only
-once.
+the application, five per person in a sliding window of one minute, and it is verified against every code of the
+set, the spent ones included, without stopping at the first that matches, so that the time of a refusal does not
+say how many are left. Only an unspent code is accepted, the first unspent one that matched being the one spent,
+and of two requests presenting the same code at once, one is accepted. A code spent is refused afterwards, as a
+code nobody issued is, and the page says that a backup code was refused and works only once.
 
 A code accepted writes the act `backup_code.used` to the journal of the person, not `totp.used`: what the two prove
 is the same, what they say of the account is not, a spent code being one the person no longer has.
