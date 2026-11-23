@@ -4312,6 +4312,11 @@ image is built.</p>
 <td>The secrets every data key of personal data is bound to its row under, as a JSON list, the one that binds a new row first. Not set, <code>APP_SECRET</code> alone binds them. <a href="../operating/#data-keys">Operating it</a> says how a rotation of <code>APP_SECRET</code> uses it</td>
 </tr>
 <tr>
+<td><code>BEFFROI_LOCALES</code></td>
+<td><code>[]</code></td>
+<td>The <a href="../translations/">languages</a> the pages and the messages are served in, as a JSON list, <code>'["fr","en"]'</code>, <code>DEFAULT_LOCALE</code> among them. <code>[]</code> serves every language the application ships. A language without a catalogue, or a list that leaves out <code>DEFAULT_LOCALE</code>, is refused. The discovery document announces them in <code>ui_locales_supported</code></td>
+</tr>
+<tr>
 <td><code>BEFFROI_PLANE</code></td>
 <td><code>provider</code></td>
 <td>The planes this process serves: <code>provider</code> (the interaction and protocol planes), <code>interaction</code> or <code>protocol</code>, and <code>administration</code>, the administration API alone, which the worker of <code>/etc/frankenphp/administration.Caddyfile</code> sets. In a process of the interaction or of the protocol plane, a route of the other answers <code>404</code></td>
@@ -4344,7 +4349,7 @@ image is built.</p>
 </tbody>
 </table>
 <h2 id="the-tenant">The tenant<a class="headerlink" href="#the-tenant" title="Link to this section">&para;</a></h2>
-<p>Twelve variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
+<p>Thirteen variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
 list has in the <a href="../../reference/configuration/">configuration tree</a>, <code>[]</code> or <code>{}</code> for none. An empty variable
 is no JSON document, and is refused.</p>
 <table>
@@ -4887,7 +4892,7 @@ on what its own clients send.</p>
 <tr>
 <td><code>DEFAULT_LOCALE</code></td>
 <td><code>en</code></td>
-<td>The language a page falls back to, among the two the application serves, <code>en</code> and <code>fr</code></td>
+<td>The language a page falls back to, one of the languages the deployment serves</td>
 </tr>
 <tr>
 <td><code>DATABASE_URL</code></td>
@@ -5121,7 +5126,7 @@ reads none of them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:59:39 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 11:23:08 UTC">November 23, 2026</span>
   </span>
 
     

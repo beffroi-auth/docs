@@ -3996,13 +3996,22 @@
 
 <h1 id="translations">Translations<a class="headerlink" href="#translations" title="Link to this section">&para;</a></h1>
 <p>Every user-facing string goes through the translator, in XLIFF with <code>intl-icu</code> for plurals and parameters,
-in the <code>beffroi</code> domain. The application holds one catalogue per language it serves, <code>en</code> and <code>fr</code>:</p>
+in the <code>beffroi</code> domain. The application holds one catalogue per language it ships, seven of them: English
+(<code>en</code>), French (<code>fr</code>), German (<code>de</code>), Spanish (<code>es</code>), Italian (<code>it</code>), Dutch (<code>nl</code>) and Polish (<code>pl</code>):</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>translations/beffroi+intl-icu.en.xlf
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>translations/beffroi+intl-icu.fr.xlf
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>translations/beffroi+intl-icu.de.xlf
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>...
 </span></code></pre></div>
 <p>The catalogues are code of the application, like its templates: adding a language is one more catalogue of
-the same domain, and <code>framework.enabled_locales</code> naming it in <code>config/packages/translation.yaml</code>. A deployment
-chooses which of the two a page falls back to with <code>DEFAULT_LOCALE</code>.</p>
+the same domain, holding every key of the English one and nothing else, its name in itself under
+<code>language.&lt;code&gt;</code> in every catalogue, which is how the language control names it, and
+<code>framework.enabled_locales</code> naming it in <code>config/packages/translation.yaml</code>.</p>
+<p>A deployment serves every language the application ships, or those <code>BEFFROI_LOCALES</code> names, as a JSON list
+(<code>'["fr","en"]'</code>). <code>DEFAULT_LOCALE</code> is the one a page falls back to, and it is one of them: a list that leaves
+it out is refused, and so is a language the application has no catalogue for. The discovery document
+announces the languages served in <code>ui_locales_supported</code> (OIDC Discovery 1.0 §3), the default first, as language
+tags (RFC 5646).</p>
 <div class="admonition info">
 <p class="admonition-title">The <code>error_description</code> of the protocol is not translated</p>
 <p>It is addressed to the developer of the client, in ASCII, as RFC 6749 §4.1.2.1 asks. What a person
@@ -4022,7 +4031,7 @@ it, in the language of the specification.</p>
 <tr>
 <td>The languages this deployment serves</td>
 <td>What a page can be written in</td>
-<td><code>framework.enabled_locales</code>, with <code>framework.default_locale</code> in front</td>
+<td><code>BEFFROI_LOCALES</code>, or every language the application ships when it names none, with <code>DEFAULT_LOCALE</code> in front</td>
 </tr>
 <tr>
 <td>The languages a person can say they read</td>
@@ -4131,7 +4140,7 @@ go through any of this, an administrator reading them beside a server.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 11, 2026 08:02:24 UTC">October 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 11:23:08 UTC">November 23, 2026</span>
   </span>
 
     
