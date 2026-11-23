@@ -14,8 +14,8 @@ the Compose file of the image, [`compose.prod.yaml`](../getting-started/the-stan
 
 `compose.prod.yaml` is one host: the server and the worker beside PostgreSQL, the lanes in the database, and
 Caddy terminating TLS for a public name, with a certificate it obtains itself. A deployment writes two files
-beside it. The first is the `.env` Compose reads, with the five variables the file requires and the name of
-the second:
+beside it. The first is the `.env` Compose reads, with the five variables the file requires, the role the
+processes connect to the database as, and the name of the second:
 
 ``` bash
 cat > .env <<EOF
@@ -23,6 +23,8 @@ COMPOSE_FILE=compose.prod.yaml:compose.override.yaml
 SERVER_NAME=op.example.com
 APP_SECRET=$(openssl rand -hex 32)
 POSTGRES_PASSWORD=$(openssl rand -hex 24)
+BEFFROI_DATABASE_USER=beffroi_runtime
+BEFFROI_DATABASE_PASSWORD=$(openssl rand -hex 24)
 BEFFROI_KMS_DSN=sodium+dir:///app/var/kms?ext=.key
 BEFFROI_KMS_KEY_ID=beffroi-{tenant}
 EOF
@@ -62,9 +64,22 @@ docker compose run --rm --no-deps --entrypoint cat op var/kms/beffroi-default.ke
 - **`/data` keeps what Caddy obtains**, its certificate and the account it obtains it under, and `/config` the
   configuration it last ran. A container that loses `/data` asks the authority again.
 - **`BEFFROI_REGISTRATION_MODE` is what lets a client exist**, the image declaring none.
+- **The processes connect as `beffroi_runtime`**, which reads and writes what they serve and rewrites no row of
+  the journal, of the history of claims or of what clients were given. `beffroi`, the `POSTGRES_USER` of the
+  file, owns the tables: the server plays the migrations as that role and grants `beffroi_runtime` every time
+  it starts ([`BEFFROI_MIGRATIONS_DATABASE_URL`](configuration.md#symfony-and-the-database)). Without the two
+  variables, the processes connect as `beffroi`, and whoever holds its password can rewrite any row.
+
+The role is created once, with the password `.env` holds, before the server first starts:
+
+``` bash
+docker compose up -d --wait database
+docker compose exec database psql -U beffroi -c "CREATE ROLE beffroi_runtime LOGIN PASSWORD '$(grep '^BEFFROI_DATABASE_PASSWORD=' .env | cut -d= -f2)'"
+```
 
 The first start is the one of [the standalone application](../getting-started/the-standalone-application.md#the-first-start-in-order):
-the server first, which waits for the database, plays the migrations and writes the row of the tenant; then
+the server first, which waits for the database, plays the migrations, grants the role of the processes and
+writes the row of the tenant; then
 the keys of the tenant and a person; then the worker, once the key it opens messages with exists.
 
 ``` bash
@@ -164,7 +179,7 @@ header writes it at will: the address is worth what the filtering of the origin 
 
 ## Lists in JSON
 
-Thirteen lists of the configuration are a JSON document each, of the shape the
+Fifteen lists of the configuration are a JSON document each, of the shape the
 [configuration reference](../reference/configuration.md) gives the list. A document fits on one line in single
 quotes, or spreads over several in a literal block. Both processes read the tenant, so its lists are written
 under `x-deployment`:

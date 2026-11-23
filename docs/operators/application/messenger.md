@@ -39,7 +39,7 @@ What the lanes carry out:
 |---|---|
 | `async_priority_low` | Every act written to the journal; where a session was seen from, enriched; the tokens of an ended session revoked, and again for a refresh that was in flight; the clients of an ended session handed a logout token to carry; the date a client was last used; what a client was given of a person; the archive a person asked for, built; the part of a SAML service provider in a session, recorded; the client of an answered backchannel request handed its notification to carry |
 | `async_priority_medium` | A password that just signed somebody in, looked up in a list of compromised passwords; the language a person chose, written on their account; and every step of [the schedule](#what-time-does-on-its-own) |
-| `async_notifications` | A logout token posted to a client (Back-Channel Logout 1.0 §2.5), and one issued for a client whose key could not be obtained when its session ended; a backchannel request whose client is told it was answered (CIBA Core §10.2); a person told that a request waits for them or that a way of signing in to their account changed, through the channels the deployment wires: [web push](web-push.md) for both, and a mail or a text for a request that waits |
+| `async_notifications` | A logout token posted to a client (Back-Channel Logout 1.0 §2.5), and one issued for a client whose key could not be obtained when its session ended; a backchannel request whose client is told it was answered (CIBA Core §10.2); a person told that a request waits for them, or that a way of signing in to their account changed, through each channel the deployment wires, [web push](web-push.md), a mail or a text; the code that confirms an address, by mail or by text |
 
 ## The contract of the provider
 
@@ -68,12 +68,13 @@ would break the asynchronous half of the provider, and nothing in a browser woul
 | Transport | DSN | Tried again |
 |---|---|---|
 | `sync` | `sync://` | Not at all |
-| `async_priority_high`, `async_priority_medium`, `async_priority_low` | `BEFFROI_MESSENGER_DSN`, `{lane}` in it replaced by the name of the lane; `doctrine://default?queue_name={lane}` when the variable is not set | Four times, one second before the first, each wait four times the one before, thirty seconds at most |
-| `async_notifications` | The same | On the schedule of `App\Messenger\NotificationRetryPolicy`, which `beffroi.back_channel_logout` sets: by default two seconds before the first, each wait three times the one before, sixty seconds at most, the waits exact |
-| `failed`, the failure transport | `doctrine://default?queue_name=failed` | |
+| `async_priority_high`, `async_priority_medium`, `async_priority_low` | `BEFFROI_MESSENGER_DSN`, or the file `BEFFROI_MESSENGER_DSN_FILE` names, `{lane}` in it replaced by the name of the lane; `doctrine://default?queue_name={lane}` when neither is set | Four times, one second before the first, each wait four times the one before, thirty seconds at most |
+| `async_notifications` | The same | On the schedule of `App\Messenger\NotificationRetryPolicy`, the waits exact. A notice of a change to the credentials of an account, on the one `beffroi.notices` sets: by default thirty times, a minute before the first, each wait twice the one before, an hour at most. Every other message, on the one `beffroi.back_channel_logout` sets: by default six times, two seconds before the first, each wait three times the one before, sixty seconds at most |
+| `failed`, the failure transport | `doctrine://default?table_name=messenger_messages&queue_name=failed` | |
 
-The failure transport is a queue of the same table as the lanes. The contract routes no message to
-`async_priority_high`.
+The failure transport is a queue of the table `messenger_messages` of the database, whatever
+`BEFFROI_MESSENGER_DSN` names: a failure transport on the broker that failed is one nobody reads. The contract
+routes no message to `async_priority_high`.
 
 **The serializer.** `beffroi.messenger.serializer` is the default serializer of every transport, the failure
 transport included: what it writes is the subject of [the last section](#what-leaves-the-process-is-sealed).
@@ -106,7 +107,8 @@ of its own, and a block written under `framework` does not override what `Beffro
 
 !!! warning "The notifications keep the retry policy of the provider"
 
-    The schedule of the lane is the one `beffroi.back_channel_logout` sets: `retries`, six by default,
+    The schedule of the lane, for every message but the notice of a change to the credentials of an account,
+    is the one `beffroi.back_channel_logout` sets: `retries`, six by default,
     `retry_delay`, two seconds, `retry_multiplier`, three, and `retry_max_delay`, sixty seconds, with the
     `timeout` of one send, five seconds. These numbers make the budget a logout token is written for: with the
     defaults, waits of 2, 6, 18, 54, 60 and 60 seconds before the six retries, two hundred seconds in all, and
@@ -122,6 +124,16 @@ of its own, and a block written under `framework` does not override what `Beffro
     `beffroi:doctor` says whether they agree. The four numbers of a retry strategy written on
     `async_notifications` change nothing: the service `BeffroiExtension` prepends survives the merge, and the
     component prefers a service to its numbers.
+
+**The notice of a change to the credentials keeps a schedule of its own.** It is worth delivering for as long
+as the journal keeps the change, so it follows `beffroi.notices`, set by the
+[variables of the notifications](configuration.md#notifications): with the defaults, thirty-one sends over
+twenty-five hours, so that a notice reaches the person once a mail server or a provider of texts down for
+hours is back.
+
+**What the lane gives up on is an act.** A logout token the lane gives up on is the act
+`logout_token.given_up`, and a notice one channel did not deliver in any of its sends is
+`credential_change.not_told`, an act of the person, which their page of acts shows.
 
 ## The worker
 
@@ -147,17 +159,19 @@ when, and the step is handled on `async_priority_medium`.
 | Step | Every | What it does |
 |---|---|---|
 | `AdvanceKeyLifecycle` | Minute | Stages a successor for every key past its age, activates every staged key whose delay has elapsed, retires every key past its retirement date |
+| `SignTheChains` | Five minutes | Signs the head of each [chain of records](persistence.md#the-chained-records), and writes a copy of each signature to the log channel `chain` |
 | `ForgetTheRecordsThatAreDead` | Hour | Drops the rows of the protocol that nothing alive needs any more |
 | `ForgetTheExpiredArchives` | Hour | Forgets the archives of persons past their week |
 | `RemoveUnusedClients` | Hour | Deletes the clients that registered themselves and nobody uses |
 | `RefreshTheSamlMetadata` | Hour | Reads again the metadata of the SAML peers of both roles |
-| `ForgetTheActsPastTheirRetention` | Day | Forgets the acts of the journal past its retention, and the disclosures with them |
-| `ForgetTheChangesPastTheirRetention` | Day | Forgets the changes of claims past their retention |
+| `ForgetTheActsPastTheirRetention` | Day | Walks the chains of the journal and of the disclosures whole, forgets the rows of each past the retention of the journal, in the order of the chain, and signs the cut |
+| `ForgetTheChangesPastTheirRetention` | Day | Walks the chain of the history of claims whole, forgets its changes past their retention, in the order of the chain, and signs the cut |
 | `RefreshTheAddressDatabases` | Week | Downloads the databases of addresses again, for a deployment that names a licence key |
 
 A deployment whose worker does not consume the schedule rotates nothing on its own, and `beffroi:keys:list
 --check` fails on the first key that works past its age with nothing staged behind it, naming the transport
-to consume.
+to consume. It signs no chain either, and `beffroi:doctor` is red on a chain last signed more than two passes
+ago, ten minutes.
 
 [:beffroi-arrow-right: The rotation of a key](console-commands.md#rotating-a-key)
 
@@ -172,7 +186,9 @@ service.
   of that algorithm in service, a staged one included, so the event that announces the first key of a tenant
   is sealed to that key.
 - **The consumer opens the key the body names**, by its `kid`, once per process. A body sealed to a key that
-  has retired since does not open, which bounds how long a message may wait in a queue.
+  has retired since does not open. A message key is therefore not retired while a message waiting in the
+  failure transport is sealed to it, unless an operator forces it or rotates it as compromised, so that
+  `messenger:failed:retry` still replays it: [keys](../tenant/keys.md#the-life-of-a-key) says how.
 - **The key is never published in the JWK Set**: a key published there would let any reader of the discovery
   document seal a body the provider opens. It rotates like every other key of the tenant.
 - **A tenant that holds no such key writes no message at all**, rather than one in the clear, which is why it
@@ -187,6 +203,9 @@ transport makes the opening fail rather than succeed somewhere else.
 
 **A body that does not open is a failure of that message**, which goes to the failure transport with the
 headers it arrived with: a body that is not a JWE, a message written for another tenant than the one the
-process serves, a key that has retired, a body that opens as another class than its header names. A key
+process serves, a key that has retired, a body that opens as another class than its header names, a header of
+a stamp that does not read back as a stamp of the class it names. A header is read with that class alone and
+what a stamp of Messenger holds besides scalars, so a row written into the table of a transport builds no other
+object in the worker. A key
 management service that does not answer is a failure of the process and not of the message, and is not turned
 into a failed message nobody would replay.

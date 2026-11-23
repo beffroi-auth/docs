@@ -44,6 +44,25 @@ Three more decide what a deployment of real people does:
   development stack.
 - `SYMFONY_TRUSTED_PROXIES`, behind a proxy, without which every request has the address of the proxy.
 
+## A secret in a file
+
+Ten variables carry a secret: `APP_SECRET`, `DATABASE_URL`, `BEFFROI_KMS_DSN`, `BEFFROI_KMS_DSN_SECOND`,
+`BEFFROI_MESSENGER_DSN`, `BEFFROI_DATA_KEY_SECRETS`, `BEFFROI_MAIL_DSN`, `BEFFROI_SMS_DSN`,
+`GEOIP_LICENSE_KEY` and `BEFFROI_MIGRATIONS_DATABASE_URL`. Each may be given as a file rather than as a
+variable, whose value `docker inspect` shows: the variable of the same name ending in `_FILE`, `APP_SECRET_FILE`
+for instance, names the path of the file, such as one a `secrets:` entry of Compose or Swarm mounts under
+`/run/secrets`, readable by uid 33. The content of the file is the value, without the line breaks that end it,
+and a JSON document for `BEFFROI_DATA_KEY_SECRETS`.
+
+A value of `.env` is no setting of the deployment, and the file replaces it. A deployment that sets both a
+variable and its `_FILE` is refused when the secret is first read, and so is a file that cannot be read: the
+refusal names the variables and the path, never the secret. No other variable has a `_FILE`.
+
+The entrypoint of the image reads `DATABASE_URL` and
+[`BEFFROI_MIGRATIONS_DATABASE_URL`](#symfony-and-the-database) the same way, each from its variable or from its
+file, and plays the migrations and the grant with the URL of the owner, or its file, in the place of those of
+`DATABASE_URL`, so that the application never reads both.
+
 ## The provider
 
 | Variable | In `.env` | What it decides |
@@ -57,23 +76,24 @@ Three more decide what a deployment of real people does:
 | `BEFFROI_LOCALES` | `[]` | The [languages](translations.md) the pages and the messages are served in, as a JSON list, `'["fr","en"]'`, `DEFAULT_LOCALE` among them. `[]` serves every language the application ships. A language without a catalogue, or a list that leaves out `DEFAULT_LOCALE`, is refused. The discovery document announces them in `ui_locales_supported` |
 | `BEFFROI_PLANE` | `provider` | The planes this process serves: `provider` (the interaction and protocol planes), `interaction` or `protocol`, and `administration`, the administration API alone, which the worker of `/etc/frankenphp/administration.Caddyfile` sets. In a process of the interaction or of the protocol plane, a route of the other answers `404` |
 | `BEFFROI_MESSENGER_DSN` | `doctrine://default?queue_name={lane}` | Where the four lanes go: one DSN for the four, `{lane}` in it standing for the name of each lane, so that each is a queue of its own. A DSN that names no `{lane}` is refused when the transport of a lane is built. The value of `.env` is a queue of the table `messenger_messages` per lane, which the transport creates the first time it reaches it. The image carries the transport of no broker, so a deployment of it keeps its lanes in the database. A message that fails stays in the database whatever this names |
-| `BEFFROI_MTLS_ORIGIN` | empty | The origin of the host that asks for a client certificate, announced in `mtls_endpoint_aliases` (RFC 8705 §5). Empty, the provider serves no mutual TLS: no alias, neither `tls_client_auth` nor `self_signed_tls_client_auth`, and no token bound to a certificate |
+| `BEFFROI_MTLS_ORIGIN` | empty | The origin of the host that asks for a client certificate, announced in `mtls_endpoint_aliases` (RFC 8705 §5). Empty, the provider serves no mutual TLS: no alias, neither `tls_client_auth` nor `self_signed_tls_client_auth`, and no token bound to a certificate. `tls_client_auth` also needs the next variable |
+| `BEFFROI_MTLS_CERTIFICATE_AUTHORITIES` | `[]` | The certificate authorities whose client certificates `tls_client_auth` accepts (RFC 8705 §2.1), as a JSON list of PEM certificates, `'["-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"]'`. The listener hands the provider the leaf alone, so each is the authority that signs the client certificates itself, intermediate or root: a certificate one of them signed, valid when it is presented and carrying the name its client registered, authenticates that client, and revocation is not checked. A certificate of no certificate authority is refused (RFC 5280 §4.2.1.9). `[]`, `tls_client_auth` is neither announced nor registered, while `self_signed_tls_client_auth` and the tokens bound to a certificate follow `BEFFROI_MTLS_ORIGIN` alone |
 | `GEOIP_LICENSE_KEY` | empty | The licence key of the MaxMind account the GeoLite2 databases are downloaded under. Empty, nothing is downloaded, and every session and every act says an address and no place |
 | `BEFFROI_BREACHED_PASSWORDS_ENDPOINT` | empty | The range endpoint a password is compared against before it is written (NIST SP 800-63B §3.1.1.2): `https://api.pwnedpasswords.com/range/`, where the first five hexadecimal characters of the SHA-1 of a password leave and the rest is compared locally. Empty, nobody is asked, and passwords are posed on the rules of the core alone |
 | `BEFFROI_BREACHED_PASSWORDS_TIMEOUT` | `2` | The seconds one lookup in that list is given, a tenth of a second at least. A lookup still unanswered by then refuses the password |
 
 ## The tenant
 
-Thirteen variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
+Fifteen variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
 list has in the [configuration tree](../reference/configuration.md), `[]` or `{}` for none. An empty variable
 is no JSON document, and is refused.
 
 | Variable | In `.env` | What it decides |
 |---|---|---|
-| `BEFFROI_TENANT_NAME` | empty | What the pages and the consent call the tenant. Empty, the host of the issuer |
+| `BEFFROI_TENANT_NAME` | empty | What the pages and the consent call the tenant: plain text of 255 characters at most, with no control character, no line or paragraph separator, and no format character but the zero-width joiner and non-joiner. Empty, the host of the issuer |
 | `BEFFROI_TENANT_LOGO_URI` | empty | The logo every page shows, an absolute `https` URL. Empty, the placeholder mark the image serves at `/tenant-logo.svg` under the issuer. Every page that shows the logo names its origin in its `img-src`. A logo served from another host shows on the pages served under `Cross-Origin-Embedder-Policy: require-corp`, every page but those of `/authorize`, `/login`, `/consent`, `/logout`, `/device` and `/initiate-login`, only when that host answers `Cross-Origin-Resource-Policy: cross-origin` |
-| `BEFFROI_TENANT_PRIMARY_COLOR` | `#1f6feb` | The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: `#` and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour |
-| `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | `#ffffff` | The colour of what is written on it, in the same notation |
+| `BEFFROI_TENANT_PRIMARY_COLOR` | empty | The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: `#` and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour. Empty, the pages keep the ultramarine of their default look, `#2f45ff` |
+| `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | empty | The colour of what is written on it, in the same notation. Empty, the white of the default look, `#ffffff` |
 | `BEFFROI_TENANT_SELF_SERVED_CLAIMS` | the fourteen claims of OIDC Core §5.1 the application lets a person change, from `name` to `phone_number` | What a person may change of themselves on the page of their account. A tenant whose directory owns the data names `[]` |
 | `BEFFROI_TENANT_AUTHENTICATION_CLASSES` | `{}` | The `acr` vocabulary of the tenant, class name to predicate, in order. `{}` is the default policy of the core |
 | `BEFFROI_TENANT_SCOPES` | `[]` | The scopes of the APIs the tenant protects, as `["invoices.read","invoices.pay"]`. The tenant hands out tokens for them beside `openid`, the scopes of its claims and `offline_access`, announces them, and a client that registers itself may register them |
@@ -138,11 +158,12 @@ Every lifetime is a second at least.
 | `BEFFROI_JWKS_URI_TIMEOUT` | `3` | The seconds one read of the `jwks_uri` of a client or of a trusted issuer is given, a tenth of a second at least |
 | `BEFFROI_JWKS_URI_MAX_SIZE` | `65536` | The bytes that read may answer, one at least |
 | `BEFFROI_JWKS_URI_TTL` | `86400` | How long the keys read back are kept, a second at least |
-| `BEFFROI_JWKS_URI_REFETCH_COOLDOWN` | `300` | How often a `kid` the kept set does not hold may cost another read, none at least |
+| `BEFFROI_JWKS_URI_REFETCH_COOLDOWN` | `300` | Seconds between two reads of the same `jwks_uri`, after a read that failed and when a signature names a `kid` the kept set does not hold, none at least |
 | `BEFFROI_REQUEST_OBJECT_MAX_LIFETIME` | `3600` | How long a request object may stand from its `nbf`, a second at least (RFC 9101 §4) |
 | `BEFFROI_REQUEST_OBJECT_LEEWAY` | `30` | What is allowed of the clock of its client, none at least |
 | `BEFFROI_REQUEST_OBJECT_TIMEOUT` | `3` | The seconds one read of a `request_uri` a client hosts is given, a tenth of a second at least |
 | `BEFFROI_REQUEST_OBJECT_MAX_SIZE` | `65536` | The bytes that read may answer, one at least |
+| `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS` | `[]` | The networks of the deployment that the requests of the protocol may reach, whoever wrote their URL: a `jwks_uri`, a trusted issuer's included, a `sector_identifier_uri`, a `request_uri`, a back-channel logout URI, a CIBA notification endpoint and the endpoint of a push subscription. A JSON list of IP addresses or networks in CIDR notation, as `'["10.20.0.0/16"]'`, anything else in it being refused. Every other private, loopback, link-local or reserved address is refused, once the name is resolved and on every address the request connects to. `[]`, such a request reaches no network of the deployment |
 | `BEFFROI_TRUSTED_ISSUERS` | `{}` | The issuers whose assertions the tenant accepts as an authorization (RFC 7523 §2.1), keyed by the `iss` they sign with |
 
 ## Registration
@@ -174,9 +195,16 @@ Every lifetime is a second at least.
 | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MULTIPLIER` | `3` | What each wait is multiplied by to give the next, once at least |
 | `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_MAX_DELAY` | `60` | The longest wait, a second at least |
 | `BEFFROI_CLIENT_NOTIFICATION_TIMEOUT` | `3` | The seconds the call that tells a client its backchannel request was answered is given, a tenth of a second at least (CIBA Core §10.2) |
+| `BEFFROI_NOTICE_RETRIES` | `30` | How many times a notice of a change to the credentials of an account comes back to a channel that did not take it, a mail server or an SMS provider that is down, none at least |
+| `BEFFROI_NOTICE_RETRY_DELAY` | `60` | The wait before its first return, a second at least |
+| `BEFFROI_NOTICE_RETRY_MULTIPLIER` | `2` | What each wait is multiplied by to give the next, once at least |
+| `BEFFROI_NOTICE_RETRY_MAX_DELAY` | `3600` | The longest wait, a second at least |
 
-The four figures of the returns are the schedule of the whole lane of notifications, which carries the pushes,
-the mails, the texts and the notifications of the backchannel flow as well as the logout tokens.
+The four figures of the returns of a logout token are the schedule of the lane of notifications, which carries
+the pushes, the mails, the texts and the notifications of the backchannel flow as well as the logout tokens. A
+notice of a change to the credentials of an account, whatever its channel, comes back on the four
+`BEFFROI_NOTICE_*` figures instead: 31 attempts over 25 hours with the values of `.env`. A notice no attempt
+delivered is an act of the person.
 
 ## SAML
 
@@ -203,13 +231,20 @@ The SAML key is the key of both roles, rotated by the three figures above whiche
 |---|---|---|
 | `BEFFROI_JOURNAL_RETENTION` | `180` | How long an act of the journal is kept, in days |
 | `BEFFROI_HISTORY_RETENTION` | `180` | How long a change of a claim is kept, in days |
-| `BEFFROI_LOAD_ORIGIN_LIMIT` | `2400` | The requests one client address may send in a window |
+| `BEFFROI_LOAD_ORIGIN_LIMIT` | `2400` | The requests one client address may send in a window, an IPv6 address counted by its /64 |
 | `BEFFROI_LOAD_ORIGIN_INTERVAL` | `60` | That window, in seconds |
 | `BEFFROI_LOAD_CLIENT_LIMIT` | `1200` | The requests one authenticated client may send in a window |
 | `BEFFROI_LOAD_CLIENT_INTERVAL` | `60` | That window, in seconds |
+| `BEFFROI_CONFIRMATION_SENDS_PERSON_LIMIT` | `5` | The confirmations of an address, a code and a link sent by mail or by SMS, that go out for one person in a window, one at least |
+| `BEFFROI_CONFIRMATION_SENDS_ADDRESS_LIMIT` | `10` | The confirmations that go to one address in that window, whatever the tenant: more than `BEFFROI_CONFIRMATION_SENDS_PERSON_LIMIT` |
+| `BEFFROI_CONFIRMATION_SENDS_INTERVAL` | `86400`, a day | That window, in seconds |
+| `BEFFROI_ADMINISTRATOR_PERSONS_LIMIT` | `600` | The persons the administration API delivers to one administrator of the tenant in a window, a page of members counting one per member: a hundred at least, the largest page of members |
+| `BEFFROI_ADMINISTRATOR_PERSONS_INTERVAL` | `3600`, an hour | That window, in seconds |
 
 A budget too low on `/token` or on `/jwks` is an outage a deployment inflicts on itself, so both are measured
-on what its own clients send.
+on what its own clients send. Past a budget of confirmations nothing is sent, and the page says so; past the
+budget of an administrator, a read delivers nobody and is answered `429` with `Retry-After`. Each refusal is an
+act of the person or of the administrator.
 
 ## Symfony and the database
 
@@ -221,7 +256,8 @@ on what its own clients send.
 | `APP_SHARE_DIR` | `var/share` | The share directory of Symfony, one per environment beneath it, `var/share/prod` for a production kernel. It holds the filesystem pool of `cache.app`, and with it the [caches the processes share](deployment.md#what-the-processes-share). It is compiled into the container when the image is built: set when a container starts, it moves nothing |
 | `DEFAULT_URI` | `https://op.localhost` | The URL Symfony generates absolute URLs under outside a request, in the console and in the worker, `framework.router.default_uri`: the issuer |
 | `DEFAULT_LOCALE` | `en` | The language a page falls back to, one of the languages the deployment serves |
-| `DATABASE_URL` | `postgresql://beffroi:beffroi@127.0.0.1:5432/beffroi?serverVersion=16&charset=utf8` | The PostgreSQL database. The entrypoint of the image waits for it, and the migrations refuse any other platform |
+| `DATABASE_URL` | `postgresql://beffroi:beffroi@127.0.0.1:5432/beffroi?serverVersion=16&charset=utf8` | The PostgreSQL database, and the role the processes connect to it as. The entrypoint of the image waits for it, and the migrations refuse any other platform |
+| `BEFFROI_MIGRATIONS_DATABASE_URL` | not set | The same database as the role that owns the tables, which the server of the image plays the migrations as every time it starts. When the role of `DATABASE_URL` is another, the server then grants it, with `beffroi:database:grant`, what the processes serve: that role reads and writes what they serve, and adds to the journal, to the history of claims and to what clients were given without rewriting a row. Not set, the server plays the migrations as the role of `DATABASE_URL` and grants nothing. Read by the entrypoint alone, from the variable or from the file `BEFFROI_MIGRATIONS_DATABASE_URL_FILE` names: [a secret in a file](#a-secret-in-a-file) |
 | `SYMFONY_TRUSTED_PROXIES` | not set | The proxies whose forwarded address and scheme Symfony reads, `framework.trusted_proxies`. The application names none. Behind a proxy that terminates TLS, a deployment names it, and the loopback address the [health check](deployment.md#the-health-check) of the image asks from: without the proxy, every request reads as plain HTTP from the address of the proxy, and without the loopback address the container is unhealthy. Addresses or networks separated by commas, `private_ranges` standing for every private network and the loopback address |
 | `SYMFONY_TRUSTED_HEADERS` | not set | The headers Symfony reads from those proxies, separated by commas. Not set, `x-forwarded-for`, `x-forwarded-port` and `x-forwarded-proto` |
 | `SYMFONY_TRUSTED_HOSTS` | not set | The hosts a request may name, as regular expressions separated by commas, `framework.trusted_hosts`. A request that names another is refused with `400`. Not set, every host |
@@ -243,6 +279,7 @@ These are read by Caddy and FrankenPHP, not by the kernel.
 | `TLS_TERMINATION` | Who terminates the TLS of the site of `SERVER_NAME`. `caddy`, when it is not set: Caddy, with the TLS a FAPI 1 plan measures. `proxy`: a proxy in front of the image, which sends the site plain HTTP, `SERVER_NAME` then naming the one host the proxy asks for, or `:<port>` for any host, without a scheme. Any other value stops Caddy from starting. The host that asks for a client certificate keeps its own TLS either way, and the site of the administration API is served on the address its own variable gives |
 | `MTLS_SERVER_NAME` | The host of the listener that asks for a client certificate, in `mtls.Caddyfile` |
 | `ADMINISTRATION_SERVER_NAME` | The address of the site of the administration API, in `administration.Caddyfile`: the host of the URL `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names, or, behind a proxy that terminates TLS, a plain HTTP address such as `:81`. Its worker serves the administration API and nothing else |
+| `CADDY_ADMIN` | The address of the administration API of Caddy, which answers whoever reaches it with no credential and can stop or reconfigure the server. Not set, the production image runs without it; the development image names `localhost:2019` |
 | `CADDY_EXTRA_CONFIG` | Configuration added to the `Caddyfile` beside the site of `SERVER_NAME`. `import mtls.Caddyfile` is what serves the host that asks for a client certificate, and `import administration.Caddyfile` the administration API, which a deployment that does not import it does not serve |
 | `CADDY_GLOBAL_OPTIONS` | Directives added to the global options of the `Caddyfile`, a `servers` block aside: the image writes one for every listener of its sites. Caddy refuses a second one without an address as it starts, and one that names a listener replaces the block of the image on that listener, which then loses `CADDY_MAX_HEADER_SIZE` and `CADDY_SERVER_OPTIONS` |
 | `CADDY_SERVER_OPTIONS` | Options added to the `servers` block of the `Caddyfile`, which applies to every listener of its sites, written without the `servers { }` around them: behind a proxy, `trusted_proxies` and `client_ip_headers` ([an example](examples.md#behind-a-proxy-that-terminates-tls)) |
@@ -253,7 +290,9 @@ These are read by Caddy and FrankenPHP, not by the kernel.
 | `CADDY_ADMINISTRATION_EXTRA_DIRECTIVES` | Directives added to the site of the administration API, as `CADDY_SERVER_EXTRA_DIRECTIVES` are to the site of `SERVER_NAME`: behind a proxy, the one that hands PHP the address of the client. Each site has its own, a directive of one not fitting the other |
 | `CADDY_SERVER_LOG_OPTIONS` | Directives added to the `log` block of each site |
 | `FRANKENPHP_CONFIG` | Directives of the `frankenphp` block. The production image sets `import worker.Caddyfile`, which is worker mode |
-| `FRANKENPHP_WORKER_CONFIG` | Directives added to each `worker` block, the one of `worker.Caddyfile` and the one of the administration API: the `watch` lines of the development stack, nothing in production |
+| `FRANKENPHP_WORKER_NUM` | The threads of the worker of the site of `SERVER_NAME` and of the host that asks for a client certificate, `4` when it is not set, whatever the cores of the host. Each thread boots a kernel of its own and keeps a connection to the database as long as it lives. `0` is the default of FrankenPHP, twice the CPUs it sees |
+| `FRANKENPHP_ADMINISTRATION_WORKER_NUM` | The threads of the worker of the administration API, `2` when it is not set, each holding a connection to the database as well |
+| `FRANKENPHP_WORKER_CONFIG` | Directives added to each `worker` block, the one of `worker.Caddyfile` and the one of the administration API: the `watch` lines of the development stack, nothing in production. A `num` it carries wins over the two variables above |
 
 `CADDY_MAX_HEADER_SIZE`, `CADDY_REQUEST_BODY_MAX_SIZE` and `CADDY_ADMINISTRATION_REQUEST_BODY_MAX_SIZE` take
 a size of `1B` or more, below `8EiB`: the server of the image does not start on one Caddy reads as no bound
@@ -381,7 +420,8 @@ Their variables are read in the development environment: the `CONFORMANCE_*`, `O
 and key sets, `BEFFROI_DEV_USER_SUBJECT`, `BEFFROI_DEMO_HOST_IP`, `APP_PROFILER` and `VAR_DUMPER_SERVER`. The
 development stack writes the secrets, the key sets and `BEFFROI_DEV_USER_SUBJECT` into `.env.local`, with `open`
 for `BEFFROI_REGISTRATION_MODE` and its host of mutual TLS for `BEFFROI_MTLS_ORIGIN`, two variables the application
-reads as every deployment does. The demonstration of the flows is wired in the test environment of the
+reads as every deployment does, and `.env.dev` names the private and loopback networks in
+`BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS`, where the stack reaches the demonstrations and the conformance suite. The demonstration of the flows is wired in the test environment of the
 application's own suite as well, so three of them are read there too, `DEMO_SERVICE_SECRET`,
 `DEMO_CIBA_POLL_SECRET` and `BEFFROI_DEV_USER_SUBJECT`, which `.env.test` gives as fixtures. A production kernel
 reads none of them.

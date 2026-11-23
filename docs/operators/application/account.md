@@ -31,9 +31,13 @@ titles below are the ones the English catalogue carries.
 | Allowed applications | `/account/consents` | One line per client in force, with the scopes, the authorization details and the claims asked for by name it holds, and a page per application behind it |
 | Open sessions | `/account/sessions` | Where this person is signed in at this moment, what each session proved, and where it was last seen |
 | Your password | `/account/password` | When the password was last written, and the form that replaces it |
-| Account activity | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the account and of its means of signing in, the applications they agreed to and the consents taken back, what they did of their own record, and what an administrator of their organisation consulted or changed of them, said by that role alone and never by a name, a place or a client. A read they made of themselves through the administration API is not listed. Its card counts the refusals among the last twenty attempts to sign in as them, since a failure is what somebody comes to look for: a refusal leaves the count once twenty attempts have followed it |
+| Account activity | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the account and of its means of signing in, and which of those changes no channel could tell them of, the applications they agreed to and the consents taken back, what they did of their own record, the codes sent to confirm an address and those withheld past their budget, and what an administrator of their organisation consulted or changed of them, said by that role alone and never by a name, a place or a client. A read they made of themselves through the administration API is not listed. Its card counts the refusals among the last twenty attempts to sign in as them, since a failure is what somebody comes to look for: a refusal leaves the count once twenty attempts have followed it |
 | Notifications | `/account/notifications` | The browsers this provider reaches by web push, to tell this person of a request that waits for them and of a change to the ways their account signs in, and the channels each notification goes out on, among browsers, mail and SMS while the deployment wires them |
 | Your data | `/account/archive` | The one file holding everything the provider knows of them, and where their last request for it has got to |
+
+Above the cards, the home tells once, in the browser that signs in, of a change to the ways of signing in that
+a channel gave up notifying, with a link to the account activity, unless the login page of an interaction told
+it first.
 
 The subject identifier clients know this person by is on none of them. It is the `sub` of a token, not
 something a person comes to read of themselves, and a client of a sector that asked for a pairwise
@@ -52,7 +56,12 @@ only reads.
 A claim says what field it is, which is what the page renders: the kind its input carries, the whole set
 when the set is closed, and the pattern or the length when it is not. A closed set is closed on the server
 too, for whatever that page posts and not only in its field, and a birthdate that has not the shape of one,
-a year or a year, a month and a day, is refused rather than stored. What those lines said before, when they
+a year or a year, a month and a day, is refused rather than stored. Whoever writes it, every value but the
+address of mail, which is held to the form of one, is plain text: valid UTF-8, with no control character, no line or paragraph separator and no format character but the
+two joiners Persian and the Indic scripts write words with, and 255 characters at most, 2048 for an address of
+the web, which is an absolute `https` or `http` URL, 64 for a telephone number, and 1024 for the two parts of a
+postal address that hold lines, `formatted` and `street_address`, which take line breaks and nothing else of
+the kind. What those lines said before, when they
 changed, and whether the person changed them or an administrator of their organisation did, who is never
 named, is at `/account/profile/changes`.
 
@@ -72,7 +81,10 @@ backchannel request, and the single sign-on of a SAML service provider among the
 A password posed here is typed twice and the two are compared in constant time, and the counter beside the
 field is local to the browser: what the page says of a password as it is typed asks nobody anything, and a
 password is never sent anywhere to be scored. The length it asks for is the one the floor of the tenant
-sets, fifteen characters or twelve, and the field and the core read the same number.
+sets, fifteen characters or twelve, and the field and the core read the same number. The password in use,
+typed to replace it, is counted on a limit of its own, five attempts in a sliding minute per person, apart
+from the logins, so guesses made from a session never lock its owner out of signing in:
+[attempts and budgets](security.md#attempts-and-budgets).
 
 [:beffroi-arrow-right: Passwords](../../administrators/people/credentials/passwords.md)
 
@@ -175,7 +187,9 @@ contact the tenant, by the contact it gives when it gives one. It goes out on ev
 whatever the person chose for the requests: every browser they subscribed on the notifications page while the
 deployment names a push subject, their verified address while `BEFFROI_MAIL_DSN` names a transport, and their
 verified number while `BEFFROI_SMS_DSN` names one. The notice leads to the home of the account, and the page of
-the acts says what happened.
+the acts says what happened. A channel that does not take it tries it again, 31 attempts over 25 hours by
+default; once they are spent, the notice not delivered is an act of the person, and the browser they next sign
+in with tells them once that a change could not be notified to them.
 
 [:beffroi-arrow-right: Web push](web-push.md#a-way-of-signing-in-changed)
 
@@ -191,7 +205,8 @@ asked, being built, ready, stalled, or expired.
 - **A build is given a quarter of an hour.** Past that, the page says the file could not be prepared
   rather than showing a week of work in progress, and asking again opens a new request in its place.
 - **A new request replaces the last one**, ready, stalled or expired, so a person holds one file at a time.
-  While a file is being built, the page offers no new request.
+  While a file is being built, the page offers no new request, and a person asks five times in a sliding hour
+  at most: a request beyond that builds nothing, and the page says so.
 - **It leaves under a passphrase when the person wants one.** The file is then wrapped, and the floor on
   the length of that passphrase, sixteen characters, is refused rather than warned about: what stands
   between that file and whoever took it is the length of what was typed. A person who asks for no

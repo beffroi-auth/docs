@@ -32,6 +32,20 @@ floor reads nothing of is forgotten, its secret and its row: under `phishing_res
 one-time codes and the backup codes of every person go. Lowering the floor afterwards gives nobody back what
 was forgotten. [The floor of its logins](../tenant/tenants.md#the-floor-of-its-logins) says what it changes.
 
+## The chains of records and the database
+
+| Command | What it does |
+|---|---|
+| `beffroi:chain:sign-anew` | Link and sign one chain of the tenant again as the database holds it, once a person has read what its check found. Says what the check finds first, asks for the slug to be typed back, and writes the act to the journal. |
+| `beffroi:chain:verify` | Walk each chain of the tenant whole against its signature, or one chain against a copy of a signed head kept outside the instance, and name the first position that does not follow. Reads and writes nothing. |
+| `beffroi:database:grant` | Grant the role the processes run as what they serve, and no update nor deletion of the chained records but through the retention. Run as the role that owns the tables, after the migrations; the image does it when BEFFROI_MIGRATIONS_DATABASE_URL names that role. |
+
+A chain is named `journal`, `claim_history` or `disclosures`, and `beffroi:chain:verify` walks the three when
+it names none; `--against` takes a file holding a signed head of the chain named, as the log channel `chain`
+printed it. `beffroi:chain:sign-anew` takes the chain, then the slug of the tenant typed back, and
+`beffroi:database:grant` the role of PostgreSQL the server and the worker connect as. [The chains of
+records](../application/console-commands.md#the-chains-of-records) says when to run each.
+
 ## Users, their credentials and what they agreed to
 
 | Command | What it does |
@@ -106,7 +120,7 @@ tenant](../../administrators/people/groups.md#who-administers-the-tenant) at onc
 | `beffroi:keys:generate` | Generate a key, seal it with the configured KMS and make it the active one of its algorithm at once; "beffroi:keys:rotate" is the rotation without an outage. |
 | `beffroi:keys:list` | List the keys of the tenant with their use, status and dates: the published ones, or every key with `--all`; `--check` opens the keys in use, or about to be, with the KMS and fails on one it cannot open, or that has worked past its age with nothing staged behind it. |
 | `beffroi:keys:retire` | Take a retiring key out of the JWK Set: one key by its identifier, before its retirement date with --force; or every key past its date with --due. |
-| `beffroi:keys:rotate` | Stage a new key, sealed by the configured KMS and published at once; it takes over once the staging delay elapsed, or at once with --now; --compromised retires the previous key with no window. |
+| `beffroi:keys:rotate` | Stage a new key, sealed by the configured KMS and published at once; it takes over once the staging delay elapsed, or at once with --now; --compromised retires the previous key, and every other key of its algorithm, with no window. |
 
 `--algorithm` names the key a command acts on: a JWS algorithm for a key that signs tokens, a JWE key
 management algorithm for a key clients encrypt to, or one of the keys the tenant keeps rather than publishing,
@@ -131,7 +145,8 @@ algorithm.
 A timed step runs the same object once a week, which is the cadence the databases are published at, so the
 command is for installing them the day a deployment subscribes and for reading why a refresh was refused.
 A deployment that names no licence key downloads nothing and serves every flow with a provenance that says
-an address and no place.
+an address and no place. A download, the database unpacked from it, or what the archive holds besides it,
+larger than 512 MiB is refused, and nothing of it is kept.
 
 ## SAML metadata
 
@@ -176,6 +191,8 @@ A command never bypasses a rule the protocol applies. It cannot mint a token for
 signing key it is not allowed to open, and cannot read a personal datum the key management service refuses
 to unseal.
 
-Three commands cannot be undone. `beffroi:data-keys:destroy` asks for the slug of the tenant to be typed back
-before it runs, `beffroi:tenant:login-floor` asks before it forgets the credentials the floor leaves out, and
-`beffroi:client:delete` deletes a client that registered itself.
+Four commands cannot be undone. `beffroi:data-keys:destroy` asks for the slug of the tenant to be typed back
+before it runs, `beffroi:tenant:login-floor` asks before it forgets the credentials the floor leaves out,
+`beffroi:client:delete` deletes a client that registered itself, and `beffroi:chain:sign-anew` asks for the
+slug as well before it links a chain again, after which what was changed in it before cannot be told from the
+rest.

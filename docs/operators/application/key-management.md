@@ -28,12 +28,12 @@ services:
     beffroi.kms.op:
         class: Symfony\Component\KeyManagement\EncrypterInterface
         factory: ['@key_management.factory', 'fromString']
-        arguments: ['%env(BEFFROI_KMS_DSN)%']
+        arguments: ['%env(beffroi_secret:BEFFROI_KMS_DSN)%']
 
     beffroi.kms.second:
         class: Symfony\Component\KeyManagement\EncrypterInterface
         factory: ['@key_management.factory', 'fromString']
-        arguments: ['%env(BEFFROI_KMS_DSN_SECOND)%']
+        arguments: ['%env(beffroi_secret:BEFFROI_KMS_DSN_SECOND)%']
 ```
 
 A deployment names the service and the master key of `op`, two variables the image leaves empty, since nothing
@@ -49,6 +49,11 @@ BEFFROI_KMS_KEY_ID="beffroi-{tenant}"
 | `BEFFROI_KMS_DSN` | empty | The DSN `op` is built from: which service seals, and how it is reached. [The backends](#the-backends) are below |
 | `BEFFROI_KMS_KEY_ID` | empty | The master key of that service the keys of the tenant are sealed under, in the terms of the backend: the name of a sodium key, a Transit key of Vault, an alias or an ARN of AWS. `{tenant}` stands for the slug of the tenant, which gives every tenant a master key of its own |
 | `BEFFROI_KMS_DSN_SECOND` | empty | The DSN `second` is built from, for a [move to another client](#moving-to-another-client). Empty, the client is declared and never built |
+
+A DSN that carries a credential may be a file instead: `beffroi_secret`, the processor of the application the
+two DSNs are read through, takes `BEFFROI_KMS_DSN_FILE` or `BEFFROI_KMS_DSN_SECOND_FILE`, the path of a file
+whose content is the DSN, such as a secret Swarm or Compose mounts under `/run/secrets`. A deployment that sets
+a variable and its `_FILE` both is refused.
 
 The sealed keys and the pairwise salt are kept in `var/keys` of the application, a directory no variable
 moves. How long the JWK Set is cached, how long a new key is staged and how long a key works are
@@ -75,7 +80,9 @@ gives neither of its two: a deployment of the image seals with the one service `
 | The secrets held for people: the secret of an authenticator application, the identifier and token of a backchannel request whose client is called back, the person a self-contained access token is about, an enrolment of an authenticator application in progress | Envelopes, in their column, in the token, or in the HTTP session of the browser |
 
 Every envelope is bound to its tenant and to its use: sealed for one tenant it does not open for another, and a
-sealed key does not open as a secret. Every process of a deployment reads the same storage directory: the
+sealed key does not open as a secret. A secret that leaves the provider, the person an access token is about,
+a backchannel request or an enrolment of an authenticator application in progress, is sealed for a purpose of
+its own, and opens as no other secret. Every process of a deployment reads the same storage directory: the
 worker rotates the keys the processes that serve requests open.
 
 [:beffroi-arrow-right: Keys](../tenant/keys.md) &nbsp; [:beffroi-arrow-right: Personal data](../tenant/personal-data.md)
@@ -136,14 +143,15 @@ development stack of the project does, AWS through Floci, an AWS emulator, and a
 ## Opening a key
 
 A process opens the keys it serves with when it starts, and keeps each one open for as long as it lives, by
-tenant and by `kid`; a key that retires is forgotten. A thread of the HTTP server opens them before its first
-request: the active key of each signature algorithm, the published keys a client encrypts to, the SAML signing
-key when a SAML role is on, the keys the upstream identity providers encrypt to, and every data key of the
-tenant, retired ones included. The worker opens, when it starts consuming, the keys message bodies are sealed
-to, the active signing keys, the application server keys of web push and the same data keys. A key created
-after the process started, or one it could not open then, is opened the first time it is needed. The image
-sets `FRANKENPHP_LOOP_MAX=0`, so a thread of the server is never started again and pays one opening per key for
-all the signatures it makes; a process rebuilt at each request pays one at each request.
+tenant and by `kid`. A signing key is let go once another is the active key of its algorithm, and any other key
+that has retired at the next opening of a key of its algorithm. A thread of the HTTP server opens them before its
+first request: the active key of each signature algorithm, the published keys a client encrypts to, the SAML
+signing key when a SAML role is on, the keys the upstream identity providers encrypt to, and every data key of
+the tenant, retired ones included. The worker opens, when it starts consuming, the keys message bodies are sealed
+to, the active signing keys, the application server keys of web push and the same data keys. A key created after
+the process started, or one it could not open then, is opened the first time it is needed. The image sets
+`FRANKENPHP_LOOP_MAX=0`, so a thread of the server is never started again and pays one opening per key for all
+the signatures it makes; a process rebuilt at each request pays one at each request.
 
 ``` bash
 bin/console beffroi:keys:list --check

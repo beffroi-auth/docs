@@ -112,6 +112,7 @@ origin whose answer does not let it in. A logo served from another host shows th
 | `login.html.twig` | `/login` | Where a person proves who they are |
 | `login_address.html.twig` | `/login` | The address asked first, on a tenant that federates domains |
 | `code.html.twig` | `/login/code` | The second step: a code of the authenticator application, or a backup code |
+| `untold_change.html.twig` | `/login` | A change to the ways of signing in whose notice a channel gave up on, told once at the sign-in that follows it, with a link to the account activity and the button that goes on with the request |
 | `consent.html.twig` | `/consent` | What a client asks for, and the answer |
 | `logout.html.twig` | `/logout` | The confirmation of a logout the request did not prove it may make |
 | `logged_out.html.twig` | `/logout`, and after the end of a session | Signed out, or still signed in after choosing to stay |
@@ -147,7 +148,10 @@ reach one. A login asked for by a page of the provider names no client.
 ### The consent page
 
 Who is asking is what the client registered of itself: its name, its logo, and the pages a person may read
-before deciding, `policy_uri`, `tos_uri` and `client_uri` in that order, each opened with no referrer. Then
+before deciding, `policy_uri`, `tos_uri` and `client_uri` in that order, each opened with no referrer. A logo or
+a page a client registered itself is shown only on the scheme and host of one of its redirection URIs
+(RFC 7591 §5), and read as none on any other; one the deployment declares, or an authority attests in a
+software statement, is shown wherever it is. Then
 the person signed in, every scope of the request, the standard scopes of OIDC Core §5.4 in words and any
 other by its value, the claims the request asks for by name that a scope the client registered stands for and
 no scope of the request does (OIDC Core §5.5),

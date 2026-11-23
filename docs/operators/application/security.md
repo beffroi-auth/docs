@@ -1,6 +1,6 @@
 ---
 title: Security
-description: The firewalls of the application, its four logins, what a login opens and the cookie of its session, the attempts and budgets that bound a login, and what a post from another site gets.
+description: The firewalls of the application, its four logins, what a login opens and the cookie of its session, the limits and budgets that bound a guess, the load and what a person or an administrator spends, and what a post from another site gets.
 ---
 
 # Security
@@ -79,31 +79,35 @@ account answers like a wrong password.
 | `TotpLoginAuthenticator` | `_code`, a code of the authenticator application or a backup code | `POST /login/code` | What the first step proved, and `otp` |
 | `UpstreamAssertionAuthenticator` | The response an upstream SAML identity provider posted, and its `RelayState` | `POST /saml/sp/acs` | `fed`, and the method its `AuthnContextClassRef` names exactly, when it names one |
 
-The first three read the form token of the page, `_csrf_token` under the identifier `beffroi_login`. Each of
-the four hands what it read to the use cases of the core, or of the SAML package for the fourth, where the
-order of a login is written once. Symfony's form login is not wired: it would verify a hash the core has
-verified.
+The first three read the form token of the page, `_csrf_token` under the identifier `beffroi_login`, and check
+it before anything else: a form without its token costs the person no attempt, writes no act in their
+journal, burns no code and takes no ceremony. Each of the four hands what it read to the use cases of the
+core, or of the SAML package for the fourth, where the order of a login is written once. Symfony's form login
+is not wired: it would verify a hash the core has verified.
 
-**The password.** The form token is checked before the password reaches the core, so a form without its
-token costs the person it names no attempt and no act in their journal, and an empty field is refused
-without being counted. The core then asks whether the floor of the tenant reads anything a password proves,
-names the person, counts the attempt, verifies the hash, refuses a disabled account and a person of a
-[federated domain](../saml/federated-sign-in.md) after the password, empties the count, dates the credential
-and rehashes it when the policy has moved, and announces the act. A name nobody holds, too many
-attempts and a person who holds no password are refused at the cost of a hash all the same, so that the time
-a refusal takes does not say whether the account exists. Whatever the reason, the page shows one message.
+**The password.** An empty field is refused without being counted. The core then asks whether the floor of
+the tenant reads anything a password proves, names the person, counts the attempt, verifies the hash, refuses a
+disabled account and a person of a [federated domain](../saml/federated-sign-in.md) after the password,
+empties the count, dates the credential and rehashes it when the policy has moved, and announces the act. A
+name nobody holds, too many attempts and a person who holds no password are refused at the cost of verifying
+a decoy hash all the same, and a hash the hasher would replace, of another algorithm or of older parameters,
+takes no less time to verify than the decoy, so that the time a refusal takes does not say whether the account
+exists. Whatever the reason, the page shows one message.
 
 **The passkey.** The assertion is verified against the options this browser was handed for its ceremony, and
 taken once. A passkey of another tenant, a revoked one, one whose backup eligibility is not what it was at the
-enrolment, and the passkey of a person of a federated domain are refused after the signature is verified, so
-that a refusal costs what an acceptance costs; a disabled account is refused by the user checker after them.
+enrolment, a disabled account and the passkey of a person of a federated domain are refused after the
+signature is verified, so that a refusal costs what an acceptance costs. The use of the passkey is written
+last, before the login succeeds, and only while its row holds a counter below the one of the assertion, or
+zero for an assertion of zero, which a synced passkey keeps: of two assertions carrying the same counter above
+zero at once, one signs in and the other is refused.
 
 **The second step.** A password of a person who holds an active second factor opens nothing. It is held in
 the HTTP session as a pending login for five minutes, the token the firewall had just set is dropped, and the
 browser is sent to the code page. The code is verified by the core, which counts the attempt and accepts a
-code once or spends a backup code; a refused code sends the browser back to the code page, the pending login
-kept for another try within its five minutes, with the message of what was typed and never of why it was
-refused.
+code once or spends a backup code: of two requests presenting the same code at once, one is accepted and the
+other refused as replayed. A refused code sends the browser back to the code page, the pending login kept for
+another try within its five minutes, with the message of what was typed and never of why it was refused.
 
 **The assertion of an upstream identity provider.** It is read only for a request this browser remembers
 under the `RelayState` it carries, and once. It needs no form token: what binds it to the browser is that
@@ -163,24 +167,31 @@ that does not know the visitor. What `lax` does to a post from another site is a
 
 ## Attempts and budgets
 
-Two limits bound a guess, and they are rules of the provider rather than settings: the extension of the
+Three kinds of limit bound what a request may spend: a guess at a secret, the load a deployment takes, and what
+one person or one administrator makes the deployment do.
+
+**Three limits bound a guess**, and they are rules of the provider rather than settings: the extension of the
 `beffroi:` tree declares their limiters itself, and nothing a deployment sets tunes them.
 
 | Limiter | What it counts | Bound |
 |---|---|---|
 | `beffroi_password_attempts` | The passwords tried on one person, counted once the person is named and before the hash is verified; a correct password empties the count | Five in a sliding window of one minute, per person |
 | `beffroi_code_attempts` | The codes tried by one person: the code of an authenticator application or a backup code at `/login/code`, and the codes refused at `/device` | Five in a sliding window of one minute, per person |
+| `beffroi_password_change_attempts` | The password in use typed on the password page of [the account](account.md#what-the-password-page-says) to replace it, counted before the hash is verified once the person holds a password; the password in use typed right empties the count | Five in a sliding window of one minute, per person |
 
-The count is kept by person and by nothing else, never by address. The device page counts only the codes it
-refuses, and answers `429` once the window is full.
+The count is kept by person and by nothing else, never by address, and the change of a password counts apart
+from the login, so that guesses from a session never lock its owner out of signing in. The device page counts
+only the codes it refuses, and answers `429` once the window is full. Each count is read and written under a
+lock every process of the deployment shares, an advisory lock of PostgreSQL: requests at once, on one server
+or on several, are counted one after the other ([what the processes share](deployment.md#what-the-processes-share)).
 
-Two budgets bound the load a deployment takes. Their existence is not configurable; their numbers are, since
+**Two budgets bound the load** a deployment takes. Their existence is not configurable; their numbers are, since
 they follow the size of a deployment: the application fills `beffroi.load` from `BEFFROI_LOAD_ORIGIN_LIMIT`,
 `BEFFROI_LOAD_ORIGIN_INTERVAL`, `BEFFROI_LOAD_CLIENT_LIMIT` and `BEFFROI_LOAD_CLIENT_INTERVAL`.
 
 | Budget | What it counts | Default |
 |---|---|---|
-| `origin` | Every request one client address sends to a route of any of the three planes, before the firewall and before any work, whatever it asks for | `limit: 2400` requests in `interval: 60` seconds |
+| `origin` | Every request one client address sends to a route of any of the three planes, before the firewall and before any work, whatever it asks for. An IPv6 address is counted by its /64, the prefix before the interface identifier (RFC 4291 §2.5.1) a host draws itself (RFC 8981 §3.3.1) | `limit: 2400` requests in `interval: 60` seconds |
 | `client` | Every request one authenticated client makes, per tenant, counted where its authentication succeeds | `limit: 1200` requests in `interval: 60` seconds |
 
 A request refused for load answers `429 Too Many Requests` with a `Retry-After` and
@@ -188,7 +199,28 @@ A request refused for load answers `429 Too Many Requests` with a `Retry-After` 
 `error`, since none of the registered values says that a budget is spent; on the interaction plane, the error
 page with the code `too_many_requests`. The address a budget is counted on is the one Symfony reads behind the
 proxies `framework.trusted_proxies` names, which `SYMFONY_TRUSTED_PROXIES` sets, so a deployment behind a
-reverse proxy names them there, or every request is counted under the address of the proxy.
+reverse proxy names them there, or every request is counted under the address of the proxy. The load budgets
+take no lock: they bound load, and a lock in the database on every request would cost more than the few
+requests at once that pass over them.
+
+**Three budgets bound what a person or an administrator spends.** Their existence is not configurable either,
+their numbers are the deployment's, and they are counted under the lock of the limits on guesses:
+
+| Budget | What it counts | Default |
+|---|---|---|
+| The confirmations of a person | The confirmations of an address, a code and a link sent by mail or by SMS, that go out for one person of a tenant | `BEFFROI_CONFIRMATION_SENDS_PERSON_LIMIT`, 5, in `BEFFROI_CONFIRMATION_SENDS_INTERVAL`, 86400 seconds |
+| The confirmations to an address | The confirmations that go to one address or number, whatever the tenant, its case and the spaces, dots, hyphens and brackets written in it aside | `BEFFROI_CONFIRMATION_SENDS_ADDRESS_LIMIT`, 10, more than for a person, in the same window |
+| The persons of an administrator | The persons the administration API delivers to one administrator of a tenant: one for a person read, their sessions, their journal or their consents, one per member of a page of members, one for a change of their description, an enabling or a disabling, and one for the revocation of a credential already revoked | `BEFFROI_ADMINISTRATOR_PERSONS_LIMIT`, 600, a hundred at least, in `BEFFROI_ADMINISTRATOR_PERSONS_INTERVAL`, 3600 seconds |
+
+Past a budget of confirmations, nothing is drawn or sent, the confirmation sent before stays open, the page
+says "Too many codes sent. Try again later.", and the refusal is the act `address.confirmation_withheld` of the
+person. Past the budget of an administrator, a read delivers nobody and writes no read: it answers `429` with a
+`Retry-After` and an `error_description` that gives the delay, and no `error`, and the refusal is the act
+`administration.read_refused` in the journal of the administrator. A person also asks for
+[their data](account.md#your-data) five times in a sliding hour at most, a rule of the provider: a request
+beyond that builds nothing, and the page says so.
+
+[:beffroi-arrow-right: The variables of the budgets](configuration.md#the-journal-and-the-load)
 
 ## A post from another site
 
@@ -229,8 +261,8 @@ the single sign-on, single logout and assertion consumer services.
 
 Every form a page of the provider renders carries a token, the choice of a theme excepted, since it changes a
 colour and nothing else, and a form that comes back without its token is refused with `403` and the error page
-`invalid_csrf_token`. At the three logins a missing token is a failed login instead, and at the password form
-it costs no attempt. The names of the fields and the identifiers of the tokens are what a template keeps when
-it is changed.
+`invalid_csrf_token`. At the three logins a missing token is a failed login instead, checked before anything
+else, so it costs no attempt and takes no ceremony. The names of the fields and the identifiers of the tokens
+are what a template keeps when it is changed.
 
 [:beffroi-arrow-right: What a template keeps](pages.md#what-a-template-keeps)

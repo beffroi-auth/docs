@@ -55,7 +55,8 @@ apply to a sealed column, which holds a ciphertext no query of the database read
 
     The authenticated data of every sealed value name the tenant, so a value of one tenant does not open for
     another, wherever it is found. They do not name the table, the column or the row: within one tenant and one
-    family, a value moved into another row of the same column opens there.
+    family, a value moved into another row of the same column opens there. In the journal, the history of
+    claims and what clients were given, the chain of the record sees the move.
 
 ## Blind indexes
 
@@ -152,8 +153,8 @@ rewraps them: a key sealed by another service is replaced by a [rotation](keys.m
 
 ## Rotating the secret that binds them
 
-A deployment lists the secrets in `BEFFROI_DATA_KEY_SECRETS`, a JSON list, which the application reads into
-`beffroi.keys.data_key_secrets`:
+A deployment lists the secrets in `BEFFROI_DATA_KEY_SECRETS`, a JSON list, or in the file
+`BEFFROI_DATA_KEY_SECRETS_FILE` names, which the application reads into `beffroi.keys.data_key_secrets`:
 
 ``` dotenv
 BEFFROI_DATA_KEY_SECRETS='["<the new secret>","<the old secret>"]'
@@ -195,19 +196,23 @@ on a message is what makes a failed one readable: the class of the message, its 
 it was written under, nothing of a person among them.
 
 The journal of the acts, what a client was given at each of them, what a record used to say and the archive a person
-asks for are sealed where they sit like every other column of a person.
+asks for are sealed where they sit like every other column of a person. The first three are chained as well: each
+row is linked to the one before it and the provider signs the head of each chain, so a row changed, added or
+removed in the database after it was written is seen
+([the chained records](../application/persistence.md#the-chained-records)).
 
 ## How long it is kept
 
 | What | Kept for | Forgotten by |
 |---|---|---|
-| An act of the journal, and what a client was given at it | `BEFFROI_JOURNAL_RETENTION` days, 180 in the image | A daily step |
-| A change of a claim | `BEFFROI_HISTORY_RETENTION` days, 180 in the image | A daily step |
+| An act of the journal, and what a client was given at it | `BEFFROI_JOURNAL_RETENTION` days, 180 in the image | A daily step, in the order of the chain |
+| A change of a claim | `BEFFROI_HISTORY_RETENTION` days, 180 in the image | A daily step, in the order of the chain |
 | The archive a person asked for | Seven days from the moment it was asked for, a figure in the code | An hourly step |
 
 **The archive is the one file in which all of it stands in clear at once**, so it is held by rules rather than by
 settings: it is sealed at rest in a family of its own, it expires a week after it was asked for, whether it was
 built or not, and it leaves under a passphrase of the person's choosing when they ask for one, sixteen characters
-at the least.
+at the least. A person asks for it five times an hour at most: a request past that builds nothing, and the page
+says so.
 
 [:beffroi-arrow-right: Your data, on the account pages](../application/account.md#your-data)
