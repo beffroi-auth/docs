@@ -134,12 +134,13 @@ docker compose -f compose.prod.yaml up -d --wait op
 - **Only the server publishes ports**, 80 and 443 over TCP and 443 over UDP. PostgreSQL is reached by the two
   processes alone.
 - **The worker has a health check of its own**, that the consumer is the first process of its container: the
-  one of the image asks Caddy, which the worker does not run.
+  one of the image asks the provider through Caddy, which the worker does not run.
 - **The host that asks for a client certificate is off**, and three commented variables of the server turn it
   on: `CADDY_EXTRA_CONFIG`, `MTLS_SERVER_NAME` and `BEFFROI_MTLS_ORIGIN`.
 - **Caddy terminates TLS**, and two commented variables of the server hand it to a proxy in front of the
   image: `TLS_TERMINATION`, which serves the site of `SERVER_NAME` on plain HTTP, on port 80, to the proxy
-  that asks for that host, and `SYMFONY_TRUSTED_PROXIES`, which names the proxy to Symfony:
+  that asks for that host, and `SYMFONY_TRUSTED_PROXIES: private_ranges`, which names to Symfony a proxy
+  on a private network and the loopback address the health check of the image asks from:
   [behind a proxy](../application/deployment.md#behind-a-proxy).
 
 Its header gives the first start in the order below, the worker started last.

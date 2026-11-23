@@ -115,9 +115,11 @@ services:
   server would answer every host. The
   TLS a client meets is the one of the proxy: [behind a proxy](deployment.md#behind-a-proxy).
 - **The proxy is trusted for what it forwards.** It sends `X-Forwarded-For`, `X-Forwarded-Proto` and
-  `X-Forwarded-Port`, and `SYMFONY_TRUSTED_PROXIES` names where it connects from: `private_ranges` for a
-  proxy on a private network, its address otherwise. Without it, every request comes from the proxy and over
-  plain HTTP, and the provider sends a `GET` to HTTPS again and again.
+  `X-Forwarded-Port`, and `SYMFONY_TRUSTED_PROXIES` names where it connects from, with the loopback address
+  the [health check](deployment.md#the-health-check) of the image asks from: `private_ranges` holds both for
+  a proxy on a private network, and a proxy elsewhere is named by its address beside `127.0.0.1`. Without
+  it, every request comes from the proxy and over plain HTTP, the provider sends a `GET` to HTTPS again and
+  again, and the container is unhealthy.
 - **`SYMFONY_TRUSTED_HOSTS` refuses with `400` any other host that reaches Symfony.** Caddy answers a host
   other than `op.example.com` with an empty `200` before it does, and the variable is what holds the line under
   `SERVER_NAME: ":80"`. `$$` is how a Compose file writes a `$`.
@@ -142,11 +144,9 @@ services:
       TLS_TERMINATION: proxy
       SYMFONY_TRUSTED_PROXIES: private_ranges
       SYMFONY_TRUSTED_HOSTS: '^op\.example\.com$$'
-      CADDY_GLOBAL_OPTIONS: |
-        servers {
-          trusted_proxies static private_ranges
-          client_ip_headers CF-Connecting-IP X-Forwarded-For
-        }
+      CADDY_SERVER_OPTIONS: |
+        trusted_proxies static private_ranges
+        client_ip_headers CF-Connecting-IP X-Forwarded-For
       CADDY_SERVER_EXTRA_DIRECTIVES: request_header X-Forwarded-For {client_ip}
     ports: !override
       - "127.0.0.1:8080:80"
@@ -154,11 +154,13 @@ services:
     environment: *deployment
 ```
 
-Caddy reads the first of those headers the request carries when it comes from a proxy `trusted_proxies`
-names, and the address of the peer otherwise. FrankenPHP hands PHP the request as it arrived, so without
-`CADDY_SERVER_EXTRA_DIRECTIVES` Symfony never sees what Caddy read. Whoever reaches the proxy without going
-through the network that writes the header writes it at will: the address is worth what the filtering of the
-origin is worth.
+`CADDY_SERVER_OPTIONS` holds the lines of the `servers` block the image writes for every listener of its
+sites, without the `servers { }` around them: a block of their own in `CADDY_GLOBAL_OPTIONS` would be a
+second one, which Caddy refuses as it starts. Caddy reads the first of the headers `client_ip_headers` names
+that the request carries when it comes from a proxy `trusted_proxies` names, and the address of the peer
+otherwise. FrankenPHP hands PHP the request as it arrived, so without `CADDY_SERVER_EXTRA_DIRECTIVES` Symfony
+never sees what Caddy read. Whoever reaches the proxy without going through the network that writes the
+header writes it at will: the address is worth what the filtering of the origin is worth.
 
 ## Lists in JSON
 

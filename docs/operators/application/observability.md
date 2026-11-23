@@ -119,9 +119,11 @@ included: `/enrol/{ticket}/{value}`, `/password/{ticket}/{value}` and `/two-fact
 
 ## Metrics and health
 
-The provider exports no metrics of its own. The health check of the image reads the metrics endpoint of the
-Caddy admin API inside the container, `http://localhost:2019/metrics`, and the development stack reports its
-worker healthy while `messenger:consume` is the first process of its container.
+The provider exports no metrics of its own. The health check of the production image asks the provider itself
+for a document it serves, through the site of `SERVER_NAME`: [the health check](deployment.md#the-health-check).
+Each check is a line of the access log of that site, under the user agent `docker-healthcheck`. The Compose
+files of the repository report their worker healthy while `messenger:consume` is the first process of its
+container.
 
 What the instance knows of itself is read on request, and nothing is kept between two reads.
 `beffroi:statistics`, and `GET /statistics` of the administration API, give its people, clients and open

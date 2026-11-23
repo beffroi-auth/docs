@@ -1,6 +1,6 @@
 ---
 title: Deployment
-description: The image, the HTTP server in worker mode, the worker, the planes, what the processes share, TLS and the host that asks for a client certificate.
+description: The image, the HTTP server in worker mode and its health check, the worker, the planes, what the processes share, TLS and the host that asks for a client certificate.
 ---
 
 # Deployment
@@ -50,11 +50,40 @@ entrypoint does three things when `.env` names a `DATABASE_URL`, which the one o
    only what changed. A configuration the tenant refuses, or that moved its issuer, stops the container
    before it serves, at every start.
 
-The health check of the image asks the metrics endpoint of the Caddy admin API inside the container,
-`http://localhost:2019/metrics`, with PHP, the image carrying no `curl`, after a start period of sixty
-seconds. Only the server runs Caddy, so a container that runs the worker turns that check off or replaces it.
-The Compose file of the image gives its worker a check of its own, that the consumer is the first process of
-its container.
+Caddy bounds the size of a request before it reaches the provider. On the listeners of its sites, a request
+whose request line and headers go over the bound, as the Go server Caddy is built on counts them, is answered
+`431` (RFC 6585 §5). On each site, a body over the bound of that site is answered `413` (RFC 9110 §15.5.14),
+whether its length is announced or it is chunked. The defaults let through the largest SAML message the
+provider reads from a posted form, and the largest S/MIME key with its certificates the administration API
+takes: [the variables of the web server](configuration.md#the-web-server).
+
+### The health check
+
+The `HEALTHCHECK` of the production image runs `/usr/local/bin/docker-healthcheck`, a PHP script, with a start
+period of sixty seconds. It asks the site of `SERVER_NAME` for a document the provider serves, over the
+loopback address, `127.0.0.1`, under the host of the issuer: the discovery document, or `/copy.js` in a
+process whose `BEFFROI_PLANE` is `interaction`, which answers `404` on the discovery path.
+
+| `TLS_TERMINATION` | The request of the check |
+|---|---|
+| `caddy` | `https` on port 443, the host of the issuer in its `Host` header and its SNI. The certificate Caddy presents is not verified, the request never leaving the container |
+| `proxy` | `http` on port 80, the host of the issuer in its `Host` header, with `X-Forwarded-Proto: https`, as the proxy sends it |
+
+A port that the first address of `SERVER_NAME` names replaces 443 or 80. Caddy answers an empty `200` to a host
+none of its sites names, so the check passes on a `200` with a body alone, and fails when the site of
+`SERVER_NAME` does not serve the host of the issuer. It follows no redirect and gives up after ten seconds
+without an answer. When it fails, it writes the URL, the host and what was answered, the status and any
+`Location`, or why nothing was, on its error output, which `docker inspect` shows in the health of the
+container. It reads `BEFFROI_ISSUER`, `SERVER_NAME`, `TLS_TERMINATION` and `BEFFROI_PLANE` as Symfony does,
+from the environment first, then from the `.env` the image compiled.
+
+Both documents read the row of the tenant, so the check fails while the server cannot reach the database, and
+while the kernel refuses its configuration, which fails every request. Behind a proxy, it passes only when
+Symfony reads its `X-Forwarded-Proto` from the loopback address: [behind a proxy](#behind-a-proxy).
+
+Only the server runs Caddy, so a container that runs the worker turns that check off or replaces it. The
+Compose file of the image gives its worker a check of its own, that the consumer is the first process of its
+container.
 
 ### The planes
 
@@ -222,12 +251,20 @@ reads as plain HTTP and has the address of the proxy: a request of a safe method
 them, is sent to the same address over HTTPS, without end, and the others, a `POST` among them, are
 served as they came, under the address of the proxy.
 
+[The health check](#the-health-check) asks the server from the loopback address, `127.0.0.1`, with the
+`X-Forwarded-Proto` the proxy would send, so `SYMFONY_TRUSTED_PROXIES` names that address as well, and
+`SYMFONY_TRUSTED_HEADERS`, when it is set, keeps `x-forwarded-proto`. Otherwise Symfony reads the check as
+plain HTTP, sends it to HTTPS, and the container is unhealthy. `private_ranges` holds the loopback address,
+and a deployment that names its proxy by its address adds `127.0.0.1`.
+
 A proxy that names the client in a header Symfony does not read, `CF-Connecting-IP` behind Cloudflare, has
-Caddy read it, with `client_ip_headers` and `trusted_proxies` in the `servers` block of `CADDY_GLOBAL_OPTIONS`,
-and write it into `X-Forwarded-For`, with `request_header X-Forwarded-For {client_ip}` in
-`CADDY_SERVER_EXTRA_DIRECTIVES`, and in `CADDY_ADMINISTRATION_EXTRA_DIRECTIVES` for the site of the
-administration API, each site carrying its own: FrankenPHP hands PHP the address of its peer and the headers as
-they arrived, whatever Caddy read.
+Caddy read it, with `client_ip_headers` and `trusted_proxies` in `CADDY_SERVER_OPTIONS`, the options of the one
+`servers` block the image writes for every listener of its sites, and write it into `X-Forwarded-For`, with
+`request_header X-Forwarded-For {client_ip}` in `CADDY_SERVER_EXTRA_DIRECTIVES`, and in
+`CADDY_ADMINISTRATION_EXTRA_DIRECTIVES` for the site of the administration API, each site carrying its own:
+FrankenPHP hands PHP the address of its peer and the headers as they arrived, whatever Caddy read. A
+`servers { }` block written in `CADDY_GLOBAL_OPTIONS` is a second block for the same listeners, which Caddy
+refuses as it starts.
 
 The host that asks for a client certificate terminates its TLS in Caddy whatever `TLS_TERMINATION` says. A
 client presents its certificate in the handshake, so a proxy in front of that host passes its connections
