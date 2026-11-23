@@ -46,11 +46,11 @@ first that answers sends the browser to the login page:
 | 6 | `max_age` | When the authentication of the session is older than that many seconds |
 
 A login made during this interaction answers questions 3 to 6, whatever it proved, so a person is not sent
-round again for having signed in a moment ago. The login page says why it is shown: "Please sign in again to
+round again for having signed in a moment ago. The login page says why it is shown: "Sign in again to
 continue." for a reason other than the absence of a session, and, for a step-up, that the client requires a
 stronger sign-in than the one the person has, with the credentials they hold that would satisfy it, a passkey,
-the password, or the password followed by a code. A login of the person already signed in adds what it
-proved to the session the browser holds; a login of somebody else ends that session first.
+the password, or the password followed by a code. A login of the person already signed in adds what it proved
+to the session the browser holds; a login of somebody else ends that session first.
 
 The `sub` of an `id_token_hint` is the one the provider gave the client of the request, and it is read for
 that client, as every `sub` this provider gave a client is
@@ -94,8 +94,8 @@ redirect URI. `none` combined with any other value of `prompt` is refused with `
 
 The login page names the client asking, by the name it registered, and offers what the tenant admits: a
 password form, a passkey, or both, the floor of the logins of the tenant deciding
-([tenants](../core/tenants.md)). A refused login says one thing whatever the reason, "Sign-in failed. Check
-your username and your password, then try again.", so the page tells nobody which accounts exist.
+([tenants](../core/tenants.md)). A refused login says one thing whatever the reason, "Wrong username or
+password.", so the page tells nobody which accounts exist.
 
 **A `login_hint` is read one way, the one the deployment chooses**, and never searched for (OIDC Core
 §3.1.2.1). What it names fills the username field with the name that person signs in with, unless this

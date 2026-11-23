@@ -186,7 +186,7 @@ nothing, and throws `App\Messenger\NotificationNotDeliveredException` when a lat
 | SMS | `BEFFROI_SMS_DSN` names a transport | The phone number of the person, while it is marked verified | The name of the tenant, the sentence and the address of the page |
 
 The sentence names the client and what it asks the person to approve, a sign-in or the binding message it
-wrote, and says that the answer is given in their account: "Billing is asking you to approve a sign-in. Open
+wrote, and says that the answer is given in their account: "Billing asks you to approve a sign-in. Open
 your account to answer." in English.
 
 **A channel that cannot reach the person tells nothing, and leaves the others to serve**: a person with no browser
@@ -211,7 +211,7 @@ which is where any channel sends them anyway.
 
 ## Answering: `/account/approvals`
 
-The page is "Requests waiting for you", the first card of the [account pages](../../application/account.md).
+The page is "Pending requests", the first card of the [account pages](../../application/account.md).
 The person signs in first, then sees the requests made for them that are still waiting, oldest first, and
 nothing else: there is no code to type and no link that carries a request, the requests being found by who
 is signed in. Each one shows the provider that is asking, the client, its binding message, where the request

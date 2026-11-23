@@ -49,9 +49,8 @@ Location: https://billing.example.com/oidc/callback?code=SplxlOBeZQQYbYS6WxSbIA0
 
 The answer is a page holding one form, whose hidden fields are the parameters, posted by the browser to the
 redirect URI, so that no parameter of the answer is written in a URL, an address bar, a history or an access
-log. One script submits the form as soon as the page loads. The page also says "Your browser is sending you
-back to the application. If nothing happens, use the button below." beside a Continue button, which is what a
-browser that runs no script shows.
+log. One script submits the form as soon as the page loads. The page also says "If nothing happens, use the
+Continue button." beside that button, which is what a browser that runs no script shows.
 
 The page carries a policy of its own, under which nothing loads and nothing frames it:
 

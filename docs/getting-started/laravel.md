@@ -191,7 +191,7 @@ out.
 
 | What you see | Why | What to do |
 |---|---|---|
-| Beffroi shows "Request refused", the `redirect_uri` is not registered | The address your application sends differs from the registered one, even by a trailing `/` | Make `OIDC_REDIRECT_URI` exactly one of the `redirect_uris` |
+| Beffroi shows "Unable to continue", the `redirect_uri` is not registered | The address your application sends differs from the registered one, even by a trailing `/` | Make `OIDC_REDIRECT_URI` exactly one of the `redirect_uris` |
 | A `500` error, and `Callback: IdP returned error` in the log of Laravel | Beffroi answered with an `error`, and the callback does not check for it | Keep the error check of [step 4](#4-add-the-sign-in-routes) |
 | `error=invalid_scope` | The application asks for a scope it did not register | Register it, or remove it from `scopes` |
 | A `500` error, and a `ClientException` with `401 invalid_client` in the log | The secret is wrong, or the application sends it in a way other than the registered one | Check `OIDC_CLIENT_SECRET`, and register `client_secret_basic` |

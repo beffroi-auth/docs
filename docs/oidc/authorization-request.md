@@ -173,10 +173,9 @@ answered with a page of the provider's own origin that posts the same form again
 order. The second post is made from the provider's origin, carries the cookie and is not posted again; it is
 read, judged and refused exactly as the first would have been. Nothing is decided on that page, and nothing of
 the request is spent by the first post, a pushed reference included. The page submits itself where scripts
-run, and where they do not it says "Your browser came from another site without your session. Use the button
-below to continue.", in the language the `ui_locales` of the posted form asks for, or else the browser. A
-browser that sends no `Sec-Fetch-Site` is answered as it always was, and a request in the query is never
-touched.
+run, and where they do not it shows a Continue button, in the language the `ui_locales` of the posted form
+asks for, or else the browser. A browser that sends no `Sec-Fetch-Site` is answered as it always was, and a
+request in the query is never touched.
 
 Beside it, no answer of a page of the interaction plane to such a request, a `POST` or any method but `GET`
 and `HEAD` from another site without the session cookie, carries a new session cookie: the one the session

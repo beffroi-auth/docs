@@ -21,14 +21,14 @@ titles below are the ones the English catalogue carries.
 
 | Page | Path | What is on it |
 |---|---|---|
-| Requests waiting for you | `/account/approvals` | What somebody is waiting on an answer for right now. It is first because every other card says what the account holds and this one says that a request is open |
+| Pending requests | `/account/approvals` | What somebody is waiting on an answer for right now. It is first because every other card says what the account holds and this one says that a request is open |
 | Your information | `/account/profile` | What the provider holds of this person: the name they sign in with, the two dates of the record, and one line per claim of OIDC Core §5.1 |
 | Your passkeys | `/account/passkeys` | Their passkeys, with the name each one was given, its dates and its state |
 | Two-factor authentication | `/account/two-factor` | The authenticator application, when there is one, and how many backup codes are left |
-| Applications you have allowed | `/account/consents` | One line per client in force, with the scopes, the authorization details and the claims asked for by name it holds, and a page per application behind it |
-| Where you are signed in | `/account/sessions` | Where this person is signed in at this moment, what each session proved, and where it was last seen |
+| Allowed applications | `/account/consents` | One line per client in force, with the scopes, the authorization details and the claims asked for by name it holds, and a page per application behind it |
+| Open sessions | `/account/sessions` | Where this person is signed in at this moment, what each session proved, and where it was last seen |
 | Your password | `/account/password` | When the password was last written, and the form that replaces it |
-| What happened to your account | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the account and of its means of signing in, the applications they agreed to and the consents taken back, what they did of their own record, and what an administrator of their organisation consulted or changed of them, said by that role alone and never by a name, a place or a client. A read they made of themselves through the administration API is not listed. Its card counts the refusals among the last twenty attempts to sign in as them, since a failure is what somebody comes to look for: a refusal leaves the count once twenty attempts have followed it |
+| Account activity | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the account and of its means of signing in, the applications they agreed to and the consents taken back, what they did of their own record, and what an administrator of their organisation consulted or changed of them, said by that role alone and never by a name, a place or a client. A read they made of themselves through the administration API is not listed. Its card counts the refusals among the last twenty attempts to sign in as them, since a failure is what somebody comes to look for: a refusal leaves the count once twenty attempts have followed it |
 | Notifications | `/account/notifications` | The browsers this provider reaches by web push, to tell this person of a request that waits for them and of a change to the ways their account signs in |
 | Your data | `/account/archive` | The one file holding everything the provider knows of them, and where their last request for it has got to |
 
@@ -77,10 +77,9 @@ sets, fifteen characters or twelve, and the field and the core read the same num
 
 A person whose address is of a domain an [upstream identity provider](../saml/federated-sign-in.md) answers
 for signs in at their organisation and nowhere else. The pages of their account offer no form that would pose
-a password, a passkey or an authenticator application, and say so: their organisation signs them in, no
-password, passkey or authenticator application of this account signs them in, and none is added to it. A form
-posted by hand is refused all the same, and what the source of their account holds of their profile is read
-there and not changed.
+a password, a passkey or an authenticator application, and say so: they sign in through their organisation,
+and there is nothing to set up there. A form posted by hand is refused all the same, and what the source of
+their account holds of their profile is read there and not changed.
 
 ## What a page asks before it opens
 
@@ -154,12 +153,12 @@ What a reader learns of one table serves them on the others.
 
 | On this page | The gesture | What it does |
 |---|---|---|
-| Applications you have allowed | Revoke | Takes back the consent and the access that client holds. The next authorization request asks again |
-| Where you are signed in | Close | Ends that session and revokes the tokens issued under it; its OpenID Connect clients are told through the back channel, and when it is the session of this very browser, its SAML service providers are told through it before the page comes back |
-| Where you are signed in | Close every other one | Ends every session of this person but the one reading the page, with the same revocation and the same back channel. Those sessions have no browser here, so their SAML service providers are not told |
+| Allowed applications | Revoke access | Takes back the consent and the access that client holds. The next authorization request asks again |
+| Open sessions | End | Ends that session and revokes the tokens issued under it; its OpenID Connect clients are told through the back channel, and when it is the session of this very browser, its SAML service providers are told through it before the page comes back |
+| Open sessions | End every other session | Ends every session of this person but the one reading the page, with the same revocation and the same back channel. Those sessions have no browser here, so their SAML service providers are not told |
 | Your passkeys | Revoke | Revokes that credential. The line stays, listed as revoked |
 | Two-factor authentication | Remove | Revokes the authenticator. The sessions it completed stay as they are |
-| Notifications | Revoke | Drops that subscription, and this provider stops reaching that browser |
+| Notifications | Remove | Drops that subscription, and this provider stops reaching that browser |
 
 ## When a way in changes
 
@@ -182,8 +181,8 @@ asked, being built, ready, stalled, or expired.
 - **It expires a week after it was asked for**, and that week is a figure in the code rather than an
   option: every day that file exists is a day it exists. The expiry is counted from the ask and not from
   the build, so a request that never ran is forgotten on the same day as one that did.
-- **A build is given a quarter of an hour.** Past that, the page says nobody is building this one rather
-  than showing a week of work in progress, and asking again opens a new request in its place.
+- **A build is given a quarter of an hour.** Past that, the page says the file could not be prepared
+  rather than showing a week of work in progress, and asking again opens a new request in its place.
 - **It leaves under a passphrase when the person wants one.** The file is then wrapped, and the floor on
   the length of that passphrase, sixteen characters, is refused rather than warned about: what stands
   between that file and whoever took it is the length of what was typed. A person who asks for no

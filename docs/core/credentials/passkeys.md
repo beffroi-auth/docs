@@ -73,12 +73,12 @@ under `direct` and `enterprise`, by the AAGUID of its authenticator, until a day
 and included: a passkey of that model enrols until then and is marked under alert, and the refusal returns the
 day after.
 
-**A person refused by the policy is told why** on the page that enrolled: "Your organisation accepts only the
-keys it gave you. Use one of them." under `enterprise`, and "This model of authenticator is under a security
-alert and is no longer accepted. Use another one." for a model under alert. An attestation that does not verify
-is refused as any other passkey the provider refuses. The page of the passkeys and `beffroi:user:show` say what
-each enrolment proved: the model declared, verified by its attestation, or attested for the organisation with
-its serial number, and a model admitted under alert.
+**A person refused by the policy is told why** on the page that enrolled: "Only the keys your organisation gave
+you are accepted." under `enterprise`, and "This model is under a security alert and is no longer accepted. Use
+another one." for a model under alert. An attestation that does not verify is refused as any other passkey the
+provider refuses. The page of the passkeys and `beffroi:user:show` say what each enrolment proved: the model
+declared, verified by its attestation, or attested for the organisation with its serial number, and a model
+admitted under alert.
 
 **What the policy cannot read is refused** by the first request or command that reads the tenant: a name no
 wired policy carries, naming the ones that are wired; `enterprise` with no root at all; a root that is not one
