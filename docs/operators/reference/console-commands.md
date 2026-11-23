@@ -42,8 +42,9 @@ was forgotten. [The floor of its logins](../tenant/tenants.md#the-floor-of-its-l
 
 A chain is named `journal`, `claim_history` or `disclosures`, and `beffroi:chain:verify` walks the three when
 it names none; `--against` takes a file holding a signed head of the chain named, as the log channel `chain`
-printed it. `beffroi:chain:sign-anew` takes the chain, then the slug of the tenant typed back, and
-`beffroi:database:grant` the role of PostgreSQL the server and the worker connect as. [The chains of
+printed it. `beffroi:chain:sign-anew` takes the chain, then the slug of the tenant typed back, and is run as the
+role that owns the tables, refusing under a role that may not delete a link; `beffroi:database:grant` takes the
+role of PostgreSQL the server and the worker connect as. [The chains of
 records](../application/console-commands.md#the-chains-of-records) says when to run each.
 
 ## Users, their credentials and what they agreed to

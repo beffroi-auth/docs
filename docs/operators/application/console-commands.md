@@ -199,13 +199,17 @@ read what its check found: whatever was changed, added or removed before cannot 
 so it prints what the whole walk finds first, and refuses until the slug of the tenant is typed back. The act
 `tenant.chain_signed_anew` names the positions linked again. It rewrites the links of the chain, which a role
 granted by [`beffroi:database:grant`](#the-role-of-the-database) cannot do: on a deployment whose processes run
-as such a role, it is run with `DATABASE_URL` naming the role that owns the tables.
+as such a role, it is run with `DATABASE_URL` naming the role that owns the tables. Under a role that may not
+delete a link, it refuses before it links a row again: "The role "beffroi_runtime" this process connects as
+may not rewrite the links of a chain, which beffroi:database:grant withholds from the role of the processes:
+sign the chain anew with DATABASE_URL naming the role that owns the tables."
 
 ``` bash
 bin/console beffroi:chain:sign-anew journal default
 ```
 
-A chain found broken is cut by no retention until one of two things is done: the database and the key storage
+A chain found broken is cut by no retention, and no signature is taken while the row its last signature names,
+or a row written since, does not follow, until one of two things is done: the database and the key storage
 restored from the same backup, or the chain signed anew.
 
 ## The role of the database
