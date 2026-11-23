@@ -26,8 +26,8 @@ signs you in on its own: no code is asked after it.
 When your organisation signs its people in by passkey only, the page says **Sign in with your passkey.** and
 shows no password field. [Your passkeys](passkeys.md) says how to add one.
 
-If your device cannot complete the passkey, the page says **The passkey did not work. Try again.** A passkey the
-sign-in service refuses is answered like a password, **Wrong username or password.**
+If your device cannot complete the passkey, or the sign-in service refuses it, the page says **The passkey did not
+work. Try again.**
 
 ## The second step: a code
 

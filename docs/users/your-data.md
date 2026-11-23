@@ -32,7 +32,7 @@ Press **Ask for my data**, beside the title. Under **Your request**, the page th
 |---|---|
 | **You have not asked for your data yet.** | **Ask for my data** |
 | **Your file is being prepared. Come back in a few minutes.** | Wait, or take the request back with **Delete this request** |
-| **Your file is ready.** | Download it, or delete it with **Delete this file** |
+| **Your file is ready.** | Download it, delete it with **Delete this file**, or press **Ask for a new file** |
 | **Your file could not be prepared. Ask for a new one.** | The file was not ready within a quarter of an hour. Press **Ask for a new file**, or **Delete this request** |
 | **Your file has expired. Ask for a new one.** | Press **Ask for a new file** |
 
@@ -52,6 +52,8 @@ Each download is listed in [Account activity](activity.md) as **Copy of your dat
 ## When it is deleted
 
 **A file is kept for 7 days, then deleted.** The seven days count from when you asked.
+
+Asking for a new file deletes the previous one, so you hold one file at a time.
 
 You do not have to wait: **Once you have downloaded the file, you can delete it without waiting for it to expire.**
 Press **Delete this file**, and the sign-in service no longer holds it. **There is nothing left to delete.** means

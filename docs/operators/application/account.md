@@ -32,7 +32,7 @@ titles below are the ones the English catalogue carries.
 | Open sessions | `/account/sessions` | Where this person is signed in at this moment, what each session proved, and where it was last seen |
 | Your password | `/account/password` | When the password was last written, and the form that replaces it |
 | Account activity | `/account/acts` | What the journal holds of the account: who signed in as them and with what, the attempts that were refused, what signed out, what changed of the account and of its means of signing in, the applications they agreed to and the consents taken back, what they did of their own record, and what an administrator of their organisation consulted or changed of them, said by that role alone and never by a name, a place or a client. A read they made of themselves through the administration API is not listed. Its card counts the refusals among the last twenty attempts to sign in as them, since a failure is what somebody comes to look for: a refusal leaves the count once twenty attempts have followed it |
-| Notifications | `/account/notifications` | The browsers this provider reaches by web push, to tell this person of a request that waits for them and of a change to the ways their account signs in |
+| Notifications | `/account/notifications` | The browsers this provider reaches by web push, to tell this person of a request that waits for them and of a change to the ways their account signs in, and the channels each notification goes out on, among browsers, mail and SMS while the deployment wires them |
 | Your data | `/account/archive` | The one file holding everything the provider knows of them, and where their last request for it has got to |
 
 The subject identifier clients know this person by is on none of them. It is the `sub` of a token, not
@@ -87,9 +87,10 @@ their account holds of their profile is read there and not changed.
 ## What a page asks before it opens
 
 A page of the account needs the session this browser holds, and the form token when it posts. Without the
-session it refuses with `login_required`, and the refusal offers the home of the account, which is the one
-page of the plane that sends a browser to the login and brings it back: there is nowhere else to send it,
-a page of the account belonging to no client and to no interaction.
+session it refuses with `login_required`, and the refusal offers the home of the account, which sends a
+browser to the login and brings it back: there is nowhere else to send it, a page of the account belonging
+to no client and to no interaction. The page of pending requests, which a notification opens, sends the
+browser to the login itself and brings it back there.
 
 A session outlives the moment it was opened, by construction: a person signs in once and reads their
 account for the rest of the day, and so does whoever sits down in front of a screen left unlocked. That is
@@ -101,7 +102,8 @@ in that session counts as a proof like the first one.
 === "Asks for a recent proof"
 
     The password page and the form that replaces it, the passkeys page, the enrolment of a passkey and its
-    revocation, the second factor page, its enrolment, its revocation and the renewal of its backup codes.
+    revocation, the second factor page, its enrolment, its revocation and the renewal of its backup codes, and
+    the page of encrypted email, the key given there and its removal.
 
     The proof is asked for by the login of the firewall, the one every other page of the provider uses, so
     what this person holds is what proves them again: a password, a passkey or a code. Nothing here asks
@@ -168,10 +170,12 @@ What a reader learns of one table serves them on the others.
 What these pages change of the ways the account signs in, a passkey or the authenticator application added or
 removed, the password replaced, backup codes drawn again, is told to the person, and so are the other acts
 [credentials](../../administrators/people/credentials/index.md#what-the-person-is-told) list, those of an administrator and of a ticket
-among them. While the deployment names a push subject, every browser the person subscribed on the notifications
-page is pushed a notice that says what changed and when, and, if it was not them, to open their account and to
-contact the tenant, by the contact it gives when it gives one. The notice opens the home of the account, and the
-page of the acts says what happened.
+among them. The notice says what changed and when, and, if it was not them, to open their account and to
+contact the tenant, by the contact it gives when it gives one. It goes out on every channel the deployment wires,
+whatever the person chose for the requests: every browser they subscribed on the notifications page while the
+deployment names a push subject, their verified address while `BEFFROI_MAIL_DSN` names a transport, and their
+verified number while `BEFFROI_SMS_DSN` names one. The notice leads to the home of the account, and the page of
+the acts says what happened.
 
 [:beffroi-arrow-right: Web push](web-push.md#a-way-of-signing-in-changed)
 
@@ -186,6 +190,8 @@ asked, being built, ready, stalled, or expired.
   the build, so a request that never ran is forgotten on the same day as one that did.
 - **A build is given a quarter of an hour.** Past that, the page says the file could not be prepared
   rather than showing a week of work in progress, and asking again opens a new request in its place.
+- **A new request replaces the last one**, ready, stalled or expired, so a person holds one file at a time.
+  While a file is being built, the page offers no new request.
 - **It leaves under a passphrase when the person wants one.** The file is then wrapped, and the floor on
   the length of that passphrase, sixteen characters, is refused rather than warned about: what stands
   between that file and whoever took it is the length of what was typed. A person who asks for no

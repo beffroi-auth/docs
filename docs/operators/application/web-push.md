@@ -76,8 +76,7 @@ endpoint, which carries the unique constraint with the person.
 
 Two messages reach a person this way, a request that waits for their answer and a change to the ways their account
 signs in. Each is put on the lane of notifications, which hands it to the channels the application wires for it,
-web push among them while a subject is named: the only one for a change to the ways in, and one of three for a
-request that waits, beside mail and SMS. Every browser the person subscribed is pushed to, and each push carries
+web push among them while a subject is named, beside mail and SMS. Every browser the person subscribed is pushed to, and each push carries
 three strings and nothing else, `title`, `body` and `url`, in the language of the record of the person when the
 deployment serves it, and in the default language otherwise.
 
@@ -119,8 +118,10 @@ passkey to it is issued or its backup codes are renewed, the provider puts the m
 the lane once the act is done, whoever did it. [Credentials](../../administrators/people/credentials/index.md#what-the-person-is-told)
 say which acts are told. Every browser the person subscribed is told, the one the change was made from
 included when it is one of them: what the provider could tell that browser by, its session or a cookie,
-whoever took the session holds as well. A person who has subscribed no browser is told nothing, and finds the
-change on the page of their acts.
+whoever took the session holds as well. A person who has subscribed no browser is pushed nothing: a mail reaches
+them when the deployment names a transport and a sender and their address is marked verified, and a text when it
+names the DSN of Sweego and their number is marked verified. This message goes out on every channel the deployment
+wires, whatever the person chose for the requests, and the change is on the page of their acts either way.
 
 | Member | What it says |
 |---|---|

@@ -54,8 +54,8 @@ security:
 | `beffroi_interaction` | Every other path: the pages a browser reads, where the four logins of the provider are, and the metadata of both SAML roles, `/saml/metadata`, `/saml/sp/metadata` and `/saml/sp/metadata/{identityProvider}`, which are routes of the protocol plane the pattern above does not list |
 
 There is no `access_control`. The pages decide for themselves whether a session is needed: the login page
-shows its form, the consent page sends a browser without a session to the login, and a page of the account
-other than its home refuses one with `login_required`.
+shows its form, the consent page sends a browser without a session to the login, and so do the home of the
+account and its page of pending requests, while every other page of the account refuses one with `login_required`.
 
 `security.yaml` declares no password hasher: the extension of the `beffroi:` tree,
 `App\DependencyInjection\BeffroiExtension`, prepends the hasher of the core, `App\Security\CorePasswordHasher`,

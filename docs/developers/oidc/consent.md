@@ -39,7 +39,7 @@ The consent page, `/consent`, says who is asking and what for, in the language o
 
 | What it shows | Where it comes from |
 |---|---|
-| "Authorize *the client*", as its title | The `client_name` of the client, or its `client_id` when it registered none |
+| "Authorise *the client*", as its title | The `client_name` of the client, or its `client_id` when it registered none |
 | Its logo | The `logo_uri` of the client, loaded by the browser of the person with no referrer. The provider never fetches it |
 | "You are signed in as *username*." | The account of the session |
 | Every scope of the request | `openid`, `profile`, `email`, `address`, `phone` and `offline_access` in words, any other scope by its name |

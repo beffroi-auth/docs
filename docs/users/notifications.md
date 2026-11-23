@@ -36,8 +36,7 @@ If you did not make the change: look at [Account activity](activity.md), end the
 ## Browsers
 
 Your organisation may let the sign-in service show notifications in your browsers. **A browser added here gets a
-notification when a request waits for your answer. You always answer here.** A browser added also receives the
-changes to how you sign in.
+notification when a request waits for your answer and when how you sign in changes. You always answer here.**
 
 1. Open **Notifications** in the browser you want to add, and press **Add this browser**.
 2. Your browser asks whether the page may show notifications: allow it.

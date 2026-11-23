@@ -95,7 +95,8 @@ redirect URI. `none` combined with any other value of `prompt` is refused with `
 The login page names the client asking, by the name it registered, and offers what the tenant admits: a
 password form, a passkey, or both, the floor of the logins of the tenant deciding
 ([tenants](../../operators/tenant/tenants.md)). A refused login says one thing whatever the reason, "Wrong username or
-password.", so the page tells nobody which accounts exist.
+password." for the form and "The passkey did not work. Try again." for a passkey, so the page tells nobody which
+accounts exist.
 
 **A `login_hint` is read one way, the one the deployment chooses**, and never searched for (OIDC Core
 §3.1.2.1). What it names fills the username field with the name that person signs in with, unless this
