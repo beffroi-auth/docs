@@ -6,16 +6,26 @@ description: Every string translated, the two lists of languages, and how a page
 # Translations
 
 Every user-facing string goes through the translator, in XLIFF with `intl-icu` for plurals and parameters,
-in the `beffroi` domain. The application holds one catalogue per language it serves, `en` and `fr`:
+in the `beffroi` domain. The application holds one catalogue per language it ships, seven of them: English
+(`en`), French (`fr`), German (`de`), Spanish (`es`), Italian (`it`), Dutch (`nl`) and Polish (`pl`):
 
 ```
 translations/beffroi+intl-icu.en.xlf
 translations/beffroi+intl-icu.fr.xlf
+translations/beffroi+intl-icu.de.xlf
+...
 ```
 
 The catalogues are code of the application, like its templates: adding a language is one more catalogue of
-the same domain, and `framework.enabled_locales` naming it in `config/packages/translation.yaml`. A deployment
-chooses which of the two a page falls back to with `DEFAULT_LOCALE`.
+the same domain, holding every key of the English one and nothing else, its name in itself under
+`language.<code>` in every catalogue, which is how the language control names it, and
+`framework.enabled_locales` naming it in `config/packages/translation.yaml`.
+
+A deployment serves every language the application ships, or those `BEFFROI_LOCALES` names, as a JSON list
+(`'["fr","en"]'`). `DEFAULT_LOCALE` is the one a page falls back to, and it is one of them: a list that leaves
+it out is refused, and so is a language the application has no catalogue for. The discovery document
+announces the languages served in `ui_locales_supported` (OIDC Discovery 1.0 §3), the default first, as language
+tags (RFC 5646).
 
 !!! info "The `error_description` of the protocol is not translated"
 
@@ -27,7 +37,7 @@ chooses which of the two a page falls back to with `DEFAULT_LOCALE`.
 
 | List | What it answers | Where it comes from |
 |---|---|---|
-| The languages this deployment serves | What a page can be written in | `framework.enabled_locales`, with `framework.default_locale` in front |
+| The languages this deployment serves | What a page can be written in | `BEFFROI_LOCALES`, or every language the application ships when it names none, with `DEFAULT_LOCALE` in front |
 | The languages a person can say they read | What the `locale` claim of a person may name | Every locale ICU has data for, each under its own name in itself |
 
 They are two lists because they answer two questions: `locale` is a claim of OIDC Core §5.1 and not a

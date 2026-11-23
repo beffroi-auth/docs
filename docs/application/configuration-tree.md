@@ -47,6 +47,7 @@ beffroi:
 | [`geoip`](#geoip) | The databases that place an address, and the key they are downloaded under | `GEOIP_LICENSE_KEY`, empty: an address, no place |
 | [`passwords`](#passwords) | The list of compromised passwords a new one is compared with | `BEFFROI_BREACHED_PASSWORDS_ENDPOINT`, empty: no list asked |
 | [`interaction`](#interaction) | How the `login_hint` of an authorization request is read | `BEFFROI_INTERACTION_LOGIN_HINT`: as a `sub` |
+| [`locales`](#locales) | The languages the pages and the messages are served in | `BEFFROI_LOCALES`, `[]`: every language the application ships |
 | [`back_channel_logout`](#back_channel_logout) | How long a notification to a third party is tried | Five `BEFFROI_BACK_CHANNEL_LOGOUT_*` variables: six retries, 235 seconds in all |
 | [`backchannel_authentication`](#backchannel_authentication) | How the `login_hint` of a backchannel request is read, and how long a call to a client may take | `BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT`: as a `sub`; `BEFFROI_CLIENT_NOTIFICATION_TIMEOUT`: 3 seconds |
 | [`web_push`](#web_push) | Whether the provider reaches people through their browsers | `BEFFROI_WEB_PUSH_SUBJECT`: on, with the contact of the development stack |
@@ -346,6 +347,16 @@ How the `login_hint` of an authorization request is read (OIDC Core §3.1.2.1), 
 and never searched, and the login page offers the name of the person it names.
 
 [:beffroi-arrow-right: Interactions](../oidc/interactions.md)
+
+## `locales`
+
+The languages the pages and the messages are served in, which `BEFFROI_LOCALES` names as a JSON list, among
+those the application has a catalogue for, `framework.default_locale` among them. `[]`, as in `.env`, serves
+every language the application ships. A language without a catalogue is refused, naming those there are,
+and so is a list that leaves out the default locale. The discovery document announces them in
+`ui_locales_supported`.
+
+[:beffroi-arrow-right: Translations](translations.md)
 
 ## `back_channel_logout`
 
