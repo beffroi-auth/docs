@@ -5139,8 +5139,9 @@ request</a> endpoint, the device authorization endpoint and the backchannel
 authentication endpoint. A request that presents another method than the registered one is refused exactly
 as a request that presents a wrong secret is.</p>
 <h2 id="the-methods">The methods<a class="headerlink" href="#the-methods" title="Link to this section">&para;</a></h2>
-<p>The application wires five, in this order, then the two that read a certificate while the deployment names the
-host that asks for one, <code>BEFFROI_MTLS_ORIGIN</code>:</p>
+<p>The application wires five, in this order, then the two that read a certificate: <code>tls_client_auth</code> while the
+deployment names the host that asks for one, <code>BEFFROI_MTLS_ORIGIN</code>, and at least one authority that issues
+them, <code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code>, and <code>self_signed_tls_client_auth</code> while it names the host:</p>
 <table>
 <thead>
 <tr>
@@ -5184,7 +5185,7 @@ host that asks for one, <code>BEFFROI_MTLS_ORIGIN</code>:</p>
 <tr>
 <td><code>tls_client_auth</code></td>
 <td><code>client_id</code>, and a certificate at the TLS handshake (RFC 8705 §2.1)</td>
-<td>The one value of RFC 8705 §2.1.2 it registered, read out of the certificate</td>
+<td>That an authority the deployment names issued the certificate, valid when it is presented, then the one value of RFC 8705 §2.1.2 it registered, read out of it</td>
 <td>One of the five <code>tls_client_auth_*</code> values</td>
 </tr>
 <tr>
@@ -5271,20 +5272,30 @@ signature is verified first, and nothing the assertion says is believed before i
 <td>Present, and not in the future</td>
 </tr>
 <tr>
+<td><code>nbf</code></td>
+<td>When present, not in the future</td>
+</tr>
+<tr>
 <td><code>jti</code></td>
-<td>Present, and never seen before for that client: it is remembered until the <code>exp</code> in the <code>beffroi.client_assertions</code> cache pool, which the processes share when they share its directory, as the Compose file of the image has them do (<a href="../../../operators/application/deployment/#what-the-processes-share">what the processes share</a>)</td>
+<td>Present, and never seen before for that client: it is remembered until the <code>exp</code> plus the leeway, the last instant the assertion is accepted, in the <code>beffroi.client_assertions</code> cache pool, under a lock every process of the deployment shares, so that of two requests presenting one assertion at once, one is refused. The processes share the pool when they share its directory, as the Compose file of the image has them do (<a href="../../../operators/application/deployment/#what-the-processes-share">what the processes share</a>)</td>
 </tr>
 </tbody>
 </table>
 <p><strong>The key is the client's and nobody else's.</strong> A <code>kid</code> in the header names one of the keys the client
-publishes, a header without one is tried against all of them, and a key that names another <code>alg</code>, or a <code>use</code>
-other than <code>sig</code>, is not tried. <code>jwk</code>, <code>jku</code> and <code>x5c</code> in the header are ignored (RFC 8725 §3.10).</p>
+publishes, and a key that names another <code>alg</code>, or a <code>use</code> other than <code>sig</code>, or whose type the algorithm does
+not take, is not tried. A header without a <code>kid</code> is verified under the one key of the client that could have
+signed it, and refused when several could, by their type, their <code>alg</code> and their <code>use</code> (OIDC Core §10.1).
+<code>jwk</code>, <code>jku</code> and <code>x5c</code> in the header are ignored (RFC 8725 §3.10), and a header that carries <code>crit</code> or <code>b64</code>
+is refused: the provider understands no extension of JOSE (RFC 7515 §4.1.11).</p>
 <p><strong>Keys behind a <code>jwks_uri</code> are read and kept.</strong> The URL is read with one <code>GET</code>, no redirect followed, any
-status but <code>2xx</code> refused, within a time and a size of its own. The set is kept in the <code>beffroi.client_keys</code>
-cache pool, filed under its URL, and read again when an assertion names a <code>kid</code> the kept set does not hold, at
-most once per cooldown: a client that rotates its key is followed at once, and one that signs with a key it
-never published cannot make the provider call it on every request. A set that cannot be read refuses the
-authentication, and the reason goes to the audit trail.</p>
+status but <code>2xx</code> refused, within a time and a size of its own, and never at an address of a private network
+of the deployment it does not name in <code>BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS</code> (<a href="../../../operators/application/deployment/#what-leaves-the-provider">what leaves the
+provider</a>). The set is kept in the
+<code>beffroi.client_keys</code> cache pool, filed under its URL, and read again when an assertion names a <code>kid</code> the
+kept set does not hold, at most once per cooldown: a client that rotates its key is followed at once, and one
+that signs with a key it never published cannot make the provider call it on every request. A read that fails
+is kept too, so a URL is read at most once per cooldown, whether it answers or not. A set that cannot be read
+refuses the authentication, and the reason goes to the audit trail.</p>
 <p>Six variables bound the assertion and the reads, here at the values of the image
 (<a href="../../../operators/application/configuration/#clients-and-their-requests">configuration</a>):</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME=300
@@ -5331,7 +5342,7 @@ authentication, and the reason goes to the audit trail.</p>
 <tr>
 <td><code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code></td>
 <td><code>300</code></td>
-<td>Seconds between two reads of one <code>jwks_uri</code> when an assertion names an unknown <code>kid</code></td>
+<td>Seconds between two reads of one <code>jwks_uri</code>, after a read that failed or when an assertion names a <code>kid</code> the kept set does not hold</td>
 </tr>
 </tbody>
 </table>
@@ -5342,19 +5353,26 @@ grant</a>, and the reads of the sets they publish.</p>
 and the client names itself in <code>client_id</code>. The certificate is the one the TLS listener in front of the
 provider writes in the <code>SSL_CLIENT_CERT</code> server variable, never a header: a request that carries
 <code>SSL-Client-Cert</code>, <code>X-SSL-Client-Cert</code>, <code>X-Client-Cert</code> or <code>X-Forwarded-Client-Cert</code> is refused with
-<code>invalid_request</code>. Only the leaf reaches the provider, so the chain, the validity period and the revocation of
-the certificate are judged by the listener, which is where a deployment that turns <code>tls_client_auth</code> on names
-the authorities it accepts: the block the image delivers names none (<a href="../sender-constrained/mutual-tls/#how-the-certificate-reaches-the-application">mutual
-TLS</a>).</p>
+<code>invalid_request</code>. The listener asks for a certificate and judges none of it, and only the leaf reaches the
+provider (<a href="../sender-constrained/mutual-tls/#how-the-certificate-reaches-the-application">mutual TLS</a>).</p>
 <ul>
-<li><strong><code>tls_client_auth</code></strong> compares one value read out of the certificate with the one the client registered:
-  its subject distinguished name, written as RFC 4514 writes one and normalised when the client is read, so
-  that <code>openssl x509 -noout -subject -nameopt RFC2253</code> prints a name it can register as it is; or one entry
-  of its subject alternative name, a DNS name compared without regard to case, a URI compared as text, an IP
-  address compared as the octets it stands for, an email address compared as written.</li>
-<li><strong><code>self_signed_tls_client_auth</code></strong> authenticates a certificate the client publishes in its JWK Set, as the
-  first entry of the <code>x5c</code> of a key (RFC 7517 §4.7) or by its <code>x5t#S256</code> (§4.9). The certificate is compared,
-  not the key inside it, so a certificate reissued on the same key is published before it is presented.</li>
+<li><strong><code>tls_client_auth</code></strong> first validates the leaf itself (RFC 8705 §2.1, §7.4): one of the certificate
+  authorities the deployment names in <code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code>, a JSON list of PEM certificates,
+  issued it, and it is valid at the moment the request was received (RFC 5280 §6.1). Each authority is the
+  one that signs the client certificates itself, intermediate or root, since no intermediate reaches the
+  provider, and a certificate that is no certificate authority is refused when the list is read
+  (RFC 5280 §4.2.1.9). Revocation is not checked. The list is <code>[]</code> in the image, and without an authority the
+  method is neither wired nor announced, and no client registers it. A certificate no authority of the list
+  issued, or one outside its validity period, is refused with the reason <code>untrusted_certificate</code>.</li>
+<li><strong><code>tls_client_auth</code></strong>, once the leaf holds, compares one value read out of it with the one the client registered:
+  its subject distinguished name, written as RFC 4514 writes one and normalised when the client is read, so that
+  <code>openssl x509 -noout -subject -nameopt RFC2253</code> prints a name it can register as it is; or one entry of its
+  subject alternative name, a DNS name compared without regard to case, a URI compared as text, an IP address
+  compared as the octets it stands for, an email address compared as written.</li>
+<li><strong><code>self_signed_tls_client_auth</code></strong> judges no chain: it authenticates a certificate the client publishes in
+  its JWK Set, as the first entry of the <code>x5c</code> of a key (RFC 7517 §4.7) or by its <code>x5t#S256</code> (§4.9). The
+  certificate is compared, not the key inside it, so a certificate reissued on the same key is published
+  before it is presented.</li>
 </ul>
 <p>Both bind the tokens of the request to the certificate that authenticated it (RFC 8705 §3.1). A certificate
 presented beside a secret or an assertion authenticates nothing: the listener asked for it, the request did
@@ -5362,11 +5380,13 @@ not choose it. Whether it binds the tokens of such a client is what the client r
 <code>tls_client_certificate_bound_access_tokens</code>. <a href="../sender-constrained/mutual-tls/">Mutual TLS</a> says how a
 deployment serves the host that asks for a certificate, and what a bound token is then.</p>
 <h2 id="a-public-client">A public client<a class="headerlink" href="#a-public-client" title="Link to this section">&para;</a></h2>
-<p><code>none</code> is not an authentication, and it is announced as what it is: the client names itself in <code>client_id</code>
-and proves nothing, which is what a native or a browser application can do. The introspection endpoint
-refuses it with <code>invalid_client</code>, describing a token only to a client that proves who it is (RFC 7662 §2.1),
-and a client that registers it is refused <code>client_credentials</code> and <code>requires_pkce: false</code>. What protects a
-public client is PKCE and its exact redirect URI, never this method.</p>
+<p><code>none</code> is not an authentication, and it is announced as what it is: the client names itself in <code>client_id</code> and
+proves nothing, which is what a native or a browser application can do. The introspection endpoint refuses it with
+<code>invalid_client</code>, describing a token only to a client that proves who it is (RFC 7662 §2.1), and a client that
+registers it is refused the grants that require client authentication, <code>client_credentials</code>, the JWT bearer grant,
+the token exchange and the backchannel grant, and <code>requires_pkce: false</code>. The backchannel authentication endpoint
+and the token endpoint refuse a public client of the backchannel grant with <code>invalid_client</code> as well (CIBA Core
+§7.1, §10.1). What protects a public client is PKCE and its exact redirect URI, never this method.</p>
 <h2 id="how-a-request-is-read-and-refused">How a request is read, and refused<a class="headerlink" href="#how-a-request-is-read-and-refused" title="Link to this section">&para;</a></h2>
 <p>The request presents one mechanism or it is refused before anything is verified: credentials in the
 <code>Authorization</code> header and others in the body are two mechanisms (RFC 6749 §2.3), and so are a secret and an
@@ -5405,15 +5425,16 @@ it is not read.</p>
 <td><code>401</code></td>
 </tr>
 <tr>
-<td>An unknown client, a method other than the registered one, a wrong secret, an assertion refused or replayed, keys that cannot be read, a certificate that is not the client's</td>
+<td>An unknown client, a method other than the registered one, a wrong secret, an assertion refused or replayed, keys that cannot be read, a certificate that is not the client's or that no authority of the deployment issued</td>
 <td><code>invalid_client</code>, described <code>Client authentication failed.</code></td>
 <td><code>401</code></td>
 </tr>
 </tbody>
 </table>
 <p>Every refusal of the last line reads the same, so an answer does not say whether a client exists or which
-method it registered; why it was refused goes to the audit trail, with the client and the method, as a
-<code>ClientAuthenticationFailed</code> event. A <code>401</code> carries <code>WWW-Authenticate: Basic realm="&lt;issuer&gt;"</code> when the client
+method it registered; why it was refused goes to the audit trail, with the method, and with the client when
+the tenant holds the one the request named, as a <code>ClientAuthenticationFailed</code> event: an identifier no client
+of the tenant answers to is written nowhere, the reason <code>unknown_client</code> saying what happened. A <code>401</code> carries <code>WWW-Authenticate: Basic realm="&lt;issuer&gt;"</code> when the client
 used the <code>Authorization</code> header, and no challenge otherwise (RFC 6749 §5.2).</p>
 <p>A client that authenticates counts one request against its own load budget, <code>BEFFROI_LOAD_CLIENT_LIMIT</code>
 requests in <code>BEFFROI_LOAD_CLIENT_INTERVAL</code> seconds, 1200 in 60 in the image, here and nowhere else, this being
@@ -5442,7 +5463,7 @@ TLS</a></p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 15:14:43 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

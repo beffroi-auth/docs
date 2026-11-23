@@ -5169,7 +5169,7 @@ their own file which door to knock on.</p>
 <tbody>
 <tr>
 <td>Name</td>
-<td>Unique within the tenant and compared exactly, case included. In Unicode Normalization Form C, without whitespace at either end, 255 characters at most</td>
+<td>Unique within the tenant and compared exactly, case included. <a href="../users/#plain-text">Plain text</a> in Unicode Normalization Form C, without whitespace at either end, 255 characters at most</td>
 </tr>
 <tr>
 <td>Source</td>
@@ -5264,8 +5264,12 @@ is given none.</p>
 <p><code>beffroi:user:show</code> lists the groups of a person, each with the source of the membership and the date it was
 added, and the archive a person asks for carries the same three facts in its <code>groups</code> chapter. Through the
 administration API, an administrator lists the groups of the tenant with how many members each holds and
-whether they administer it, which delivers nobody, and reads the members of one, which is an act of each
-member, <code>administration.membership_read</code>.</p>
+whether they administer it, which delivers nobody, and reads the members of one a page at a time, in the order
+they were added. <code>page</code> names the page, from 1, and <code>per_page</code> its size, from 1 to 100, fifty when it is not
+given; the answer says <code>page</code>, <code>per_page</code>, <code>pages</code> and <code>total</code>, and a value of either outside those is refused
+with <code>400</code>. Each member delivered is an act of theirs, <code>administration.membership_read</code>, and one person of the
+<a href="../../terminal-client/#how-many-persons-you-read">budget of the administrator</a>; a page past the last one holds
+nobody and delivers nobody.</p>
 <p>No claim of OpenID Connect and no SAML attribute carries the groups of a person to a client.</p>
 
 
@@ -5287,7 +5291,7 @@ member, <code>administration.membership_read</code>.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:12:06 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

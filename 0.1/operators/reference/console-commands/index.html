@@ -3975,6 +3975,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-chains-of-records-and-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The chains of records and the database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#users-their-credentials-and-what-they-agreed-to" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5096,6 +5107,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-chains-of-records-and-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The chains of records and the database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#users-their-credentials-and-what-they-agreed-to" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5261,6 +5283,34 @@ a file, since hardening a tenant is an act with a date. It asks before it runs, 
 floor reads nothing of is forgotten, its secret and its row: under <code>phishing_resistant</code>, the passwords, the
 one-time codes and the backup codes of every person go. Lowering the floor afterwards gives nobody back what
 was forgotten. <a href="../../tenant/tenants/#the-floor-of-its-logins">The floor of its logins</a> says what it changes.</p>
+<h2 id="the-chains-of-records-and-the-database">The chains of records and the database<a class="headerlink" href="#the-chains-of-records-and-the-database" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi:chain:sign-anew</code></td>
+<td>Link and sign one chain of the tenant again as the database holds it, once a person has read what its check found. Says what the check finds first, asks for the slug to be typed back, and writes the act to the journal.</td>
+</tr>
+<tr>
+<td><code>beffroi:chain:verify</code></td>
+<td>Walk each chain of the tenant whole against its signature, or one chain against a copy of a signed head kept outside the instance, and name the first position that does not follow. Reads and writes nothing.</td>
+</tr>
+<tr>
+<td><code>beffroi:database:grant</code></td>
+<td>Grant the role the processes run as what they serve, and no update nor deletion of the chained records but through the retention. Run as the role that owns the tables, after the migrations; the image does it when BEFFROI_MIGRATIONS_DATABASE_URL names that role.</td>
+</tr>
+</tbody>
+</table>
+<p>A chain is named <code>journal</code>, <code>claim_history</code> or <code>disclosures</code>, and <code>beffroi:chain:verify</code> walks the three when
+it names none; <code>--against</code> takes a file holding a signed head of the chain named, as the log channel <code>chain</code>
+printed it. <code>beffroi:chain:sign-anew</code> takes the chain, then the slug of the tenant typed back, and
+<code>beffroi:database:grant</code> the role of PostgreSQL the server and the worker connect as. <a href="../../application/console-commands/#the-chains-of-records">The chains of
+records</a> says when to run each.</p>
 <h2 id="users-their-credentials-and-what-they-agreed-to">Users, their credentials and what they agreed to<a class="headerlink" href="#users-their-credentials-and-what-they-agreed-to" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5446,7 +5496,7 @@ tenant</a> at once.</p>
 </tr>
 <tr>
 <td><code>beffroi:keys:rotate</code></td>
-<td>Stage a new key, sealed by the configured KMS and published at once; it takes over once the staging delay elapsed, or at once with --now; --compromised retires the previous key with no window.</td>
+<td>Stage a new key, sealed by the configured KMS and published at once; it takes over once the staging delay elapsed, or at once with --now; --compromised retires the previous key, and every other key of its algorithm, with no window.</td>
 </tr>
 </tbody>
 </table>
@@ -5496,7 +5546,8 @@ algorithm.</p>
 <p>A timed step runs the same object once a week, which is the cadence the databases are published at, so the
 command is for installing them the day a deployment subscribes and for reading why a refresh was refused.
 A deployment that names no licence key downloads nothing and serves every flow with a provenance that says
-an address and no place.</p>
+an address and no place. A download, the database unpacked from it, or what the archive holds besides it,
+larger than 512 MiB is refused, and nothing of it is kept.</p>
 <h2 id="saml-metadata">SAML metadata<a class="headerlink" href="#saml-metadata" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5571,9 +5622,11 @@ empty one or a download the service redirected among them, keeps nothing and lea
 <p>A command never bypasses a rule the protocol applies. It cannot mint a token for a user, cannot read a
 signing key it is not allowed to open, and cannot read a personal datum the key management service refuses
 to unseal.</p>
-<p>Three commands cannot be undone. <code>beffroi:data-keys:destroy</code> asks for the slug of the tenant to be typed back
-before it runs, <code>beffroi:tenant:login-floor</code> asks before it forgets the credentials the floor leaves out, and
-<code>beffroi:client:delete</code> deletes a client that registered itself.</p>
+<p>Four commands cannot be undone. <code>beffroi:data-keys:destroy</code> asks for the slug of the tenant to be typed back
+before it runs, <code>beffroi:tenant:login-floor</code> asks before it forgets the credentials the floor leaves out,
+<code>beffroi:client:delete</code> deletes a client that registered itself, and <code>beffroi:chain:sign-anew</code> asks for the
+slug as well before it links a chain again, after which what was changed in it before cannot be told from the
+rest.</p>
 
 
 
@@ -5594,7 +5647,7 @@ before it runs, <code>beffroi:tenant:login-floor</code> asks before it forgets t
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:17:15 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

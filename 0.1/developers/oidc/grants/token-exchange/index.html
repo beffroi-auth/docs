@@ -5162,9 +5162,10 @@ member:</p>
 <li><code>subject_token_types</code>, the types of token the client may present as a <code>subject_token</code> or an <code>actor_token</code>
   (RFC 8693 §3), at least one. The provider reads one type, <code>urn:ietf:params:oauth:token-type:access_token</code>,
   an access token of this provider in either shape.</li>
-<li><code>may_act_for_a_user</code>, whether the client may present a token issued on a sign-in at this provider, <code>false</code>
-  when left out. A token that carries no sign-in, one a client holds for itself or one of a <a href="../jwt-bearer/">JWT
-  bearer</a> assertion, is presented without it.</li>
+<li><code>may_act_for_a_user</code>, whether the client may present a token that names a person, <code>false</code> when left out: a
+  token issued on a sign-in at this provider, and a token of a <a href="../jwt-bearer/">JWT bearer</a> assertion, which
+  names a person nobody signed in for here. A token a client holds for itself names nobody, and is presented
+  without it.</li>
 </ul>
 <p>The grant and the member come together or not at all. The <code>client_id</code> of a client of the grant is one a <code>sub</code>
 can be, one to 255 visible ASCII characters and no space, since it is named where a subject is expected, and a
@@ -5233,26 +5234,29 @@ revoked; and when it names a person, one the provider still serves. The client i
 good, and not which of those questions it failed (RFC 8693 §2.2.2).</p>
 <p>A client not registered for the exchange is refused with <code>unauthorized_client</code>. A <code>requested_token_type</code> of
 another type, a token type the provider does not read or the client did not register, a presented token it
-does not honour, a token issued on a sign-in presented by a client without <code>may_act_for_a_user</code>, an actor
-token issued to another client than the one presenting it, and a party <code>may_act</code> does not name are
+does not honour, a token that names a person presented by a client without <code>may_act_for_a_user</code>, an actor
+token that is not one the presenting client holds for itself, and a client <code>may_act</code> does not name are
 <code>invalid_request</code>. A scope the presented token does not carry, or the client did not register, is
 <code>invalid_scope</code>; a resource the presented token is not addressed to, or the client did not register, and a
-presented token addressed to its own client, are <code>invalid_target</code>.</p>
+presented token addressed to its own client or to something that is not a resource, are <code>invalid_target</code>.</p>
 <h2 id="delegation-and-impersonation">Delegation and impersonation<a class="headerlink" href="#delegation-and-impersonation" title="Link to this section">&para;</a></h2>
 <p>The two cases of RFC 8693 §1.1 are told apart by the request and by nothing else. With an <code>actor_token</code>, the
 exchange is a delegation: the new token names who acts for the subject in an <code>act</code> claim (RFC 8693 §4.1),
-whose <code>sub</code> is the subject of the actor token, which has to be a token issued to the client that presents it.
-An <code>act</code> the presented token already carried is nested inside the new one, the most recent actor outermost.
+and the one who acts is the client that presents the actor token (RFC 8693 §2.1). The actor token is
+therefore one that client holds for itself, issued to it under its own <code>client_id</code> by a grant such as
+<a href="../client-credentials/">client credentials</a>, naming no person, and the <code>sub</code> of the <code>act</code> is that
+<code>client_id</code>. An <code>act</code> the presented token already carried is nested inside the new one, the most recent actor
+outermost.
 Without one, it is an impersonation: the new token says nothing of anybody acting beyond what the presented
 token said, and carries its <code>act</code>, if any, unchanged.</p>
 <h3 id="who-may-act">Who may act<a class="headerlink" href="#who-may-act" title="Link to this section">&para;</a></h3>
 <p><code>may_act</code> is the word of the subject's side (RFC 8693 §4.4). Registered on a client, it names the one party
 that may act for the subject of a token issued to that client: it is written on every self-contained token
 that client receives, and an exchange of a token of that client is refused with <code>invalid_request</code> for anybody
-else, the party compared being the outermost actor the new token would name or, when it would name none, the
-client that asked. It is a member of the deployment too, which a client of the image carries when the initial
-access token it registered with was issued with <code>--may-act</code> (<a href="../../clients/#what-the-image-does-not-set">what the image does not
-set</a>).</p>
+else, the party compared being the client that asks for the exchange and will hold the new token, which is
+the actor of a delegation and acts in the strongest sense in an impersonation. It is a member of the
+deployment too, which a client of the image carries when the initial access token it registered with was
+issued with <code>--may-act</code> (<a href="../../clients/#what-the-image-does-not-set">what the image does not set</a>).</p>
 <h2 id="what-the-issued-token-says">What the issued token says<a class="headerlink" href="#what-the-issued-token-says" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5324,7 +5328,7 @@ taking that grant back takes both, and the end of the session the presented toke
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:07:49 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

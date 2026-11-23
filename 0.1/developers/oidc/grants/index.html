@@ -5120,12 +5120,16 @@ set</a>).</p>
    none of them gives itself is <code>unsupported_grant_type</code>.</p>
 </li>
 <li>
-<p><strong>The registration.</strong> A client that did not register that grant is <code>unauthorized_client</code>.</p>
+<p><strong>The registration.</strong> A client that did not register that grant is <code>unauthorized_client</code>. A public client
+   registers none of the grants that require client authentication, client credentials, token exchange, the
+   JWT bearer grant and backchannel authentication, so it gets that answer for them.</p>
 </li>
 <li>
 <p><strong>The grant</strong>, whose refusals are the errors of RFC 6749 §5.2 and of the specification it implements.</p>
 </li>
 </ol>
+<p>Every parameter is read as <a href="../authorization-request/#how-a-request-is-read">an authorization request</a>
+reads one, a list holding 100 values at most.</p>
 <p>Of those errors, <code>invalid_client</code> is answered <code>401</code> and every other one <code>400</code>. A request refused because a
 load budget is spent, that of the address it comes from or that of the client once it has authenticated, is
 answered <code>429</code> with a <code>Retry-After</code> header and an <code>error_description</code>, and no <code>error</code> member.
@@ -5213,7 +5217,7 @@ holds the tokens.</p>
 <td>Backchannel authentication</td>
 <td>Always, <code>openid</code> being required</td>
 <td>When one is due</td>
-<td>Served</td>
+<td>Refused at registration</td>
 </tr>
 <tr>
 <td>Token exchange</td>
@@ -5243,10 +5247,11 @@ names is read against the grants the provider is wired with, and against what ea
 <li><strong><code>authorization_code</code></strong> needs at least one redirect URI. A client registered for no grant that sends a
   browser back to it registers no redirect URI and no <code>response_types</code>: a redirect URI nothing would ever
   use is refused.</li>
-<li><strong><code>client_credentials</code>, the JWT bearer grant and token exchange</strong> need an authentication method that
-  proves something, so <code>none</code> is refused with any of them. A client of <code>client_credentials</code> or of token
-  exchange also needs a <code>client_id</code> that can be a <code>sub</code>, one to 255 visible ASCII characters and no space,
-  which the identifier the provider draws for a client that registers itself always is.</li>
+<li><strong><code>client_credentials</code>, the JWT bearer grant, token exchange and backchannel authentication</strong> need an
+  authentication method that proves something, so <code>none</code> is refused with any of them. A client of
+  <code>client_credentials</code> or of token exchange also needs a <code>client_id</code> that can be a <code>sub</code>, one to 255 visible
+  ASCII characters and no space, which the identifier the provider draws for a client that registers itself
+  always is.</li>
 <li><strong>Token exchange</strong> needs the <code>token_exchange</code> member, and the member needs the grant. <code>token_exchange</code> is a
   member of the deployment, refused in a registration body: a client of the image is registered for the grant
   only when the initial access token it registered with gave it the member.</li>
@@ -5320,8 +5325,8 @@ namespace, and never by a rule written about its name:</p>
 </tr>
 <tr>
 <td><code>AsksTheUserThroughABackchannelInterface</code></td>
-<td>Its flow starts at the backchannel authentication endpoint</td>
-<td>That endpoint, its metadata, and the audiences a client assertion may name</td>
+<td>Its flow starts at the backchannel authentication endpoint, and it requires client authentication</td>
+<td>That endpoint, its metadata, the audiences a client assertion may name, and the rule on public clients</td>
 </tr>
 <tr>
 <td><code>ExchangesATokenInterface</code></td>
@@ -5350,7 +5355,7 @@ namespace, and never by a rule written about its name:</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:07:58 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

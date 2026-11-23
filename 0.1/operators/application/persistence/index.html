@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The Doctrine mapping of the model, the tables, the migrations, the DBAL types, and what a sealed column changes about a query.">
+        <meta name="description" content="The Doctrine mapping of the model, the tables, the migrations, the DBAL types, what a sealed column changes about a query, the chained records and the role the processes connect as.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -82,7 +82,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Persistence">
-  <meta property="og:description" content="The Doctrine mapping of the model, the tables, the migrations, the DBAL types, and what a sealed column changes about a query.">
+  <meta property="og:description" content="The Doctrine mapping of the model, the tables, the migrations, the DBAL types, what a sealed column changes about a query, the chained records and the role the processes connect as.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3203,6 +3203,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-chained-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The chained records
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The chained records">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-role-the-processes-connect-as" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The role the processes connect as
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-goes-away-and-when" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5130,6 +5158,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-chained-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The chained records
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The chained records">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-role-the-processes-connect-as" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The role the processes connect as
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#what-goes-away-and-when" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5200,9 +5256,11 @@ built, as <a href="../configuration-tree/#what-the-tree-writes-for-the-other-bun
 <p>One XML file per class, named after it, as <code>Identity.User.orm.xml</code>. A person of the provider is a row of
 <code>beffroi_user</code>.</p>
 <h2 id="the-tables">The tables<a class="headerlink" href="#the-tables" title="Link to this section">&para;</a></h2>
-<p>Every table is prefixed <code>beffroi_</code>, and every table of the mapping but <code>beffroi_tenant</code> carries the tenant
-it belongs to, by a foreign key on <code>tenant_id</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="identity" name="__tabbed_1" type="radio" /><input id="openid-connect" name="__tabbed_1" type="radio" /><input id="saml" name="__tabbed_1" type="radio" /><input id="keys" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="identity">Identity</label><label for="openid-connect">OpenID Connect</label><label for="saml">SAML</label><label for="keys">Keys</label></div>
+<p>Every table of the model is prefixed <code>beffroi_</code>, and every table of the mapping but <code>beffroi_tenant</code> carries
+the tenant it belongs to, by a foreign key on <code>tenant_id</code>. Beside them, the transport of Messenger keeps its
+queues in <code>messenger_messages</code>, which a migration creates as the owner of the tables, no transport creating
+it.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="identity" name="__tabbed_1" type="radio" /><input id="openid-connect" name="__tabbed_1" type="radio" /><input id="saml" name="__tabbed_1" type="radio" /><input id="keys" name="__tabbed_1" type="radio" /><input id="chains" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="identity">Identity</label><label for="openid-connect">OpenID Connect</label><label for="saml">SAML</label><label for="keys">Keys</label><label for="chains">Chains</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <table>
@@ -5380,6 +5438,26 @@ it belongs to, by a foreign key on <code>tenant_id</code>.</p>
 </tbody>
 </table>
 </div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>What a row is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi_chain_link</code></td>
+<td>The link of one row of a <a href="#the-chained-records">chained record</a>: its chain, its position, the hash of the link before it and its own hash</td>
+</tr>
+<tr>
+<td><code>beffroi_chain_head</code></td>
+<td>The last link of one chain of the tenant, which a write locks to take the next position</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <p>The keys of the tenant are not in the database. Each one is a file of <code>beffroi.keys.storage</code>, its private
@@ -5390,7 +5468,8 @@ them to Doctrine Migrations. They are played with:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>doctrine:migrations:migrate
 </span></code></pre></div>
 <p><strong>They are written for PostgreSQL</strong>, and each one stops on another platform with <code>This migration is written
-for PostgreSQL.</code></p>
+for PostgreSQL.</code> The server of the image plays them each time it starts, as <a href="#the-role-the-processes-connect-as">the role that owns the
+tables</a>.</p>
 <p><strong>A migration that seals columns says two things before it runs.</strong> It refuses a table that holds rows,
 naming the table and the count: a sealed column is binary and refuses a null, and nothing puts a value in
 clear into it, so the rows are sealed by a script of the deployment's own or the table is emptied. And it says
@@ -5398,7 +5477,7 @@ to restart what serves requests and what consumes the buses once it has run, bec
 before it reads those columns with the type they had.</p>
 <h2 id="a-value-object-in-one-column">A value object in one column<a class="headerlink" href="#a-value-object-in-one-column" title="Link to this section">&para;</a></h2>
 <p><strong>A value object a column holds whole goes in one column</strong>, with a DBAL type of the application: the tree
-declares thirty-seven of them, <code>beffroi_subject</code>, <code>beffroi_scopes</code>, <code>beffroi_request_context</code> or
+declares thirty-nine of them, <code>beffroi_subject</code>, <code>beffroi_scopes</code>, <code>beffroi_request_context</code> or
 <code>beffroi_password_hash</code> among them. What the column holds is written by the object itself, in the package
 that owns it, and read back through its constructor, so a row edited by hand into something the object
 refuses fails when it is loaded, as a conversion error naming the type, and never further down.</p>
@@ -5518,10 +5597,57 @@ lists, moves to another client and erases.</p>
   checks, not the width of the column, and an option that describes the stored value no longer holds: no
   query reads into the JSON of <code>beffroi_user.address</code>, which is a ciphertext.</li>
 <li><strong>A ciphertext is bound to its tenant, not to its row.</strong> Within one tenant and one family, a value copied
-  into another row of the same column opens there.</li>
+  into another row of the same column opens there. In a chained record the chain sees it, the link of a row
+  being computed from its sealed bytes.</li>
 </ul>
 <p><a href="../../tenant/personal-data/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Personal data</a></p>
+<h2 id="the-chained-records">The chained records<a class="headerlink" href="#the-chained-records" title="Link to this section">&para;</a></h2>
+<p>Three records are read as history, and are chained so that a row changed, added or removed in the database
+after the provider wrote it is seen: the journal, <code>beffroi_journal</code>, the history of claims,
+<code>beffroi_claim_change</code>, and what clients were given, <code>beffroi_disclosure</code>. Each tenant has one chain per
+record, <code>journal</code>, <code>claim_history</code> and <code>disclosures</code>.</p>
+<ul>
+<li><strong>Each row takes the next position of its chain.</strong> Its link is the SHA-256 of the link before it and of the
+  row as the database holds it, its sealed columns as their bytes. The row and its link are written in one
+  transaction, under the lock of the head of the chain, so writers at once take positions that follow each
+  other.</li>
+<li><strong>The head is signed, and the signature kept outside the database.</strong> Every five minutes, and at each cut of
+  a retention, the worker signs the head of each chain with the active key of the default signature algorithm.
+  The signature is a file beside the keys of the tenant, <code>var/keys/&lt;slug&gt;/chains/&lt;chain&gt;.jws</code>, and a line of
+  the log channel <code>chain</code>, which a deployment keeps outside the instance.</li>
+<li><strong>The chain is checked.</strong> <code>beffroi:doctor</code> checks each one since its last signature, and
+  <code>beffroi:chain:verify</code> walks it whole: <a href="../console-commands/#the-chains-of-records">the console</a> says what to
+  do with a chain that does not follow.</li>
+</ul>
+<h3 id="the-role-the-processes-connect-as">The role the processes connect as<a class="headerlink" href="#the-role-the-processes-connect-as" title="Link to this section">&para;</a></h3>
+<p>The role that owns the tables can rewrite any row: the chain shows it, and does not prevent it. The processes
+of a deployment may therefore connect as another role, which appends to the chained records and rewrites none
+of them:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>What it names</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td>The database and the role the server, the worker and the console connect as</td>
+</tr>
+<tr>
+<td><code>BEFFROI_MIGRATIONS_DATABASE_URL</code></td>
+<td>The same database under the role that owns the tables, or the file <code>BEFFROI_MIGRATIONS_DATABASE_URL_FILE</code> names. Read by the entrypoint of the image alone, and <code>DATABASE_URL</code> when neither is set</td>
+</tr>
+</tbody>
+</table>
+<p>Each time the server starts, it plays the migrations under <code>BEFFROI_MIGRATIONS_DATABASE_URL</code>, then, when the
+role of <code>DATABASE_URL</code> is another one, grants it with <a href="../console-commands/#the-role-of-the-database"><code>beffroi:database:grant</code></a>:
+what the processes serve, no update and no deletion of the three chained tables and of <code>beffroi_chain_link</code>,
+and no deletion of <code>beffroi_tenant</code>. Such a role forgets the rows of a chain only through
+<code>beffroi_forget_chained_rows</code>, a function a migration writes, which runs as the owner of the tables and deletes
+the oldest rows of one chain up to a position.</p>
 <h2 id="what-goes-away-and-when">What goes away, and when<a class="headerlink" href="#what-goes-away-and-when" title="Link to this section">&para;</a></h2>
 <p>The protocol writes rows that stop being worth anything, and it keeps them past that moment on purpose, so
 that a second presentation of a code or a token is told from a value nobody issued. Timed steps of the
@@ -5544,7 +5670,7 @@ taking what it left.</p>
 <tr>
 <td>The journal</td>
 <td>Day</td>
-<td>The acts older than <code>beffroi.journal.retention</code> days, 180 by default, and the disclosures with them</td>
+<td>The acts older than <code>beffroi.journal.retention</code> days, 180 by default, and the disclosures as old</td>
 </tr>
 <tr>
 <td>The history of a record</td>
@@ -5563,6 +5689,10 @@ taking what it left.</p>
 </tr>
 </tbody>
 </table>
+<p>A chained record is forgotten in the order of its chain. The step walks the whole chain against its signature
+first, then forgets the oldest rows up to the first one still inside the window, a thousand at most per run,
+and signs the cut: a row whose date was moved back goes no sooner than the rows written before it. A chain that
+does not follow is not cut, and the log says why at <code>error</code>.</p>
 <p>A session is dropped last: the codes, refresh tokens and access tokens of a login name it under a foreign key
 that cascades, and their own time is past before the session's. The SAML store of messages already accepted
 and the logout chains drop their closed rows before each insertion.</p>
@@ -5586,7 +5716,7 @@ and the logout chains drop their closed rows before each insertion.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 14:51:29 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

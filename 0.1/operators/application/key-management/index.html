@@ -5151,12 +5151,12 @@ and the provider seals with it and never with <code>second</code>. The image com
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">beffroi.kms.op</span><span class="p">:</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Symfony\Component\KeyManagement\EncrypterInterface</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nt">factory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'@key_management.factory'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'fromString'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="nt">arguments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(BEFFROI_KMS_DSN)%'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="nt">arguments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(beffroi_secret:BEFFROI_KMS_DSN)%'</span><span class="p p-Indicator">]</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="nt">beffroi.kms.second</span><span class="p">:</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Symfony\Component\KeyManagement\EncrypterInterface</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">        </span><span class="nt">factory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'@key_management.factory'</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">'fromString'</span><span class="p p-Indicator">]</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="nt">arguments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(BEFFROI_KMS_DSN_SECOND)%'</span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="nt">arguments</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">'%env(beffroi_secret:BEFFROI_KMS_DSN_SECOND)%'</span><span class="p p-Indicator">]</span>
 </span></code></pre></div>
 <p>A deployment names the service and the master key of <code>op</code>, two variables the image leaves empty, since nothing
 is sealed or signed under a key everybody has:</p>
@@ -5189,6 +5189,10 @@ is sealed or signed under a key everybody has:</p>
 </tr>
 </tbody>
 </table>
+<p>A DSN that carries a credential may be a file instead: <code>beffroi_secret</code>, the processor of the application the
+two DSNs are read through, takes <code>BEFFROI_KMS_DSN_FILE</code> or <code>BEFFROI_KMS_DSN_SECOND_FILE</code>, the path of a file
+whose content is the DSN, such as a secret Swarm or Compose mounts under <code>/run/secrets</code>. A deployment that sets
+a variable and its <code>_FILE</code> both is refused.</p>
 <p>The sealed keys and the pairwise salt are kept in <code>var/keys</code> of the application, a directory no variable
 moves. How long the JWK Set is cached, how long a new key is staged and how long a key works are
 <code>BEFFROI_JWKS_MAX_AGE</code>, <code>BEFFROI_KEY_STAGING_DELAY</code> and <code>BEFFROI_KEY_AGE</code>, on
@@ -5229,7 +5233,9 @@ gives neither of its two: a deployment of the image seals with the one service <
 </tbody>
 </table>
 <p>Every envelope is bound to its tenant and to its use: sealed for one tenant it does not open for another, and a
-sealed key does not open as a secret. Every process of a deployment reads the same storage directory: the
+sealed key does not open as a secret. A secret that leaves the provider, the person an access token is about,
+a backchannel request or an enrolment of an authenticator application in progress, is sealed for a purpose of
+its own, and opens as no other secret. Every process of a deployment reads the same storage directory: the
 worker rotates the keys the processes that serve requests open.</p>
 <p><a href="../../tenant/keys/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Keys</a> &nbsp; <a href="../../tenant/personal-data/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
@@ -5279,14 +5285,15 @@ stack does, is named with <code>?scheme=http</code> at the end of the DSN.</p>
 </div>
 <h2 id="opening-a-key">Opening a key<a class="headerlink" href="#opening-a-key" title="Link to this section">&para;</a></h2>
 <p>A process opens the keys it serves with when it starts, and keeps each one open for as long as it lives, by
-tenant and by <code>kid</code>; a key that retires is forgotten. A thread of the HTTP server opens them before its first
-request: the active key of each signature algorithm, the published keys a client encrypts to, the SAML signing
-key when a SAML role is on, the keys the upstream identity providers encrypt to, and every data key of the
-tenant, retired ones included. The worker opens, when it starts consuming, the keys message bodies are sealed
-to, the active signing keys, the application server keys of web push and the same data keys. A key created
-after the process started, or one it could not open then, is opened the first time it is needed. The image
-sets <code>FRANKENPHP_LOOP_MAX=0</code>, so a thread of the server is never started again and pays one opening per key for
-all the signatures it makes; a process rebuilt at each request pays one at each request.</p>
+tenant and by <code>kid</code>. A signing key is let go once another is the active key of its algorithm, and any other key
+that has retired at the next opening of a key of its algorithm. A thread of the HTTP server opens them before its
+first request: the active key of each signature algorithm, the published keys a client encrypts to, the SAML
+signing key when a SAML role is on, the keys the upstream identity providers encrypt to, and every data key of
+the tenant, retired ones included. The worker opens, when it starts consuming, the keys message bodies are sealed
+to, the active signing keys, the application server keys of web push and the same data keys. A key created after
+the process started, or one it could not open then, is opened the first time it is needed. The image sets
+<code>FRANKENPHP_LOOP_MAX=0</code>, so a thread of the server is never started again and pays one opening per key for all
+the signatures it makes; a process rebuilt at each request pays one at each request.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:keys:list<span class="w"> </span>--check
 </span></code></pre></div>
 <p>Opens the keys in use and the ones about to be, and fails on a key the service cannot open: a key the provider
@@ -5354,7 +5361,7 @@ command that moves them first.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 15:01:39 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

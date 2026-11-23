@@ -5272,7 +5272,8 @@ apply to a sealed column, which holds a ciphertext no query of the database read
 <p class="admonition-title">A ciphertext is bound to its tenant, not to its row</p>
 <p>The authenticated data of every sealed value name the tenant, so a value of one tenant does not open for
 another, wherever it is found. They do not name the table, the column or the row: within one tenant and one
-family, a value moved into another row of the same column opens there.</p>
+family, a value moved into another row of the same column opens there. In the journal, the history of
+claims and what clients were given, the chain of the record sees the move.</p>
 </div>
 <h2 id="blind-indexes">Blind indexes<a class="headerlink" href="#blind-indexes" title="Link to this section">&para;</a></h2>
 <p>A sealed column holds a different ciphertext for every write of the same value, so <code>WHERE username = ?</code> matches
@@ -5409,8 +5410,8 @@ scopes the tenant holds. One tenant at a time, by hand: nothing schedules it.</p
 <p>The keys of the tenant itself, its signing and encryption keys, are sealed apart, one file each, and no command
 rewraps them: a key sealed by another service is replaced by a <a href="../keys/#rotating-without-an-outage">rotation</a>.</p>
 <h2 id="rotating-the-secret-that-binds-them">Rotating the secret that binds them<a class="headerlink" href="#rotating-the-secret-that-binds-them" title="Link to this section">&para;</a></h2>
-<p>A deployment lists the secrets in <code>BEFFROI_DATA_KEY_SECRETS</code>, a JSON list, which the application reads into
-<code>beffroi.keys.data_key_secrets</code>:</p>
+<p>A deployment lists the secrets in <code>BEFFROI_DATA_KEY_SECRETS</code>, a JSON list, or in the file
+<code>BEFFROI_DATA_KEY_SECRETS_FILE</code> names, which the application reads into <code>beffroi.keys.data_key_secrets</code>:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>BEFFROI_DATA_KEY_SECRETS='["&lt;the new secret&gt;","&lt;the old secret&gt;"]'
 </span></code></pre></div>
 <ol>
@@ -5443,7 +5444,10 @@ transport included, so the table of a transport and a backup of it hold nothing 
 on a message is what makes a failed one readable: the class of the message, its stamps and the slug of the tenant
 it was written under, nothing of a person among them.</p>
 <p>The journal of the acts, what a client was given at each of them, what a record used to say and the archive a person
-asks for are sealed where they sit like every other column of a person.</p>
+asks for are sealed where they sit like every other column of a person. The first three are chained as well: each
+row is linked to the one before it and the provider signs the head of each chain, so a row changed, added or
+removed in the database after it was written is seen
+(<a href="../../application/persistence/#the-chained-records">the chained records</a>).</p>
 <h2 id="how-long-it-is-kept">How long it is kept<a class="headerlink" href="#how-long-it-is-kept" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5457,12 +5461,12 @@ asks for are sealed where they sit like every other column of a person.</p>
 <tr>
 <td>An act of the journal, and what a client was given at it</td>
 <td><code>BEFFROI_JOURNAL_RETENTION</code> days, 180 in the image</td>
-<td>A daily step</td>
+<td>A daily step, in the order of the chain</td>
 </tr>
 <tr>
 <td>A change of a claim</td>
 <td><code>BEFFROI_HISTORY_RETENTION</code> days, 180 in the image</td>
-<td>A daily step</td>
+<td>A daily step, in the order of the chain</td>
 </tr>
 <tr>
 <td>The archive a person asked for</td>
@@ -5474,7 +5478,8 @@ asks for are sealed where they sit like every other column of a person.</p>
 <p><strong>The archive is the one file in which all of it stands in clear at once</strong>, so it is held by rules rather than by
 settings: it is sealed at rest in a family of its own, it expires a week after it was asked for, whether it was
 built or not, and it leaves under a passphrase of the person's choosing when they ask for one, sixteen characters
-at the least.</p>
+at the least. A person asks for it five times an hour at most: a request past that builds nothing, and the page
+says so.</p>
 <p><a href="../../application/account/#your-data"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Your data, on the account pages</a></p>
 
@@ -5497,7 +5502,7 @@ at the least.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:44:26 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

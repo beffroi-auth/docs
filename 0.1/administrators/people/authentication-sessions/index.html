@@ -5292,7 +5292,7 @@ login on the same session moves the session, and never a token already issued.</
 <td><code>user</code></td>
 </tr>
 <tr>
-<td>An administrator, through the administration API, ending that session</td>
+<td>An administrator, through the administration API, ending that session, past its expiry or not</td>
 <td><code>administrator</code></td>
 </tr>
 <tr>
@@ -5314,7 +5314,8 @@ login on the same session moves the session, and never a token already issued.</
 </tbody>
 </table>
 <p>The first end wins, and a session that has ended authenticates nothing afterwards. The act <code>session.ended</code>
-goes to the journal of the person, and names the administrator when one ended it.</p>
+goes to the journal of the person, and names the administrator when one ended it, as do the acts of the logout
+tokens sent to its clients, <code>logout_token.issued</code> and <code>logout_token.given_up</code>.</p>
 <p><strong>Every end revokes what was issued under it.</strong> On the lane of the events, beside the back-channel logout that
 tells the clients of the session (<a href="../../../developers/oidc/logout/">logout</a>), its refresh tokens are revoked, rotated ones
 included, and its opaque access tokens removed, the revocation dated by the end of the session and not by the
@@ -5327,9 +5328,13 @@ verifies a self-contained access token offline accepts it until it expires, ten 
 <p class="admonition-title">Expiry is not an end</p>
 <p>A session past its twelve hours signs nobody in and is not offered to the browser that held it, and no
 option changes that duration. Nothing is announced when it passes, though, and nothing is revoked: the
-refresh tokens and access tokens issued under it keep the lifetimes they were issued with. What has not
-been exchanged yet, an authorization code, a device code or a backchannel request, is refused at the token
-endpoint once its session has expired.</p>
+refresh tokens and access tokens issued under it keep the lifetimes they were issued with, until somebody
+ends it, which <code>beffroi:user:revoke-session</code> and an administrator through the administration API do for a
+session past its expiry as for any other. What has not been exchanged yet, an authorization code, a device
+code or a backchannel request, is refused at the token endpoint once its session has expired. No token
+addressed to the <a href="../../terminal-client/#signing-in">administration API</a> outlives its session: once the
+session has ended or expired, a refresh for that API is refused with <code>invalid_grant</code> (RFC 6749 §5.2), and the
+API refuses an access token already issued.</p>
 </div>
 <p>The row of a session, ended or not, is dropped by an hourly step once its expiry is older than the absolute
 lifetime of a refresh token family plus the lifetime of an access token, ninety days and ten minutes in the
@@ -5354,7 +5359,7 @@ image: until then, a token issued under it can still be presented, and its sessi
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:13:39 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

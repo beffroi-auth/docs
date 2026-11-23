@@ -5156,7 +5156,10 @@ tokens</a>):</p>
 <li><strong>Each name is one the provider is wired with</strong>, below, and any other is refused.</li>
 <li><strong>The client publishes its keys</strong>, in <code>jwks</code> or behind a <code>jwks_uri</code>, and a client that registers an
   encryption and publishes neither is refused. A <code>jwks</code> written down is read at registration and has to hold
-  a key the registered algorithm can be addressed to; a set behind a URL is read when a document is minted.</li>
+  a key the registered algorithm can be addressed to, and that key has to receive a JWE under the registered
+  pair: an <code>EC</code> key whose point is not on its curve, or on a curve the algorithm does not take, is refused
+  (RFC 7518 §4.6). An <code>RSA</code> key of a set, whatever it is for, holds a modulus of 2048 bits at least
+  (RFC 7518 §4.3). A set behind a URL is read when a document is minted.</li>
 </ul>
 <p>A registration that breaks one of these rules is refused with <code>invalid_client_metadata</code>.</p>
 <h2 id="the-algorithms">The algorithms<a class="headerlink" href="#the-algorithms" title="Link to this section">&para;</a></h2>
@@ -5198,16 +5201,20 @@ what a client may encrypt a <a href="../../request-objects/">request object</a> 
 </ol>
 <p>A client that publishes several keys therefore chooses the one it is encrypted to by saying more about it.</p>
 <p>A set behind a <code>jwks_uri</code> is read with one <code>GET</code>, over HTTPS or in plain HTTP on a loopback host, no redirect
-followed. What is read is kept for <code>BEFFROI_JWKS_URI_TTL</code> seconds, a day in the image, in a pool the workers
-share, under the URL it was read from. Encrypting a document never reads it again before that, a document
-addressed to a client naming no <code>kid</code> the provider could find missing. The kept set serves every use of the
-keys of the client, though, and a signature of the client whose header names a <code>kid</code> the set does not hold,
-the assertion of <code>private_key_jwt</code> or a request object, reads it again, at most once per
-<code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code>, 300 seconds in the image. A client that replaces its encryption key
-publishes the new one and keeps the private half of the old one for <code>BEFFROI_JWKS_URI_TTL</code> after that.</p>
+followed, and never on a private, loopback, link-local or reserved address that
+<code>BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS</code> does not name. What is read is kept for <code>BEFFROI_JWKS_URI_TTL</code>
+seconds, a day in the image, in a pool the workers share, under the URL it was read from. Encrypting a
+document never reads it again before that, a document addressed to a client naming no <code>kid</code> the provider
+could find missing. The kept set serves every use of the keys of the client, though, and a signature of the
+client whose header names a <code>kid</code> the set does not hold, the assertion of <code>private_key_jwt</code> or a request
+object, reads it again, at most once per <code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code>, 300 seconds in the image. A read
+that fails is kept as well: a URL that answered nothing is not read again before that cooldown, and a set
+already kept stays kept when a later read fails. A client that replaces its encryption key publishes the new
+one and keeps the private half of the old one for <code>BEFFROI_JWKS_URI_TTL</code> after that.</p>
 <h2 id="when-the-key-cannot-be-read">When the key cannot be read<a class="headerlink" href="#when-the-key-cannot-be-read" title="Link to this section">&para;</a></h2>
-<p><strong>No document leaves in clear.</strong> When the set behind the <code>jwks_uri</code> cannot be read, or holds no key the registered
-algorithm can be addressed to, the provider writes nothing for that client, and the request that was to carry the
+<p><strong>No document leaves in clear.</strong> When the set behind the <code>jwks_uri</code> cannot be read, holds no key the registered
+algorithm can be addressed to, or holds one that receives no JWE under the registered pair, the provider writes
+nothing for that client, and the request that was to carry the
 document fails: the token request that was to carry the ID token, before the code, the device code, the
 <code>auth_req_id</code> or the refresh token it presented is spent, so that the client can present it again, in a new
 request, while it is still valid; the UserInfo request; or the authorization response. A logout token is issued
@@ -5236,7 +5243,7 @@ a delivery and given up as one is (<a href="../../logout/#its-delivery">logout</
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:59:39 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

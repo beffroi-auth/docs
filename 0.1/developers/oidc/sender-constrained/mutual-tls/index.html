@@ -1976,6 +1976,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="How the certificate reaches the application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-authorities-a-certificate-is-judged-against" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The authorities a certificate is judged against
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -5062,6 +5079,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="How the certificate reaches the application">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-authorities-a-certificate-is-judged-against" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The authorities a certificate is judged against
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -5096,9 +5130,11 @@ to that certificate (§3), so that a token presented over a connection without i
 binding is checked. The certificate is the one the TLS listener of the deployment received, handed to PHP by
 that listener and never read from a header of the request.</p>
 <h2 id="authenticating-with-a-certificate">Authenticating with a certificate<a class="headerlink" href="#authenticating-with-a-certificate" title="Link to this section">&para;</a></h2>
-<p>Two methods recognise a client by its certificate, and both are wired in the application while
-<code>BEFFROI_MTLS_ORIGIN</code> names a host. Either way the request names the client in <code>client_id</code> and presents the
-certificate at the handshake: a request without a certificate presents neither method.</p>
+<p>Two methods recognise a client by its certificate. <code>self_signed_tls_client_auth</code> is wired in the application
+while <code>BEFFROI_MTLS_ORIGIN</code> names a host, and <code>tls_client_auth</code> while it names one and
+<code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code> names at least one authority. Either way the request names the client
+in <code>client_id</code> and presents the certificate at the handshake: a request without a certificate presents
+neither method.</p>
 <table>
 <thead>
 <tr>
@@ -5110,7 +5146,7 @@ certificate at the handshake: a request without a certificate presents neither m
 <tbody>
 <tr>
 <td><code>tls_client_auth</code> (RFC 8705 §2.1)</td>
-<td>Issued by a certificate authority the TLS listener trusts, which the block the image delivers names none of (<a href="#how-the-certificate-reaches-the-application">below</a>)</td>
+<td>Issued by one of the authorities <code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code> names, and valid at the instant the request is received (<a href="#the-authorities-a-certificate-is-judged-against">below</a>)</td>
 <td>The one value the client registered, read out of the certificate and compared</td>
 </tr>
 <tr>
@@ -5162,19 +5198,20 @@ registration</a>):</p>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">"tls_client_auth_subject_dn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CN=payments-app,O=Example,C=FR"</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><strong>The provider judges no chain.</strong> Only the leaf certificate reaches PHP, so what makes a certificate
-trustworthy, its chain, its validity period and its revocation, is judged by the TLS listener during the
-handshake, against the authorities the deployment names there. A self-signed certificate is trusted for
-what the client published and for nothing else, as the keys of <code>private_key_jwt</code> are; a client that renews
-its certificate publishes the new one before it presents it.</p>
+<p><strong>The provider judges the certificate of <code>tls_client_auth</code> itself</strong>, the listener handing PHP the leaf alone
+and judging nothing (<a href="#the-authorities-a-certificate-is-judged-against">below</a>). A self-signed certificate is
+trusted for what the client published and for nothing else, as the keys of <code>private_key_jwt</code> are; a client
+that renews its certificate publishes the new one before it presents it.</p>
 <p><strong>A certificate beside another credential</strong> does not make two methods. A client reaching the host that asks
 for a certificate presents one because it was asked: the credential its request carries, a secret or an
 assertion, authenticates it, and the certificate authenticates only a client registered for one of the two
 methods above.</p>
 <p>A request that names a client and does not prove it is refused with <code>invalid_client</code>, status <code>401</code>, and the
-same description whatever the cause: a certificate that is not the registered one, a certificate the client
-does not publish, a certificate that cannot be read, no certificate from a client registered for one. Each
-refusal is an act of the journal, <code>client_authentication.failed</code>.</p>
+same description whatever the cause: a certificate that is not the registered one, a certificate no named
+authority issued or that is not valid at that instant, a certificate the client does not publish, a
+certificate that cannot be read, no certificate from a client registered for one. Each refusal is an act of
+the journal, <code>client_authentication.failed</code>, which says why, <code>untrusted_certificate</code> for a certificate no
+named authority vouches for.</p>
 <h2 id="tokens-bound-to-the-certificate">Tokens bound to the certificate<a class="headerlink" href="#tokens-bound-to-the-certificate" title="Link to this section">&para;</a></h2>
 <p>Two clients get tokens bound to the certificate of their connection:</p>
 <ul>
@@ -5222,6 +5259,11 @@ the two that have Caddy serve it (<a href="#how-the-certificate-reaches-the-appl
 <td>empty</td>
 <td>The scheme and the authority of the host whose listener asks for a certificate, without a path. The discovery document announces the aliases under it. Empty, the provider serves no mutual TLS: no alias, neither method that reads a certificate, and no token bound to one</td>
 </tr>
+<tr>
+<td><code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code></td>
+<td><code>[]</code></td>
+<td>The authorities whose certificates <code>tls_client_auth</code> accepts, a JSON list of PEM certificates (<a href="#the-authorities-a-certificate-is-judged-against">below</a>). Empty, <code>tls_client_auth</code> is not wired, whatever the origin</td>
+</tr>
 </tbody>
 </table>
 <p>With an origin, the discovery document carries <code>mtls_endpoint_aliases</code> (RFC 8705 §5): the same paths, on the
@@ -5239,10 +5281,12 @@ other origin, for six endpoints.</p>
 </span></code></pre></div>
 <p>The issuer does not change: an alias is another way to the same provider. The backchannel authentication
 endpoint reads a certificate as well, and is not among the aliases. The two methods that read a certificate
-are wired with the origin and only with it, so with an origin the document lists them in
+are wired with the origin and only with it, <code>tls_client_auth</code> with an authority besides, so with an origin
+the document lists <code>self_signed_tls_client_auth</code>, and <code>tls_client_auth</code> while an authority is named, in
 <code>token_endpoint_auth_methods_supported</code>, <code>revocation_endpoint_auth_methods_supported</code> and
-<code>introspection_endpoint_auth_methods_supported</code> and announces <code>tls_client_certificate_bound_access_tokens</code> as
-<code>true</code>; without one it lists neither and announces <code>false</code>.</p>
+<code>introspection_endpoint_auth_methods_supported</code>, and announces <code>tls_client_certificate_bound_access_tokens</code> as
+<code>true</code>; without one it lists neither and announces <code>false</code>. A method that is not wired is refused to a
+client that registers it.</p>
 <h2 id="how-the-certificate-reaches-the-application">How the certificate reaches the application<a class="headerlink" href="#how-the-certificate-reaches-the-application" title="Link to this section">&para;</a></h2>
 <p>The application reads the certificate in one place, the server variable <code>SSL_CLIENT_CERT</code>, named after the one
 mod_ssl sets: the leaf certificate in its PEM envelope, set by the TLS listener from the handshake it carried
@@ -5294,10 +5338,21 @@ that authenticates another way completes its handshake on that host too. A certi
 the signature of the handshake that proves its holder has the private key (RFC 8446 §4.4.3), and the leaf is
 handed to PHP as <code>SSL_CLIENT_CERT</code>, empty when the client presented none.</p>
 <p>The block verifies no chain, so it accepts a certificate whatever authority issued it, which is what
-<code>self_signed_tls_client_auth</code> needs, and it names no authority a chain could be judged against. A deployment
-whose clients authenticate with <code>tls_client_auth</code> writes the site block of that host in <code>CADDY_EXTRA_CONFIG</code>,
-in place of <code>import mtls.Caddyfile</code>: the block of the image with a <code>trust_pool</code> of the authorities it accepts
-in its <code>client_auth</code>. That is where the chain is judged, and nowhere else.</p>
+<code>self_signed_tls_client_auth</code> needs. A <code>trust_pool</code> added to it would change nothing: under <code>mode request</code>
+Caddy verifies no certificate against one, and <code>verify_if_given</code> would refuse every self-signed certificate.</p>
+<h3 id="the-authorities-a-certificate-is-judged-against">The authorities a certificate is judged against<a class="headerlink" href="#the-authorities-a-certificate-is-judged-against" title="Link to this section">&para;</a></h3>
+<p>The provider validates the certificate of a <code>tls_client_auth</code> client itself, before it compares the name the
+client registered (RFC 8705 §2.1, §7.4). Only the leaf reaches PHP, so each authority
+<code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code> names is the one that signs the client certificates itself,
+intermediate or root, taken as a trust anchor (RFC 5280 §6.1): a certificate one of them signed, valid at the
+instant the request is received, goes on to have its name compared, and any other is refused. Revocation is
+not checked, which RFC 8705 §2.1 leaves to the deployment. A certificate named as an authority that is not the certificate
+of a certificate authority (RFC 5280 §4.2.1.9), or that is no certificate, is refused by the first request
+that reads the authorities.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES='["-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"]'
+</span></code></pre></div>
+<p><code>self_signed_tls_client_auth</code> and the binding of a token to a certificate do not read these authorities, and
+follow <code>BEFFROI_MTLS_ORIGIN</code> alone.</p>
 <p>What reads <code>SSL_CLIENT_CERT</code> is <code>App\Http\Tls\EdgeClientCertificateResolver</code>, the implementation of
 <code>App\Http\Tls\ClientCertificateResolverInterface</code> the application is delivered with, which returns the
 certificate of a request or none. An edge that hands the certificate over some other way takes another
@@ -5323,7 +5378,7 @@ taught to trust: the image carries this one alone.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 19:29:47 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

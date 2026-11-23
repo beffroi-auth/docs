@@ -5188,7 +5188,12 @@ the tokens are bound to.</p>
 <tr>
 <td>Header</td>
 <td><code>jwk</code></td>
-<td>The public key the proof is signed with. A key that carries a private member (<code>d</code>, <code>p</code>, <code>q</code>, <code>dp</code>, <code>dq</code>, <code>qi</code>, or the <code>k</code> of a symmetric key) is refused. <code>kid</code>, <code>jku</code> and <code>x5c</code> are not read, and nothing is looked up anywhere</td>
+<td>The public key the proof is signed with. A key that carries a private member (<code>d</code>, <code>p</code>, <code>q</code>, <code>dp</code>, <code>dq</code>, <code>qi</code>, or the <code>k</code> of a symmetric key) is refused, and so is an <code>RSA</code> key whose modulus is under 2048 bits (RFC 7518 §3.3, §3.5). <code>kid</code>, <code>jku</code> and <code>x5c</code> are not read, and nothing is looked up anywhere</td>
+</tr>
+<tr>
+<td>Header</td>
+<td><code>crit</code>, <code>b64</code></td>
+<td>Absent: the provider understands no extension of JOSE (RFC 7515 §4.1.11, RFC 7797 §6)</td>
 </tr>
 <tr>
 <td>Claims</td>
@@ -5362,9 +5367,10 @@ filesystem in <code>var/share/prod/pools/app</code> in the image, and no variabl
 share it by sharing that directory, which the Compose file of the image mounts on the server and on the
 worker as one volume (<a href="../../../../operators/application/deployment/#what-the-processes-share">what the processes share</a>).
 Two servers that do not share it each keep their own: a proof replayed on the other is not recognised as
-a replay there, and a nonce one of them issued is refused by the other. The pool tells a hit from a miss
-and not an insertion from a replacement, so two presentations of one proof arriving in the same instant
-may both be taken; what a replay needs is a wider window than that.</p>
+a replay there, and a nonce one of them issued is refused by the other. A proof is read and remembered
+under a lock every process of the deployment shares, an advisory lock of the PostgreSQL database, so of
+two presentations of one proof arriving in the same instant at processes that share the pool, exactly one
+is taken.</p>
 </div>
 <h2 id="what-a-resource-server-checks">What a resource server checks<a class="headerlink" href="#what-a-resource-server-checks" title="Link to this section">&para;</a></h2>
 <p><strong>UserInfo</strong>, the resource of the provider, honours a token bound to a key only when the request presents it
@@ -5443,7 +5449,7 @@ and compares the thumbprint of the key of the proof with that member (RFC 9449 �
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

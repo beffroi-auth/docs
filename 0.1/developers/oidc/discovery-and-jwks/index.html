@@ -5205,7 +5205,7 @@ provider refuses rather than arbitrates.</p>
 </tr>
 <tr>
 <td><code>token_endpoint_auth_methods_supported</code>, <code>token_endpoint_auth_signing_alg_values_supported</code></td>
-<td>The client authentication methods wired, in the order they are tried, and what their assertions may be signed with. <a href="../client-authentication/">Client authentication</a></td>
+<td>The client authentication methods wired, in the order they are tried, <code>tls_client_auth</code> among them only while the deployment names the authorities that issue client certificates, and what their assertions may be signed with. <a href="../client-authentication/">Client authentication</a></td>
 </tr>
 <tr>
 <td><code>id_token_signing_alg_values_supported</code>, <code>userinfo_signing_alg_values_supported</code></td>
@@ -5221,7 +5221,7 @@ provider refuses rather than arbitrates.</p>
 </tr>
 <tr>
 <td><code>request_object_signing_alg_values_supported</code></td>
-<td>The signature algorithms wired, and <code>none</code> beside them only when a client of the tenant registered <code>request_object_signing_alg: none</code>. <a href="../request-objects/">Request objects</a></td>
+<td>The signature algorithms wired, and <code>none</code> beside them only when the configuration declares a client of the tenant with <code>request_object_signing_alg: none</code>, which no client of the image is and no client that registers itself can be. <a href="../request-objects/">Request objects</a></td>
 </tr>
 <tr>
 <td><code>authorization_response_iss_parameter_supported</code></td>
@@ -5352,7 +5352,9 @@ that no cache keeps an empty set for that long.</p>
 <p>An operator can cut the first step short, and a client with a warm cache then meets a <code>kid</code> it does not know
 yet: a key activated before its delay has run, with <code>beffroi:keys:activate</code>, a key that takes over at once,
 with <code>beffroi:keys:rotate --now</code>, and a key that replaces a compromised one, with <code>--compromised</code>, after which
-the compromised key leaves the set at once, with no window.
+every other key of that algorithm, the compromised one, a key waiting to take over and a key still retiring,
+leaves the set at once, with no window: the set holds the new key of that algorithm alone, and what the others
+signed is refused from then on.
 <a href="../../../operators/tenant/keys/">Keys</a> gives the commands that rotate, activate and retire a key, and the timed step that
 stages a successor once a key has worked its age.</p>
 
@@ -5375,7 +5377,7 @@ stages a successor once a key has worked its age.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 11:23:08 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

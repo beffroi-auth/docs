@@ -5217,6 +5217,16 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>PasswordHasherRegistry</code>, which hands each hash to the hasher that supports its algorithm</td>
 </tr>
 <tr>
+<td><code>beffroi.retirement_hold</code></td>
+<td><code>RetirementHoldInterface</code></td>
+<td><code>KeyRetirement</code>, which leaves in service a key one of them still needs, unless an operator forces its retirement</td>
+</tr>
+<tr>
+<td><code>beffroi.chain</code></td>
+<td><code>ChainInterface</code></td>
+<td>The step that signs the head of every chain, and the commands that name one</td>
+</tr>
+<tr>
 <td><code>beffroi.authentication_predicate</code></td>
 <td><code>AuthenticationPredicateInterface</code></td>
 <td><code>WiredAuthenticationPredicates</code>, which the <code>acr</code> vocabulary and the floor of a tenant name predicates from</td>
@@ -5328,8 +5338,8 @@ being in it, and a list a role switches takes as well the services of that role 
 </tr>
 <tr>
 <td><code>ClaimHistoryInterface</code></td>
-<td><code>record</code>, <code>forgetBefore</code></td>
-<td>Where a change of a claim is written, and forgotten past its retention</td>
+<td><code>record</code></td>
+<td>Where a change of a claim is written, taking the next position of the chain of the history of its tenant</td>
 <td><code>DoctrineClaimHistory</code> (application)</td>
 </tr>
 <tr>
@@ -5408,7 +5418,7 @@ being in it, and a list a role switches takes as well the services of that role 
 <tr>
 <td><code>MembersOfAGroupInterface</code></td>
 <td><code>membersOf</code>, <code>countMembersOf</code></td>
-<td>The members of one group, or how many it holds, which delivers none of them</td>
+<td>The members of one group a page at a time, or how many it holds, which delivers none of them</td>
 <td><code>DoctrineGroupMembershipRepository</code> (application)</td>
 </tr>
 <tr>
@@ -5458,7 +5468,7 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>AlgorithmPasswordHasherInterface</code></td>
 <td><code>supports</code>, <code>hash</code>, <code>verify</code>, <code>needsRehash</code></td>
 <td>A hasher of named algorithms, which only the registry calls</td>
-<td><code>NativePasswordHasher</code> (core), tagged</td>
+<td><code>NativePasswordHasher</code> and <code>Pbkdf2PasswordHasher</code>, which verifies the PBKDF2 hashes an import brings and makes none (core), tagged</td>
 </tr>
 <tr>
 <td><code>PasswordAlgorithmsInterface</code></td>
@@ -5469,14 +5479,26 @@ being in it, and a list a role switches takes as well the services of that role 
 <tr>
 <td><code>PasswordAttemptLimiterInterface</code></td>
 <td><code>attempt</code>, <code>reset</code></td>
-<td>How many passwords may be tried on a person in a window</td>
-<td><code>RateLimitedAttempts</code> (application), five a minute</td>
+<td>How many passwords may be tried on a person in a window, counted atomically and shared by every process of a deployment</td>
+<td><code>RateLimitedAttempts</code> (application), five a minute, under the locks of the database</td>
 </tr>
 <tr>
 <td><code>CodeAttemptLimiterInterface</code></td>
 <td><code>mayAttempt</code>, <code>attempt</code></td>
-<td>How many codes a person may try in a window</td>
-<td><code>RateLimitedAttempts</code> (application), five a minute</td>
+<td>How many codes a person may try in a window, counted the same way</td>
+<td><code>RateLimitedAttempts</code> (application), five a minute, under the locks of the database</td>
+</tr>
+<tr>
+<td><code>TotpUsesInterface</code></td>
+<td><code>acceptStep</code>, <code>spendBackupCode</code></td>
+<td>The use of a code of an authenticator application or of a backup code, recorded atomically: of two requests presenting one code at once, one is accepted and the other refused as replayed (RFC 6238 §5.2)</td>
+<td><code>DoctrineTotpUses</code> (application)</td>
+</tr>
+<tr>
+<td><code>PasskeyUsesInterface</code></td>
+<td><code>recordUse</code></td>
+<td>The use of a passkey and its sign count, recorded atomically: of two assertions carrying one counter at once, one signs in (WebAuthn Level 3 §6.1.1)</td>
+<td><code>DoctrinePasskeyUses</code> (application)</td>
 </tr>
 <tr>
 <td><code>BreachedPasswordsInterface</code></td>
@@ -5536,31 +5558,49 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>SecretSealerInterface</code></td>
 <td><code>seal</code>, <code>unseal</code></td>
 <td>The secret of a TOTP, sealed by the key management service of the tenant</td>
-<td><code>EnvelopeSecretSealer</code> (core)</td>
+<td><code>EnvelopeSecretSealer</code> (core), one per purpose: what the provider keeps under one, and each sort of secret that leaves it under its own, so that an envelope opens as no other sort</td>
 </tr>
 <tr>
 <td><code>TicketRepositoryInterface</code></td>
-<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
-<td>The tickets of one kind, found by identifier only, the row holding a hash of the value; the three ports below are this one for their kind</td>
+<td><code>find</code>, <code>unspentOf</code>, <code>holdsSpent</code>, <code>save</code>, <code>forget</code></td>
+<td>The tickets of one kind, found by identifier only, the row holding a hash of the value, and whether the store holds one spent since it was read; the three ports below are this one for their kind</td>
 <td><code>DoctrineTicketRepository</code> (application), one per kind</td>
 </tr>
 <tr>
 <td><code>EnrolmentTicketRepositoryInterface</code></td>
-<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>holdsSpent</code>, <code>save</code>, <code>forget</code></td>
 <td>The enrolment tickets of a person</td>
 <td><code>DoctrineEnrolmentTicketRepository</code> (application)</td>
 </tr>
 <tr>
 <td><code>PasswordTicketRepositoryInterface</code></td>
-<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>holdsSpent</code>, <code>save</code>, <code>forget</code></td>
 <td>The password tickets of a person</td>
 <td><code>DoctrinePasswordTicketRepository</code> (application)</td>
 </tr>
 <tr>
 <td><code>TotpTicketRepositoryInterface</code></td>
-<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>holdsSpent</code>, <code>save</code>, <code>forget</code></td>
 <td>The tickets of a person for an authenticator application</td>
 <td><code>DoctrineTotpTicketRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>AddressConfirmationRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
+<td>The confirmations of one kind of address a person asked for, each kind in a store of its own</td>
+<td><code>DoctrineEmailConfirmationRepository</code> and <code>DoctrinePhoneNumberConfirmationRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>AddressConfirmationSenderInterface</code></td>
+<td><code>send</code></td>
+<td>Where the code and the link of a confirmation go, to the address they establish and to it alone</td>
+<td><code>QueuedAddressConfirmationSender</code> (application), which puts it on the lane of notifications</td>
+</tr>
+<tr>
+<td><code>ConfirmationSendLimiterInterface</code></td>
+<td><code>spend</code></td>
+<td>How many confirmations go out for a person and to an address, each counted on a budget of its own, atomically and for every process of a deployment</td>
+<td><code>RateLimitedConfirmationSends</code> (application), from the <code>BEFFROI_CONFIRMATION_SENDS_*</code> variables</td>
 </tr>
 <tr>
 <td><code>CredentialChangeNotifierInterface</code></td>
@@ -5602,7 +5642,7 @@ being in it, and a list a role switches takes as well the services of that role 
 <tr>
 <td><code>CanFindUnendedSessionsInterface</code></td>
 <td><code>findUnendedByUser</code></td>
-<td>The sessions of one person that nothing has ended, those past their expiry included, for what ends every session of a person but the one it keeps</td>
+<td>The sessions of one person that nothing has ended, those past their expiry included, for what ends every session of a person but the one it keeps, and for the administration API, which lists them</td>
 <td><code>DoctrineAuthenticationSessionRepository</code> (application)</td>
 </tr>
 <tr>
@@ -5757,6 +5797,18 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>SealedKeyProvider</code> (core)</td>
 </tr>
 <tr>
+<td><code>RetirementHoldInterface</code></td>
+<td><code>holds</code>, <code>name</code></td>
+<td>What still needs a retiring key past its window, whose retirement waits for it</td>
+<td><code>FailedMessagesSealedTo</code> (application), tagged: a message waiting in the failure transport holds the message key it is sealed to</td>
+</tr>
+<tr>
+<td><code>MailSigningKeyRepositoryInterface</code></td>
+<td><code>current</code>, <code>ofKind</code>, <code>save</code>, <code>remove</code></td>
+<td>The keys a tenant signs its mail with, the current one of each format and the ones it replaced</td>
+<td><code>FileMailSigningKeyRepository</code> (application)</td>
+</tr>
+<tr>
 <td><code>OpenableKeysInterface</code></td>
 <td><code>open</code></td>
 <td>A family of keys of a tenant a process opens when it starts, through the port a request would open them with</td>
@@ -5773,6 +5825,12 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>verify</code></td>
 <td>A compact JWS verified against the published keys of the tenant</td>
 <td><code>JwtLibraryJwsVerifier</code> (core)</td>
+</tr>
+<tr>
+<td><code>HeldKeyJwsVerifierInterface</code></td>
+<td><code>verify</code></td>
+<td>A compact JWS the provider signed for itself and keeps, the signed head of a chain, verified against every signing key the tenant holds, retired ones included; never one a third party presents</td>
+<td><code>JwtLibraryHeldKeyJwsVerifier</code> (core)</td>
 </tr>
 <tr>
 <td><code>JweDecrypterInterface</code></td>
@@ -5807,8 +5865,8 @@ being in it, and a list a role switches takes as well the services of that role 
 <tbody>
 <tr>
 <td><code>JournalInterface</code></td>
-<td><code>record</code>, <code>forgetBefore</code></td>
-<td>Where an act is written, and forgotten past its retention</td>
+<td><code>record</code></td>
+<td>Where an act is written, taking the next position of the chain of the journal of its tenant</td>
 <td><code>DoctrineJournal</code> (application)</td>
 </tr>
 <tr>
@@ -5828,6 +5886,30 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>countActsSince</code></td>
 <td>How many acts of each name the journal of a tenant holds since a moment, and nothing of whose they are</td>
 <td><code>DoctrineJournal</code> (application)</td>
+</tr>
+<tr>
+<td><code>ChainOfRowsInterface</code></td>
+<td><code>lockedHead</code>, <code>head</code>, <code>linkedAfter</code>, <code>rowsOutsideTheChain</code>, <code>forgetUpTo</code></td>
+<td>The three chains of a tenant, the journal, the history of the claims and what clients were given: each row linked to the one before it, its head locked while a row is appended, read back to be checked, and forgotten from its start past its retention</td>
+<td><code>DoctrineChains</code> (application)</td>
+</tr>
+<tr>
+<td><code>RelinkableChainsInterface</code></td>
+<td><code>relink</code></td>
+<td>A chain linked again as the database holds it, once a person has read what its check found</td>
+<td><code>DoctrineChains</code> (application)</td>
+</tr>
+<tr>
+<td><code>SignedCheckpointsInterface</code></td>
+<td><code>last</code>, <code>keep</code></td>
+<td>The last signed head of each chain, kept where the role of the database cannot write</td>
+<td><code>FileChainCheckpoints</code> (application), beside the keys of the tenant</td>
+</tr>
+<tr>
+<td><code>CheckpointCopiesInterface</code></td>
+<td><code>copy</code></td>
+<td>Where a signed head leaves the instance, so that a copy outlives whoever holds the database and the keys</td>
+<td><code>LoggedCheckpointCopies</code> (application), a line of the log channel <code>chain</code></td>
 </tr>
 <tr>
 <td><code>PersonalArchiveRepositoryInterface</code></td>
@@ -5851,7 +5933,7 @@ being in it, and a list a role switches takes as well the services of that role 
 <td><code>DeadRecordsInterface</code></td>
 <td><code>forgetWhatIsDead</code></td>
 <td>The rows of a store that can no longer do anything, dropped and counted</td>
-<td>Eleven stores of the application, tagged</td>
+<td>Thirteen stores of the application, tagged</td>
 </tr>
 <tr>
 <td><code>PushSubscriptionRepositoryInterface</code></td>
@@ -5865,16 +5947,30 @@ being in it, and a list a role switches takes as well the services of that role 
 <td>One page of those browsers</td>
 <td><code>DoctrinePushSubscriptionRepository</code> (application)</td>
 </tr>
+<tr>
+<td><code>ExclusiveSectionsInterface</code></td>
+<td><code>exclusively</code></td>
+<td>What runs alone among every process of a deployment, under a name: the redemption of a ticket, so that of two requests redeeming one ticket at once, one writes what it opens and the other is refused</td>
+<td><code>LockedSections</code> (application), under the locks of the database</td>
+</tr>
+<tr>
+<td><code>MonotonicClockInterface</code></td>
+<td><code>now</code>, <code>waitFor</code></td>
+<td>A duration measured and waited out, so that a password checked against a hash the hasher would replace takes at least the time of the decoy hash</td>
+<td><code>PlatformMonotonicClock</code> (core)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="what-else-the-bridge-of-the-core-ships">What else the bridge of the core ships<a class="headerlink" href="#what-else-the-bridge-of-the-core-ships" title="Link to this section">&para;</a></h2>
-<p>The bridge of the core holds seventeen stores in memory, for tests and for an integration of one's own that wires
+<p>The bridge of the core holds nineteen stores in memory, for tests and for an integration of one's own that wires
 the core without the stores of the application: <code>InMemoryUserRepository</code>, <code>InMemoryCredentialRepository</code>,
-<code>InMemoryAuthenticationSessionRepository</code>, <code>InMemoryTenantKeyRepository</code> and their siblings; the journal has
-none. It holds three implementations that answer nothing, <code>NullBreachedPasswords</code>, which asks no list,
-<code>NullGeoLocator</code>, which finds no place, and <code>NullUserAgentParser</code>, which reads no device, and two sources fixed
-for tests, <code>FixedUuidGenerator</code> and <code>FixedRandomness</code>. The protocol has ports of its own, which <a href="../../oidc/ports/">the ports of
-the protocol</a> list.</p>
+<code>InMemoryAuthenticationSessionRepository</code>, <code>InMemoryTenantKeyRepository</code> and their siblings; the journal and the
+chains have none. Beside them, <code>InMemoryTotpUses</code> and <code>InMemoryPasskeyUses</code> record the use of a code or a passkey
+on the credential they are handed. The bridge holds three implementations that answer nothing, <code>NullBreachedPasswords</code>,
+which asks no list, <code>NullGeoLocator</code>, which finds no place, and <code>NullUserAgentParser</code>, which reads no device, two
+sources fixed for tests, <code>FixedUuidGenerator</code> and <code>FixedRandomness</code>, and the clock of the platform,
+<code>PlatformMonotonicClock</code>. The protocol has ports of its own, which <a href="../../oidc/ports/">the ports of the protocol</a>
+list.</p>
 
 
 
@@ -5895,7 +5991,7 @@ the protocol</a> list.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

@@ -5117,12 +5117,14 @@ say what each one carries beyond those four, and who it concerns:</p>
 <ul>
 <li><strong>a person</strong>, when it implements <code>ConcernsAPersonInterface</code> and names the subject of their account, never the
   <code>sub</code> a client was given;</li>
-<li><strong>a client</strong>, when it implements <code>ConcernsAClientInterface</code> and names the client by the identifier it was
-  registered under, never the client itself.</li>
+<li><strong>a client</strong>, when it implements <code>MayConcernAClientInterface</code>, or <code>ConcernsAClientInterface</code>, which extends it
+  and always names one, and names the client by the identifier it was registered under, never the client
+  itself. A refused client authentication names the client the request named only when the tenant holds it.</li>
 </ul>
 <p>An event that implements <code>NamesItsAuthorInterface</code> names, besides, the administrator who did the act through
 the administration API, by the subject of their account, and nobody when the person, the operator at the
-console or nobody did it.</p>
+console or nobody did it. An event that implements <code>SaysWhyItWasRefusedInterface</code> names the reason of a
+refusal and the method it refused.</p>
 <h2 id="every-event-leaves-the-process">Every event leaves the process<a class="headerlink" href="#every-event-leaves-the-process" title="Link to this section">&para;</a></h2>
 <p>An event is routed to the transport <code>async_priority_low</code>, a queue of the database, every one of them by the
 interface they all implement, so an event added to a package leaves the process without a line of
@@ -5132,7 +5134,9 @@ an event nothing listens to is announced all the same.</p>
 <h2 id="what-listens">What listens<a class="headerlink" href="#what-listens" title="Link to this section">&para;</a></h2>
 <p><strong>Every event is written to the journal.</strong> <code>WriteTheActDownHandler</code> hears every event of the three packages
 and writes one row: the act, the date, the provenance, sealed, the subject when the event concerns a person,
-the client when it concerns a client and the administrator when one did it, and nothing else. A row is kept
+the client when it concerns a client, the administrator when one did it, and the reason and the method of a
+refusal, and nothing else. Each row takes the next position of the chain of the journal of its tenant, linked
+to the one before it. A row is kept
 <code>BEFFROI_JOURNAL_RETENTION</code> days, 180 in the image, and <code>beffroi:user:journal</code> and the administration API read
 it back for a person.</p>
 <p>The other listeners of the application each hear one event, or an interface a few of them implement:</p>
@@ -5200,7 +5204,8 @@ it back for a person.</p>
 <p>A logout token its client refuses is given up at once. One that cannot be delivered is tried again on the schedule
 of <code>beffroi.back_channel_logout</code>, and goes to the failure transport once that schedule runs out, and so does the
 message that issues one for a client whose key cannot be obtained, tried again on the same schedule. Either way,
-<code>logout_token.given_up</code> is raised.</p>
+<code>logout_token.given_up</code> is raised. A notice of a change to the ways a person signs in that no attempt delivered,
+on the schedule of the <code>BEFFROI_NOTICE_*</code> variables, raises <code>credential_change.not_told</code> the same way.</p>
 <h2 id="the-events-of-the-core">The events of the core<a class="headerlink" href="#the-events-of-the-core" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5347,6 +5352,13 @@ message that issues one for a client whose key cannot be obtained, tried again o
 <td>A person</td>
 </tr>
 <tr>
+<td><code>credential_change.not_told</code></td>
+<td><code>CredentialChangeNotTold</code></td>
+<td>A channel gives up on the notice of a change to the ways a person signs in, every attempt of its schedule spent</td>
+<td>The act of the change, the channel, the reason of its last failure</td>
+<td>A person</td>
+</tr>
+<tr>
 <td><code>enrolment_ticket.issued</code></td>
 <td><code>EnrolmentTicketIssued</code></td>
 <td>An enrolment ticket is issued</td>
@@ -5372,6 +5384,34 @@ message that issues one for a client whose key cannot be obtained, tried again o
 <td><code>PersonDescribedThemselves</code></td>
 <td>A person says something of themselves</td>
 <td>The user, the name of the claim, whether it was taken back</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>address.confirmation_sent</code></td>
+<td><code>AddressConfirmationSent</code></td>
+<td>A confirmation is sent to an address a person gave</td>
+<td>The user, the name of the claim</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>address.confirmation_withheld</code></td>
+<td><code>AddressConfirmationWithheld</code></td>
+<td>A confirmation a person asked for is not sent, its budget spent</td>
+<td>The user, the name of the claim</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>address.established</code></td>
+<td><code>AddressEstablished</code></td>
+<td>A person gives back the confirmation sent to an address of theirs</td>
+<td>The user, the name of the claim</td>
+<td>A person</td>
+</tr>
+<tr>
+<td><code>notification_channels.chosen</code></td>
+<td><code>NotificationChannelsChosen</code></td>
+<td>A person chooses the channels that tell them</td>
+<td>The subject, the names of what changed</td>
 <td>A person</td>
 </tr>
 <tr>
@@ -5421,6 +5461,27 @@ message that issues one for a client whose key cannot be obtained, tried again o
 <td><code>TenantContactChanged</code></td>
 <td>An administrator sets or takes back the contact the tenant gives its people, through the administration API</td>
 <td>The administrator</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>tenant.mail_signing_key_set</code></td>
+<td><code>MailSigningKeySet</code></td>
+<td>An administrator sets a key the tenant signs its mail with, through the administration API</td>
+<td>The format, the fingerprint, and the administrator</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>tenant.mail_signing_key_removed</code></td>
+<td><code>MailSigningKeyRemoved</code></td>
+<td>An administrator removes one the same way</td>
+<td>The same</td>
+<td>Nobody</td>
+</tr>
+<tr>
+<td><code>tenant.chain_signed_anew</code></td>
+<td><code>ChainSignedAnew</code></td>
+<td>A chain of the tenant is linked and signed again as the database holds it, with <code>beffroi:chain:sign-anew</code></td>
+<td>The chain, the first and the last positions linked again</td>
 <td>Nobody</td>
 </tr>
 <tr>
@@ -5517,7 +5578,7 @@ message that issues one for a client whose key cannot be obtained, tried again o
 <tr>
 <td><code>refresh_token.reuse_detected</code></td>
 <td><code>RefreshTokenReuseDetected</code></td>
-<td>A rotated refresh token is presented again, and its whole family revoked (RFC 9700 §4.13.2)</td>
+<td>A rotated refresh token is presented again, or presented by two requests at once, and its whole family revoked (RFC 9700 §4.14.2)</td>
 <td>The client, the subject, the family, the hash presented, the hashes revoked</td>
 <td>A person, a client</td>
 </tr>
@@ -5539,8 +5600,8 @@ message that issues one for a client whose key cannot be obtained, tried again o
 <td><code>client_authentication.failed</code></td>
 <td><code>ClientAuthenticationFailed</code></td>
 <td>A client fails to authenticate, at any endpoint that authenticates one</td>
-<td>The reason, the client identifier as typed, the method presented</td>
-<td>Nobody</td>
+<td>The reason, the client the request named when the tenant holds it, the method presented</td>
+<td>A client, or nobody</td>
 </tr>
 <tr>
 <td><code>consent.granted</code></td>
@@ -5574,14 +5635,14 @@ message that issues one for a client whose key cannot be obtained, tried again o
 <td><code>logout_token.issued</code></td>
 <td><code>LogoutTokenIssued</code></td>
 <td>A logout token is minted for a client of a session that ended (Back-Channel Logout 1.0 §2.6)</td>
-<td>The client, the subject, the logout URI, the session, the token</td>
+<td>The client, the subject, the logout URI, the session, the token, and the administrator who ended the session when one did</td>
 <td>A person, a client</td>
 </tr>
 <tr>
 <td><code>logout_token.given_up</code></td>
 <td><code>LogoutTokenGivenUp</code></td>
 <td>A logout token is refused by its client (Back-Channel Logout 1.0 §2.8), or could not be delivered, or issued for a client whose key could not be obtained, within the retries</td>
-<td>The client, the subject, the session, what the last attempt came back with; never the token</td>
+<td>The client, the subject, the session, what the last attempt came back with, and the administrator who ended the session when one did; never the token</td>
 <td>A person, a client</td>
 </tr>
 <tr>
@@ -5622,14 +5683,14 @@ message that issues one for a client whose key cannot be obtained, tried again o
 <tr>
 <td><code>administration.person_read</code></td>
 <td><code>PersonReadByAnAdministrator</code></td>
-<td>An administrator reads a person through the administration API</td>
+<td>An administrator reads a person through the administration API, or writes what changes nothing of them and is answered the person</td>
 <td>The client the administrator acts through, the subject of the person, the administrator</td>
 <td>A person, a client</td>
 </tr>
 <tr>
 <td><code>administration.sessions_read</code></td>
 <td><code>SessionsReadByAnAdministrator</code></td>
-<td>An administrator reads the open sessions of a person</td>
+<td>An administrator reads the sessions of a person that have not ended, those past their expiry included</td>
 <td>The same</td>
 <td>A person, a client</td>
 </tr>
@@ -5650,18 +5711,26 @@ message that issues one for a client whose key cannot be obtained, tried again o
 <tr>
 <td><code>administration.membership_read</code></td>
 <td><code>MembershipReadByAnAdministrator</code></td>
-<td>An administrator reads the members of a group, one act per member</td>
+<td>An administrator reads the members of a group, a page at a time, one act per member</td>
 <td>The same</td>
+<td>A person, a client</td>
+</tr>
+<tr>
+<td><code>administration.read_refused</code></td>
+<td><code>ReadRefusedToAnAdministrator</code></td>
+<td>An administrator asks the administration API for more persons than the budget of their reads has left, and the request delivers nobody</td>
+<td>The client the administrator acts through, and the administrator, whose own act it is</td>
 <td>A person, a client</td>
 </tr>
 </tbody>
 </table>
 <p>The reason of <code>client_authentication.failed</code> is one of <code>malformed_credentials</code>, <code>multiple_mechanisms</code>,
 <code>mismatched_client_id</code>, <code>unsupported_scheme</code>, <code>no_credentials</code>, <code>unknown_client</code>, <code>unexpected_method</code>,
-<code>invalid_secret</code>, <code>invalid_assertion</code>, <code>replayed_assertion</code>, <code>unreadable_client_keys</code>, <code>unexpected_certificate</code> and
-<code>unreadable_certificate</code>; the client is answered <code>invalid_request</code> or <code>invalid_client</code> (RFC 6749 §5.2) whatever it
-is. The reason of <code>pushed_request.refused</code> is one of <code>unknown_request_uri</code>, <code>expired_request_uri</code>,
-<code>already_used_request_uri</code> and <code>other_client</code>; the client is answered <code>invalid_request_uri</code> whatever it is.</p>
+<code>invalid_secret</code>, <code>invalid_assertion</code>, <code>replayed_assertion</code>, <code>unreadable_client_keys</code>, <code>unexpected_certificate</code>,
+<code>untrusted_certificate</code> and <code>unreadable_certificate</code>; the client is answered <code>invalid_request</code> or <code>invalid_client</code>
+(RFC 6749 §5.2) whatever it is. The reason of <code>pushed_request.refused</code> is one of <code>unknown_request_uri</code>,
+<code>expired_request_uri</code>, <code>already_used_request_uri</code> and <code>other_client</code>; the client is answered <code>invalid_request_uri</code>
+whatever it is.</p>
 <h2 id="the-event-of-the-saml-package">The event of the SAML package<a class="headerlink" href="#the-event-of-the-saml-package" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5703,7 +5772,7 @@ is. The reason of <code>pushed_request.refused</code> is one of <code>unknown_re
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:59:39 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

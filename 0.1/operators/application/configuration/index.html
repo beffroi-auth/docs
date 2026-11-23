@@ -3030,6 +3030,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#a-secret-in-a-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A secret in a file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5140,6 +5151,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#a-secret-in-a-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A secret in a file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5364,6 +5386,21 @@ image is built.</p>
   development stack.</li>
 <li><code>SYMFONY_TRUSTED_PROXIES</code>, behind a proxy, without which every request has the address of the proxy.</li>
 </ul>
+<h2 id="a-secret-in-a-file">A secret in a file<a class="headerlink" href="#a-secret-in-a-file" title="Link to this section">&para;</a></h2>
+<p>Ten variables carry a secret: <code>APP_SECRET</code>, <code>DATABASE_URL</code>, <code>BEFFROI_KMS_DSN</code>, <code>BEFFROI_KMS_DSN_SECOND</code>,
+<code>BEFFROI_MESSENGER_DSN</code>, <code>BEFFROI_DATA_KEY_SECRETS</code>, <code>BEFFROI_MAIL_DSN</code>, <code>BEFFROI_SMS_DSN</code>,
+<code>GEOIP_LICENSE_KEY</code> and <code>BEFFROI_MIGRATIONS_DATABASE_URL</code>. Each may be given as a file rather than as a
+variable, whose value <code>docker inspect</code> shows: the variable of the same name ending in <code>_FILE</code>, <code>APP_SECRET_FILE</code>
+for instance, names the path of the file, such as one a <code>secrets:</code> entry of Compose or Swarm mounts under
+<code>/run/secrets</code>, readable by uid 33. The content of the file is the value, without the line breaks that end it,
+and a JSON document for <code>BEFFROI_DATA_KEY_SECRETS</code>.</p>
+<p>A value of <code>.env</code> is no setting of the deployment, and the file replaces it. A deployment that sets both a
+variable and its <code>_FILE</code> is refused when the secret is first read, and so is a file that cannot be read: the
+refusal names the variables and the path, never the secret. No other variable has a <code>_FILE</code>.</p>
+<p>The entrypoint of the image reads <code>DATABASE_URL</code> and
+<a href="#symfony-and-the-database"><code>BEFFROI_MIGRATIONS_DATABASE_URL</code></a> the same way, each from its variable or from its
+file, and plays the migrations and the grant with the URL of the owner, or its file, in the place of those of
+<code>DATABASE_URL</code>, so that the application never reads both.</p>
 <h2 id="the-provider">The provider<a class="headerlink" href="#the-provider" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5422,7 +5459,12 @@ image is built.</p>
 <tr>
 <td><code>BEFFROI_MTLS_ORIGIN</code></td>
 <td>empty</td>
-<td>The origin of the host that asks for a client certificate, announced in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, the provider serves no mutual TLS: no alias, neither <code>tls_client_auth</code> nor <code>self_signed_tls_client_auth</code>, and no token bound to a certificate</td>
+<td>The origin of the host that asks for a client certificate, announced in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, the provider serves no mutual TLS: no alias, neither <code>tls_client_auth</code> nor <code>self_signed_tls_client_auth</code>, and no token bound to a certificate. <code>tls_client_auth</code> also needs the next variable</td>
+</tr>
+<tr>
+<td><code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code></td>
+<td><code>[]</code></td>
+<td>The certificate authorities whose client certificates <code>tls_client_auth</code> accepts (RFC 8705 §2.1), as a JSON list of PEM certificates, <code>'["-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"]'</code>. The listener hands the provider the leaf alone, so each is the authority that signs the client certificates itself, intermediate or root: a certificate one of them signed, valid when it is presented and carrying the name its client registered, authenticates that client, and revocation is not checked. A certificate of no certificate authority is refused (RFC 5280 §4.2.1.9). <code>[]</code>, <code>tls_client_auth</code> is neither announced nor registered, while <code>self_signed_tls_client_auth</code> and the tokens bound to a certificate follow <code>BEFFROI_MTLS_ORIGIN</code> alone</td>
 </tr>
 <tr>
 <td><code>GEOIP_LICENSE_KEY</code></td>
@@ -5442,7 +5484,7 @@ image is built.</p>
 </tbody>
 </table>
 <h2 id="the-tenant">The tenant<a class="headerlink" href="#the-tenant" title="Link to this section">&para;</a></h2>
-<p>Thirteen variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
+<p>Fifteen variables are lists of the configuration, seven of them here. Each is a JSON document of the shape the
 list has in the <a href="../../reference/configuration/">configuration tree</a>, <code>[]</code> or <code>{}</code> for none. An empty variable
 is no JSON document, and is refused.</p>
 <table>
@@ -5457,7 +5499,7 @@ is no JSON document, and is refused.</p>
 <tr>
 <td><code>BEFFROI_TENANT_NAME</code></td>
 <td>empty</td>
-<td>What the pages and the consent call the tenant. Empty, the host of the issuer</td>
+<td>What the pages and the consent call the tenant: plain text of 255 characters at most, with no control character, no line or paragraph separator, and no format character but the zero-width joiner and non-joiner. Empty, the host of the issuer</td>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_LOGO_URI</code></td>
@@ -5466,13 +5508,13 @@ is no JSON document, and is refused.</p>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
-<td><code>#1f6feb</code></td>
-<td>The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: <code>#</code> and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour</td>
+<td>empty</td>
+<td>The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: <code>#</code> and three or six hexadecimal digits. Named with the next one or not at all, an empty variable being no colour. Empty, the pages keep the ultramarine of their default look, <code>#2f45ff</code></td>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code></td>
-<td><code>#ffffff</code></td>
-<td>The colour of what is written on it, in the same notation</td>
+<td>empty</td>
+<td>The colour of what is written on it, in the same notation. Empty, the white of the default look, <code>#ffffff</code></td>
 </tr>
 <tr>
 <td><code>BEFFROI_TENANT_SELF_SERVED_CLAIMS</code></td>
@@ -5687,7 +5729,7 @@ say what each one decides.</p>
 <tr>
 <td><code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code></td>
 <td><code>300</code></td>
-<td>How often a <code>kid</code> the kept set does not hold may cost another read, none at least</td>
+<td>Seconds between two reads of the same <code>jwks_uri</code>, after a read that failed and when a signature names a <code>kid</code> the kept set does not hold, none at least</td>
 </tr>
 <tr>
 <td><code>BEFFROI_REQUEST_OBJECT_MAX_LIFETIME</code></td>
@@ -5708,6 +5750,11 @@ say what each one decides.</p>
 <td><code>BEFFROI_REQUEST_OBJECT_MAX_SIZE</code></td>
 <td><code>65536</code></td>
 <td>The bytes that read may answer, one at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS</code></td>
+<td><code>[]</code></td>
+<td>The networks of the deployment that the requests of the protocol may reach, whoever wrote their URL: a <code>jwks_uri</code>, a trusted issuer's included, a <code>sector_identifier_uri</code>, a <code>request_uri</code>, a back-channel logout URI, a CIBA notification endpoint and the endpoint of a push subscription. A JSON list of IP addresses or networks in CIDR notation, as <code>'["10.20.0.0/16"]'</code>, anything else in it being refused. Every other private, loopback, link-local or reserved address is refused, once the name is resolved and on every address the request connects to. <code>[]</code>, such a request reaches no network of the deployment</td>
 </tr>
 <tr>
 <td><code>BEFFROI_TRUSTED_ISSUERS</code></td>
@@ -5838,10 +5885,33 @@ say what each one decides.</p>
 <td><code>3</code></td>
 <td>The seconds the call that tells a client its backchannel request was answered is given, a tenth of a second at least (CIBA Core §10.2)</td>
 </tr>
+<tr>
+<td><code>BEFFROI_NOTICE_RETRIES</code></td>
+<td><code>30</code></td>
+<td>How many times a notice of a change to the credentials of an account comes back to a channel that did not take it, a mail server or an SMS provider that is down, none at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_NOTICE_RETRY_DELAY</code></td>
+<td><code>60</code></td>
+<td>The wait before its first return, a second at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_NOTICE_RETRY_MULTIPLIER</code></td>
+<td><code>2</code></td>
+<td>What each wait is multiplied by to give the next, once at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_NOTICE_RETRY_MAX_DELAY</code></td>
+<td><code>3600</code></td>
+<td>The longest wait, a second at least</td>
+</tr>
 </tbody>
 </table>
-<p>The four figures of the returns are the schedule of the whole lane of notifications, which carries the pushes,
-the mails, the texts and the notifications of the backchannel flow as well as the logout tokens.</p>
+<p>The four figures of the returns of a logout token are the schedule of the lane of notifications, which carries
+the pushes, the mails, the texts and the notifications of the backchannel flow as well as the logout tokens. A
+notice of a change to the credentials of an account, whatever its channel, comes back on the four
+<code>BEFFROI_NOTICE_*</code> figures instead: 31 attempts over 25 hours with the values of <code>.env</code>. A notice no attempt
+delivered is an act of the person.</p>
 <h2 id="saml">SAML<a class="headerlink" href="#saml" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5926,7 +5996,7 @@ The SAML key is the key of both roles, rotated by the three figures above whiche
 <tr>
 <td><code>BEFFROI_LOAD_ORIGIN_LIMIT</code></td>
 <td><code>2400</code></td>
-<td>The requests one client address may send in a window</td>
+<td>The requests one client address may send in a window, an IPv6 address counted by its /64</td>
 </tr>
 <tr>
 <td><code>BEFFROI_LOAD_ORIGIN_INTERVAL</code></td>
@@ -5943,10 +6013,37 @@ The SAML key is the key of both roles, rotated by the three figures above whiche
 <td><code>60</code></td>
 <td>That window, in seconds</td>
 </tr>
+<tr>
+<td><code>BEFFROI_CONFIRMATION_SENDS_PERSON_LIMIT</code></td>
+<td><code>5</code></td>
+<td>The confirmations of an address, a code and a link sent by mail or by SMS, that go out for one person in a window, one at least</td>
+</tr>
+<tr>
+<td><code>BEFFROI_CONFIRMATION_SENDS_ADDRESS_LIMIT</code></td>
+<td><code>10</code></td>
+<td>The confirmations that go to one address in that window, whatever the tenant: more than <code>BEFFROI_CONFIRMATION_SENDS_PERSON_LIMIT</code></td>
+</tr>
+<tr>
+<td><code>BEFFROI_CONFIRMATION_SENDS_INTERVAL</code></td>
+<td><code>86400</code>, a day</td>
+<td>That window, in seconds</td>
+</tr>
+<tr>
+<td><code>BEFFROI_ADMINISTRATOR_PERSONS_LIMIT</code></td>
+<td><code>600</code></td>
+<td>The persons the administration API delivers to one administrator of the tenant in a window, a page of members counting one per member: a hundred at least, the largest page of members</td>
+</tr>
+<tr>
+<td><code>BEFFROI_ADMINISTRATOR_PERSONS_INTERVAL</code></td>
+<td><code>3600</code>, an hour</td>
+<td>That window, in seconds</td>
+</tr>
 </tbody>
 </table>
 <p>A budget too low on <code>/token</code> or on <code>/jwks</code> is an outage a deployment inflicts on itself, so both are measured
-on what its own clients send.</p>
+on what its own clients send. Past a budget of confirmations nothing is sent, and the page says so; past the
+budget of an administrator, a read delivers nobody and is answered <code>429</code> with <code>Retry-After</code>. Each refusal is an
+act of the person or of the administrator.</p>
 <h2 id="symfony-and-the-database">Symfony and the database<a class="headerlink" href="#symfony-and-the-database" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -5990,7 +6087,12 @@ on what its own clients send.</p>
 <tr>
 <td><code>DATABASE_URL</code></td>
 <td><code>postgresql://beffroi:beffroi@127.0.0.1:5432/beffroi?serverVersion=16&amp;charset=utf8</code></td>
-<td>The PostgreSQL database. The entrypoint of the image waits for it, and the migrations refuse any other platform</td>
+<td>The PostgreSQL database, and the role the processes connect to it as. The entrypoint of the image waits for it, and the migrations refuse any other platform</td>
+</tr>
+<tr>
+<td><code>BEFFROI_MIGRATIONS_DATABASE_URL</code></td>
+<td>not set</td>
+<td>The same database as the role that owns the tables, which the server of the image plays the migrations as every time it starts. When the role of <code>DATABASE_URL</code> is another, the server then grants it, with <code>beffroi:database:grant</code>, what the processes serve: that role reads and writes what they serve, and adds to the journal, to the history of claims and to what clients were given without rewriting a row. Not set, the server plays the migrations as the role of <code>DATABASE_URL</code> and grants nothing. Read by the entrypoint alone, from the variable or from the file <code>BEFFROI_MIGRATIONS_DATABASE_URL_FILE</code> names: <a href="#a-secret-in-a-file">a secret in a file</a></td>
 </tr>
 <tr>
 <td><code>SYMFONY_TRUSTED_PROXIES</code></td>
@@ -6050,6 +6152,10 @@ container into, and <code>APP_LOG_DIR</code>, which moves its logs.</p>
 <td>The address of the site of the administration API, in <code>administration.Caddyfile</code>: the host of the URL <code>BEFFROI_TENANT_ADMINISTRATION_RESOURCE</code> names, or, behind a proxy that terminates TLS, a plain HTTP address such as <code>:81</code>. Its worker serves the administration API and nothing else</td>
 </tr>
 <tr>
+<td><code>CADDY_ADMIN</code></td>
+<td>The address of the administration API of Caddy, which answers whoever reaches it with no credential and can stop or reconfigure the server. Not set, the production image runs without it; the development image names <code>localhost:2019</code></td>
+</tr>
+<tr>
 <td><code>CADDY_EXTRA_CONFIG</code></td>
 <td>Configuration added to the <code>Caddyfile</code> beside the site of <code>SERVER_NAME</code>. <code>import mtls.Caddyfile</code> is what serves the host that asks for a client certificate, and <code>import administration.Caddyfile</code> the administration API, which a deployment that does not import it does not serve</td>
 </tr>
@@ -6090,8 +6196,16 @@ container into, and <code>APP_LOG_DIR</code>, which moves its logs.</p>
 <td>Directives of the <code>frankenphp</code> block. The production image sets <code>import worker.Caddyfile</code>, which is worker mode</td>
 </tr>
 <tr>
+<td><code>FRANKENPHP_WORKER_NUM</code></td>
+<td>The threads of the worker of the site of <code>SERVER_NAME</code> and of the host that asks for a client certificate, <code>4</code> when it is not set, whatever the cores of the host. Each thread boots a kernel of its own and keeps a connection to the database as long as it lives. <code>0</code> is the default of FrankenPHP, twice the CPUs it sees</td>
+</tr>
+<tr>
+<td><code>FRANKENPHP_ADMINISTRATION_WORKER_NUM</code></td>
+<td>The threads of the worker of the administration API, <code>2</code> when it is not set, each holding a connection to the database as well</td>
+</tr>
+<tr>
 <td><code>FRANKENPHP_WORKER_CONFIG</code></td>
-<td>Directives added to each <code>worker</code> block, the one of <code>worker.Caddyfile</code> and the one of the administration API: the <code>watch</code> lines of the development stack, nothing in production</td>
+<td>Directives added to each <code>worker</code> block, the one of <code>worker.Caddyfile</code> and the one of the administration API: the <code>watch</code> lines of the development stack, nothing in production. A <code>num</code> it carries wins over the two variables above</td>
 </tr>
 </tbody>
 </table>
@@ -6214,7 +6328,8 @@ them.</p>
 and key sets, <code>BEFFROI_DEV_USER_SUBJECT</code>, <code>BEFFROI_DEMO_HOST_IP</code>, <code>APP_PROFILER</code> and <code>VAR_DUMPER_SERVER</code>. The
 development stack writes the secrets, the key sets and <code>BEFFROI_DEV_USER_SUBJECT</code> into <code>.env.local</code>, with <code>open</code>
 for <code>BEFFROI_REGISTRATION_MODE</code> and its host of mutual TLS for <code>BEFFROI_MTLS_ORIGIN</code>, two variables the application
-reads as every deployment does. The demonstration of the flows is wired in the test environment of the
+reads as every deployment does, and <code>.env.dev</code> names the private and loopback networks in
+<code>BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS</code>, where the stack reaches the demonstrations and the conformance suite. The demonstration of the flows is wired in the test environment of the
 application's own suite as well, so three of them are read there too, <code>DEMO_SERVICE_SECRET</code>,
 <code>DEMO_CIBA_POLL_SECRET</code> and <code>BEFFROI_DEV_USER_SUBJECT</code>, which <code>.env.test</code> gives as fixtures. A production kernel
 reads none of them.</p>
@@ -6238,7 +6353,7 @@ reads none of them.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 18:08:09 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

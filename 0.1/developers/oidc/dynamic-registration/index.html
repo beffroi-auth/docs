@@ -5257,11 +5257,11 @@ does not hold a token of this tenant learns nothing about the one they presented
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>bin/console<span class="w"> </span>beffroi:client:token:revoke<span class="w"> </span>0192f1a4-6c1e-7b8a-9c3d-2e4f5a6b7c8d
 </span></code></pre></div>
 <p><code>beffroi:client:token:issue</code> prints the value once, and the provider keeps its SHA-256 and never the
-value: a token that was lost is replaced by issuing another. It is worth one registration and thirty days
-unless the command says otherwise, a day at least. Its options name what it gives the clients it
-registers: <code>--resource</code>, once per API (RFC 8707 §2); <code>--access-token-format</code>;
-<code>--require-sender-constrained-tokens</code>; <code>--exchange-subject-token-type</code>, once per type (RFC 8693 §3), with
-<code>--exchange-for-a-user</code> when they may exchange a token somebody signed in for; and
+value: a token that was lost is replaced by issuing another. Its name is plain text of 255 characters at
+most. It is worth one registration and thirty days unless the command says otherwise, a day at least. Its
+options name what it gives the clients it registers: <code>--resource</code>, once per API (RFC 8707 §2);
+<code>--access-token-format</code>; <code>--require-sender-constrained-tokens</code>; <code>--exchange-subject-token-type</code>, once per
+type (RFC 8693 §3), with <code>--exchange-for-a-user</code> when they may exchange a token that names a person; and
 <code>--may-act</code> (RFC 8693 §4.4). What a token gives is read when it is issued, and a token that gives what the
 provider does not serve is not issued. <code>beffroi:client:token:list</code> shows what each token has served of
 what it is worth, what it gives, and whether it still authorises anything. <code>beffroi:client:token:revoke</code>
@@ -5289,8 +5289,9 @@ never read (RFC 8725 §3.10). A tenant that pins no authority accepts no stateme
 <p>The statement is verified before any of it is read as metadata. Its signature is checked against the keys
 of the authority its <code>iss</code> names, under one of the algorithms pinned for it. Its <code>aud</code> names the issuer of
 the tenant, once. Its <code>exp</code> is present, not past, and no further ahead than
-<code>BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME</code>. Its <code>iat</code> is present and not in the future. Its <code>jti</code> is
-present and never seen before, remembered until the <code>exp</code>, so one statement registers one client. RFC 7591
+<code>BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME</code>. Its <code>iat</code> is present and not in the future, and so is its
+<code>nbf</code> when it carries one. Its <code>jti</code> is present and never seen before, remembered until the <code>exp</code> plus
+<code>BEFFROI_REGISTRATION_STATEMENT_LEEWAY</code>, so one statement registers one client. RFC 7591
 §2.3 asks none of this of a statement; the provider asks it of every signed thing it takes back. Whatever
 fails, the answer is the same <code>invalid_software_statement</code>.</p>
 <p><strong>What a statement says outranks what the client sent</strong> (RFC 7591 §3.1.1): a member both carry is the
@@ -5309,9 +5310,10 @@ carries no statement is answered <code>401</code>.</p>
 nothing authorises, so nothing is read and nothing is refused before the metadata is, and everything else,
 the reader, the policy and the refusals, is the same. A credential presented anyway is read by nothing and
 spent by nothing.</p>
-<p>A client nobody vouched for chooses the name and the logo a person reads on the consent page, and a tenant
-that names this mode for its real users lets anybody write them. The development stack names it, for the
-conformance suite to register its clients.</p>
+<p>A client nobody vouched for chooses the name a person reads on the consent page, and the logo and the
+pages shown there from the host of its redirect URIs (<a href="../clients/#who-is-asking">who is asking</a>), and a
+tenant that names this mode for its real users lets anybody write them. The development stack names it,
+for the conformance suite to register its clients.</p>
 </div>
 </div>
 </div>
@@ -5342,6 +5344,9 @@ read, and in the <code>software_statement</code> mode before anything, the state
   <code>resources</code>, <code>access_token_format</code>, <code>require_sender_constrained_tokens</code>, <code>token_exchange</code> and <code>may_act</code>, from
   the initial access token it registered with alone, and <code>requires_consent</code> and <code>requires_pkce</code> from nothing a
   deployment of the image sets (<a href="../clients/#what-the-image-does-not-set">what the image does not set</a>).</li>
+<li><strong>A request object is never read unsigned for a client that registers itself</strong>:
+  <code>request_object_signing_alg: none</code>, in the body or in a software statement, is refused. Only the
+  configuration that declares a client writes it (<a href="../request-objects/">request objects</a>).</li>
 <li><strong>A member nobody reads is refused</strong>, <code>client_id</code> and <code>client_secret</code> included: the provider draws both.</li>
 <li><strong>What a member names is one the provider is wired with</strong>: a grant, a method, an algorithm, a mode of
   delivery, a kind of subject, a type of authorization detail.</li>
@@ -5350,12 +5355,15 @@ read, and in the <code>software_statement</code> mode before anything, the state
   <code>id_token_signed_response_alg</code>, <code>authorization_signed_response_alg</code> or <code>userinfo_signed_response_alg</code> is one
   the tenant holds an active key for, at the registration and at every replacement. An algorithm left out is
   the default one, whose key is the deployment's to draw and never a reason to refuse the client.</li>
-<li><strong>A <code>sector_identifier_uri</code> is proven</strong>: the provider reads the document behind it once, with one <code>GET</code>,
-  no redirect followed, within the seconds and the bytes the two <code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_*</code>
-  variables give it, and the document
-  is the JSON array of URIs of OIDC Registration §5 that lists every redirect URI of the client, or its
-  <code>jwks_uri</code> when it registers no redirect URI (CIBA Core §4). A document that cannot be read, or that leaves
-  one out, refuses the registration (<a href="../pairwise-subjects/">pairwise subjects</a>).</li>
+<li><strong>A <code>sector_identifier_uri</code> is proven</strong>: the document behind it is the JSON array of URIs of OIDC
+  Registration §5 that lists every URI the sector of the client could be judged on, its redirect URIs and its
+  <code>initiate_login_uri</code>, or the <code>jwks_uri</code> of the key it authenticates with (<a href="../pairwise-subjects/#the-sector">the
+  sector</a>). A client that publishes none of these is refused before
+  anything is read. Otherwise the provider reads the document once, with one <code>GET</code>, no redirect followed,
+  within the seconds and the bytes the two <code>BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_*</code> variables give it, and
+  never at an address of a private network of the deployment it does not name. A document that leaves one of
+  those URIs out refuses the registration, and so does one that cannot be read, with a description that names
+  the URL and says nothing of what the read met.</li>
 </ul>
 <p>What a client leaves out takes the defaults of RFC 7591 §2: the <code>authorization_code</code> grant alone, the <code>code</code>
 response type that goes with it, and <code>client_secret_basic</code>. A scope left out is the <code>default_scope</code> of the
@@ -5449,8 +5457,9 @@ to it at the token endpoint, and the provider deletes the ones nobody uses any m
 runs every hour: a client used, but not for <code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR</code> seconds, and a
 client never used and registered more than <code>BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR</code> seconds ago.
 One run deletes a hundred clients at most, and the next run takes the rest; what it deleted is written to the
-log. A tenant that registers nobody deletes nothing, and a client the configuration declares, which the image
-holds none of, is never deleted.</p>
+log. A tenant that stops registering clients, its <code>BEFFROI_REGISTRATION_MODE</code> emptied, still deletes the ones it
+registered on the same two durations, and a client the configuration declares, which the image holds none of,
+is never deleted.</p>
 <p>Each deletion, by the step, by the client itself, by <code>beffroi:client:delete</code> or by an administrator through the
 administration API, emits the same <code>RegisteredClientDeleted</code> event, which names the administrator when one
 deleted it. The administration API refuses a client the configuration declares, as the command does, and the
@@ -5511,7 +5520,7 @@ the sentence of the refusal, in ASCII (RFC 7591 §3.2.2).</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

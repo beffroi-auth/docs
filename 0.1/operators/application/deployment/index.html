@@ -5270,9 +5270,10 @@
 built on, and the worker, which consumes the lanes of Messenger and the schedule of the timed steps. Beside them the provider
 needs PostgreSQL, which holds the lanes of Messenger as well as the model, and a key management service.</p>
 <h2 id="the-image">The image<a class="headerlink" href="#the-image" title="Link to this section">&para;</a></h2>
-<p><code>apps/beffroi/Dockerfile</code> builds on <code>dunglas/frankenphp:1-php8.5</code> and adds the extensions the provider needs:
-<code>apcu</code>, <code>intl</code>, <code>opcache</code>, <code>zip</code>, <code>pdo_pgsql</code>, <code>gmp</code>, <code>sodium</code> and <code>uuid</code>. Its build context is the
-root of the monorepo, because the application installs the packages beside it through path repositories.</p>
+<p><code>apps/beffroi/Dockerfile</code> builds on <code>dunglas/frankenphp:1.14.0-php8.5-trixie</code> and adds the extensions the
+provider needs, <code>apcu</code>, <code>intl</code>, <code>opcache</code>, <code>zip</code>, <code>pdo_pgsql</code>, <code>gmp</code>, <code>sodium</code> and <code>uuid</code>, and the program
+<code>gpg</code>, which encrypts the mail written to a person who gave an OpenPGP key. Its build context is the root of
+the monorepo, because the application installs the packages beside it through path repositories.</p>
 <table>
 <thead>
 <tr>
@@ -5283,18 +5284,25 @@ root of the monorepo, because the application installs the packages beside it th
 <tbody>
 <tr>
 <td><code>frankenphp_base</code></td>
-<td>The extensions, the PHP settings of the application, the entrypoint and the Caddy configuration</td>
+<td>The extensions, <code>gpg</code>, the PHP settings of the application, the entrypoint and the Caddy configuration</td>
 </tr>
 <tr>
 <td><code>frankenphp_dev</code></td>
 <td>The development image, into which the stack mounts the monorepo, running FrankenPHP with <code>--watch</code></td>
 </tr>
 <tr>
+<td><code>frankenphp_prod_builder</code></td>
+<td>Where the production image is built: the packages are copied to <code>/src</code> and the application to <code>/app</code>, installed without the development dependencies, with an authoritative class map, the <code>.env</code> of the repository compiled for production, the stylesheet built and the assets compiled</td>
+</tr>
+<tr>
 <td><code>frankenphp_prod</code></td>
-<td>The production image: the packages are copied to <code>/src</code> and the application to <code>/app</code>, installed without the development dependencies, with an authoritative class map, the <code>.env</code> of the repository compiled for production, the stylesheet built and the assets compiled</td>
+<td>The production image, on <code>debian:13.7-slim</code>: FrankenPHP, PHP, the extensions and the libraries they load, <code>gpg</code>, the packages and the application, and no compiler, Composer or Node. Every process runs as <code>www-data</code>, uid 33</td>
 </tr>
 </tbody>
 </table>
+<p>Each base image is named by its version and pinned by the digest of that tag, so a build of a commit takes the
+PHP, FrankenPHP and Debian that commit names, and a rebuild of the same tag upstream reaches the image as a
+change of the digest in the repository.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>build<span class="w"> </span>--file<span class="w"> </span>apps/beffroi/Dockerfile<span class="w"> </span>--target<span class="w"> </span>frankenphp_prod<span class="w"> </span>.
 </span></code></pre></div>
 <p><code>apps/beffroi/</code> is copied without what a working copy holds beside the repository: <code>Dockerfile.dockerignore</code> leaves
@@ -5305,7 +5313,16 @@ repository holds, and a deployment sets its own: <a href="../configuration/">con
 <p>The production image sets <code>APP_ENV=prod</code>, reads <code>php.ini-production</code>, preloads <code>config/preload.php</code> into
 OPcache, and turns worker mode on: the kernel is booted once per worker and serves every request that worker
 takes, so a signing key opened with the key management service stays open in it, and the service is asked once
-per key and per worker rather than once per signature.</p>
+per key and per worker rather than once per signature. By default, the provider runs four such threads and the
+administration API two, whatever the cores of the host, each holding its own connection to PostgreSQL for as
+long as it lives: a server that serves the administration API and the worker that consumes the lanes hold seven
+connections at rest (<a href="../configuration/#the-web-server"><code>FRANKENPHP_WORKER_NUM</code></a>).</p>
+<p><strong>A secret may be a file.</strong> Each of the ten variables that carry a secret, <code>APP_SECRET</code>, <code>DATABASE_URL</code> and
+<code>BEFFROI_KMS_DSN</code> among them, may be given as a file instead, which <code>docker inspect</code> does not show: its <code>_FILE</code>
+twin names the file, such as one a secret of Compose or Swarm mounts (<a href="../configuration/#a-secret-in-a-file">a secret in a
+file</a>). <code>gpg</code>, the one
+program the provider starts, starts with none of the environment of the provider: the <code>gpg</code> the processes find,
+<code>/usr/local/bin/gpg</code>, hands Debian's its <code>PATH</code> and its <code>GNUPGHOME</code> and nothing else.</p>
 <h2 id="the-http-server">The HTTP server<a class="headerlink" href="#the-http-server" title="Link to this section">&para;</a></h2>
 <p>The command of the image is <code>frankenphp run --config /etc/frankenphp/Caddyfile</code>. Before it starts, the
 entrypoint checks the sizes that bound a request, below, then does three things when <code>.env</code> names a
@@ -5314,12 +5331,17 @@ entrypoint checks the sizes that bound a request, below, then does three things 
 <li>it waits for the database, sixty attempts one second apart, and stops at once on an error it cannot
    recover from;</li>
 <li>it plays the migrations, <code>doctrine:migrations:migrate --no-interaction --all-or-nothing</code>, every time the
-   server starts. The migrations of the application, in <code>migrations/</code>, are written for PostgreSQL and refuse
-   any other platform;</li>
+   server starts, as the role <code>BEFFROI_MIGRATIONS_DATABASE_URL</code> names, or as the role of <code>DATABASE_URL</code> when
+   that variable is not set. The migrations of the application, in <code>migrations/</code>, are written for PostgreSQL
+   and refuse any other platform. When the role of <code>DATABASE_URL</code> is another, it then grants that role what
+   the processes serve, <code>beffroi:database:grant</code>: <a href="../persistence/#the-role-the-processes-connect-as">the role the processes connect as</a>;</li>
 <li>it writes the row of the tenant its environment describes, <code>beffroi:tenant:synchronize</code>, which changes
    only what changed. A configuration the tenant refuses, or that moved its issuer, stops the container
    before it serves, at every start.</li>
 </ol>
+<p>The production image runs Caddy without its own administration API, which answers whoever reaches its address
+with no credential and can stop or reconfigure the server. A deployment that wants it, for the metrics Caddy
+serves there, names its address in <code>CADDY_ADMIN</code>.</p>
 <p>Caddy bounds the size of a request before it reaches the provider. On the listeners of its sites, a request
 whose request line and headers go over the bound, as the Go server Caddy is built on counts them, is answered
 <code>431</code> (RFC 6585 §5). On each site, a body over the bound of that site is answered <code>413</code> (RFC 9110 §15.5.14),
@@ -5453,8 +5475,8 @@ starts it again.</p>
 <p>The worker is therefore the one process that calls a client back, and the one that writes the
 <a href="../observability/">journal</a>. A provider whose worker stops goes on answering requests, and the lanes keep the
 messages until a worker consumes them.</p>
-<p>The lanes are four queues of the table <code>messenger_messages</code> of the database, one per lane, which the transport
-creates the first time it reaches it. The application requires the transport of no broker, and the image
+<p>The lanes are four queues of the table <code>messenger_messages</code> of the database, one per lane, which a migration
+creates as the owner of the tables, no transport creating it. The application requires the transport of no broker, and the image
 carries the PHP extension of none. What fails for good lands in the failure transport, <code>failed</code>, a queue of the
 same table.</p>
 <h2 id="what-the-processes-share">What the processes share<a class="headerlink" href="#what-the-processes-share" title="Link to this section">&para;</a></h2>
@@ -5471,10 +5493,10 @@ so some state has to be the same for all of them.</p>
 </thead>
 <tbody>
 <tr>
-<td>The sealed keys of the tenant, and its pairwise salt</td>
+<td>The sealed keys of the tenant, its pairwise salt, and the last signed head of each of its <a href="../observability/#the-chains">chains</a>, in <code>&lt;slug&gt;/chains/</code></td>
 <td><code>var/keys</code></td>
-<td><code>beffroi:keys:*</code>, the timed step of the key lifecycle, and the first process that needs the salt</td>
-<td>Every process that signs, decrypts or seals</td>
+<td><code>beffroi:keys:*</code>, the timed step of the key lifecycle, the first process that needs the salt, and what signs a chain: its timed step, the daily steps of retention and <code>beffroi:chain:sign-anew</code></td>
+<td>Every process that signs, decrypts or seals, or checks a chain</td>
 </tr>
 <tr>
 <td>The key of the file backend, when that is the key management service</td>
@@ -5547,16 +5569,22 @@ one process changes nothing for another that does not see the same directory.</p
 <code>%kernel.share_dir%/pools/app</code>. The share directory carries the environment, so with the <code>APP_SHARE_DIR</code> of
 <code>.env</code> the pools of a production kernel are in <code>var/share/prod/pools/app</code>. Two containers share these pools
 when they share that directory, which the volume of <code>var/share</code> of the Compose file of the image does, and
-each holds its own otherwise: no variable points the pools at another store. The attempts at a password and at
-a code are counted per person, five in a sliding window of one minute, by two limiters,
-<code>beffroi_password_attempts</code> and <code>beffroi_code_attempts</code>, whose counts Symfony keeps in <code>cache.rate_limiter</code>, a
-pool on <code>cache.app</code> as well: they are shared as these pools are.</p>
-<p><strong>The session of a browser is in the database</strong>, in <code>beffroi_session</code>, which every process reaches. The server
-keeps it on the connection of Doctrine, under advisory locks of PostgreSQL, each row under the SHA-256 of the
-identifier its cookie carries and its data sealed under a data key of the tenant, as personal data is. So the
-session no longer ties a browser to the server that opened it: servers behind one proxy that share the
-database, the volumes above and the key management service each read the sessions the others wrote, and a
-redeployment that replaces them one at a time signs nobody out.</p>
+each holds its own otherwise: no variable points the pools at another store. The counts of the
+<a href="../security/#attempts-and-budgets">limits on guesses and of the budgets of a person or an administrator</a> are
+kept by Symfony in <code>cache.rate_limiter</code>, a pool on <code>cache.app</code> as well: they are shared as these pools are.</p>
+<p><strong>The locks are in the database.</strong> The counts of those limits and budgets, and the identifiers the guards
+against replay remember in the pools of the assertions, the software statements, the request objects and DPoP,
+are read and written under a lock every process of the deployment shares, an advisory lock of PostgreSQL on
+the connection of Doctrine (<code>config/packages/lock.yaml</code>). Requests at once, on one server or on several, are
+counted one after the other, and an identifier presented twice at once is taken once. The load budgets take no
+lock.</p>
+<p><strong>The session of a browser is in the database</strong>, in <code>beffroi_session</code>, which every process reaches. A session
+opens on the connection Doctrine holds at that moment, under an advisory lock of PostgreSQL, each row under the
+SHA-256 of the identifier its cookie carries and its data sealed under a data key of the tenant, as personal
+data is, bound to that hash: a row moved under another identifier opens as no session. A browser is therefore
+tied to no server: servers behind one proxy that share the database, the volumes above and the key management
+service each read the sessions the others wrote, and a redeployment that replaces them one at a time signs
+nobody out.</p>
 <h2 id="tls-and-the-hosts">TLS and the hosts<a class="headerlink" href="#tls-and-the-hosts" title="Link to this section">&para;</a></h2>
 <p>Caddy terminates TLS for the host of <code>SERVER_NAME</code>, unless a proxy in front of the image does
 (<a href="#behind-a-proxy">below</a>), and for the host that asks for a client certificate in every deployment. On these
@@ -5576,12 +5604,17 @@ host asks for nothing.</p>
   certificate in <code>Ssl-Client-Cert</code>, <code>X-Ssl-Client-Cert</code>, <code>X-Client-Cert</code> or <code>X-Forwarded-Client-Cert</code> is
   refused with <code>invalid_request</code> (RFC 6749 §5.2) at an endpoint that reads a certificate. The TLS connection
   of that host therefore ends at this listener.</li>
-<li><strong>Only the leaf reaches PHP</strong>, so no chain is validated there. The handshake proves that the client holds
-  the private key of what it presented (RFC 8446 §4.4.3), which is what <code>self_signed_tls_client_auth</code>
-  (RFC 8705 §2.2) needs. The <code>client_auth</code> block of <code>mtls.Caddyfile</code> carries no <code>trust_pool</code>, so no chain is
-  validated at the edge either. A deployment that authenticates clients with <code>tls_client_auth</code> (RFC 8705
-  §2.1) writes the site block of that host in <code>CADDY_EXTRA_CONFIG</code>, in place of the import, with a
-  <code>trust_pool</code> in its <code>client_auth</code>, so the chain is validated at the edge.</li>
+<li><strong>The listener judges no certificate, and only the leaf reaches PHP.</strong> Its <code>client_auth</code> asks for a
+  certificate in <code>mode request</code>, under which Caddy validates no chain, a <code>trust_pool</code> included. The handshake
+  proves that the client holds the private key of what it presented (RFC 8446 §4.4.3), which is what
+  <code>self_signed_tls_client_auth</code> (RFC 8705 §2.2) needs.</li>
+<li><strong>The provider validates the leaf of <code>tls_client_auth</code> itself</strong> (RFC 8705 §2.1, §7.4), against the
+  authorities <code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code> names, a JSON list of PEM certificates: a certificate one
+  of them signed, valid at the moment of the request and carrying the name its client registered,
+  authenticates that client. Each authority is therefore the one that signs the client certificates itself,
+  intermediate or root, and a certificate that is no certificate authority (RFC 5280 §4.2.1.9) is refused.
+  Revocation is not checked. With no authority named, the default, <code>tls_client_auth</code> is neither announced nor
+  registered, and a client of that method is refused like any client of a method the provider does not wire.</li>
 </ul>
 <h3 id="the-host-of-the-administration-api">The host of the administration API<a class="headerlink" href="#the-host-of-the-administration-api" title="Link to this section">&para;</a></h3>
 <p><strong>The administration API is a host of its own</strong>, served when <code>CADDY_EXTRA_CONFIG</code> imports
@@ -5609,8 +5642,8 @@ misspelt value, <code>Proxy</code> or an empty one, stops Caddy as it starts wit
 The TLS a client meets on the host of <code>SERVER_NAME</code> is then the one of the proxy.</p>
 <p>The scheme and the address of a request are read by Symfony behind the proxies it trusts, and the application
 names none: <code>framework.trusted_proxies</code> reads <code>SYMFONY_TRUSTED_PROXIES</code>. That address is what the load budget
-of an origin is counted under, 2400 requests a minute by default before a <code>429</code>, and what every session and
-every act of the journal records as where it came from. Behind a proxy that is not named there, every request
+of an origin is counted under, an IPv6 address by its /64, 2400 requests a minute by default before a <code>429</code>,
+and what every session and every act of the journal records as where it came from. Behind a proxy that is not named there, every request
 reads as plain HTTP and has the address of the proxy: a request of a safe method, a <code>GET</code> or a <code>HEAD</code> among
 them, is sent to the same address over HTTPS, without end, and the others, a <code>POST</code> among them, are
 served as they came, under the address of the proxy.</p>
@@ -5659,6 +5692,16 @@ development environment, where it would pin every <code>.localhost</code> name o
 two, each to the one host the application names: a download of MaxMind is followed to its storage, and a
 revocation list of the test service of the FIDO Alliance to the host that serves it. A text leaves for Sweego
 alone, the one bridge of <code>symfony/notifier</code> the image installs.</p>
+<p><strong>A URL of the protocol reaches no network of the deployment, whoever wrote it.</strong> The <code>jwks_uri</code> of a client or
+of a trusted issuer, a <code>request_uri</code>, a <code>sector_identifier_uri</code>, a <code>backchannel_logout_uri</code>, a
+<code>backchannel_client_notification_endpoint</code> and the endpoint of a push subscription are refused a private,
+loopback, link-local or reserved address, IPv4 mapped in IPv6 included: the address is checked once the name is
+resolved and on every address the request connects to, and the one checked is the one connected to, so a name
+that resolves twice cannot rebind. A deployment whose clients answer on its own networks names those networks,
+and no wider, in <code>BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS</code>, a JSON list of IP addresses or networks in CIDR
+notation, <code>[]</code> by default: <code>'["10.20.0.0/16"]'</code>. The requests whose URL the deployment fixes, to the key
+management service, the SAML peers, MaxMind, the FIDO metadata, the list of passkey providers the community
+keeps, the list of compromised passwords and the bridge of mail and SMS, are not held to it.</p>
 <table>
 <thead>
 <tr>
@@ -5676,7 +5719,7 @@ alone, the one bridge of <code>symfony/notifier</code> the image installs.</p>
 <tr>
 <td>The server</td>
 <td>The <code>jwks_uri</code> of a client or of a trusted issuer</td>
-<td>To read its keys, which are then kept a day, and again when an assertion names a key the kept set does not hold</td>
+<td>To read its keys, which are then kept a day, and again when an assertion names a key the kept set does not hold, never less than five minutes after the last read, one that failed included</td>
 </tr>
 <tr>
 <td>The server</td>
@@ -5716,12 +5759,12 @@ alone, the one bridge of <code>symfony/notifier</code> the image installs.</p>
 <tr>
 <td>The worker</td>
 <td>The mail server <code>BEFFROI_MAIL_DSN</code> names, when it names one and <code>BEFFROI_MAIL_SENDER</code> names a sender</td>
-<td>When a backchannel request waits on a person whose address is marked verified</td>
+<td>When a backchannel request waits on a person whose address is marked verified, when a way of signing in to their account changes, and when a person asks for the code that confirms an address they wrote</td>
 </tr>
 <tr>
 <td>The worker</td>
 <td>The API of Sweego, <code>api.sweego.io</code> unless the DSN names another host, when <code>BEFFROI_SMS_DSN</code> names one</td>
-<td>When a backchannel request waits on a person whose phone number is marked verified</td>
+<td>The same three, for a phone number</td>
 </tr>
 <tr>
 <td>The worker, the console</td>
@@ -5731,7 +5774,7 @@ alone, the one bridge of <code>symfony/notifier</code> the image installs.</p>
 <tr>
 <td>The worker, the console</td>
 <td>MaxMind, when a licence key is named</td>
-<td>Every week, and on <code>beffroi:geoip:refresh</code></td>
+<td>Every week, and on <code>beffroi:geoip:refresh</code>. A download, and what it unpacks to, stops and is refused past 512 MiB</td>
 </tr>
 <tr>
 <td>The console</td>
@@ -5765,7 +5808,7 @@ alone, the one bridge of <code>symfony/notifier</code> the image installs.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 18:08:09 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

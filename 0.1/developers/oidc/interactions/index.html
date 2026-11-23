@@ -5251,8 +5251,8 @@ first that answers sends the browser to the login page:</p>
 </tr>
 <tr>
 <td>2</td>
-<td><code>id_token_hint</code></td>
-<td>When the <code>sub</code> of the hint, read for the client of the request, names another person than the one signed in, or nobody</td>
+<td><code>id_token_hint</code>, or a <code>sub</code> the <code>claims</code> parameter asks the ID token for by its <code>value</code></td>
+<td>When the person it names, read for the client of the request, is another than the one signed in</td>
 </tr>
 <tr>
 <td>3</td>
@@ -5281,12 +5281,18 @@ round again for having signed in a moment ago. The login page says why it is sho
 continue." for a reason other than the absence of a session, and, for a step-up, that the client requires a
 stronger sign-in than the one the person has, with the credentials they hold that would satisfy it, a passkey,
 the password, or the password followed by a code. A login of the person already signed in adds what it proved
-to the session the browser holds; a login of somebody else ends that session first.</p>
+to the session the browser holds; a login of somebody else ends that session first. When a channel gave up on
+the notice of a change to the ways the person signs in since the sign-in before this one, a page says so once,
+after the login and with a link to their activity, and the request then goes on as it would have
+(NIST SP 800-63B §4.6).</p>
 <p>The <code>sub</code> of an <code>id_token_hint</code> is the one the provider gave the client of the request, and it is read for
 that client, as every <code>sub</code> this provider gave a client is
 (<a href="../pairwise-subjects/#the-way-back">the way back</a>): the subject the account carries for a client of the
-<code>public</code> kind, the identifier of its sector for a <a href="../pairwise-subjects/">pairwise</a> one. A <code>sub</code> that names
-nobody for that client is a hint of another person.</p>
+<code>public</code> kind, the identifier of its sector for a <a href="../pairwise-subjects/">pairwise</a> one. A <code>sub</code> the request
+asks the ID token for in <code>claims</code> is read the same way, since a positive answer is about that person and no
+other (OIDC Core §3.1.2.2, §5.5.1). Before any page, a hint or a <code>sub</code> asked for that names nobody for that
+client, a value that is no subject among them, and a hint and a <code>sub</code> that name two people, are answered
+<code>login_required</code> at the redirect URI.</p>
 <h3 id="the-class-asked-for">The class asked for<a class="headerlink" href="#the-class-asked-for" title="Link to this section">&para;</a></h3>
 <p><code>acr_values</code> asks for a class of authentication voluntarily. A <code>claims</code> request of <code>acr</code> in <code>id_token</code>, with
 <code>values</code> or <code>value</code>, asks for one too, and binds the provider when it says <code>"essential": true</code> (OIDC Core
@@ -5321,11 +5327,15 @@ password form, a passkey, or both, the floor of the logins of the tenant decidin
 password." for the form and "The passkey did not work. Try again." for a passkey, so the page tells nobody which
 accounts exist.</p>
 <p><strong>A <code>login_hint</code> is read one way, the one the deployment chooses</strong>, and never searched for (OIDC Core
-§3.1.2.1). What it names fills the username field with the name that person signs in with, unless this
-browser has just typed another, and a hint that names nobody leaves the field empty, as a request without a
-hint would: the value the client sent appears nowhere on the login form. The step of the address, on a
-tenant that federates domains, below, is the exception: a hint that holds an <code>@</code> fills its field as the
-client wrote it.</p>
+§3.1.2.1). A hint names only a person the client may be told of, one who gave it a consent still in force, or
+anybody for a client the configuration declares <code>requires_consent: false</code>: a client learns
+nothing of a person who never agreed to it. Read as a <code>sub</code>, what the hint names fills the username field with
+the name that person signs in with, and a hint that names nobody leaves the field empty, as a request without
+a hint would: the value the client sent appears nowhere on the login form. Read as a username, the hint fills
+the field as the client sent it, whoever it names or does not, so that the page never tells whether an
+account holds it. Either way, a name this browser has just typed comes first. The step of the address, on a
+tenant that federates domains, below, fills its field as the client wrote it too, for a hint that holds an
+<code>@</code>.</p>
 <p>The deployment names the way in a variable, here at the value of the image
 (<a href="../../../operators/application/configuration/#clients-and-their-requests">configuration</a>):</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BEFFROI_INTERACTION_LOGIN_HINT=sub
@@ -5344,7 +5354,7 @@ client wrote it.</p>
 </tr>
 <tr>
 <td><code>username</code></td>
-<td>The name the person signs in with</td>
+<td>The name the person signs in with, offered in the field as the client sent it</td>
 </tr>
 <tr>
 <td><code>none</code></td>
@@ -5444,7 +5454,7 @@ is sent to a redirect URI on behalf of somebody who is no longer there.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:35:26 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

@@ -5219,7 +5219,7 @@ token refused because it was not issued here is told so and nothing more.</p>
 <tr>
 <td><code>invalid_client</code></td>
 <td><code>401</code></td>
-<td>Every endpoint that authenticates a client, and the introspection endpoint for a public client</td>
+<td>Every endpoint that authenticates a client; for a public client, the introspection endpoint and the backchannel authentication endpoint</td>
 <td>Never</td>
 </tr>
 <tr>
@@ -5426,7 +5426,9 @@ sentences are replaced.</p>
 <p>Two budgets bound what the provider takes, and both always exist:</p>
 <ul>
 <li><strong>the budget of an address</strong>, counted on every route of the three planes, before any work is done:
-  before a session is opened, a password hashed, an assertion or a proof verified;</li>
+  before a session is opened, a password hashed, an assertion or a proof verified. An IPv6 address is
+  counted by its <code>/64</code>, the prefix before the interface identifier (RFC 4291 §2.5.1) a host draws
+  itself (RFC 8981 §3.3.1);</li>
 <li><strong>the budget of a client</strong>, counted where its authentication succeeded, at the endpoints that
   authenticate a client. A public client proves nothing and is bounded by the budget of its address.</li>
 </ul>
@@ -5453,7 +5455,7 @@ client is not meant to act on it but to wait; on the interaction plane it is the
 <tr>
 <td><code>BEFFROI_LOAD_ORIGIN_LIMIT</code>, <code>BEFFROI_LOAD_ORIGIN_INTERVAL</code></td>
 <td><code>2400</code> requests in <code>60</code> seconds</td>
-<td>What one address may send, whatever it asks for. It is not counted per tenant: it bounds the load on the machine</td>
+<td>What one IPv4 address or one IPv6 <code>/64</code> may send, whatever it asks for. It is not counted per tenant: it bounds the load on the machine</td>
 </tr>
 <tr>
 <td><code>BEFFROI_LOAD_CLIENT_LIMIT</code>, <code>BEFFROI_LOAD_CLIENT_INTERVAL</code></td>
@@ -5478,7 +5480,7 @@ sets them from what its own clients send.</p>
 <tr>
 <td>A client that fails to authenticate, <code>invalid_client</code>, or <code>invalid_request</code> when the authentication cannot be read</td>
 <td><code>client_authentication.failed</code></td>
-<td>Nobody</td>
+<td>The client the request named, when the tenant holds it, and nobody otherwise</td>
 </tr>
 <tr>
 <td>The <code>request_uri</code> of a pushed request that grants nothing, <code>invalid_request_uri</code></td>
@@ -5513,8 +5515,10 @@ sets them from what its own clients send.</p>
 </tbody>
 </table>
 <p>An act says which act it is, when it happened, the address and the user agent of the request with the place
-derived from the address, and the person and the client it names; it does not say which check failed. The
-other refusals of the protocol are answered, and leave nothing in the journal.</p>
+derived from the address, and the person and the client it names. A refused client authentication also says
+why and which method the request presented, both in words of the provider and never in a value of the
+request: a reason such as <code>unknown_client</code>, <code>invalid_secret</code>, <code>invalid_assertion</code>, <code>replayed_assertion</code> or
+<code>untrusted_certificate</code>. The other refusals of the protocol are answered, and leave nothing in the journal.</p>
 
 
 
@@ -5535,7 +5539,7 @@ other refusals of the protocol are answered, and leave nothing in the journal.</
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:12:06 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The journal of the acts, where a request came from, what a client was given, what a record used to say, the logs, and what the image exposes.">
+        <meta name="description" content="The journal of the acts, where a request came from, what a client was given, what a record used to say, the chains that show a row changed in the database, the logs, and what the image exposes.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -82,7 +82,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Observability">
-  <meta property="og:description" content="The journal of the acts, where a request came from, what a client was given, what a record used to say, the logs, and what the image exposes.">
+  <meta property="og:description" content="The journal of the acts, where a request came from, what a client was given, what a record used to say, the chains that show a row changed in the database, the logs, and what the image exposes.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3455,6 +3455,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The chains
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-logs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5085,6 +5096,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The chains
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-logs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5174,12 +5196,16 @@ never on the path of a request, and an act that cannot be written down does not 
 <td>In the clear: a subject names a person without saying anything about them</td>
 </tr>
 <tr>
-<td>The client it concerned, by the identifier it was registered under, when it concerns one</td>
+<td>The client it concerned, by the identifier it was registered under, when it concerns one. A refused authentication of a client names the client the request named when the tenant holds it, and none otherwise</td>
 <td>In the clear</td>
 </tr>
 <tr>
 <td>The administrator who did it through the administration API, by the subject their account carries, when one did</td>
 <td>In the clear, as the subject is</td>
+</tr>
+<tr>
+<td>Why a refusal refused and the method it refused, in words the provider gives them, when the act is a refusal: a reason such as <code>invalid_credential</code>, <code>too_many_attempts</code>, <code>unknown_client</code> or <code>untrusted_certificate</code>, and a method such as <code>pwd</code> or <code>client_secret_basic</code></td>
+<td>In the clear: they say nothing of a person</td>
 </tr>
 <tr>
 <td>The identifier of the row</td>
@@ -5193,7 +5219,11 @@ introspection that describes nobody, because the token is inactive or held by a 
 nothing. The reads an administrator makes of a person through the administration API are acts of that person
 as well, each naming the administrator: <code>administration.person_read</code>, <code>administration.sessions_read</code>,
 <code>administration.journal_read</code>, <code>administration.consents_read</code>, and <code>administration.membership_read</code> once for
-each member of a group read.</p>
+each member of a group read. A write of the API that changes nothing and answers with the person is the read
+<code>administration.person_read</code>, and the logout tokens sent for a session an administrator ended,
+<code>logout_token.issued</code> and <code>logout_token.given_up</code>, name that administrator. A read refused because the
+administrator spent <a href="../security/#attempts-and-budgets">their budget of persons</a> delivers nobody and is the act
+<code>administration.read_refused</code>, in the journal of the administrator.</p>
 <p>A person reads the acts of their account on <a href="../account/#the-pages">the page of their acts</a>.
 An operator reads them with <code>beffroi:user:journal</code>:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>bin/console<span class="w"> </span>beffroi:user:journal<span class="w"> </span>alice<span class="w"> </span>--from<span class="o">=</span><span class="m">2026</span>-01-01<span class="w"> </span>--to<span class="o">=</span><span class="m">2026</span>-01-31<span class="w"> </span>--act<span class="o">=</span>tokens.issued<span class="w"> </span>--format<span class="o">=</span>json
@@ -5243,8 +5273,24 @@ are gone, or details whose act is gone, would be half an answer.</p>
 <p>The changes of the claims of a person, what each one said before and after, are kept sealed under the data key
 of the tenant, under a retention of their own, <code>history.retention</code>, 180 days as well unless the deployment says
 otherwise, and forgotten by a timed step once a day. A person reads them at <code>/account/profile/changes</code>.</p>
+<h2 id="the-chains">The chains<a class="headerlink" href="#the-chains" title="Link to this section">&para;</a></h2>
+<p><strong>A row of the journal, of the history of claims or of what a client was given that is changed, added or
+removed in the database after the provider wrote it is seen.</strong> Each of the three records is a chain per tenant,
+whose head the worker signs every five minutes and keeps beside the keys of the tenant, outside the database:
+<a href="../persistence/#the-chained-records">the chained records</a>. A deployment watches them in two places:</p>
+<ul>
+<li><strong>The log channel <code>chain</code></strong>, <a href="#the-logs">below</a>, which carries a copy of each signed head as it is signed.
+  Kept by the log collector of the deployment, it is the copy neither the database nor the key storage holds,
+  and <code>beffroi:chain:verify --against</code> compares a chain with it.</li>
+<li><strong>One point per chain</strong> of <code>beffroi:doctor</code> and of <code>GET /health</code>, red at the first position that does not
+  follow, named and never by what the row holds, and red as well when the schedule has stopped: the chain last
+  signed more than ten minutes ago, or last walked whole more than two days ago.</li>
+</ul>
+<p>What to do with a chain that does not follow is in <a href="../console-commands/#the-chains-of-records">the console</a>,
+and the role that keeps the processes from rewriting a row in
+<a href="../persistence/#the-role-the-processes-connect-as">persistence</a>.</p>
 <h2 id="the-logs">The logs<a class="headerlink" href="#the-logs" title="Link to this section">&para;</a></h2>
-<p>The logs are for failures. In production, Monolog writes JSON to the standard error of the process, in two
+<p>The logs are for failures. In production, Monolog writes JSON to the standard error of the process, in three
 handlers:</p>
 <table>
 <thead>
@@ -5256,7 +5302,11 @@ handlers:</p>
 <tbody>
 <tr>
 <td><code>main</code></td>
-<td>Every channel but deprecations, held in a buffer of the fifty latest records and written, with what follows, once one of them is an error. An error that is a <code>404</code> or a <code>405</code> is not one</td>
+<td>Every channel but deprecations and <code>chain</code>, held in a buffer of the fifty latest records and written, with what follows, once one of them is an error. An error that is a <code>404</code> or a <code>405</code> is not one</td>
+</tr>
+<tr>
+<td><code>chain</code></td>
+<td>The signed head of a <a href="#the-chains">chain</a>, at <code>notice</code>, as it comes and never held back for an error: one line naming the chain, the tenant and the position signed, with the hash of that position and the JWS itself, which <code>beffroi:chain:verify --against</code> reads</td>
 </tr>
 <tr>
 <td><code>deprecation</code></td>
@@ -5266,6 +5316,11 @@ handlers:</p>
 </table>
 <p>A console command also writes its log lines on its own output, the <code>event</code> and <code>doctrine</code> channels aside. In
 the development environment every channel but <code>event</code> goes to <code>var/log/dev.log</code>, from <code>debug</code> up.</p>
+<p>The records Symfony writes of every request it routes, on the <code>request</code> channel, which <code>main</code> writes out with
+the first error of the request, keep no value of a ticket or of the confirmation of an address and no value of
+a parameter of the query: each is written <code>REDACTED</code>, its name kept. No log line carries the endpoint of a push
+subscription: a push that fails is logged with the subscription, the tenant and what failed, the endpoint
+written as "the endpoint".</p>
 <p>Besides what Symfony logs of a request or a message that fails, the provider writes these lines of its own:</p>
 <table>
 <thead>
@@ -5285,27 +5340,32 @@ the development environment every channel but <code>event</code> goes to <code>v
 </tr>
 <tr>
 <td><code>error</code></td>
-<td>The deployment cannot write a mail, its DSN being one no installed factory reads or its sender none or no address, or cannot send a text, its DSN being one no installed bridge reads, or a text was refused before it left; each is said again at each message. The metadata of a SAML peer were refused, or those of a whole role could not be refreshed. A client that registered itself holds metadata the provider now refuses, and is served as no client. The keys a thread of the server or the worker opens when it starts could not be opened, the key management service not answering or refusing one, and each is opened at its first use</td>
+<td>The deployment cannot write a mail, its DSN being one no installed factory reads or its sender none or no address, or cannot send a text, its DSN being one no installed bridge reads, or a text was refused before it left; each is said again at each message. The metadata of a SAML peer were refused, or those of a whole role could not be refreshed. A client that registered itself holds metadata the provider now refuses, and is served as no client. The keys a thread of the server or the worker opens when it starts could not be opened, the key management service not answering or refusing one, and each is opened at its first use. A chain was not signed, or its retention forgot nothing of it, and why</td>
 </tr>
 </tbody>
 </table>
 <p>In production an <code>info</code> or a <code>warning</code> reaches the log only beside an error. The acts are in the journal, not in
 the log.</p>
-<p>Caddy writes an access log for each of its sites, one line per request with its path and query string.
-<code>CADDY_SERVER_LOG_OPTIONS</code> adds directives to the log of each site. On the site of <code>SERVER_NAME</code>, the
-<code>authorization</code> parameter of the query is replaced by <code>REDACTED</code>; the site that asks for a client certificate and
-the site of the administration API replace nothing. A path is written as it was requested, the link of a ticket
-included: <code>/enrol/{ticket}/{value}</code>, <code>/password/{ticket}/{value}</code> and <code>/two-factor/{ticket}/{value}</code>.</p>
+<p>Caddy writes an access log for each of its sites, one line per request, which keeps the path and the names of
+the parameters of the query and never a value: the value of every parameter of the query is written
+<code>REDACTED</code>, whatever its name, and so is the value that follows the identifier of a ticket or of the
+confirmation of an address in a path, <code>/enrol/{ticket}/{value}</code>, <code>/password/{ticket}/{value}</code>,
+<code>/two-factor/{ticket}/{value}</code> and <code>/account/addresses/{claim}/{confirmation}/{value}</code>. The three sites, the one
+of <code>SERVER_NAME</code>, the one that asks for a client certificate and the one of the administration API, write it
+alike, and <code>CADDY_SERVER_LOG_OPTIONS</code> adds directives to the log of each.</p>
 <h2 id="metrics-and-health">Metrics and health<a class="headerlink" href="#metrics-and-health" title="Link to this section">&para;</a></h2>
-<p>The provider exports no metrics of its own. The health check of the production image asks the provider itself
-for a document it serves, through the site of <code>SERVER_NAME</code>: <a href="../deployment/#the-health-check">the health check</a>.
+<p>The provider exports no metrics of its own. Caddy serves its metrics on its administration API, which the production
+image runs without unless <code>CADDY_ADMIN</code> names an address for it. The health check of the production image asks the
+provider itself for a document it serves, through the site of <code>SERVER_NAME</code>:
+<a href="../deployment/#the-health-check">the health check</a>.
 Each check is a line of the access log of that site, under the user agent <code>docker-healthcheck</code>. The Compose
 files of the repository report their worker healthy while <code>messenger:consume</code> is the first process of its
 container.</p>
 <p>What the instance knows of itself is read on request, and nothing is kept between two reads.
 <code>beffroi:statistics</code>, and <code>GET /statistics</code> of the administration API, give its people, clients and open
 sessions, its keys by state, its acts by name over what the journal keeps and the messages waiting in each
-lane; <code>GET /health</code> of the same API gives the points <code>beffroi:doctor</code> looks at.</p>
+lane; <code>GET /health</code> of the same API gives the points <code>beffroi:doctor</code> looks at, among them one per
+<a href="#the-chains">chain</a>.</p>
 <p>The panel the provider adds to the Symfony profiler is wired only in a kernel that runs in debug, and the web
 profiler is registered in the development and test environments alone: a production kernel has neither.</p>
 
@@ -5328,7 +5388,7 @@ profiler is registered in the development and test environments alone: a product
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:39:48 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

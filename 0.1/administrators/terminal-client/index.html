@@ -4242,6 +4242,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#how-many-persons-you-read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How many persons you read
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#keeping-it-up-to-date" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5316,6 +5327,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#how-many-persons-you-read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How many persons you read
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#keeping-it-up-to-date" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5386,31 +5408,35 @@ the groups whose members administer the tenant; this page starts from there.</p>
 </tbody>
 </table>
 <p>There is no Windows build: the client drives the terminal through <code>stty</code>.</p>
-<p><code>SHA256SUMS</code> holds the digests of the four files, and <code>SHA256SUMS.asc</code> is its signature by the key that signs
-the release tags, <code>Beffroi releases &lt;releases@beffroi.tech&gt;</code>, of fingerprint
-<code>FAFA 4D7E 39BA B0AE 08EE  4439 544F 6C79 29EA 07AF</code>. The client carries that key to verify its own updates.
-Check the file you downloaded before you run it:</p>
+<p><code>SHA256SUMS</code> holds the digests of the four files and of a fifth, <code>release</code>, which holds the tag of the release
+followed by a line feed, so that the signature names the release it vouches for. <code>SHA256SUMS.asc</code> is its
+signature by the key that signs the release tags, <code>Beffroi releases &lt;releases@beffroi.tech&gt;</code>, of fingerprint
+<code>71E8 95E3 E2F6 1952 D190  87F5 8B4B A35E 2D61 91D9</code>. The client carries that key to verify its own updates.
+Download <code>release</code>, <code>SHA256SUMS</code> and <code>SHA256SUMS.asc</code> beside the file, and check it before you run it:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="linux" name="__tabbed_1" type="radio" /><input id="macos" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="linux">Linux</label><label for="macos">macOS</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/beffroi-auth/beffroi/HEAD/apps/tui/resources/release-signing-key.gpg<span class="w"> </span><span class="p">|</span><span class="w"> </span>gpg<span class="w"> </span>--import
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>gpg<span class="w"> </span>--verify<span class="w"> </span>SHA256SUMS.asc<span class="w"> </span>SHA256SUMS
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>sha256sum<span class="w"> </span>--check<span class="w"> </span>--ignore-missing<span class="w"> </span>SHA256SUMS
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>chmod<span class="w"> </span>+x<span class="w"> </span>beffroi-tui-linux-x86_64
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>cat<span class="w"> </span>release
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>chmod<span class="w"> </span>+x<span class="w"> </span>beffroi-tui-linux-x86_64
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/beffroi-auth/beffroi/HEAD/apps/tui/resources/release-signing-key.gpg<span class="w"> </span><span class="p">|</span><span class="w"> </span>gpg<span class="w"> </span>--import
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>gpg<span class="w"> </span>--verify<span class="w"> </span>SHA256SUMS.asc<span class="w"> </span>SHA256SUMS
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>shasum<span class="w"> </span>-a<span class="w"> </span><span class="m">256</span><span class="w"> </span>--check<span class="w"> </span>--ignore-missing<span class="w"> </span>SHA256SUMS
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>chmod<span class="w"> </span>+x<span class="w"> </span>beffroi-tui-macos-aarch64
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>cat<span class="w"> </span>release
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>chmod<span class="w"> </span>+x<span class="w"> </span>beffroi-tui-macos-aarch64
 </span></code></pre></div>
 </div>
 </div>
 </div>
-<p><code>gpg --verify</code> reports a good signature from <code>Beffroi releases &lt;releases@beffroi.tech&gt;</code>, and the check of the
-digests reports the file you downloaded <code>OK</code>. The commands on this page call the client <code>beffroi-tui</code>,
-whatever name you keep it under.</p>
+<p><code>gpg --verify</code> reports a good signature from <code>Beffroi releases &lt;releases@beffroi.tech&gt;</code>, the check of the
+digests reports <code>release</code> and the file you downloaded <code>OK</code>, and <code>release</code> prints the tag of the release you
+meant to download, and no other. The commands on this page call the client <code>beffroi-tui</code>, whatever name you
+keep it under.</p>
 <h2 id="connecting-it-to-an-instance">Connecting it to an instance<a class="headerlink" href="#connecting-it-to-an-instance" title="Link to this section">&para;</a></h2>
 <h3 id="what-you-are-given">What you are given<a class="headerlink" href="#what-you-are-given" title="Link to this section">&para;</a></h3>
 <p>Registering the client takes three values, which the operator of the instance gives you, or another
@@ -5464,7 +5490,7 @@ profile.</p>
 </tr>
 <tr>
 <td><code>--client-name</code></td>
-<td>The name the tenant lists the client under, <code>Beffroi TUI on</code> followed by the name of your machine when it is not given</td>
+<td>The name the tenant lists the client under, <code>Beffroi TUI on</code> followed by the name of your machine when it is not given. The instance refuses a name of more than a hundred characters, or one that is not <a href="../people/users/#plain-text">plain text</a></td>
 </tr>
 <tr>
 <td><code>--port</code></td>
@@ -5514,6 +5540,11 @@ that key are ever written. While the client runs, it refreshes the access token 
 instance handed it a refresh token (RFC 6749 §6); without one, the API refuses the session once the access token
 has expired, and the screen asks you to quit and sign in again. Quitting hands the tokens back to the instance
 (RFC 7009).</p>
+<p>No token for the administration API outlives the session of the provider you signed in with, which expires at
+most twelve hours after the login that opened it (<a href="../people/authentication-sessions/">authentication sessions</a>). Once
+that session has ended or expired, the instance refuses to refresh, with <code>invalid_grant</code> (RFC 6749 §5.2), and the
+API refuses the access token already issued. The screen then says "The provider no longer renews the tokens of
+this session: quit, then sign in again."</p>
 <p>A sign-in that fails leaves the home page with what the instance answered, and Enter starts it again. Three
 refusals come with what to do:</p>
 <table>
@@ -5546,7 +5577,8 @@ from an administrator when:</p>
   <code>BEFFROI_TENANT_ADMINISTRATORS</code>, whatever source holds the membership (<a href="../people/groups/#who-administers-the-tenant">who administers the
   tenant</a>);</li>
 <li>you signed in at the authorization endpoint with a passkey, a proof of the class <code>phr</code>, whatever the floor of
-  the tenant, in a session that has not ended: a password is refused, with a second factor or without;</li>
+  the tenant, in a session that has neither ended nor expired: a password is refused, with a second factor or
+  without;</li>
 <li>the access token is addressed to the administration API, was issued to you and not on your behalf (RFC 8693
   §4.1), and is bound to a key that the request proves again (RFC 9449 §7.1).</li>
 </ul>
@@ -5722,7 +5754,7 @@ one</a>).</p>
 </tr>
 <tr>
 <td><code>s</code></td>
-<td>Reads their open sessions, with the proof, the dates and where each came from</td>
+<td>Reads their sessions that have not ended, one past its expiry included, with the proof, the dates and where each came from</td>
 </tr>
 <tr>
 <td><code>j</code></td>
@@ -5737,8 +5769,8 @@ one</a>).</p>
 <td>Asks to revoke it (<a href="../people/credentials/#revoked-and-forgotten">revoked and forgotten</a>). A password is replaced, never revoked</td>
 </tr>
 <tr>
-<td><code>x</code> on an open session</td>
-<td>Asks to end it; the applications it signed in to are told (<a href="../people/authentication-sessions/#ending-one">ending one</a>)</td>
+<td><code>x</code> on a session</td>
+<td>Asks to end it, past its expiry or not; the applications it signed in to are told (<a href="../people/authentication-sessions/#ending-one">ending one</a>)</td>
 </tr>
 <tr>
 <td><code>x</code> on an application</td>
@@ -5771,8 +5803,8 @@ It is valid until the instant the screen says, and the previous link of the same
 the screen when the focus moves, and Enter brings the person back.</p>
 <h3 id="groups">Groups<a class="headerlink" href="#groups" title="Link to this section">&para;</a></h3>
 <p>The Groups section lists the groups of the tenant by name, source, number of members and whether they
-administer the tenant, which reads nobody. The members of a group are read only when you ask for them
-(<a href="../people/groups/">groups</a>).</p>
+administer the tenant, which reads nobody. The members of a group are read only when you ask for them, fifty
+at a time (<a href="../people/groups/#reading-them">groups</a>).</p>
 <table>
 <thead>
 <tr>
@@ -5783,7 +5815,11 @@ administer the tenant, which reads nobody. The members of a group are read only 
 <tbody>
 <tr>
 <td>Enter on a group</td>
-<td>Reads its members, with the source and the date of each membership</td>
+<td>Reads the first page of its members, with the source and the date of each membership. The heading says <code>Members of &lt;group&gt; · page &lt;n&gt; of &lt;m&gt;</code> once the group holds more than one page</td>
+</tr>
+<tr>
+<td><code>]</code> and <code>[</code> on the members</td>
+<td>Read the next page of members, and the one before</td>
 </tr>
 <tr>
 <td><code>n</code></td>
@@ -5801,11 +5837,24 @@ administer the tenant, which reads nobody. The members of a group are read only 
 </table>
 <h2 id="every-act-names-you">Every act names you<a class="headerlink" href="#every-act-names-you" title="Link to this section">&para;</a></h2>
 <p>Each change you make through the client is an act of the journal that names you, by the subject of your
-account, and the line that says it was done ends with "Logged under your name." Reading a person, their open
+account, and the line that says it was done ends with "Logged under your name." Reading a person, their
 sessions, their last acts or the applications they agreed to, and reading the members of a group, are acts of
-each person read, which name you as well: the Users and Groups sections say so before the first read. Listing
-the groups, the clients and the keys, and reading the tenant and the monitoring, reads nobody
+each person read, which name you as well: the Users and Groups sections say so before the first read. So is a
+change that changes nothing, saving a form that says what the account already says, disabling or enabling a
+person already in that state, or revoking a credential already revoked: the answer delivers the person, or the
+credential, as they are, and is written as a read of the person, <code>administration.person_read</code>. Listing the groups, the clients and the
+keys, and reading the tenant and the monitoring, reads nobody
 (<a href="../../operators/application/observability/#the-journal">the journal</a>).</p>
+<h2 id="how-many-persons-you-read">How many persons you read<a class="headerlink" href="#how-many-persons-you-read" title="Link to this section">&para;</a></h2>
+<p>The instance delivers one administrator a bounded number of persons, counted on a sliding window by tenant and by
+administrator, and shared by the processes of the deployment as its cache pools are: 600 persons an hour, unless the deployment sets
+<code>BEFFROI_ADMINISTRATOR_PERSONS_LIMIT</code>, a hundred at least, and <code>BEFFROI_ADMINISTRATOR_PERSONS_INTERVAL</code>, in
+seconds. Reading a person, their sessions, their last acts or their applications spends one person, and so do
+saving the form of their account, disabling or enabling them, and revoking a credential already revoked. A page of
+members spends one per member, and a page past the last one spends nothing.</p>
+<p>A request past the budget delivers nobody, changes nothing and writes no read: the API answers <code>429</code>, with
+<code>Retry-After</code>, and the screen shows what the instance answered, the seconds to wait included. The refusal is an act of your own journal,
+<code>administration.read_refused</code>, which the Monitoring section counts as "reads refused to an administrator".</p>
 <h2 id="keeping-it-up-to-date">Keeping it up to date<a class="headerlink" href="#keeping-it-up-to-date" title="Link to this section">&para;</a></h2>
 <p><code>beffroi-tui --version</code> prints the release a file was built from, and the home page and the Instance section
 say it too. When the administration opens, before any sign-in, a release looks once for a newer release of its
@@ -5816,9 +5865,11 @@ checked and why, as it does on a machine that cannot reach GitHub. Nothing turns
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>./beffroi-tui-linux-x86_64<span class="w"> </span>self-update<span class="w">      </span><span class="c1"># an executable kept under its own name</span>
 </span></code></pre></div>
 <p><code>self-update</code> replaces the PHAR or the executable that runs by the same file of the newest release of its line,
-and runs the verification above for you. It downloads <code>SHA256SUMS</code> and <code>SHA256SUMS.asc</code> first, and <code>gpgv</code>
-checks the signature under the release key the client carries, never one fetched at run time. Only then is the
-file downloaded, and it must match its line of <code>SHA256SUMS</code>, or nothing is replaced.</p>
+and runs the verification above for you. It downloads <code>SHA256SUMS</code> and <code>SHA256SUMS.asc</code> first: <code>gpgv</code> checks the
+signature under the release key the client carries, never one fetched at run time, and <code>SHA256SUMS</code> must name
+the tag of the release it installs, through the digest it gives <code>release</code>, so that the signed files of a release
+published again under another tag are refused. Only then is the file downloaded, and it must match its line of
+<code>SHA256SUMS</code>, or nothing is replaced.</p>
 <ul>
 <li>It needs <code>gpgv</code> on the <code>PATH</code> and write access to the directory the program sits in. It asks for no more
   privileges, so a copy in a directory only root writes to, such as <code>/usr/local/bin</code>, is refused, and it has
@@ -5851,7 +5902,7 @@ address only; no other request of the client follows one.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 15:13:28 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

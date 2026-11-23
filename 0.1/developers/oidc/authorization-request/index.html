@@ -5196,7 +5196,12 @@ page at all. Every answer that reaches the client, a code or a refusal, carries 
 parameter sent empty is a parameter not sent, a parameter the provider does not read is ignored, and nothing
 is converted into anything else. A parameter the provider reads, sent twice in a query or in a body of
 <code>Content-Type: application/x-www-form-urlencoded</code>, is refused with <code>invalid_request</code>, with one exception,
-<code>resource</code>, which RFC 8707 §2 lets a client send once per resource.</p>
+<code>resource</code>, which RFC 8707 §2 lets a client send once per resource. Two spellings PHP files under one name,
+<code>grant_type</code> and <code>grant.type</code> for instance, are that parameter sent twice.</p>
+<p>A list holds 100 values at most, counted before any value is read: a <code>scope</code> of more than 100 scopes is
+<code>invalid_scope</code>, and more than 100 values of <code>ui_locales</code>, <code>acr_values</code> or <code>resource</code> are <code>invalid_request</code>,
+at every endpoint that reads the parameter, each refusal sent back or shown where the parameter's other
+refusals are.</p>
 <p>Two kinds of request take their parameters from elsewhere than the query or the form:</p>
 <ul>
 <li><strong>A pushed request</strong> names, in <code>request_uri</code>, a reference the client received from the <a href="../pushed-authorization-requests/">pushed
@@ -5436,6 +5441,10 @@ and beneath it the <code>error</code> and the <code>error_description</code> for
 <td>A page was needed and the request said <code>prompt=none</code></td>
 </tr>
 <tr>
+<td><code>login_required</code></td>
+<td>Whatever the <code>prompt</code>: the <code>id_token_hint</code>, or the <code>sub</code> the <code>claims</code> parameter asks the ID token for with a <code>value</code>, names no end user of the client, or the two name two different people (OIDC Core §3.1.2.2, §5.5.1)</td>
+</tr>
+<tr>
 <td><code>unmet_authentication_requirements</code></td>
 <td>An essential <code>acr</code> that cannot be met (OIDC Core §5.5.1.1)</td>
 </tr>
@@ -5491,7 +5500,7 @@ authorization requests</a></p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 08:21:26 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

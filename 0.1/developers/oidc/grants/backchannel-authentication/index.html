@@ -5247,7 +5247,9 @@ which the deployment opens in its environment
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>The answer carries the <code>client_id</code> the provider drew, and no secret, <code>private_key_jwt</code> proving no shared
-secret.</p>
+secret. A client of this flow authenticates at both of its endpoints (CIBA Core §7.1, §10.1): a public
+client, <code>token_endpoint_auth_method: none</code>, is refused the grant at registration with
+<code>invalid_client_metadata</code>, and with <code>invalid_client</code> at the backchannel authentication endpoint.</p>
 <table>
 <thead>
 <tr>
@@ -5282,8 +5284,11 @@ provider hands out a token.</p>
 or <code>client_secret_jwt</code>, may name in its <code>aud</code> the issuer, the URL of the token endpoint or the URL of the
 backchannel authentication endpoint, the three CIBA Core §7.1 lets it choose from, and those URLs on the host
 that asks for a certificate when the deployment serves one; a client of no backchannel grant names the issuer
-alone. And a client that takes <a href="../../pairwise-subjects/">pairwise subjects</a>, registers no redirect URI and no
-<code>sector_identifier_uri</code> is of the sector of the host of its <code>jwks_uri</code> (CIBA Core §4).</p>
+alone. And a client that takes <a href="../../pairwise-subjects/">pairwise subjects</a> proves its sector with a key: it
+authenticates with <code>private_key_jwt</code> or <code>self_signed_tls_client_auth</code> under a key it publishes behind a
+<code>jwks_uri</code>, and is of the sector of the host of that <code>jwks_uri</code>, or of the <code>sector_identifier_uri</code> it
+names, whose document then lists that <code>jwks_uri</code> (CIBA Core §4). A client that authenticates any other way is
+refused pairwise subjects with <code>invalid_client_metadata</code>.</p>
 <h2 id="the-request">The request<a class="headerlink" href="#the-request" title="Link to this section">&para;</a></h2>
 <p><code>POST /backchannel_authentication</code> (CIBA Core §7.1). The client authenticates exactly as at the token
 endpoint, then:</p>
@@ -5335,7 +5340,8 @@ endpoint, then:</p>
 </table>
 <p>A signed request object is read and verified as at the authorization endpoint (<a href="../../request-objects/">request
 objects</a>), and it carries an <code>iat</code> and a <code>jti</code> besides: the <code>jti</code> is remembered until
-the <code>exp</code> of the object, so that one signed request is made once.</p>
+the <code>exp</code> of the object plus <code>BEFFROI_REQUEST_OBJECT_LEEWAY</code>, 30 seconds in the image, the last instant the
+object is accepted, so that one signed request is made once.</p>
 <table>
 <thead>
 <tr>
@@ -5344,6 +5350,10 @@ the <code>exp</code> of the object, so that one signed request is made once.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>A public client</td>
+<td><code>invalid_client</code></td>
+</tr>
 <tr>
 <td>The client is not registered for the grant, or registered no delivery mode</td>
 <td><code>unauthorized_client</code></td>
@@ -5440,7 +5450,7 @@ since it has to present both when it pings.</p>
 </tr>
 <tr>
 <td><code>id_token_hint</code></td>
-<td>An ID token this provider issued to this very client, whose <code>sub</code> names the person; its <code>exp</code> is not looked at, a hint describing a past sign-in being the ordinary case. A token of another issuer, or issued to another client, is <code>invalid_request</code></td>
+<td>An ID token this provider issued to this very client, whose <code>sub</code> names the person; its <code>exp</code> is not looked at, a hint describing a past sign-in being the ordinary case. Any other JWT, another token of the tenant, a token of another issuer or one issued to another client, is <code>invalid_request</code> (<a href="../../tokens/id-tokens/#where-an-id-token-comes-back">what a hint is</a>)</td>
 </tr>
 <tr>
 <td><code>login_hint_token</code></td>
@@ -5553,11 +5563,12 @@ The person signs in first, then sees the requests made for them that are still w
 nothing else: there is no code to type and no link that carries a request, the requests being found by who
 is signed in. Each one shows the provider that is asking, the client, its binding message, where the request
 came from, by its address and what its user agent says, every scope of the request, and a warning that
-whoever did not start it refuses it.</p>
+whoever did not start it refuses it. A request revoked by the person taking back their <a href="../../consent/">consent</a>
+to that client is not listed.</p>
 <ul>
 <li><strong>Allow and Refuse</strong> are a <code>POST</code> with the form token of the page, naming the request by a handle of that
-  very list. A request that was answered, has expired or was never this person's is not answerable, and the
-  page says that nothing is waiting there any more, answered <code>400</code>.</li>
+  very list. A request that was answered, has expired, was revoked or was never this person's is not
+  answerable, and the page says that nothing is waiting there any more, answered <code>400</code>.</li>
 <li><strong>A class the client asked for</strong> with <code>acr_values</code> that the session proves none of, when a credential of
   the person would, sends them to the login of the provider for one more proof, and back to the page to
   answer. A class nothing of theirs could ever reach is asked of nobody: the request is approved with the
@@ -5583,6 +5594,9 @@ whoever did not start it refuses it.</p>
 <li><strong>It leaves on the notifications lane</strong>, never in the request of the person, with no cookie and no
   redirect followed. Each call is given <code>BEFFROI_CLIENT_NOTIFICATION_TIMEOUT</code> seconds, <code>3</code> in the image,
   connection included.</li>
+<li><strong>It reaches no private network of the deployment.</strong> An endpoint that resolves to a private, loopback,
+  link-local or reserved address is not called, unless <code>BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS</code> names
+  its network, and is tried again as an endpoint that did not answer.</li>
 <li><strong>A <code>2xx</code> is done.</strong> A redirection and a <code>400</code>, <code>401</code>, <code>403</code>, <code>404</code>, <code>405</code> or <code>501</code> are given up at once, the
   same answer coming back at every try. Any other answer, or none, is tried again under the retry policy of
   the lane, which <code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES</code>, <code>BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY</code>,
@@ -5617,6 +5631,10 @@ whoever did not start it refuses it.</p>
 <td>The person refused</td>
 </tr>
 <tr>
+<td><code>invalid_grant</code></td>
+<td>The request was revoked, answered or not, by the person taking back their consent to the client</td>
+</tr>
+<tr>
 <td><code>slow_down</code></td>
 <td>Nobody has answered yet, and the client polled sooner than its interval allows: the interval grows by five seconds, for this request and for every poll after it</td>
 </tr>
@@ -5634,6 +5652,8 @@ whoever did not start it refuses it.</p>
 </tr>
 </tbody>
 </table>
+<p>A <code>ping</code> client is not called back when its request is revoked: it learns <code>invalid_grant</code> when it next asks
+the token endpoint, or <code>expired_token</code> once the request has expired.</p>
 <p>Every poll is recorded, the refused ones included, and a request that has an answer is answered however soon
 it is asked, which is what a <code>ping</code> client needs, the ping coming sooner than its interval. The <code>auth_req_id</code>
 is spent once, atomically.</p>
@@ -5690,7 +5710,7 @@ client that holds no resource does; an ID token, always, <code>openid</code> bei
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 08:21:26 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

@@ -5158,7 +5158,9 @@ stands for.</p>
 </tbody>
 </table>
 <p><strong>A client asks for what it registered.</strong> <code>scope</code> is a list of scope tokens separated by single spaces
-(RFC 6749 §3.3), each made of visible ASCII other than <code>"</code> and <code>\</code>, and a scope named twice counts once. The
+(RFC 6749 §3.3), each made of visible ASCII other than <code>"</code> and <code>\</code>, and a scope named twice counts once. A
+<code>scope</code> names a hundred scopes at most, counted before any is read, in a request as in a registration: a
+longer one is refused with <code>invalid_scope</code> in a request, <code>invalid_client_metadata</code> in a registration. The
 <code>scope</code> a client registered is the closed list of what it may ask for: scopes are compared byte for byte, and
 a request that names one outside the list is refused with <code>invalid_scope</code>.</p>
 <p><strong>The document says what the tenant hands out.</strong> <code>scopes_supported</code> lists <code>openid</code> first, then the scopes the
@@ -5210,9 +5212,10 @@ that is not JSON is refused with <code>invalid_request</code> at the redirect UR
 <p>What is asked for is served by name when a scope the client registered stands for it, whether or not the
 request names that scope, when the person agreed to it, by name or with a scope that stands for it, and when
 the person has a value for it.
-<code>essential</code>, <code>value</code> and <code>values</code> say nothing to the provider of claims; the one claim they decide is <code>acr</code>,
+<code>essential</code>, <code>value</code> and <code>values</code> say nothing to the provider of claims; the two claims they decide are <code>acr</code>,
 whose <code>values</code> name the classes of authentication a client accepts and whose <code>essential</code> makes the request
-binding (<a href="../interactions/">interactions</a>).</p>
+binding, and <code>sub</code> in <code>id_token</code>, whose <code>value</code> names the person the ID token must be about, read for the
+client as an <code>id_token_hint</code> is (<a href="../interactions/#what-decides-a-login">interactions</a>).</p>
 <h2 id="where-a-claim-is-read-from">Where a claim is read from<a class="headerlink" href="#where-a-claim-is-read-from" title="Link to this section">&para;</a></h2>
 <p>The claims of OIDC Core §5.1 are read from the account of the person in the core (<a href="../../../administrators/people/users/">users</a>):</p>
 <table>
@@ -5245,6 +5248,14 @@ binding (<a href="../interactions/">interactions</a>).</p>
 </tr>
 </tbody>
 </table>
+<p>Whoever writes it, the person, an administrator, an upstream provider or the console, a value is held to the
+same rules before it is kept. <code>profile</code>, <code>picture</code> and <code>website</code> are absolute <code>https</code> or <code>http</code> URLs of 2048
+characters at most, never <code>javascript:</code> or <code>data:</code>. <code>name</code>, <code>given_name</code>, <code>family_name</code>, <code>middle_name</code>,
+<code>nickname</code>, <code>preferred_username</code>, <code>gender</code>, <code>zoneinfo</code> and <code>locale</code> are plain text of 255 characters at most,
+with no control, format, line or paragraph separator character but the zero-width non-joiner and joiner; so
+are the parts of the address, <code>formatted</code> and <code>street_address</code> taking line feeds and 1024 characters; and so
+is the phone number, of 64 characters at most. A client is never handed a value that reorders or hides a part
+of the line it is shown on.</p>
 <p>A claim the account holds no value for is left out, its verification flag with it; a flag beside a value is a
 JSON boolean, <code>true</code> or <code>false</code>, never a string. <code>sub</code> is not among them: it comes from the kind of subject
 the client registered (<a href="../pairwise-subjects/">pairwise subjects</a>). <code>claims_supported</code> lists <code>sub</code> and every
@@ -5337,7 +5348,7 @@ are not, a scope being a name for a set of claims.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

@@ -5251,6 +5251,18 @@ theme of the pages.</p>
 <td><code>beffroi_protocol_client_configuration_delete</code></td>
 <td>RFC 7592 §2.3</td>
 </tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/mail/pgp-keys</code></td>
+<td><code>beffroi_protocol_mail_pgp_keys</code></td>
+<td>RFC 3156 §7: the OpenPGP key the tenant signs its mail with, then the keys it replaced, newest first, so that a mail signed before a replacement still verifies; <code>404</code> for a tenant that holds none</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/mail/smime-certificate</code></td>
+<td><code>beffroi_protocol_mail_smime_certificate</code></td>
+<td>RFC 8555 §9.1: the certificate the tenant signs its S/MIME mail with, then the chain above it; <code>404</code> for a tenant that holds none</td>
+</tr>
 </tbody>
 </table>
 <p>The endpoints a deployment announces are the ones the application wires and its configuration turns on. The
@@ -5418,6 +5430,24 @@ session rather than sending it to a login.</p>
 </tr>
 <tr>
 <td><code>GET</code></td>
+<td><code>/account/addresses/{claim}/confirmation</code></td>
+<td><code>beffroi_interaction_account_address_confirmation</code></td>
+<td>Where the person types the code sent to an address of theirs</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/account/addresses/{claim}/{confirmation}/{value}</code></td>
+<td><code>beffroi_interaction_account_address_link</code></td>
+<td>The page the link of a confirmation opens, which confirms nothing until its form is sent</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/account/mail-encryption</code></td>
+<td><code>beffroi_interaction_account_mail_encryption</code></td>
+<td>Whether the mail of the provider is encrypted to this person, and to what</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
 <td><code>/account/password</code></td>
 <td><code>beffroi_interaction_account_password</code></td>
 <td>When the password was last written, and the form that replaces it</td>
@@ -5506,6 +5536,31 @@ the archive wrapped under a passphrase, which is the file.</p>
 </tr>
 <tr>
 <td><code>POST</code></td>
+<td><code>/account/addresses/{claim}/confirmation</code></td>
+<td><code>beffroi_interaction_account_address_confirmation_send</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/account/addresses/{claim}/confirmation/code</code></td>
+<td><code>beffroi_interaction_account_address_confirmation_code</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/account/addresses/{claim}/{confirmation}/{value}</code></td>
+<td><code>beffroi_interaction_account_address_link_confirm</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/account/mail-encryption</code></td>
+<td><code>beffroi_interaction_account_mail_encryption_give</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/account/mail-encryption/remove</code></td>
+<td><code>beffroi_interaction_account_mail_encryption_remove</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
 <td><code>/account/password</code></td>
 <td><code>beffroi_interaction_account_password_change</code></td>
 </tr>
@@ -5568,6 +5623,11 @@ the archive wrapped under a passphrase, which is the file.</p>
 <td><code>POST</code></td>
 <td><code>/account/notifications</code></td>
 <td><code>beffroi_interaction_account_notifications_subscribe</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/account/notifications/channels</code></td>
+<td><code>beffroi_interaction_account_notifications_channels</code></td>
 </tr>
 <tr>
 <td><code>POST</code></td>
@@ -5745,6 +5805,26 @@ answered <code>404</code> once the token has been read.</p>
 </tr>
 <tr>
 <td><code>GET</code></td>
+<td><code>/tenant/mail-signing-keys</code></td>
+<td><code>beffroi_administration_mail_signing_keys</code></td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/tenant/mail-signing-keys/smime</code></td>
+<td><code>beffroi_administration_mail_smime_signing_key</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/tenant/mail-signing-keys/pgp</code></td>
+<td><code>beffroi_administration_mail_pgp_signing_key</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/tenant/mail-signing-keys/{format}/{fingerprint}</code></td>
+<td><code>beffroi_administration_mail_signing_key_removal</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
 <td><code>/keys</code></td>
 <td><code>beffroi_administration_keys</code></td>
 </tr>
@@ -5910,7 +5990,7 @@ answered <code>404</code> once the token has been read.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="What the commands of the application need explained beyond their help: the rotation of a key, the data keys, and the doctor.">
+        <meta name="description" content="What the commands of the application need explained beyond their help: the rotation of a key, the data keys, the chains of records, the role of the database, and the doctor.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -82,7 +82,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Console commands">
-  <meta property="og:description" content="What the commands of the application need explained beyond their help: the rotation of a key, the data keys, and the doctor.">
+  <meta property="og:description" content="What the commands of the application need explained beyond their help: the rotation of a key, the data keys, the chains of records, the role of the database, and the doctor.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3427,6 +3427,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-chains-of-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The chains of records
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-role-of-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The role of the database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-doctor" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5130,6 +5152,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#the-chains-of-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The chains of records
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-role-of-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The role of the database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-doctor" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5167,11 +5211,11 @@
 
 <h1 id="console-commands">Console commands<a class="headerlink" href="#console-commands" title="Link to this section">&para;</a></h1>
 <p>The application has commands for the tenant, the statistics of the instance, the people and their journal,
-groups, clients, keys, data keys, the metadata of SAML peers, the databases of addresses and the metadata of
-FIDO. <a href="../../reference/console-commands/">The
-reference</a> lists every one of them; <code>bin/console &lt;command&gt; --help</code> gives its
-arguments and options. This page explains the ones a help screen does not: the rotation of a key, the data
-keys, and the doctor.</p>
+groups, clients, keys, data keys, the chains of records, the role of the database, the metadata of SAML peers,
+the databases of addresses and the metadata of FIDO. <a href="../../reference/console-commands/">The reference</a> lists
+every one of them; <code>bin/console &lt;command&gt; --help</code> gives its arguments and options. This page explains the ones
+a help screen does not: the rotation of a key, the data keys, the chains of records, the role of the database,
+and the doctor.</p>
 <h2 id="what-every-command-shares">What every command shares<a class="headerlink" href="#what-every-command-shares" title="Link to this section">&para;</a></h2>
 <p><strong>A command works on the tenant of the configuration.</strong> One that needs its row stops when the row is missing
 or no longer says what the configuration says, and names the field and the command that fixes it:</p>
@@ -5183,6 +5227,11 @@ or no longer says what the configuration says, and names the field and the comma
 <p><strong>What a command does is an act like any other</strong>, written to the journal with the console as where it came
 from: <code>beffroi-console/&lt;command&gt; (&lt;user&gt;@&lt;host&gt;)</code>, the user being the one behind <code>sudo</code> before the one of the
 shell. A step of the schedule is written as <code>beffroi-scheduler/beffroi (&lt;host&gt;)</code>.</p>
+<p><strong>What a command did not write is printed as text.</strong> A name a person, a client, an administrator or a
+directory chose, and what a remote source answered, reach the terminal without their control characters, the
+bidirectional ones included, and with the markup of the console escaped: nothing they hold moves the cursor,
+sets the title or the clipboard, or reads as another name. What the operator typed and what the code writes
+are printed as they are.</p>
 <h2 id="rotating-a-key">Rotating a key<a class="headerlink" href="#rotating-a-key" title="Link to this section">&para;</a></h2>
 <p>A key of the tenant is staged, then active, then retiring, then retired. Of the keys it publishes, the JWK Set
 carries the first three, so a relying party sees a key before anything is signed with it and keeps verifying
@@ -5209,7 +5258,7 @@ it once another has taken over. <a href="../../tenant/keys/">Keys</a> says what 
 </tr>
 <tr>
 <td><code>beffroi:keys:retire &lt;kid&gt;</code></td>
-<td>Takes a retiring key out of the JWK Set once its retirement date has passed, or before it with <code>--force</code>; <code>--due</code> retires every key past its date</td>
+<td>Takes a retiring key out of the JWK Set once its retirement date has passed, or before it with <code>--force</code>; <code>--due</code> retires every key past its date that nothing holds</td>
 </tr>
 <tr>
 <td><code>beffroi:keys:list</code></td>
@@ -5229,7 +5278,10 @@ signature algorithm, <code>RS256</code>. One run reaches one algorithm, and a te
 does, in this order, what the commands do by hand: it stages a successor for every active key that has worked
 for its age, activates every staged key whose delay has elapsed, and retires every retiring key past its date.
 A tenant nobody watches does not sign with the same key for ever, and the tick that stages a successor is never
-the one that activates it.</p>
+the one that activates it. A staged key whose delay elapses while a newer key of its algorithm is active is not
+activated by the step: it starts retiring, with the window of its use, without having signed anything.
+<code>beffroi:keys:activate</code> naming it before the step reaches it is the one way it still takes over. A message key past
+its date stays retiring while a message waiting in the failure transport is sealed to it.</p>
 <table>
 <thead>
 <tr>
@@ -5266,12 +5318,17 @@ figures of its own, seven days of staging and a year of age in the image, <code>
 <p><strong><code>--now</code> skips the staging delay.</strong> The new key signs at once and the previous one starts retiring: a relying
 party whose copy of the JWK Set is younger than sixty seconds refuses the new tokens, or encrypts to the old
 key, until its copy is that old. It is for an operator who knows every relying party is cold.</p>
-<p><strong><code>--compromised</code> leaves no window.</strong> The new key takes over at once and the compromised one leaves the JWK
-Set at the same moment: nothing bound to it is honoured from then on.</p>
+<p><strong><code>--compromised</code> leaves no window.</strong> The new key takes over at once, and the compromised one leaves the JWK
+Set at the same moment with every other key of its algorithm, those waiting to take over and those still
+retiring: nothing bound to any of them is honoured from then on, and the JWK Set holds the new key alone for
+that algorithm.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate<span class="w"> </span>--compromised<span class="w"> </span>--algorithm<span class="o">=</span>RS256
 </span></code></pre></div>
 <p><strong><code>beffroi:keys:retire --force</code></strong> takes a retiring key out before its date, after a compromise or when
-everything bound to it is known to have expired; the journal says it was retired before its date.</p>
+everything bound to it is known to have expired; the journal says it was retired before its date. Without
+<code>--force</code>, a message key a message of the failure transport is sealed to is refused, the refusal saying what
+holds it, until <code>messenger:failed:retry</code> replays the message or <code>messenger:failed:remove</code> removes it; with
+<code>--force</code>, the key retires all the same, and that message then does not open.</p>
 <h3 id="checking-the-keys">Checking the keys<a class="headerlink" href="#checking-the-keys" title="Link to this section">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:keys:list<span class="w"> </span>--check
 </span></code></pre></div>
@@ -5328,30 +5385,78 @@ registered itself. It asks for the slug of the tenant typed back, and has no <co
 envelopes sealed under its master key are not touched.</p>
 <p><a href="../key-management/#moving-to-another-client"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Key management</a></p>
+<h2 id="the-chains-of-records">The chains of records<a class="headerlink" href="#the-chains-of-records" title="Link to this section">&para;</a></h2>
+<p>The journal, the history of claims and what clients were given are three chains, <code>journal</code>, <code>claim_history</code>
+and <code>disclosures</code>: each row is linked to the one before it, and the worker signs the head of each chain every
+five minutes (<a href="../persistence/#the-chained-records">persistence</a>). The last signature of a chain is the file
+<code>var/keys/&lt;slug&gt;/chains/&lt;chain&gt;.jws</code>, and each signature is also a line of the log channel <code>chain</code>, whose
+<code>context.checkpoint</code> is the compact JWS: a deployment that collects its logs keeps a copy that neither the
+database nor <code>var/keys</code> holds.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:chain:verify
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>bin/console<span class="w"> </span>beffroi:chain:verify<span class="w"> </span>journal<span class="w"> </span>--against<span class="o">=</span>head.json
+</span></code></pre></div>
+<p><strong><code>beffroi:chain:verify</code></strong> walks every chain whole against its last signature, or the one it names, and says
+which positions each keeps and up to where its signature holds. It fails at the first position that does not
+follow, naming the position and never what the row holds, and on rows that sit outside the chain. It reads and
+writes nothing. <code>--against</code> names a file holding a signed head of the chain named, the compact JWS or the line
+of the log that carries it, and fails when the chain ends before that head or holds another row at its
+position: a database put back to an earlier moment, with an older signature beside it, is seen there.</p>
+<p><strong><code>beffroi:chain:sign-anew</code></strong> links one chain again as the database holds it, and signs it, once a person has
+read what its check found: whatever was changed, added or removed before cannot be told from the rest afterwards,
+so it prints what the whole walk finds first, and refuses until the slug of the tenant is typed back. The act
+<code>tenant.chain_signed_anew</code> names the positions linked again. It rewrites the links of the chain, which a role
+granted by <a href="#the-role-of-the-database"><code>beffroi:database:grant</code></a> cannot do: on a deployment whose processes run
+as such a role, it is run with <code>DATABASE_URL</code> naming the role that owns the tables.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bin/console<span class="w"> </span>beffroi:chain:sign-anew<span class="w"> </span>journal<span class="w"> </span>default
+</span></code></pre></div>
+<p>A chain found broken is cut by no retention until one of two things is done: the database and the key storage
+restored from the same backup, or the chain signed anew.</p>
+<h2 id="the-role-of-the-database">The role of the database<a class="headerlink" href="#the-role-of-the-database" title="Link to this section">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bin/console<span class="w"> </span>beffroi:database:grant<span class="w"> </span>beffroi_runtime
+</span></code></pre></div>
+<p><strong><code>beffroi:database:grant</code></strong> grants the role the server and the worker connect as what they serve, and on the
+chained records nothing but appending: no update and no deletion of <code>beffroi_journal</code>, <code>beffroi_claim_change</code>,
+<code>beffroi_disclosure</code> and <code>beffroi_chain_link</code>, no deletion of <code>beffroi_tenant</code>, and the function the
+retentions forget through. It runs as the role that owns the tables, after the migrations, and prints the
+statements it played. It refuses a role named otherwise than in lowercase letters, digits and underscores, the
+role it runs as, and a database other than PostgreSQL. The server of the image runs it at every start, after
+the migrations, when <code>BEFFROI_MIGRATIONS_DATABASE_URL</code> names a role other than the one of <code>DATABASE_URL</code>
+(<a href="../persistence/#the-role-the-processes-connect-as">persistence</a>).</p>
 <h2 id="the-doctor">The doctor<a class="headerlink" href="#the-doctor" title="Link to this section">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:doctor
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bin/console<span class="w"> </span>beffroi:doctor
 </span></code></pre></div>
 <p>The doctor reads and writes nothing, so it is safe on a provider serving traffic. It looks at every point
 before it answers, prints one line per point, explains the ones it does not answer for, and fails when one is
 red, so a deployment pipeline can ask the question. A point is a class tagged <code>beffroi.doctor_check</code>, so a
 point added is a class added; a run with nothing tagged fails rather than answering for nothing.</p>
-<p>The application tags two points. <code>App\Doctor\ClientsSignedWithHeldKeys</code> reads every client of the tenant,
-declared or registered, and is red when one receives its ID tokens, its authorization responses or its UserInfo
-responses signed with an algorithm the tenant holds no active key for, the default one counting for a client
-that names none: the first of them it asks for would fail with a server error. Its finding names the client,
-the documents and the algorithm, and says that <code>bin/console beffroi:keys:generate --algorithm=&lt;algorithm&gt;</code> draws
-the missing key. <code>App\Doctor\NotificationsLanePatience</code> says whether the lane a logout token is sent on is
-retried on the schedule the token is written for, the one <code>beffroi.back_channel_logout</code> sets. On a deployment
-that holds a key for every algorithm its clients are signed with, and keeps the lane of notifications the
-application declares, <code>async_notifications</code>, with the defaults of that section, the run reads:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a> [ok] Clients: the keys their documents are signed with
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>      The tenant "default" holds an active key for every algorithm it signs the documents of its clients with.
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a> [ok] Back-channel logout: how long a logout token is retried
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>      A logout token is retried on "async_notifications" for 3 minutes 20 seconds and stops being verifiable after 3 minutes 55 seconds, both read from the schedule this provider publishes (App\Messenger\NotificationRetryPolicy): a client that is restarting is reached, and nothing arrives after the "exp" of the token has passed or after the key that signed it has left the JWK Set.
+<p>The application tags five points, looked at in this order.</p>
+<ul>
+<li><code>App\Doctor\ClientsSignedWithHeldKeys</code> reads every client of the tenant, declared or registered, and is red
+  when one receives its ID tokens, its authorization responses or its UserInfo responses signed with an
+  algorithm the tenant holds no active key for, the default one counting for a client that names none: the
+  first of them it asks for would fail with a server error. Its finding names the client, the documents and the
+  algorithm, and says that <code>bin/console beffroi:keys:generate --algorithm=&lt;algorithm&gt;</code> draws the missing key.</li>
+<li><code>App\Doctor\ChainHoldsTogether</code>, once for each <a href="#the-chains-of-records">chain of records</a>, <code>journal</code>,
+  <code>claim_history</code> and <code>disclosures</code>, checks the last signature of the chain, the row it signs, the first row kept
+  and the rows written since, in a time that does not grow with the chain. It is red on a signature that does not
+  verify, at the first position that does not follow among the rows it reads, on rows outside a chain nobody has
+  signed yet, and on a break the daily walk of the whole chain found, until the chain is restored or signed anew. It is red as well when the schedule has
+  stopped: the chain last signed more than two passes ago, ten minutes, its first row waiting as long with no
+  signature, or the chain last walked whole more than two days ago.</li>
+<li><code>App\Doctor\NotificationsLanePatience</code> says whether the lane a logout token is sent on is retried on the
+  schedule the token is written for, the one <code>beffroi.back_channel_logout</code> sets.</li>
+</ul>
+<p>On a deployment that holds a key for every algorithm its clients are signed with, and keeps the lane of
+notifications the application declares, <code>async_notifications</code>, with the defaults of that section, the first
+point and the last read:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a> [ok] Clients: the keys their documents are signed with
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>      The tenant "default" holds an active key for every algorithm it signs the documents of its clients with.
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a> [ok] Back-channel logout: how long a logout token is retried
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>      A logout token is retried on "async_notifications" for 3 minutes 20 seconds and stops being verifiable after 3 minutes 55 seconds, both read from the schedule this provider publishes (App\Messenger\NotificationRetryPolicy): a client that is restarting is reached, and nothing arrives after the "exp" of the token has passed or after the key that signed it has left the JWK Set.
 </span></code></pre></div>
 <p>The two figures are the budget a logout token is written for; <a href="../messenger/#what-the-application-writes">Messenger</a>
-says what that budget bounds. The second point is red when the notifications are routed to a lane retried on
+says what that budget bounds. The last point is red when the notifications are routed to a lane retried on
 another schedule, or to no lane at all.</p>
 <p><a href="../messenger/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Messenger</a></p>
@@ -5375,7 +5480,7 @@ another schedule, or to no lane at all.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:17:15 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

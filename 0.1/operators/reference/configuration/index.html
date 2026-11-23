@@ -4013,6 +4013,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#confirmation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        confirmation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#administrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        administrator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#journal" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4134,6 +4156,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        notices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#client_authentication" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4204,6 +4237,17 @@
     <span class="md-ellipsis">
       
         client_registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outbound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        outbound
       
     </span>
   </a>
@@ -5410,6 +5454,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#confirmation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        confirmation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#administrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        administrator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#journal" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5531,6 +5597,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        notices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#client_authentication" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5601,6 +5678,17 @@
     <span class="md-ellipsis">
       
         client_registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outbound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        outbound
       
     </span>
   </a>
@@ -5759,6 +5847,9 @@ the version you run.</p>
 <li><strong>A wired name</strong> is checked against what the provider is wired with: an algorithm, a grant, a method of
   client authentication. The table names what the application wires, and a refusal names the names that are
   wired.</li>
+<li><strong>A secret</strong>, <code>keys.data_key_secrets</code>, <code>geoip.license_key</code>, <code>mail.dsn</code> and <code>sms.dsn</code> here, is read from its
+  variable or from the file the same name ending in <code>_FILE</code> gives, never both: <a href="../../application/configuration/#a-secret-in-a-file">a secret in a
+  file</a>.</li>
 </ul>
 <h2 id="tenant"><code>tenant</code><a class="headerlink" href="#tenant" title="Link to this section">&para;</a></h2>
 <p>The one tenant of the deployment: required. <a href="../../tenant/tenants/">Tenants</a> is what a tenant is. A value the
@@ -5795,9 +5886,9 @@ one the row was written with, as <a href="../../application/configuration/#the-t
 <tr>
 <td><code>name</code></td>
 <td><code>BEFFROI_TENANT_NAME</code></td>
-<td>string</td>
+<td>string, plain text of 255 characters at most</td>
 <td>empty: the host of the issuer</td>
-<td>What the pages call the tenant</td>
+<td>What the pages call the tenant. A control character, a line or paragraph separator and a format character are refused, but the zero-width joiner and non-joiner</td>
 </tr>
 <tr>
 <td><code>look.logo_uri</code></td>
@@ -5810,14 +5901,14 @@ one the row was written with, as <a href="../../application/configuration/#the-t
 <td><code>look.primary_color</code></td>
 <td><code>BEFFROI_TENANT_PRIMARY_COLOR</code></td>
 <td>string</td>
-<td><code>#1f6feb</code></td>
+<td>empty: none, the ultramarine of the default look of the pages, <code>#2f45ff</code></td>
 <td>The colour the buttons of the pages are drawn in; a link, and a second answer at rest, is drawn in this colour mixed with the colour of the text, so that it reads at the contrast of text on either theme: <code>#</code> and three or six hexadecimal digits, as <code>#1b4b8f</code>. Declared with <code>primary_content_color</code> or not at all, an empty variable being no colour</td>
 </tr>
 <tr>
 <td><code>look.primary_content_color</code></td>
 <td><code>BEFFROI_TENANT_PRIMARY_CONTENT_COLOR</code></td>
 <td>string</td>
-<td><code>#ffffff</code></td>
+<td>empty: none, the white of the default look, <code>#ffffff</code></td>
 <td>The colour of what is written on <code>primary_color</code>, in the same notation</td>
 </tr>
 <tr>
@@ -5925,7 +6016,7 @@ key of the tenant but its SAML keys, which take theirs from <a href="#samlkeys">
 <td>None</td>
 <td>string, not empty</td>
 <td><code>%kernel.project_dir%/var/keys</code></td>
-<td>The directory of the sealed keys, one file per key and per tenant, and of the pairwise salt of each tenant beside them (OIDC Core §8.1)</td>
+<td>The directory of the sealed keys, one file per key and per tenant, of the pairwise salt of each tenant beside them (OIDC Core §8.1), and of the last signed head of each chain of the records of a tenant, under <code>&lt;slug&gt;/chains/</code></td>
 </tr>
 <tr>
 <td><code>jwks_max_age</code></td>
@@ -5989,6 +6080,13 @@ key of the tenant but its SAML keys, which take theirs from <a href="#samlkeys">
 <td>string</td>
 <td>empty: no mutual TLS</td>
 <td>The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as <code>https://mtls.op.example.com</code>. Six endpoints are announced under it in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, the provider serves no mutual TLS: <code>tls_client_auth</code> and <code>self_signed_tls_client_auth</code> are not wired, and no token is bound to a certificate. A deployment whose listener writes the certificate in <code>SSL_CLIENT_CERT</code> on the host of the issuer itself, which the site of <code>SERVER_NAME</code> never does, names that host</td>
+</tr>
+<tr>
+<td><code>certificate_authorities</code></td>
+<td><code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code></td>
+<td>list of strings</td>
+<td><code>[]</code>: none</td>
+<td>The certificate authorities whose client certificates <code>tls_client_auth</code> accepts (RFC 8705 §2.1), each a certificate in PEM. Only the leaf reaches the provider, so each is the authority that signs the client certificates itself, intermediate or root: a certificate one of them signed, valid when it is presented and carrying the name its client registered, authenticates that client, and revocation is not checked. A certificate of no certificate authority is refused (RFC 5280 §4.2.1.9). Empty, <code>tls_client_auth</code> is neither announced nor registered, while <code>self_signed_tls_client_auth</code> and the tokens bound to a certificate follow <code>origin</code> alone</td>
 </tr>
 </tbody>
 </table>
@@ -6103,7 +6201,7 @@ key of the tenant but its SAML keys, which take theirs from <a href="#samlkeys">
 <td><code>BEFFROI_LOAD_ORIGIN_LIMIT</code></td>
 <td>integer, 1 or more</td>
 <td><code>2400</code></td>
-<td>Requests taken from one client address in the window, on every route of the three planes and for every tenant of the deployment, counted before anything is verified</td>
+<td>Requests taken from one client address in the window, an IPv6 address counted by its /64, on every route of the three planes and for every tenant of the deployment, counted before anything is verified</td>
 </tr>
 <tr>
 <td><code>origin.interval</code></td>
@@ -6124,6 +6222,77 @@ key of the tenant but its SAML keys, which take theirs from <a href="#samlkeys">
 <td><code>BEFFROI_LOAD_CLIENT_INTERVAL</code></td>
 <td>integer, 1 or more</td>
 <td><code>60</code>, one minute</td>
+<td>The window of that budget</td>
+</tr>
+</tbody>
+</table>
+<h2 id="confirmation"><code>confirmation</code><a class="headerlink" href="#confirmation" title="Link to this section">&para;</a></h2>
+<p>The two budgets the confirmations of an address are counted against, a code and a link sent by mail or by SMS
+to an address nobody verified yet. Both count over a sliding window. Past either, nothing is sent, the page says
+so, and the refusal is an act of the person.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Variable</th>
+<th>Type</th>
+<th>In the image</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sends.person_limit</code></td>
+<td><code>BEFFROI_CONFIRMATION_SENDS_PERSON_LIMIT</code></td>
+<td>integer, 1 or more</td>
+<td><code>5</code></td>
+<td>Confirmations sent for one person of a tenant in the window</td>
+</tr>
+<tr>
+<td><code>sends.address_limit</code></td>
+<td><code>BEFFROI_CONFIRMATION_SENDS_ADDRESS_LIMIT</code></td>
+<td>integer, more than <code>sends.person_limit</code></td>
+<td><code>10</code></td>
+<td>Confirmations sent to one address in the window, whatever the tenant, so that one person never spends it alone</td>
+</tr>
+<tr>
+<td><code>sends.interval</code></td>
+<td><code>BEFFROI_CONFIRMATION_SENDS_INTERVAL</code></td>
+<td>integer, 1 or more</td>
+<td><code>86400</code>, one day</td>
+<td>The window of both budgets</td>
+</tr>
+</tbody>
+</table>
+<h2 id="administrator"><code>administrator</code><a class="headerlink" href="#administrator" title="Link to this section">&para;</a></h2>
+<p>The budget of the persons one administrator of the tenant reads through the administration API, counted over a
+sliding window by tenant and by administrator. A person read, their sessions, their journal or their consents
+count one, a page of the members of a group one per member, and an answer that changes a person and gives them
+back one. A read past it delivers nobody and is answered <code>429</code> with a <code>Retry-After</code> header, and the refusal is an
+act of the administrator.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Variable</th>
+<th>Type</th>
+<th>In the image</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>persons.limit</code></td>
+<td><code>BEFFROI_ADMINISTRATOR_PERSONS_LIMIT</code></td>
+<td>integer, 100 or more</td>
+<td><code>600</code></td>
+<td>Persons delivered to one administrator in the window, at least the largest page of members</td>
+</tr>
+<tr>
+<td><code>persons.interval</code></td>
+<td><code>BEFFROI_ADMINISTRATOR_PERSONS_INTERVAL</code></td>
+<td>integer, 1 or more</td>
+<td><code>3600</code>, one hour</td>
 <td>The window of that budget</td>
 </tr>
 </tbody>
@@ -6243,7 +6412,7 @@ key of the tenant but its SAML keys, which take theirs from <a href="#samlkeys">
 <td><code>BEFFROI_INTERACTION_LOGIN_HINT</code></td>
 <td><code>sub</code>, <code>username</code> or <code>none</code></td>
 <td><code>sub</code></td>
-<td>What the <code>login_hint</code> of an authorization request names, read one way and never searched (OIDC Core §3.1.2.1): <code>sub</code>, the subject the provider issued to that client; <code>username</code>, the name the person signs in with; <code>none</code>, which leaves the hint to a class tagged <code>beffroi.oidc.login_hint</code>, and the application tags none, so the image then reads no hint. The login page offers the name of the person the hint names, and nothing when it names nobody</td>
+<td>What the <code>login_hint</code> of an authorization request names, read one way and never searched (OIDC Core §3.1.2.1): <code>sub</code>, the subject the provider issued to that client; <code>username</code>, the name the person signs in with; <code>none</code>, which leaves the hint to a class tagged <code>beffroi.oidc.login_hint</code>, and the application tags none, so the image then reads no hint. Under <code>username</code>, the login page offers the hint as the client sent it, whether an account holds it or not. Under <code>sub</code>, it offers the username of the person the hint names when the client would be told who she is without asking her, a client registered with <code>requires_consent: false</code> or one she gave a consent still in force, and nothing otherwise</td>
 </tr>
 </tbody>
 </table>
@@ -6258,8 +6427,8 @@ Discovery 1.0 §3): <a href="../../application/translations/">translations</a>.<
 <p>How a logout token reaches a client that registered a <code>backchannel_logout_uri</code>. The four <code>retry_*</code> options
 are the schedule of every notification the provider carries to a third party, on the <code>async_notifications</code>
 transport of the application: logout tokens, the notifications of the backchannel authentication flow, the
-pushes that tell a person something waits for them or that a way of signing in to their account changed, and the
-mails and texts that tell them a request waits.</p>
+pushes, mails and texts that tell a person a request waits for them, and the confirmations of an address. A
+notice of a change to the credentials of an account comes back on the schedule of <a href="#notices"><code>notices</code></a>.</p>
 <table>
 <thead>
 <tr>
@@ -6364,7 +6533,7 @@ verifies.</p>
 <td><code>BEFFROI_WEB_PUSH_TIMEOUT</code></td>
 <td>number, 0.1 or more</td>
 <td><code>3</code></td>
-<td>Seconds one push to one push service is given, connection included. It is retried on the schedule of <code>back_channel_logout</code></td>
+<td>Seconds one push to one push service is given, connection included. It is retried on the schedule of <code>back_channel_logout</code>, and a notice of a change to the credentials on the schedule of <code>notices</code></td>
 </tr>
 </tbody>
 </table>
@@ -6385,7 +6554,7 @@ verifies.</p>
 <td><code>BEFFROI_MAIL_DSN</code></td>
 <td>string, not empty</td>
 <td>empty: none, no mail</td>
-<td>The transport of <code>symfony/mailer</code> a mail leaves through: SMTP, <code>smtp://user:password@host:port</code> or <code>smtps://</code>, the one a mail leaves the image through, or the scheme of a bridge the application installs, none in the image. Naming one turns mail on, to the email address of a person marked verified and to no other. A DSN no installed factory reads writes no mail, and the log says why at each one. A mail the transport did not take comes back on the schedule of <code>back_channel_logout</code> while no other channel reached the person</td>
+<td>The transport of <code>symfony/mailer</code> a mail leaves through: SMTP, <code>smtp://user:password@host:port</code> or <code>smtps://</code>, the one a mail leaves the image through, or the scheme of a bridge the application installs, none in the image. Naming one turns mail on, to the email address of a person marked verified and to no other. A DSN no installed factory reads writes no mail, and the log says why at each one. A mail the transport did not take comes back on the schedule of <code>back_channel_logout</code>, the one that tells a person a request waits only while no other channel reached them, and a notice of a change to the credentials on the schedule of <code>notices</code></td>
 </tr>
 <tr>
 <td><code>sender</code></td>
@@ -6417,6 +6586,52 @@ verifies.</p>
 </tr>
 </tbody>
 </table>
+<h2 id="notices"><code>notices</code><a class="headerlink" href="#notices" title="Link to this section">&para;</a></h2>
+<p>How long a notice of a change to the credentials of an account comes back to a channel that did not take it, a
+mail server or an SMS provider that is down for hours, whatever its channel. Once the schedule is spent, the
+notice not delivered is an act of the person.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Variable</th>
+<th>Type</th>
+<th>In the image</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>retries</code></td>
+<td><code>BEFFROI_NOTICE_RETRIES</code></td>
+<td>integer, 0 or more</td>
+<td><code>30</code></td>
+<td>How many times a notice that did not reach the person comes back</td>
+</tr>
+<tr>
+<td><code>retry_delay</code></td>
+<td><code>BEFFROI_NOTICE_RETRY_DELAY</code></td>
+<td>integer, 1 or more</td>
+<td><code>60</code>, one minute</td>
+<td>Seconds before the first retry</td>
+</tr>
+<tr>
+<td><code>retry_multiplier</code></td>
+<td><code>BEFFROI_NOTICE_RETRY_MULTIPLIER</code></td>
+<td>integer, 1 or more</td>
+<td><code>2</code></td>
+<td>What each wait is multiplied by to give the next one</td>
+</tr>
+<tr>
+<td><code>retry_max_delay</code></td>
+<td><code>BEFFROI_NOTICE_RETRY_MAX_DELAY</code></td>
+<td>integer, 1 or more</td>
+<td><code>3600</code>, one hour</td>
+<td>Seconds no wait exceeds</td>
+</tr>
+</tbody>
+</table>
+<p>With the values of <code>.env</code>, 31 attempts over 25 hours.</p>
 <h2 id="client_authentication"><code>client_authentication</code><a class="headerlink" href="#client_authentication" title="Link to this section">&para;</a></h2>
 <p>What a client assertion and a published key set are held to. The four <code>jwks_*</code> options bound every key set
 the provider reads behind a <code>jwks_uri</code>: the clients' and the <a href="#trusted_issuers">trusted issuers'</a>.</p>
@@ -6471,7 +6686,7 @@ the provider reads behind a <code>jwks_uri</code>: the clients' and the <a href=
 <td><code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code></td>
 <td>integer, 0 or more</td>
 <td><code>300</code>, five minutes</td>
-<td>Seconds between two reads of the same <code>jwks_uri</code> when a signature names a <code>kid</code> the kept set does not hold</td>
+<td>Seconds between two reads of the same <code>jwks_uri</code>, after a read that failed and when a signature names a <code>kid</code> the kept set does not hold. A <code>jwks_uri</code> that failed with nothing kept is refused until then, and a set already kept still answers for the keys it holds</td>
 </tr>
 </tbody>
 </table>
@@ -6585,13 +6800,13 @@ declaration that does not hold together is refused when the provider first reads
 <td><code>jwks</code></td>
 <td>JWK Set</td>
 <td>none</td>
-<td>The public keys of the issuer, inline (RFC 7517 §5), and the only keys an assertion of it is verified against, whatever its header names (RFC 8725 §3.10). One of <code>jwks</code> and <code>jwks_uri</code>, never both</td>
+<td>The public keys of the issuer, inline (RFC 7517 §5), and the only keys an assertion of it is verified against, whatever its header names (RFC 8725 §3.10). One of <code>jwks</code> and <code>jwks_uri</code>, never both. The set holds 100 keys at most and public keys only: a symmetric key, a key carrying a private member and an RSA key of less than 2048 bits are refused (RFC 7518 §3.3, §6.3.1)</td>
 </tr>
 <tr>
 <td><code>jwks_uri</code></td>
 <td>string</td>
 <td>none</td>
-<td>Where the issuer publishes its JWK Set instead: <code>https</code>, or plain <code>http</code> on a loopback host. It is read with one <code>GET</code>, no redirect followed, kept, and read again at most once per <code>client_authentication.jwks_refetch_cooldown</code> for a <code>kid</code> the kept set does not hold</td>
+<td>Where the issuer publishes its JWK Set instead: <code>https</code>, or plain <code>http</code> on a loopback host. It is read with one <code>GET</code>, no redirect followed, under the rules of <code>jwks</code>, kept, and read again at most once per <code>client_authentication.jwks_refetch_cooldown</code>, after a read that failed or for a <code>kid</code> the kept set does not hold</td>
 </tr>
 <tr>
 <td><code>signing_algorithms</code></td>
@@ -6654,7 +6869,7 @@ one</a>).</p>
 <td><code>client_name</code></td>
 <td>string</td>
 <td>the <code>client_id</code></td>
-<td>The name a person reads on the consent page (OIDC Registration §2)</td>
+<td>The name a person reads on the consent page (OIDC Registration §2): plain text of 100 characters at most, with no control character, no line or paragraph separator, and no format character but the zero-width joiner and non-joiner</td>
 </tr>
 <tr>
 <td><code>client_uri</code></td>
@@ -6684,7 +6899,7 @@ one</a>).</p>
 <td><code>contacts</code></td>
 <td>list of strings</td>
 <td>none</td>
-<td>Ways to reach the people responsible for the client, typically e-mail addresses. No page shows them</td>
+<td>Ways to reach the people responsible for the client, typically e-mail addresses, each plain text of 255 characters at most. No page shows them</td>
 </tr>
 <tr>
 <td><code>secret</code></td>
@@ -6708,7 +6923,7 @@ one</a>).</p>
 <td><code>grant_types</code></td>
 <td>list of strings</td>
 <td><code>authorization_code</code> and <code>refresh_token</code></td>
-<td>What the client may ask for at the token endpoint (RFC 7591 §2), among the wired grants: <code>authorization_code</code>, <code>refresh_token</code>, <code>client_credentials</code>, <code>urn:ietf:params:oauth:grant-type:device_code</code>, <code>urn:openid:params:grant-type:ciba</code>, <code>urn:ietf:params:oauth:grant-type:token-exchange</code> and <code>urn:ietf:params:oauth:grant-type:jwt-bearer</code> in the application. <code>refresh_token</code> goes with a grant that issues one, and <code>client_credentials</code> with a method that authenticates the client</td>
+<td>What the client may ask for at the token endpoint (RFC 7591 §2), among the wired grants: <code>authorization_code</code>, <code>refresh_token</code>, <code>client_credentials</code>, <code>urn:ietf:params:oauth:grant-type:device_code</code>, <code>urn:openid:params:grant-type:ciba</code>, <code>urn:ietf:params:oauth:grant-type:token-exchange</code> and <code>urn:ietf:params:oauth:grant-type:jwt-bearer</code> in the application. <code>refresh_token</code> goes with a grant that issues one, and <code>client_credentials</code>, the backchannel authentication grant, the token exchange and the JWT bearer grant with a method that authenticates the client</td>
 </tr>
 <tr>
 <td><code>response_types</code></td>
@@ -6726,7 +6941,7 @@ one</a>).</p>
 <td><code>token_endpoint_auth_method</code></td>
 <td>string</td>
 <td>the first wired method, <code>client_secret_basic</code></td>
-<td>How the client authenticates (OIDC Core §9), among the wired methods: <code>client_secret_basic</code>, <code>client_secret_post</code>, <code>private_key_jwt</code>, <code>client_secret_jwt</code> and <code>none</code> in the application, then <code>tls_client_auth</code> and <code>self_signed_tls_client_auth</code> while <code>mutual_tls.origin</code> names a host. <code>none</code> makes a public client</td>
+<td>How the client authenticates (OIDC Core §9), among the wired methods: <code>client_secret_basic</code>, <code>client_secret_post</code>, <code>private_key_jwt</code>, <code>client_secret_jwt</code> and <code>none</code> in the application, then <code>self_signed_tls_client_auth</code> while <code>mutual_tls.origin</code> names a host, and <code>tls_client_auth</code> while it names a host and <code>mutual_tls.certificate_authorities</code> an authority. <code>none</code> makes a public client</td>
 </tr>
 <tr>
 <td><code>requires_consent</code></td>
@@ -6858,19 +7073,19 @@ one</a>).</p>
 <td><code>jwks</code></td>
 <td>JWK Set</td>
 <td>none</td>
-<td>The public keys of the client, inline (RFC 7591 §2). One of <code>jwks</code> and <code>jwks_uri</code>, never both, is required of a client that authenticates with <code>private_key_jwt</code> or <code>self_signed_tls_client_auth</code>, names a <code>request_object_signing_alg</code> other than <code>none</code>, or asks for an encrypted response</td>
+<td>The public keys of the client, inline (RFC 7591 §2). One of <code>jwks</code> and <code>jwks_uri</code>, never both, is required of a client that authenticates with <code>private_key_jwt</code> or <code>self_signed_tls_client_auth</code>, names a <code>request_object_signing_alg</code> other than <code>none</code>, or asks for an encrypted response. The set holds 100 keys at most and public keys only: a symmetric key, a key carrying a private member (OIDC Registration §2) and an RSA key of less than 2048 bits (RFC 7518 §3.3, §4.3) are refused, and so is a key an encrypted response is addressed to that cannot receive a JWE under its algorithm (RFC 7518 §4)</td>
 </tr>
 <tr>
 <td><code>jwks_uri</code></td>
 <td>string</td>
 <td>none</td>
-<td>Where the client publishes its JWK Set instead (RFC 7591 §2), read with no redirect followed, under the bounds of <code>client_authentication</code></td>
+<td>Where the client publishes its JWK Set instead (RFC 7591 §2), read with no redirect followed, under the bounds of <code>client_authentication</code> and the rules of <code>jwks</code></td>
 </tr>
 <tr>
 <td><code>subject_type</code></td>
 <td>string</td>
 <td>the first wired kind, <code>public</code></td>
-<td>The kind of <code>sub</code> the client sees for a person (OIDC Core §8): <code>public</code> or <code>pairwise</code> in the application. A <code>pairwise</code> client has a sector: its <code>sector_identifier_uri</code>, redirect URIs on one host, or, with no redirect URI, its <code>jwks_uri</code></td>
+<td>The kind of <code>sub</code> the client sees for a person (OIDC Core §8): <code>public</code> or <code>pairwise</code> in the application. A <code>pairwise</code> client has a sector: its <code>sector_identifier_uri</code>; or the one host of its redirect URIs and of its <code>initiate_login_uri</code>, when no grant it is registered for hands it identifiers without a redirection, as the device authorization grant and backchannel authentication do; or else the host of its <code>jwks_uri</code>, when it authenticates with a key published there, <code>private_key_jwt</code> or <code>self_signed_tls_client_auth</code></td>
 </tr>
 <tr>
 <td><code>sector_identifier_uri</code></td>
@@ -6888,7 +7103,7 @@ one</a>).</p>
 <td><code>request_object_signing_alg</code></td>
 <td>string</td>
 <td>any wired algorithm</td>
-<td>The JWS algorithm the request objects of the client are signed with (OIDC Registration §2), among the wired ones. Left out, any of them verifies an object, and an unsigned object is refused. <code>none</code> is the one exception: the objects of the client carry no signature and are read all the same, and a client with <code>require_signed_request_object</code> cannot name it</td>
+<td>The JWS algorithm the request objects of the client are signed with (OIDC Registration §2), among the wired ones. Left out, any of them verifies an object, and an unsigned object is refused. <code>none</code> is the one exception: the objects of the client carry no signature and are read all the same. Only a declared client names it: a client that registers itself is refused it, and a client with <code>require_signed_request_object</code> cannot name it</td>
 </tr>
 <tr>
 <td><code>backchannel_token_delivery_mode</code></td>
@@ -6906,7 +7121,7 @@ one</a>).</p>
 <td><code>resources</code></td>
 <td>list of strings</td>
 <td>none</td>
-<td><em>Deployment.</em> The resources the client may ask an access token for (RFC 8707 §2), each an absolute URI without a fragment; any other is refused with <code>invalid_target</code>. A client that registers none asks for none, and its tokens are addressed to itself</td>
+<td><em>Deployment.</em> The resources the client may ask an access token for (RFC 8707 §2), each an absolute URI without a fragment and never the <code>client_id</code> of the client; any other is refused with <code>invalid_target</code>. A client that registers none asks for none, and its tokens are addressed to itself</td>
 </tr>
 <tr>
 <td><code>authorization_details_types</code></td>
@@ -6924,7 +7139,7 @@ one</a>).</p>
 <td><code>token_exchange.may_act_for_a_user</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td><em>Deployment.</em> Whether the client may present a token somebody signed in for. <code>false</code> for a service that only exchanges tokens of its own</td>
+<td><em>Deployment.</em> Whether the client may present a token that names a person, whether somebody signed in for it or a client named its subject, a token of the JWT bearer grant among them. <code>false</code> for a service that only exchanges tokens of its own</td>
 </tr>
 <tr>
 <td><code>may_act</code></td>
@@ -6972,7 +7187,10 @@ one</a>).</p>
 </table>
 <p>The <code>token_exchange</code> block is declared by a client registered for the token exchange grant, and refused for
 any other. A <code>tls_client_auth</code> client names exactly one of the five <code>tls_client_auth_*</code> options, and a client
-authenticating otherwise names none of them.</p>
+authenticating otherwise names none of them. Each list holds 100 values at most, and <code>scope</code> 100 scopes.</p>
+<p>A client that registers itself has its <code>client_uri</code>, <code>logo_uri</code>, <code>policy_uri</code> and <code>tos_uri</code> shown only on the
+scheme and the host of one of its redirect URIs, and read as none elsewhere (RFC 7591 §5). The pages of a
+declared client, and those a software statement attests, are shown wherever they are.</p>
 <h2 id="self_client"><code>self_client</code><a class="headerlink" href="#self_client" title="Link to this section">&para;</a></h2>
 <p>The application as a client of the provider it serves, so that a firewall of the application signs its users
 in there with Symfony's <code>oidc_login</code>. The application's file does not write the section and no variable sets
@@ -7081,7 +7299,7 @@ Without a <code>mode</code>, the tenant registers nobody.</p>
 <td>In that document</td>
 <td>JWK Set</td>
 <td>required in an entry</td>
-<td>The public keys of the authority, inline (RFC 7517 §5), and the only keys a statement is verified against, whatever its header names (RFC 8725 §3.10)</td>
+<td>The public keys of the authority, inline (RFC 7517 §5), and the only keys a statement is verified against, whatever its header names (RFC 8725 §3.10), under the rules of the <code>jwks</code> of a <a href="#trusted_issuers">trusted issuer</a></td>
 </tr>
 <tr>
 <td><code>statement_issuers.&lt;iss&gt;.signing_algorithms</code></td>
@@ -7117,6 +7335,31 @@ Without a <code>mode</code>, the tenant registers nobody.</p>
 <td>boolean</td>
 <td><code>false</code></td>
 <td>Whether the confidential clients the tenant registers are registered without the PKCE requirement, for a tenant whose clients send no <code>code_challenge</code>. A public client is never exempted, <code>plain</code> does not exist, and a challenge a client sends is verified all the same. The application's file does not write it, so every client of the image registers with PKCE required: <a href="../../../developers/oidc/clients/#what-the-image-does-not-set">what the image does not set</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="outbound"><code>outbound</code><a class="headerlink" href="#outbound" title="Link to this section">&para;</a></h2>
+<p>The requests of the protocol, whoever wrote their URL: a <code>jwks_uri</code>, a trusted issuer's included, a
+<code>sector_identifier_uri</code>, a <code>request_uri</code>, a back-channel logout URI, a CIBA notification endpoint and the endpoint
+of a push subscription. Every private, loopback, link-local or reserved address is refused, once the name is
+resolved and on every address the request connects to, the address checked being the one connected to.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Variable</th>
+<th>Type</th>
+<th>In the image</th>
+<th>What it decides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reachable_private_networks</code></td>
+<td><code>BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS</code></td>
+<td>list of strings</td>
+<td><code>[]</code>: none</td>
+<td>The networks of the deployment such a request may reach anyway, IP addresses or networks in CIDR notation, as <code>["10.20.0.0/16"]</code>. A value that is neither is refused. A deployment whose clients answer on its own networks names those and no wider</td>
 </tr>
 </tbody>
 </table>
@@ -7408,7 +7651,7 @@ providers</a> is how one is declared.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:35:26 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

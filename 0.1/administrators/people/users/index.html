@@ -4213,6 +4213,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#plain-text" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plain text
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#describing-a-user-from-the-console" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5136,6 +5147,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#plain-text" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plain text
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#describing-a-user-from-the-console" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5252,7 +5274,7 @@ and the person names the source that created them. Their <a href="../credentials
 </tr>
 <tr>
 <td>Username</td>
-<td>What the person types to name themselves: 1 to 255 bytes once the whitespace around it is trimmed, unique within the tenant and matched exactly, case included</td>
+<td>What the person types to name themselves: 1 to 255 bytes of <a href="#plain-text">plain text</a> once the whitespace around it is trimmed, unique within the tenant and matched exactly, case included</td>
 </tr>
 <tr>
 <td>Email address</td>
@@ -5260,7 +5282,7 @@ and the person names the source that created them. Their <a href="../credentials
 </tr>
 <tr>
 <td>Phone number</td>
-<td>Optional, with a flag of its own that says whether it was verified. The text that tells them so is sent to it only while it is marked verified</td>
+<td>Optional, plain text of 64 characters at most, with a flag of its own that says whether it was verified. The text that tells them so is sent to it only while it is marked verified</td>
 </tr>
 <tr>
 <td>Address</td>
@@ -5348,7 +5370,7 @@ username, the address is verified, and the source says which provider created th
 </tr>
 <tr>
 <td><code>profile</code>, <code>picture</code>, <code>website</code></td>
-<td>Three URLs</td>
+<td>Three URLs, each absolute, <code>https</code> or <code>http</code>, with a host, and 2048 characters at most. A space or a control character anywhere in it is refused, and so is any other scheme, <code>javascript:</code> and <code>data:</code> among them</td>
 </tr>
 <tr>
 <td><code>gender</code></td>
@@ -5356,7 +5378,7 @@ username, the address is verified, and the source says which provider created th
 </tr>
 <tr>
 <td><code>birthdate</code></td>
-<td><code>YYYY-MM-DD</code>, or <code>YYYY</code> alone, <code>0000</code> standing for a year nobody knows. A value of another shape is refused, wherever it comes from; the shape is what is checked, four digits and two pairs of two, and not whether that month and that day exist</td>
+<td><code>YYYY-MM-DD</code>, a day the calendar holds, or <code>YYYY</code> alone, <code>0000</code> standing for a year nobody knows</td>
 </tr>
 <tr>
 <td><code>zoneinfo</code></td>
@@ -5380,11 +5402,22 @@ username, the address is verified, and the source says which provider created th
 </tr>
 </tbody>
 </table>
+<p>The names, <code>gender</code>, <code>zoneinfo</code> and <code>locale</code> are <a href="#plain-text">plain text</a> of 255 characters at most. The
+members of the address are plain text too: <code>formatted</code> and <code>street_address</code> hold 1024 characters at most, on
+lines separated by line feeds, and the four others 255. A value that breaks a rule of the table or of this
+paragraph is refused wherever it comes from.</p>
 <p><strong>A claim that is not set is absent.</strong> The provider holds nothing under that name, and a client is never sent
 the claim with a null value: it is sent no claim at all. A flag goes with its value, so <code>email_verified</code> is
 sent only beside an address and <code>phone_number_verified</code> only beside a number, and an address with no member is
 no <code>address</code>. <code>updated_at</code>, the instant the record last changed, always has a value. Which claims a client
 receives, by scope or by name, is <a href="../../../developers/oidc/scopes-and-claims/">scopes and claims</a>.</p>
+<h3 id="plain-text">Plain text<a class="headerlink" href="#plain-text" title="Link to this section">&para;</a></h3>
+<p>What somebody writes of a person, a group or a client is plain text: valid UTF-8, with no control character, no
+line or paragraph separator, and no format character but the zero-width non-joiner and joiner that Persian and
+the Indic scripts write words with, so that nothing in it breaks, reorders or hides a part of the line it is
+shown on, and bounded in characters. The provider holds a value to it whatever path writes it, the pages of the
+account, the administration API, an upstream provider, a registration or the console, and the refusal names the
+rule: the administration API answers it with <code>400</code>, <code>invalid_request</code> and that sentence.</p>
 <h3 id="describing-a-user-from-the-console">Describing a user from the console<a class="headerlink" href="#describing-a-user-from-the-console" title="Link to this section">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:user:profile<span class="w"> </span>alice<span class="w"> </span>--given-name<span class="w"> </span>Alice<span class="w"> </span>--family-name<span class="w"> </span>Liddell<span class="w"> </span>--locale<span class="w"> </span>fr-FR
 </span></code></pre></div>
@@ -5435,7 +5468,9 @@ merge patch (RFC 7396) of the document that reads the person: a claim set to <co
 address or number is unverified until the patch says it was verified. All of it is written or none of it. A
 username another person of the tenant holds is refused, and so is a value that changes what the source of the
 person holds. Each value that changed is a line of the history of the person, which names the administrator,
-and the patch is one act, <code>person.described</code>, which carries the names of what changed and never a value.</p>
+and the patch is one act, <code>person.described</code>, which carries the names of what changed and never a value. A patch
+that changes nothing writes neither: it answers the person as they are, which is a read of them,
+<code>administration.person_read</code>.</p>
 <h3 id="what-a-person-says-of-themselves">What a person says of themselves<a class="headerlink" href="#what-a-person-says-of-themselves" title="Link to this section">&para;</a></h3>
 <p>A person changes, on <a href="../../../operators/application/account/#what-a-person-may-change-of-themselves">the page of their account</a>,
 the claims their tenant opens in <code>tenant.self_served_claims</code>, and no other: a tenant that opens none serves a
@@ -5506,7 +5541,8 @@ refresh tokens are revoked. Enabling the person again gives nothing back, and th
 </span></code></pre></div>
 <p>An administrator does the same through the administration API, and cannot disable the account they act with.
 Each is an act of the person, <code>person.disabled</code> or <code>person.enabled</code>. A person already in that state is left as
-they are, and nothing is written. <code>beffroi:user:show</code> says <code>disabled since</code> and the date.</p>
+they are, and no change is written; through the administration API, the answer delivers them as they are, which
+is a read of them, <code>administration.person_read</code>. <code>beffroi:user:show</code> says <code>disabled since</code> and the date.</p>
 
 
 
@@ -5527,7 +5563,7 @@ they are, and nothing is written. <code>beffroi:user:show</code> says <code>disa
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:44:26 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

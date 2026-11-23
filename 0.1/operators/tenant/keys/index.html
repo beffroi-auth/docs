@@ -5178,7 +5178,7 @@ signs. A tenant holds one active key per algorithm.</p>
 <td><code>RS256</code></td>
 <td><code>sig</code></td>
 <td>In the JWK Set</td>
-<td>The default signature algorithm, the first wired: what signs a self-contained access token and a signed introspection response, and the ID token or the signed authorization response of a client that registered no algorithm for it, a logout token following the ID token. RSA, 3072 bits</td>
+<td>The default signature algorithm, the first wired: what signs a self-contained access token and a signed introspection response, the ID token or the signed authorization response of a client that registered no algorithm for it, a logout token following the ID token, and the head of each <a href="../../application/persistence/#the-chained-records">chain of records</a>. RSA, 3072 bits</td>
 </tr>
 <tr>
 <td><code>PS256</code></td>
@@ -5301,9 +5301,12 @@ sealed or signed under a key everybody has:</p>
 </tr>
 </tbody>
 </table>
+<p><code>BEFFROI_KMS_DSN</code> and <code>BEFFROI_DATA_KEY_SECRETS</code> may each be a file instead, whose path is given by the same
+name ending in <code>_FILE</code>; a deployment that sets a variable and its <code>_FILE</code> both is refused.</p>
 <p>The sealed keys are files, one JSON file per key under the slug of its tenant, written through a sibling file
 renamed into place, in <code>var/keys</code> of the application: no variable moves that directory, which every process
-of a deployment shares (<a href="../../application/configuration/#what-the-files-say">what the files say</a>).</p>
+of a deployment shares (<a href="../../application/configuration/#what-the-files-say">what the files say</a>). Beside
+them, in <code>&lt;slug&gt;/chains</code>, is the last signature of each chain of records, which the database does not hold.</p>
 <p><a href="../../application/key-management/">Key management</a> says how the client is built from its DSN, and the
 backends it runs against. A process opens a key once and keeps it open for as long as it is the key that
 answers, so a worker that serves many requests asks the service once per key, where a process rebuilt at each
@@ -5323,7 +5326,7 @@ request asks at each request. A key another has replaced, or that has retired, i
 <td><code>staged</code></td>
 <td>Yes</td>
 <td>Signs nothing yet; a JWE a client encrypted to it opens</td>
-<td>Its staging delay elapsing, or <code>beffroi:keys:activate</code></td>
+<td>Its staging delay elapsing, or <code>beffroi:keys:activate</code>; a newer key active by then sends it to <code>retiring</code> without its ever signing</td>
 </tr>
 <tr>
 <td><code>active</code></td>
@@ -5335,7 +5338,7 @@ request asks at each request. A key another has replaced, or that has retired, i
 <td><code>retiring</code></td>
 <td>Yes</td>
 <td>Signs nothing; what it signed still verifies, and what was encrypted to it still opens</td>
-<td>Its retirement date passing, or <code>beffroi:keys:retire</code></td>
+<td>Its retirement date passing, unless something still needs it, or <code>beffroi:keys:retire</code></td>
 </tr>
 <tr>
 <td><code>retired</code></td>
@@ -5355,6 +5358,12 @@ while its delivery may still be tried where back-channel logout is served, and t
 where a response mode that signs is served. For a key of the <code>enc</code> use, that is the longest a request object is
 accepted to stand and the lifetime of a pushed authorization request. <code>beffroi:keys:list</code> shows the date each
 retiring key is due.</p>
+<p><strong>A message key stays while a failed message needs it.</strong> A message waits in the failure transport for as long
+as nobody replays or removes it, which no window counts. So a <code>MESSAGE-SEAL</code> key past its date is not retired
+while a message of the failure transport is sealed to it: the timed step leaves it retiring, and
+<code>beffroi:keys:retire &lt;kid&gt;</code> refuses it, saying what holds it, until <code>messenger:failed:retry</code> replays the message
+or <code>messenger:failed:remove</code> removes it. <code>--force</code> and a rotation <code>--compromised</code> retire it all the same, and the
+message then does not open.</p>
 <h2 id="rotating-without-an-outage">Rotating without an outage<a class="headerlink" href="#rotating-without-an-outage" title="Link to this section">&para;</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>beffroi:keys:rotate
 </span></code></pre></div>
@@ -5380,7 +5389,7 @@ over, and the old one retires with its window.</p>
 </tr>
 <tr>
 <td><code>--compromised</code></td>
-<td>The new key takes over at once, and the active one leaves the JWK Set in the same call, with no window: nothing it signed is honoured afterwards</td>
+<td>The new key takes over at once, and the active one leaves the JWK Set in the same call with every other key of its algorithm, staged or retiring, with no window: nothing any of them signed is honoured afterwards, and the JWK Set holds the new key alone for that algorithm</td>
 </tr>
 </tbody>
 </table>
@@ -5401,7 +5410,7 @@ first key of a tenant.</p>
 </tr>
 <tr>
 <td><code>beffroi:keys:retire &lt;kid&gt;</code></td>
-<td>A retiring key leaves the JWK Set, once its retirement date has passed</td>
+<td>A retiring key leaves the JWK Set, once its retirement date has passed and nothing holds it</td>
 </tr>
 <tr>
 <td><code>beffroi:keys:retire &lt;kid&gt; --force</code></td>
@@ -5409,22 +5418,24 @@ first key of a tenant.</p>
 </tr>
 <tr>
 <td><code>beffroi:keys:retire --due</code></td>
-<td>Every retiring key past its date, which is what the timed step does</td>
+<td>Every retiring key past its date that nothing holds, which is what the timed step does</td>
 </tr>
 </tbody>
 </table>
 <p>The active key is never retired by hand: a tenant without an active key signs nothing, so a rotation comes
 first. Each step writes its act to the journal, <code>tenant.key_staged</code>, <code>tenant.key_rotated</code> and <code>tenant.key_retired</code>,
-and the event of a retirement carries why: <code>due</code> when its date had passed, <code>forced</code> when it had not, <code>compromised</code>
-after <code>--compromised</code>.</p>
+and the event of a retirement carries why: <code>due</code> when its date had passed, <code>forced</code> when it had not or something
+still held the key, <code>compromised</code> after <code>--compromised</code>.</p>
 <h2 id="what-time-does-on-its-own">What time does on its own<a class="headerlink" href="#what-time-does-on-its-own" title="Link to this section">&para;</a></h2>
 <p>A timed step runs every minute, on the <code>scheduler_beffroi</code> transport the worker consumes, and does three things in
 an order that lets one tick finish what the previous one began:</p>
 <ol>
 <li><strong>A key that has worked for its age gets a successor</strong>, staged and not activated, when nothing of its algorithm
    is staged already. Nobody has to ask, and a deployment nobody watches does not sign with the same key for ever.</li>
-<li><strong>A staged key whose delay has elapsed takes over</strong>, and the key it replaces starts retiring.</li>
-<li><strong>A retiring key past its date leaves the JWK Set.</strong></li>
+<li><strong>A staged key whose delay has elapsed takes over</strong>, and the key it replaces starts retiring. A staged key
+   older than the active key of its algorithm does not take over from it by this step: it starts retiring, with
+   the window of its use, so a rotation with <code>--now</code> while a key waits leaves the newer key signing.</li>
+<li><strong>A retiring key past its date leaves the JWK Set</strong>, unless something still needs it.</li>
 </ol>
 <p>The age has to be longer than the retirement window of the use of the key, or every rotation would leave one more
 key in the JWK Set: the step refuses an age that is not, the first time a key reaches it, rather than staging a
@@ -5471,8 +5482,8 @@ nothing opens. <code>beffroi:keys:list --check</code> names each active or stage
 For a dead active key, the way out is a rotation per algorithm, <code>beffroi:keys:rotate --now --algorithm=&lt;name&gt;</code>:
 the new key is sealed under the master key the service holds and takes over at once, and the dead key retires
 with its window, its public half still verifying what it signed. Nothing is deleted. A rotation leaves a dead
-staged key where it is, and the timed step activates it once its delay has elapsed, as it activates any staged
-key.</p>
+staged key where it is, and once its delay has elapsed the timed step starts it retiring rather than activating
+it behind the newer key, so it never signs.</p>
 
 
 
@@ -5493,7 +5504,7 @@ key.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 4, 2026 08:12:05 UTC">November 4, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

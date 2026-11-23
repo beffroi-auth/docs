@@ -5250,8 +5250,15 @@ last pushed to, and it marks the browser reading the page when that browser is o
    the endpoint it already had, and that is the same browser: its row is what changes, and a row its owner had
    taken out is in use again.</li>
 </ol>
+<p><strong>A person keeps ten browsers at most.</strong> Every browser of a person is pushed to at each message, one after
+another, so when a browser subscribes, or subscribes again, the others beyond nine are taken out, revoked, those
+that first subscribed longest ago, and never the one that has just subscribed. A browser past the tenth is not
+refused.</p>
 <p>The endpoint is taken as the browser gave it, and refused unless it is <code>https</code>; the two keys are refused
-unless they are base64url; a name longer than 255 characters is dropped. A browser is renamed at
+unless they are base64url; a name that is not plain text of 255 characters at most, with no control, line
+separator or format character, is dropped. A push reaches the endpoint only on a public address: one whose
+host resolves to a network of the deployment fails, unless <code>BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS</code> names
+that network (<a href="../deployment/#what-leaves-the-provider">what leaves the provider</a>). A browser is renamed at
 <code>POST /account/notifications/{id}/name</code> and taken out at <code>POST /account/notifications/{id}/revoke</code>, which keeps
 the row, marked revoked.</p>
 <p>The endpoint and the name are sealed in their columns, and a browser is recognised by the SHA-256 of its
@@ -5401,6 +5408,13 @@ which would refuse a request signed by any other key. When no browser of the per
 one push failed, the message goes back to the lane, which sends it again after the waits of its schedule; one
 browser reached is a person told, and the message is done. A request that waits goes back only when no other
 channel reached the person either, and its retry calls every channel again.</p>
+<p>A change of a way of signing in follows a schedule of its own, <code>BEFFROI_NOTICE_*</code>, 31 attempts over 25 hours
+by default, each channel retried on its own. Once the schedule is spent, the notice not delivered is the act
+<code>credential_change.not_told</code> of the person, on the page of their acts, and the browser they next sign in with
+tells them once, on the login page of the interaction or on the home of their account, whichever it reaches
+first, that a change could not be notified to them, with a link to that act.</p>
+<p>The endpoint is written to no log: a push that fails is logged with the subscription and what failed, the
+endpoint named "the endpoint".</p>
 <p><a href="../messenger/#the-contract-of-the-provider"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The lane of notifications</a></p>
 <h2 id="what-the-deployment-allows">What the deployment allows<a class="headerlink" href="#what-the-deployment-allows" title="Link to this section">&para;</a></h2>
@@ -5428,7 +5442,7 @@ them: it names <code>'self'</code> in <code>script-src</code>, <code>connect-src
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:35:26 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

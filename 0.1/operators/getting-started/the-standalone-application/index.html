@@ -5291,8 +5291,26 @@ PostgreSQL, whose table <code>messenger_messages</code> holds the queues of the 
   database and the key management service, written once for both. Compose hands a container nothing else of
   its <code>.env</code>, so any other variable is added to the environment of both processes:
   <a href="../../application/examples/#one-host">one host</a>.</li>
-<li><strong>Only the server publishes ports</strong>, 80 and 443 over TCP and 443 over UDP. PostgreSQL is reached by the two
-  processes alone.</li>
+<li><strong>A secret may be a file</strong>, which <code>docker inspect</code> does not show: a deployment replaces the line of a variable
+  that carries one, <code>APP_SECRET</code> for instance, with its <code>_FILE</code> twin naming a file a <code>secrets:</code> entry mounts
+  under <code>/run/secrets</code>, readable by uid 33, and never sets both. PostgreSQL reads <code>POSTGRES_PASSWORD_FILE</code> the
+  same way: <a href="../../application/configuration/#a-secret-in-a-file">a secret in a file</a>.</li>
+<li>
+<p><strong>The processes may connect as a role of their own</strong>, which reads and writes what they serve and rewrites no
+  row of the journal, of the history of claims or of what clients were given. That role is created once, its
+  name made of lowercase letters, digits and underscores, its password of URL-safe characters, then named by
+  <code>BEFFROI_DATABASE_USER</code> and <code>BEFFROI_DATABASE_PASSWORD</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.prod.yaml<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--wait<span class="w"> </span>database
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.prod.yaml<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>database<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>beffroi<span class="w"> </span>-c<span class="w"> </span><span class="s2">"CREATE ROLE beffroi_runtime LOGIN PASSWORD '&lt;password&gt;'"</span>
+</span></code></pre></div>
+<p>The server plays the migrations as <code>POSTGRES_USER</code>, the role that owns the tables, through
+<code>BEFFROI_MIGRATIONS_DATABASE_URL</code>, and grants the other role. Left unset, the processes connect as
+<code>POSTGRES_USER</code>, and whoever holds its password can rewrite any row.</p>
+</li>
+<li>
+<p><strong>Only the server publishes ports</strong>, 80 and 443 over TCP and 443 over UDP. PostgreSQL is reached by the two
+  processes alone.</p>
+</li>
 <li><strong>The worker has a health check of its own</strong>, that the consumer is the first process of its container: the
   one of the image asks the provider through Caddy, which the worker does not run.</li>
 <li><strong>The host that asks for a client certificate is off</strong>, and three commented variables of the server turn it
@@ -5309,12 +5327,13 @@ PostgreSQL, whose table <code>messenger_messages</code> holds the queues of the 
 has a row before it has a key, and its first key is the one messages are sealed to.</p>
 <ol>
 <li><strong>The schema and the tenant.</strong> The container that serves HTTP waits for the database, plays the
-   migrations and writes the row of the tenant its environment describes (<code>beffroi:tenant:synchronize</code>)
-   before FrankenPHP starts, every time it starts.</li>
+   migrations as the role that owns the tables, grants the role the processes connect as when it is another,
+   and writes the row of the tenant its environment describes (<code>beffroi:tenant:synchronize</code>) before
+   FrankenPHP starts, every time it starts.</li>
 <li>
 <p><strong>The keys of the tenant</strong>, in a container of the image:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>MESSAGE-SEAL
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>bin/console<span class="w"> </span>beffroi:keys:generate
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>MESSAGE-SEAL
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bin/console<span class="w"> </span>beffroi:keys:generate
 </span></code></pre></div>
 <p>Drawing a key announces it on a transport, and what goes on a transport is sealed to the key the tenant
 keeps for its messages. That key is therefore the first one: a tenant that does not hold it yet has
@@ -5325,8 +5344,8 @@ client that names no other algorithm.</p>
 <li>
 <p><strong>The keys of what this application turns on.</strong> Its configuration turns on web push and the SAML identity
    provider, each with a key of its own:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>VAPID
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>SAML-SIGNING
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>VAPID
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>SAML-SIGNING
 </span></code></pre></div>
 <p>The discovery document announces every algorithm the application is wired with, and a key is drawn for each
 one a client uses: a client that registers <code>ES256</code> for what the provider signs for it needs the key of
@@ -5335,8 +5354,8 @@ development stack draws both.</p>
 </li>
 <li>
 <p><strong>A person who can sign in</strong>:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>bin/console<span class="w"> </span>beffroi:user:create<span class="w"> </span>alice<span class="w"> </span>--email<span class="w"> </span>alice@example.com
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>bin/console<span class="w"> </span>beffroi:user:set-password<span class="w"> </span>alice
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>bin/console<span class="w"> </span>beffroi:user:create<span class="w"> </span>alice<span class="w"> </span>--email<span class="w"> </span>alice@example.com
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>bin/console<span class="w"> </span>beffroi:user:set-password<span class="w"> </span>alice
 </span></code></pre></div>
 </li>
 <li>
@@ -5372,7 +5391,7 @@ development stack draws both.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:39:48 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

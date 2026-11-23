@@ -3174,6 +3174,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#confirmation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        confirmation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#administrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        administrator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#journal" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3295,6 +3317,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        notices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#client_authentication" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3365,6 +3398,17 @@
     <span class="md-ellipsis">
       
         client_registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outbound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        outbound
       
     </span>
   </a>
@@ -5382,6 +5426,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#confirmation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        confirmation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#administrator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        administrator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#journal" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5503,6 +5569,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        notices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#client_authentication" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5573,6 +5650,17 @@
     <span class="md-ellipsis">
       
         client_registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outbound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        outbound
       
     </span>
   </a>
@@ -5665,8 +5753,8 @@ type and its bounds.</p>
 </tr>
 <tr>
 <td><a href="#mutual_tls"><code>mutual_tls</code></a></td>
-<td>The host that asks a client for its certificate</td>
-<td><code>BEFFROI_MTLS_ORIGIN</code>, empty: no mutual TLS</td>
+<td>The host that asks a client for its certificate, and the authorities whose certificates <code>tls_client_auth</code> accepts</td>
+<td><code>BEFFROI_MTLS_ORIGIN</code>, empty: no mutual TLS; <code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code>, <code>[]</code></td>
 </tr>
 <tr>
 <td><a href="#tokens"><code>tokens</code></a></td>
@@ -5677,6 +5765,16 @@ type and its bounds.</p>
 <td><a href="#load"><code>load</code></a></td>
 <td>The request budget of an address and of a client</td>
 <td>Four <code>BEFFROI_LOAD_*</code> variables: 2400 and 1200 a minute</td>
+</tr>
+<tr>
+<td><a href="#confirmation"><code>confirmation</code></a></td>
+<td>How many confirmations of an address go out for a person and to an address</td>
+<td>Three <code>BEFFROI_CONFIRMATION_SENDS_*</code> variables: 5 and 10 a day</td>
+</tr>
+<tr>
+<td><a href="#administrator"><code>administrator</code></a></td>
+<td>How many persons the administration API delivers to one administrator</td>
+<td>Two <code>BEFFROI_ADMINISTRATOR_PERSONS_*</code> variables: 600 an hour</td>
 </tr>
 <tr>
 <td><a href="#journal"><code>journal</code></a></td>
@@ -5710,7 +5808,7 @@ type and its bounds.</p>
 </tr>
 <tr>
 <td><a href="#back_channel_logout"><code>back_channel_logout</code></a></td>
-<td>How long a notification to a third party is tried</td>
+<td>How long a notification to a third party is tried, a notice of a change to the credentials aside</td>
 <td>Five <code>BEFFROI_BACK_CHANNEL_LOGOUT_*</code> variables: six retries, 235 seconds in all</td>
 </tr>
 <tr>
@@ -5732,6 +5830,11 @@ type and its bounds.</p>
 <td><a href="#sms"><code>sms</code></a></td>
 <td>Whether the provider texts people at the number marked verified</td>
 <td><code>BEFFROI_SMS_DSN</code>, empty: no text</td>
+</tr>
+<tr>
+<td><a href="#notices"><code>notices</code></a></td>
+<td>How long a notice of a change to the credentials of an account is tried</td>
+<td>Four <code>BEFFROI_NOTICE_*</code> variables: thirty retries, about 25 hours in all</td>
 </tr>
 <tr>
 <td><a href="#client_authentication"><code>client_authentication</code></a></td>
@@ -5767,6 +5870,11 @@ type and its bounds.</p>
 <td><a href="#client_registration"><code>client_registration</code></a></td>
 <td>Whether and how a client registers itself</td>
 <td><code>BEFFROI_REGISTRATION_*</code>, an empty mode: no registration endpoint</td>
+</tr>
+<tr>
+<td><a href="#outbound"><code>outbound</code></a></td>
+<td>The networks of the deployment a request whose URL a third party chose may reach</td>
+<td><code>BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS</code>, <code>[]</code>: none</td>
 </tr>
 <tr>
 <td><a href="#saml"><code>saml</code></a></td>
@@ -5841,7 +5949,7 @@ same way.</p>
 </tr>
 <tr>
 <td><code>rate_limiter</code></td>
-<td>Two limiters, <code>beffroi_code_attempts</code> and <code>beffroi_password_attempts</code>: five attempts per user in a sliding window of one minute</td>
+<td>Four limiters. <code>beffroi_code_attempts</code>, <code>beffroi_password_attempts</code> and <code>beffroi_password_change_attempts</code>: five attempts per person in a sliding window of one minute, counted under the lock factory <code>lock.factory</code>. <code>beffroi_archive_requests</code>: five requests for an archive per person in a sliding window of one hour</td>
 </tr>
 <tr>
 <td><code>framework</code></td>
@@ -5925,7 +6033,7 @@ so every deployment names them.</p>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nt">keys</span><span class="p">:</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nt">kms</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">op</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nt">key_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KMS_KEY_ID)%'</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">        </span><span class="nt">data_key_secrets</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default:app.data_key_secrets:json:BEFFROI_DATA_KEY_SECRETS)%'</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">        </span><span class="nt">data_key_secrets</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default:app.data_key_secrets:json:beffroi_secret:BEFFROI_DATA_KEY_SECRETS)%'</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/var/keys'</span>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="nt">jwks_max_age</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_JWKS_MAX_AGE)%'</span>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="nt">staging_delay</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_KEY_STAGING_DELAY)%'</span>
@@ -5933,11 +6041,13 @@ so every deployment names them.</p>
 </span></code></pre></div>
 <p><code>storage</code> is the directory of the sealed key files and of the pairwise salt of the tenant, sealed the same
 way, which the file writes and no variable moves. The salt is drawn on first use and never again, and every
-pairwise subject of the tenant is computed from it, so the directory is part of what a deployment backs up.</p>
+pairwise subject of the tenant is computed from it, so the directory is part of what a deployment backs up. It
+also holds the last signed head of each chain of the records of the tenant, under <code>&lt;slug&gt;/chains/</code>.</p>
 <p><code>data_key_secrets</code> lists the secrets every data key of personal data is bound to its row under, which the
-database does not hold. <code>BEFFROI_DATA_KEY_SECRETS</code> carries them as a JSON list, and while it is not set, as in
-<code>.env</code>, the secret of the kernel, <code>APP_SECRET</code>, binds them alone. The first binds a new key and a key bound
-under any of them opens, so a secret is replaced by writing the new one first, as <a href="../../tenant/personal-data/#rotating-the-secret-that-binds-them">personal
+database does not hold. <code>BEFFROI_DATA_KEY_SECRETS</code> carries them as a JSON list, or the file
+<code>BEFFROI_DATA_KEY_SECRETS_FILE</code> names (<a href="../configuration/#a-secret-in-a-file">a secret in a file</a>), and while
+neither is set, as in <code>.env</code>, the secret of the kernel, <code>APP_SECRET</code>, binds them alone. The first binds a new
+key and a key bound under any of them opens, so a secret is replaced by writing the new one first, as <a href="../../tenant/personal-data/#rotating-the-secret-that-binds-them">personal
 data</a> says.</p>
 <p>The three other options time the rotation of every key but the SAML keys, which <a href="#saml"><code>saml</code></a> times. A
 relying party keeps the JWK Set for <code>jwks_max_age</code>, <code>BEFFROI_JWKS_MAX_AGE</code>, five minutes in <code>.env</code>. A new key
@@ -5965,7 +6075,13 @@ the site of <code>SERVER_NAME</code> never does, names that host.</p>
 <div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">beffroi</span><span class="p">:</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">mutual_tls</span><span class="p">:</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nt">origin</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_MTLS_ORIGIN)%'</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="nt">certificate_authorities</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_MTLS_CERTIFICATE_AUTHORITIES)%'</span>
 </span></code></pre></div>
+<p>The listener asks for a certificate and judges none: it hands the provider the leaf alone. <code>tls_client_auth</code>
+(RFC 8705 §2.1) is therefore validated by the provider, against the authorities <code>certificate_authorities</code> names,
+a JSON list of PEM certificates in <code>BEFFROI_MTLS_CERTIFICATE_AUTHORITIES</code>, each the authority that signs the
+client certificates itself. <code>.env</code> names none, and <code>tls_client_auth</code> is then neither announced nor registered,
+while <code>self_signed_tls_client_auth</code> and the tokens bound to a certificate follow <code>origin</code> alone.</p>
 <p><a href="../../../developers/oidc/sender-constrained/mutual-tls/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Mutual TLS</a></p>
 <h2 id="tokens"><code>tokens</code><a class="headerlink" href="#tokens" title="Link to this section">&para;</a></h2>
@@ -5978,13 +6094,14 @@ token. The tree bounds them: an authorization code and a <code>request_uri</code
 polls thirty seconds, and a refresh token never slides past the absolute lifetime of its family.</p>
 <p>The lifetimes of what a key signs are also how long that key stays published once another key takes over from
 it, so that a token still in use verifies: ten minutes for a signing key with the values of <code>.env</code>. A longer
-<code>BEFFROI_ACCESS_TOKEN_TTL</code> keeps a retiring key in the JWK Set for longer.</p>
+<code>BEFFROI_ACCESS_TOKEN_TTL</code> keeps a retiring key in the JWK Set for longer. A rotation for a compromise retires
+it at once instead (<a href="../operating/#a-compromised-key">a compromised key</a>).</p>
 <p><a href="../../../developers/oidc/tokens/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Tokens</a></p>
 <h2 id="load"><code>load</code><a class="headerlink" href="#load" title="Link to this section">&para;</a></h2>
 <p>Every request is counted against two budgets, and the section sets their numbers, never whether they exist.
-The first counts the address of the client, on every route of the three planes and before anything is verified;
-the second counts a client of a tenant once it has authenticated. A request over a budget is answered <code>429</code>
+The first counts the address of the client, an IPv6 address by its /64, on every route of the three planes and
+before anything is verified; the second counts a client of a tenant once it has authenticated. A request over a budget is answered <code>429</code>
 with a <code>Retry-After</code> header. The file reads the four numbers from <code>BEFFROI_LOAD_ORIGIN_LIMIT</code>,
 <code>BEFFROI_LOAD_ORIGIN_INTERVAL</code>, <code>BEFFROI_LOAD_CLIENT_LIMIT</code> and <code>BEFFROI_LOAD_CLIENT_INTERVAL</code>, which <code>.env</code>
 sets to 2400 requests a minute from an address and 1200 from a client.</p>
@@ -5994,6 +6111,38 @@ counts live in the <code>beffroi.load</code> cache pool, on <code>cache.app</cod
 its directory (<a href="../deployment/#what-the-processes-share">what the processes share</a>). A number too low on
 <code>/token</code> or on <code>/jwks</code> refuses the deployment's own clients, so a deployment sets them from what its own
 clients send.</p>
+<h2 id="confirmation"><code>confirmation</code><a class="headerlink" href="#confirmation" title="Link to this section">&para;</a></h2>
+<p>How many confirmations of an address, a code and a link sent by mail or by SMS to an address nobody verified
+yet, go out in a window. Each is a mail or a text the deployment pays for, so two budgets count them, whose
+numbers the section sets and never whether they exist: one for the person who asks, by tenant, and one for the
+address they go to, whatever the tenant, which takes more than a person so that one person never spends it
+alone. Past either, nothing is sent, the page says so, and the refusal is an act of the person.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">confirmation</span><span class="p">:</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="nt">sends</span><span class="p">:</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">            </span><span class="nt">person_limit</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_CONFIRMATION_SENDS_PERSON_LIMIT)%'</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">            </span><span class="nt">address_limit</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_CONFIRMATION_SENDS_ADDRESS_LIMIT)%'</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">            </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_CONFIRMATION_SENDS_INTERVAL)%'</span>
+</span></code></pre></div>
+<p><code>.env</code> sends five confirmations a day for a person and ten to an address. An address is counted whatever its
+case and the spaces, dots, hyphens and brackets a person writes in a number, under a keyed hash the store never
+holds in clear.</p>
+<h2 id="administrator"><code>administrator</code><a class="headerlink" href="#administrator" title="Link to this section">&para;</a></h2>
+<p>How many persons the administration API delivers to one administrator of the tenant in a window, a budget that
+always exists and whose numbers the section sets. A person read, their sessions, their journal or their consents
+count one, a page of the members of a group one per member, and an answer that changes a person and gives them
+back one. A read past it delivers nobody and is answered <code>429</code> with <code>Retry-After</code>, and the refusal is an act of
+the administrator.</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">administrator</span><span class="p">:</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">        </span><span class="nt">persons</span><span class="p">:</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">            </span><span class="nt">limit</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_ADMINISTRATOR_PERSONS_LIMIT)%'</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">            </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_ADMINISTRATOR_PERSONS_INTERVAL)%'</span>
+</span></code></pre></div>
+<p><code>.env</code> delivers 600 persons an hour, twelve pages of fifty members or a hundred and fifty persons read whole. The
+limit is a hundred at least, the largest page of members.</p>
+<p><a href="../../../developers/oidc/resources/#the-administration-api"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> The administration API</a></p>
 <h2 id="journal"><code>journal</code><a class="headerlink" href="#journal" title="Link to this section">&para;</a></h2>
 <p>How long an act of the journal is kept before the timed step forgets it: <code>BEFFROI_JOURNAL_RETENTION</code> days, 180
 in <code>.env</code>. What a client was given of a person in an act is forgotten with that act. Nothing turns the journal
@@ -6007,22 +6156,23 @@ announced it being two halves of one answer.</p>
 account they are downloaded under. MaxMind publishes them under its own licence, so nothing is shipped, and a
 deployment that names no key downloads nothing: every flow is served, and a provenance says an address and no
 place.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nt">geoip</span><span class="p">:</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">        </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/var/geoip'</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">        </span><span class="nt">license_key</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(GEOIP_LICENSE_KEY)%'</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="nt">geoip</span><span class="p">:</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">        </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="s">'%kernel.project_dir%/var/geoip'</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">        </span><span class="nt">license_key</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(beffroi_secret:GEOIP_LICENSE_KEY)%'</span>
 </span></code></pre></div>
-<p><code>.env</code> leaves <code>GEOIP_LICENSE_KEY</code> empty. Once a deployment names its key, a weekly timed step downloads the
-databases, and <code>bin/console beffroi:geoip:refresh</code> does it at once.</p>
+<p><code>.env</code> leaves <code>GEOIP_LICENSE_KEY</code> empty. Once a deployment names its key, in the variable or in the file
+<code>GEOIP_LICENSE_KEY_FILE</code> names, a weekly timed step downloads the databases, and <code>bin/console
+beffroi:geoip:refresh</code> does it at once. A download stops at 512 MiB, and so does the database it unpacks.</p>
 <h2 id="passwords"><code>passwords</code><a class="headerlink" href="#passwords" title="Link to this section">&para;</a></h2>
 <p>The list of compromised passwords a password is compared with before it is written (NIST SP 800-63B
 §3.1.1.2). How long a password has to be and how hard it is to guess are rules of the core, and no option
 lowers them.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nt">passwords</span><span class="p">:</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">        </span><span class="nt">breached</span><span class="p">:</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">            </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_BREACHED_PASSWORDS_ENDPOINT)%'</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">            </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(float:BEFFROI_BREACHED_PASSWORDS_TIMEOUT)%'</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="nt">passwords</span><span class="p">:</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">        </span><span class="nt">breached</span><span class="p">:</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">            </span><span class="nt">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_BREACHED_PASSWORDS_ENDPOINT)%'</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">            </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(float:BEFFROI_BREACHED_PASSWORDS_TIMEOUT)%'</span>
 </span></code></pre></div>
 <p><code>BEFFROI_BREACHED_PASSWORDS_ENDPOINT</code> names the list, <code>https://api.pwnedpasswords.com/range/</code> for Pwned
 Passwords, and <code>.env</code> leaves it empty: no list is asked and nothing of a password leaves the deployment.
@@ -6037,7 +6187,10 @@ after a login that used it, on the asynchronous lane, once its last answer is th
 <code>BEFFROI_INTERACTION_LOGIN_HINT</code> names: <code>sub</code>, the subject the provider issued to that client, as in <code>.env</code>;
 <code>username</code>, the name a person signs in with; or <code>none</code>, which leaves the hint to a class tagged
 <code>beffroi.oidc.login_hint</code>, and the application tags none, so the image then reads no hint. It is read one way
-and never searched, and the login page offers the name of the person it names.</p>
+and never searched. Under <code>username</code>, the login page offers the hint as the client sent it, whether an account
+holds it or not. Under <code>sub</code>, it offers the username of the person the hint names, and only when the client
+would be told who she is without asking her: a client registered with <code>requires_consent: false</code>, or one she gave
+a consent still in force. Otherwise it offers nothing, as for a hint that names nobody.</p>
 <p><a href="../../../developers/oidc/interactions/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Interactions</a></p>
 <h2 id="locales"><code>locales</code><a class="headerlink" href="#locales" title="Link to this section">&para;</a></h2>
@@ -6054,8 +6207,9 @@ which five variables time, <code>BEFFROI_BACK_CHANNEL_LOGOUT_TIMEOUT</code> and 
 <code>.env</code>, five seconds an attempt, then six retries, two seconds after the first failure and three times longer each
 time, a minute at most. The retry schedule is the one of every notification the provider carries to a third party,
 on the <code>async_notifications</code> transport of the application: the logout tokens, the notifications of the backchannel
-authentication flow, the pushes that tell a person something waits for them or that a way of signing in to their
-account changed, and the mails and texts that tell them a request waits.</p>
+authentication flow, the pushes, mails and texts that tell a person a request waits for them, and the
+confirmations of an address. A notice of a change to the credentials of an account is the one message of that
+transport on a schedule of its own, <a href="#notices"><code>notices</code></a>.</p>
 <p>The schedule is also the <code>exp</code> of a logout token, 235 seconds with the values of <code>.env</code>, and a retiring
 signing key stays published that long at least, so that the provider stops trying when what it sends stops
 being verifiable. The transport retries with that very schedule, and <code>bin/console beffroi:doctor</code> says whether
@@ -6077,27 +6231,28 @@ by registering its grant and a delivery mode.</p>
 §2.1). Its services and routes are always wired, and the file reads the subject from
 <code>BEFFROI_WEB_PUSH_SUBJECT</code>, which <code>default::</code> makes no subject at all when it is empty: web push then serves
 nothing, no push leaves the deployment, and the page where a browser would subscribe says so.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="nt">web_push</span><span class="p">:</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">        </span><span class="nt">subject</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::BEFFROI_WEB_PUSH_SUBJECT)%'</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">        </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(float:BEFFROI_WEB_PUSH_TIMEOUT)%'</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="nt">web_push</span><span class="p">:</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">        </span><span class="nt">subject</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::BEFFROI_WEB_PUSH_SUBJECT)%'</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">        </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(float:BEFFROI_WEB_PUSH_TIMEOUT)%'</span>
 </span></code></pre></div>
 <p><code>.env</code> names the contact of the development stack, <code>mailto:operator@op.localhost</code>, so web push is on in the
 image: a deployment names its own contact, or empties the variable to turn it off. The push is signed with the
 application server key of the tenant, drawn like every other key of the tenant:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>VAPID
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>bin/console<span class="w"> </span>beffroi:keys:generate<span class="w"> </span>--algorithm<span class="o">=</span>VAPID
 </span></code></pre></div>
 <p><a href="../web-push/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Web push</a></p>
 <h2 id="mail"><code>mail</code><a class="headerlink" href="#mail" title="Link to this section">&para;</a></h2>
 <p>Whether the provider writes to people, at the email address marked verified and at no other, through a
-transport of <code>symfony/mailer</code>. Naming a <code>dsn</code> turns it on, and the file reads it from <code>BEFFROI_MAIL_DSN</code>, which
-<code>default::</code> makes no DSN at all when it is empty: no mail then leaves the deployment. A mail is written from
+transport of <code>symfony/mailer</code>. Naming a <code>dsn</code> turns it on, and the file reads it from <code>BEFFROI_MAIL_DSN</code>, or from
+the file <code>BEFFROI_MAIL_DSN_FILE</code> names, which <code>default::</code> makes no DSN at all when it is empty: no mail then leaves
+the deployment. A mail is written from
 the <code>sender</code>, <code>BEFFROI_MAIL_SENDER</code>, an address alone or behind a name.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="nt">mail</span><span class="p">:</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">        </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::BEFFROI_MAIL_DSN)%'</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">        </span><span class="nt">sender</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::BEFFROI_MAIL_SENDER)%'</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="nt">mail</span><span class="p">:</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">        </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::beffroi_secret:BEFFROI_MAIL_DSN)%'</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">        </span><span class="nt">sender</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::BEFFROI_MAIL_SENDER)%'</span>
 </span></code></pre></div>
 <p><code>.env</code> names neither, so the image writes no mail until a deployment names both. The transport is built by the
 factory of <code>symfony/mailer</code> at the first mail, and a mail leaves the image through SMTP, <code>smtp://</code> or <code>smtps://</code>.
@@ -6113,16 +6268,17 @@ domain in the management of the domains, and no header of a message turns it off
 </span> Reaching the person of a backchannel request</a></p>
 <h2 id="sms"><code>sms</code><a class="headerlink" href="#sms" title="Link to this section">&para;</a></h2>
 <p>Whether the provider texts people, at the phone number marked verified and at no other, through a texter transport
-of <code>symfony/notifier</code>. Naming a <code>dsn</code> turns it on, and the file reads it from <code>BEFFROI_SMS_DSN</code>, which <code>default::</code>
-makes no DSN at all when it is empty: no text then leaves the deployment. The DSN names the scheme of a bridge of
+of <code>symfony/notifier</code>. Naming a <code>dsn</code> turns it on, and the file reads it from <code>BEFFROI_SMS_DSN</code>, or from the file
+<code>BEFFROI_SMS_DSN_FILE</code> names, which <code>default::</code> makes no DSN at all when it is empty: no text then leaves the
+deployment. The DSN names the scheme of a bridge of
 <code>symfony/notifier</code>, with the number or the name a text is sent from among its options.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="nt">sms</span><span class="p">:</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">        </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::BEFFROI_SMS_DSN)%'</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="nt">sms</span><span class="p">:</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">        </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::beffroi_secret:BEFFROI_SMS_DSN)%'</span>
 </span></code></pre></div>
 <p><code>.env</code> names none. The image installs one bridge of <code>symfony/notifier</code>, that of Sweego (<code>symfony/sweego-notifier</code>),
 so a deployment of the image texts through Sweego:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>BEFFROI_SMS_DSN=sweego://API_KEY@default?region=FR&amp;campaign_type=transac&amp;shorten_urls=false
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>BEFFROI_SMS_DSN=sweego://API_KEY@default?region=FR&amp;campaign_type=transac&amp;shorten_urls=false
 </span></code></pre></div>
 <p>The bridge requires <code>region</code>, the country of the numbers as an ISO 3166-1 alpha-2 code, and <code>campaign_type</code>, such as
 <code>transac</code>. <code>shorten_urls=false</code> keeps the links of a text as the provider wrote them: without it, Sweego replaces
@@ -6131,11 +6287,29 @@ answer. A DSN no installed factory reads sends nothing, the log saying why at ea
 itself, drops the text and counts the person reached.</p>
 <p><a href="../../../developers/oidc/grants/backchannel-authentication/#reaching-the-person"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Reaching the person of a backchannel request</a></p>
+<h2 id="notices"><code>notices</code><a class="headerlink" href="#notices" title="Link to this section">&para;</a></h2>
+<p>How long a notice of a change to the credentials of an account comes back to a channel that did not take it, a
+mail server or an SMS provider that is down for hours. Whatever its channel, push, mail or text, such a notice is
+the one message of the <code>async_notifications</code> transport that is not retried on the schedule of
+<a href="#back_channel_logout"><code>back_channel_logout</code></a>, which stops within minutes, but on this one, which the file reads
+from four variables:</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="nt">notices</span><span class="p">:</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">        </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_NOTICE_RETRIES)%'</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">        </span><span class="nt">retry_delay</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_NOTICE_RETRY_DELAY)%'</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">        </span><span class="nt">retry_multiplier</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_NOTICE_RETRY_MULTIPLIER)%'</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">        </span><span class="nt">retry_max_delay</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_NOTICE_RETRY_MAX_DELAY)%'</span>
+</span></code></pre></div>
+<p>With the values of <code>.env</code>, thirty returns, a minute after the first failure and twice longer each time, an hour
+at most: 31 attempts over 25 hours. Once they are spent, the notice not delivered is an act of the person.</p>
+<p><a href="../messenger/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> Messenger</a></p>
 <h2 id="client_authentication"><code>client_authentication</code><a class="headerlink" href="#client_authentication" title="Link to this section">&para;</a></h2>
 <p>What a client assertion is held to (RFC 7523 §3), how far ahead its <code>exp</code> may be and how much clock it is
-allowed, and what one read of a <code>jwks_uri</code> may cost: its timeout, its size, how long its keys are kept and how
-often an unknown <code>kid</code> may read it again. The bounds of a read are those of every published key set the
-provider reads, the clients' and the trusted issuers'. The file reads them from
+allowed, and what one read of a <code>jwks_uri</code> may cost: its timeout, its size, how long its keys are kept, and how
+long one read waits after the one before, which follows a read that failed or a <code>kid</code> the kept set does not hold.
+The bounds of a read are those of every published key set the provider reads, the clients' and the trusted
+issuers'. The file reads them from
 <code>BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME</code>, <code>BEFFROI_CLIENT_ASSERTION_LEEWAY</code> and the four <code>BEFFROI_JWKS_URI_*</code>
 variables. Which methods a client may authenticate with is the wiring and its registration, and nothing of
 this section.</p>
@@ -6151,13 +6325,13 @@ client.</p>
 <h2 id="dpop"><code>dpop</code><a class="headerlink" href="#dpop" title="Link to this section">&para;</a></h2>
 <p>What a proof of possession is held to (RFC 9449): its age, the clock allowed, and whether it carries a nonce of
 the provider (RFC 9449 §8). A client that sends no proof is not concerned.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="nt">dpop</span><span class="p">:</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">        </span><span class="nt">proof_max_age</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_DPOP_PROOF_MAX_AGE)%'</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">        </span><span class="nt">leeway</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_DPOP_LEEWAY)%'</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">        </span><span class="nt">nonce</span><span class="p">:</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">            </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(bool:BEFFROI_DPOP_NONCE_REQUIRED)%'</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">            </span><span class="nt">ttl</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_DPOP_NONCE_TTL)%'</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="nt">dpop</span><span class="p">:</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">        </span><span class="nt">proof_max_age</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_DPOP_PROOF_MAX_AGE)%'</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">        </span><span class="nt">leeway</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_DPOP_LEEWAY)%'</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">        </span><span class="nt">nonce</span><span class="p">:</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">            </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(bool:BEFFROI_DPOP_NONCE_REQUIRED)%'</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">            </span><span class="nt">ttl</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_DPOP_NONCE_TTL)%'</span>
 </span></code></pre></div>
 <p><code>.env</code> asks for no nonce, <code>BEFFROI_DPOP_NONCE_REQUIRED=false</code>, and <code>true</code> asks one of every proof.
 <code>nonce.required</code> is read once, when the port that checks the proofs is built.</p>
@@ -6170,8 +6344,8 @@ declared whole: its keys, the algorithms it signs with, the clients that may pre
 source of the identities it names and the scopes it is trusted for. <code>.env</code> declares none, and the grant issues
 a token only to a client that holds a resource, which a client of the image does when its initial access token
 gave it one (<a href="../../../developers/oidc/grants/jwt-bearer/">JWT bearer</a>).</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="nt">trusted_issuers</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TRUSTED_ISSUERS)%'</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="nt">trusted_issuers</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_TRUSTED_ISSUERS)%'</span>
 </span></code></pre></div>
 <p><code>BEFFROI_TRUSTED_ISSUERS</code> carries the section whole, a JSON document keyed by the <code>iss</code> of each issuer, whose
 members <a href="../../reference/configuration/#trusted_issuers">the reference</a> lists. The <code>sub</code> of an assertion names
@@ -6182,8 +6356,8 @@ ever created from an assertion.</p>
 <h2 id="clients"><code>clients</code><a class="headerlink" href="#clients" title="Link to this section">&para;</a></h2>
 <p>The clients a file of the application declares, keyed by <code>client_id</code>, each read like a registration of RFC
 7591 §2. The application's file leaves the section empty, and no variable sets it:</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="nt">clients</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
 </span></code></pre></div>
 <p>The image declares no client: a client of a deployment registers itself, at the endpoint <code>client_registration</code>
 opens (<a href="../../../developers/oidc/dynamic-registration/">dynamic registration</a>). The development configuration,
@@ -6222,20 +6396,20 @@ tenant has no registration endpoint, none in its discovery document, and <code>4
 <code>initial_access_token</code>, a token the tenant issues, limits and revokes; <code>software_statement</code>, a statement
 signed by an authority the tenant pins in <code>BEFFROI_REGISTRATION_STATEMENT_ISSUERS</code>; or <code>open</code>, no credential
 at all, for a tenant with no real user.</p>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="nt">client_registration</span><span class="p">:</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_REGISTRATION_MODE)%'</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">        </span><span class="nt">default_scope</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_REGISTRATION_DEFAULT_SCOPE)%'</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">        </span><span class="nt">keep_a_client_unused_for</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR)%'</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">        </span><span class="nt">keep_a_client_never_used_for</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR)%'</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">        </span><span class="nt">sector_identifier_timeout</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(float:BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT)%'</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">        </span><span class="nt">sector_identifier_max_size</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE)%'</span>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">        </span><span class="nt">statement_max_lifetime</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME)%'</span>
-</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">        </span><span class="nt">statement_leeway</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_STATEMENT_LEEWAY)%'</span>
-</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">        </span><span class="nt">statement_issuers</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_REGISTRATION_STATEMENT_ISSUERS)%'</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">    </span><span class="nt">client_registration</span><span class="p">:</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_REGISTRATION_MODE)%'</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">        </span><span class="nt">default_scope</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(BEFFROI_REGISTRATION_DEFAULT_SCOPE)%'</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">        </span><span class="nt">keep_a_client_unused_for</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR)%'</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">        </span><span class="nt">keep_a_client_never_used_for</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR)%'</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">        </span><span class="nt">sector_identifier_timeout</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(float:BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT)%'</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">        </span><span class="nt">sector_identifier_max_size</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE)%'</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">        </span><span class="nt">statement_max_lifetime</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME)%'</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">        </span><span class="nt">statement_leeway</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_REGISTRATION_STATEMENT_LEEWAY)%'</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">        </span><span class="nt">statement_issuers</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_REGISTRATION_STATEMENT_ISSUERS)%'</span>
 </span></code></pre></div>
 <p>Under <code>BEFFROI_REGISTRATION_MODE=initial_access_token</code>, a client registers with a token the console issues:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>bin/console<span class="w"> </span>beffroi:client:token:issue<span class="w"> </span><span class="s1">'Partner integration'</span><span class="w"> </span>--registrations<span class="o">=</span><span class="m">5</span><span class="w"> </span>--days<span class="o">=</span><span class="m">7</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>bin/console<span class="w"> </span>beffroi:client:token:issue<span class="w"> </span><span class="s1">'Partner integration'</span><span class="w"> </span>--registrations<span class="o">=</span><span class="m">5</span><span class="w"> </span>--days<span class="o">=</span><span class="m">7</span>
 </span></code></pre></div>
 <p>The name says later which integration a token was for. Without the options, a token registers one client and
 is worth thirty days; its value is printed once, and the provider keeps only its digest.</p>
@@ -6250,6 +6424,24 @@ registers with PKCE required, as <a href="../../../developers/oidc/clients/#what
 says.</p>
 <p><a href="../../../developers/oidc/dynamic-registration/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> Dynamic registration</a></p>
+<h2 id="outbound"><code>outbound</code><a class="headerlink" href="#outbound" title="Link to this section">&para;</a></h2>
+<p>Which networks of the deployment the requests of the protocol may reach, whoever wrote their URL: a <code>jwks_uri</code>,
+a trusted issuer's included, a <code>sector_identifier_uri</code>, a <code>request_uri</code>, a back-channel logout URI, a CIBA
+notification endpoint and the endpoint of a push subscription. Every private, loopback, link-local or reserved
+address is refused, once the name is resolved and on every address the request connects to, but those of the
+networks <code>reachable_private_networks</code> names, IP addresses or networks in CIDR notation, which the file reads as a
+JSON list:</p>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">    </span><span class="nt">outbound</span><span class="p">:</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">        </span><span class="nt">reachable_private_networks</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS)%'</span>
+</span></code></pre></div>
+<p><code>.env</code> names none, <code>[]</code>. A deployment whose clients answer on its own networks names those and no wider, as
+<code>'["10.20.0.0/16"]'</code>, and anything in the list that is neither an address nor a network is refused. The
+requests whose URL the deployment fixes, to the key management service, the FIDO metadata, the list of passkey
+providers the community keeps, the GeoLite2 databases, the list of compromised passwords, the SAML metadata and
+the bridge of mail and SMS, are not held to it.</p>
+<p><a href="../deployment/#what-leaves-the-provider"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
+</span> What leaves the provider</a></p>
 <h2 id="saml"><code>saml</code><a class="headerlink" href="#saml" title="Link to this section">&para;</a></h2>
 <p>The SAML roles of the tenant, the peers of each, and the SAML keys. Whether a role is on is a variable, read
 when the container builds what the role changes: <code>.env</code> turns the identity provider on and the service
@@ -6304,21 +6496,21 @@ is off are refused at their first use.</p>
 </tr>
 </tbody>
 </table>
-<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nt">beffroi</span><span class="p">:</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">        </span><span class="nt">keys</span><span class="p">:</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">            </span><span class="nt">staging_delay</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_SAML_KEY_STAGING_DELAY)%'</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">            </span><span class="nt">age</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_SAML_KEY_AGE)%'</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">        </span><span class="nt">metadata</span><span class="p">:</span>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">            </span><span class="nt">cache_duration</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_SAML_METADATA_CACHE_DURATION)%'</span>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">        </span><span class="nt">identity_provider</span><span class="p">:</span>
-</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(bool:BEFFROI_SAML_IDENTITY_PROVIDER)%'</span>
-</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w">            </span><span class="nt">want_authn_requests_signed</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(bool:BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED)%'</span>
-</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w">        </span><span class="nt">service_provider</span><span class="p">:</span>
-</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(bool:BEFFROI_SAML_SERVICE_PROVIDER)%'</span>
-</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">            </span><span class="nt">entity_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID)%'</span>
-</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">        </span><span class="nt">service_providers</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_SAML_SERVICE_PROVIDERS)%'</span>
-</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="w">        </span><span class="nt">identity_providers</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_SAML_IDENTITY_PROVIDERS)%'</span>
+<div class="language-yaml highlight"><span class="filename">config/packages/beffroi.yaml</span><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nt">beffroi</span><span class="p">:</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="nt">saml</span><span class="p">:</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">        </span><span class="nt">keys</span><span class="p">:</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">            </span><span class="nt">staging_delay</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_SAML_KEY_STAGING_DELAY)%'</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">            </span><span class="nt">age</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_SAML_KEY_AGE)%'</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">        </span><span class="nt">metadata</span><span class="p">:</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">            </span><span class="nt">cache_duration</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(int:BEFFROI_SAML_METADATA_CACHE_DURATION)%'</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">        </span><span class="nt">identity_provider</span><span class="p">:</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(bool:BEFFROI_SAML_IDENTITY_PROVIDER)%'</span>
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">            </span><span class="nt">want_authn_requests_signed</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(bool:BEFFROI_SAML_WANT_AUTHN_REQUESTS_SIGNED)%'</span>
+</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="w">        </span><span class="nt">service_provider</span><span class="p">:</span>
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">            </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(bool:BEFFROI_SAML_SERVICE_PROVIDER)%'</span>
+</span><span id="__span-20-13"><a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">            </span><span class="nt">entity_id</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(default::BEFFROI_SAML_SERVICE_PROVIDER_ENTITY_ID)%'</span>
+</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">        </span><span class="nt">service_providers</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_SAML_SERVICE_PROVIDERS)%'</span>
+</span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="w">        </span><span class="nt">identity_providers</span><span class="p">:</span><span class="w"> </span><span class="s">'%env(json:BEFFROI_SAML_IDENTITY_PROVIDERS)%'</span>
 </span></code></pre></div>
 <p><code>keys</code> and <code>metadata</code> belong to no role and turn neither on. With the values of <code>.env</code>, a new SAML key is
 published seven days before it is used and works a year, and the metadata of both roles tell a peer to read
@@ -6344,7 +6536,7 @@ refuses it.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 14:48:25 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

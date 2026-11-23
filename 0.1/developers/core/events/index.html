@@ -5267,7 +5267,7 @@ packages with what listens to it.</p>
 </tr>
 </tbody>
 </table>
-<p>Three interfaces say more of an event that means more:</p>
+<p>Four interfaces say more of an event that means more:</p>
 <table>
 <thead>
 <tr>
@@ -5292,15 +5292,20 @@ packages with what listens to it.</p>
 <td><code>author()</code>, the administrator who did the act through the administration API, by the subject their account carries. Null when the person, the operator at the console or nobody did it</td>
 <td>The journal, which writes it beside the person</td>
 </tr>
+<tr>
+<td><code>SaysWhyItWasRefusedInterface</code></td>
+<td><code>refusalReason()</code> and <code>refusedMethod()</code>, the reason of a refusal and the method it refused, both words this provider gives them and never a value the request carried</td>
+<td>The journal, which writes both beside the act</td>
+</tr>
 </tbody>
 </table>
 <p><strong>An event that names a domain object carries it whole</strong>, as its row holds it: a credential with its hash or its
-envelope and the person it belongs to, a session with its two provenances, a key with its sealed private half.
-That is why the body of every message is sealed on its way out. What reaches the journal of the acts is the act,
-its date, its provenance, sealed, the subject, the client and the author, and nothing else of what the event
-carries. An event that names facts carries the facts and no more: <code>person.provisioned</code> carries the subject and
-the name of the provider, never what the provider said, and an archive is named by its identifier and never
-carried.</p>
+envelope and the person it belongs to, a session with its two provenances, a key with its sealed private half. That
+is why the body of every message is sealed on its way out. What reaches the journal of the acts is the act, its
+date, its provenance, sealed, the subject, the client, the author, and for a refusal its reason and its method, and
+nothing else of what the event carries. An event that names facts carries the facts and no more:
+<code>person.provisioned</code> carries the subject and the name of the provider, never what the provider said, and an archive
+is named by its identifier and never carried.</p>
 <h2 id="the-events">The events<a class="headerlink" href="#the-events" title="Link to this section">&para;</a></h2>
 <h3 id="signing-in">Signing in<a class="headerlink" href="#signing-in" title="Link to this section">&para;</a></h3>
 <table>
@@ -5422,6 +5427,12 @@ page of a code says apart when too many codes have been tried.</p>
 <td>The credential, and never a code</td>
 </tr>
 <tr>
+<td><code>credential_change.not_told</code></td>
+<td><code>CredentialChangeNotTold</code></td>
+<td>A channel gives up on the notice of a change to the ways a person signs in, every attempt of its schedule spent; the person is told of it once, at the sign-in that follows</td>
+<td>The subject, the act the change was written under, the channel, and why its last attempt failed</td>
+</tr>
+<tr>
 <td><code>enrolment_ticket.issued</code></td>
 <td><code>EnrolmentTicketIssued</code></td>
 <td>An enrolment ticket is issued, at the console or through the administration API</td>
@@ -5481,6 +5492,30 @@ page of a code says apart when too many codes have been tried.</p>
 <td><code>PersonDescribedThemselves</code></td>
 <td>A person says something of themselves on their account</td>
 <td>The user, the name of the claim, and whether they took it back</td>
+</tr>
+<tr>
+<td><code>address.confirmation_sent</code></td>
+<td><code>AddressConfirmationSent</code></td>
+<td>A confirmation is sent to an address a person gave, by mail or by text, to establish that it is theirs</td>
+<td>The user and the name of the claim; never the address nor the code</td>
+</tr>
+<tr>
+<td><code>address.confirmation_withheld</code></td>
+<td><code>AddressConfirmationWithheld</code></td>
+<td>A confirmation a person asked for is not sent, the budget of the person or of the address spent</td>
+<td>The user and the name of the claim; never the address</td>
+</tr>
+<tr>
+<td><code>address.established</code></td>
+<td><code>AddressEstablished</code></td>
+<td>A person gives back the confirmation sent to an address of theirs</td>
+<td>The user and the name of the claim; never the address</td>
+</tr>
+<tr>
+<td><code>notification_channels.chosen</code></td>
+<td><code>NotificationChannelsChosen</code></td>
+<td>A person chooses the channels that tell them, and the choice changes something</td>
+<td>The subject, and the names of what changed; never the channels</td>
 </tr>
 <tr>
 <td><code>archive.asked</code></td>
@@ -5549,6 +5584,24 @@ page of a code says apart when too many codes have been tried.</p>
 <td><code>TenantContactChanged</code></td>
 <td>An administrator sets or takes back, through the administration API, <a href="../../../operators/tenant/tenants/#the-contact-it-gives-its-people">the contact the tenant gives its people</a></td>
 <td>The administrator who changed it. It concerns no person</td>
+</tr>
+<tr>
+<td><code>tenant.mail_signing_key_set</code></td>
+<td><code>MailSigningKeySet</code></td>
+<td>An administrator sets, through the administration API, the key of a format the tenant signs its mail with, the key it replaces signing nothing from then on</td>
+<td>The format, <code>smime</code> or <code>pgp</code>, the fingerprint of the key, and the administrator. It concerns no person</td>
+</tr>
+<tr>
+<td><code>tenant.mail_signing_key_removed</code></td>
+<td><code>MailSigningKeyRemoved</code></td>
+<td>An administrator removes one of those keys the same way</td>
+<td>The same</td>
+</tr>
+<tr>
+<td><code>tenant.chain_signed_anew</code></td>
+<td><code>ChainSignedAnew</code></td>
+<td>A chain of the tenant, the journal, the history of the claims or what clients were given, is linked and signed again as the database holds it, with <code>beffroi:chain:sign-anew</code>, once a person has read what its check found</td>
+<td>The name of the chain, and the first and the last positions linked again. It concerns no person</td>
 </tr>
 </tbody>
 </table>
@@ -5656,7 +5709,7 @@ a kind implements, which is how the one that writes the journal hears every even
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     

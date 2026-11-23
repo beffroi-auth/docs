@@ -5125,6 +5125,11 @@ carries the <code>client_id</code> the provider drew and no secret; a confidenti
 registers no redirect URI: nothing of this flow sends a browser back to the client, so a redirect URI is
 refused unless the client is also registered for <code>authorization_code</code>. A public client gets a refresh token
 only by asking for <code>offline_access</code> (<a href="../refresh-token/">refresh token</a>).</p>
+<p>A device that takes <a href="../../pairwise-subjects/">pairwise subjects</a> proves its sector with a key, no redirection
+carrying its identifiers: it authenticates with <code>private_key_jwt</code> or <code>self_signed_tls_client_auth</code> under a key
+it publishes behind a <code>jwks_uri</code>, and is of the sector of the host of that <code>jwks_uri</code>, or of the
+<code>sector_identifier_uri</code> it names, whose document then lists that <code>jwks_uri</code>. A device that authenticates any
+other way, a public one included, is refused pairwise subjects with <code>invalid_client_metadata</code>.</p>
 <h2 id="starting-the-device-authorization-endpoint">Starting: the device authorization endpoint<a class="headerlink" href="#starting-the-device-authorization-endpoint" title="Link to this section">&para;</a></h2>
 <p><code>POST /device_authorization</code> (RFC 8628 §3.1) authenticates the client exactly as the token endpoint does,
 then reads what it asks for. Its errors are the JSON of RFC 6749 §5.2, never a redirection and never a page.</p>
@@ -5186,8 +5191,9 @@ then reads what it asks for. Its errors are the JSON of RFC 6749 §5.2, never a 
 <p><strong>The user code</strong> is eight characters out of twenty consonants, <code>BCDFGHJKLMNPQRSTVWXZ</code>, shown in two groups
 of four. With no vowel it spells no word, and no character of it is read for another (RFC 8628 §6.1). Eight
 characters out of twenty are a little over 34 bits, which is worth something only because guessing it is
-slow (§5.1): the page below counts the codes that are refused. No two requests alive at once hold the same
-user code.</p>
+slow (§5.1): the page below counts the codes that are refused. A user code is never one that a request the
+provider still keeps holds, expired or answered: the provider draws again, eight times at most, and fails the
+request when every draw is held.</p>
 <p>The provider keeps the SHA-256 of both codes, never the codes, beside the client, the scopes, the resources
 and where the device asked from.</p>
 <table>
@@ -5271,7 +5277,7 @@ come in the order the device can act on them (RFC 8628 §3.5):</p>
 </tr>
 <tr>
 <td><code>invalid_grant</code></td>
-<td>The person allowed, and the code was spent already, or the session they allowed with has ended or is past its expiry</td>
+<td>The person allowed, and the code was spent already, the session they allowed with has ended or is past its expiry, or the person took back their consent to the client after allowing</td>
 </tr>
 <tr>
 <td>The tokens</td>
@@ -5308,7 +5314,7 @@ lifetime of every other. They are bound to what the polling request binds them t
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:36:39 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
   </span>
 
     
