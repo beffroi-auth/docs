@@ -4183,8 +4183,9 @@ root of the monorepo, because the application installs the packages beside it th
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>build<span class="w"> </span>--file<span class="w"> </span>apps/beffroi/Dockerfile<span class="w"> </span>--target<span class="w"> </span>frankenphp_prod<span class="w"> </span>.
 </span></code></pre></div>
 <p><code>apps/beffroi/</code> is copied without what a working copy holds beside the repository: <code>Dockerfile.dockerignore</code> leaves
-out its <code>.env.local</code>, where the development stack writes its key management service, the secrets of its
-clients and the password of its user, and its <code>var/</code> and <code>vendor/</code>. The image compiles the environment the
+out its <code>.env.local</code>, where <code>castor provision</code> writes the values of the development stack
+(<a href="../../getting-started/the-standalone-application/#on-your-machine">on your machine</a>), and its <code>var/</code> and
+<code>vendor/</code>. The image compiles the environment the
 repository holds, and a deployment sets its own: <a href="../configuration/">configuration</a>.</p>
 <p>The production image sets <code>APP_ENV=prod</code>, reads <code>php.ini-production</code>, preloads <code>config/preload.php</code> into
 OPcache, and turns worker mode on: the kernel is booted once per worker and serves every request that worker
@@ -4394,10 +4395,11 @@ plan measures: an RSA key of 2048 bits, and below TLS 1.3 the two suites of FAPI
 §8.5 a listener built on Go can offer, <code>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</code> and
 <code>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</code>. TLS 1.2 is the floor Caddy already holds.</p>
 <p><strong>The host that asks for a client certificate is a host of its own</strong> (RFC 8705 §5). It is served when
-<code>CADDY_EXTRA_CONFIG</code> imports <code>mtls.Caddyfile</code>, under the name <code>MTLS_SERVER_NAME</code> gives it, and announced to
-clients through <code>BEFFROI_MTLS_ORIGIN</code>. Its listener asks for a certificate and serves the connection when none
-is presented, so a client that authenticates another way never fails at the handshake. The ordinary host asks
-for nothing.</p>
+<code>CADDY_EXTRA_CONFIG</code> imports <code>mtls.Caddyfile</code>, under the name <code>MTLS_SERVER_NAME</code> gives it, and named to the
+application in <code>BEFFROI_MTLS_ORIGIN</code>, which announces it to clients and wires the two methods that read a
+certificate and the binding of a token to one. Its listener asks for a certificate and serves the connection
+when none is presented, so a client that authenticates another way never fails at the handshake. The ordinary
+host asks for nothing.</p>
 <ul>
 <li><strong>The certificate reaches PHP in a server variable, <code>SSL_CLIENT_CERT</code>, and never in a header.</strong> A client
   sets every header of its request and no variable of the process that serves it. A request carrying a
@@ -4478,8 +4480,8 @@ development environment, where it would pin every <code>.localhost</code> name o
 <h2 id="what-leaves-the-provider">What leaves the provider<a class="headerlink" href="#what-leaves-the-provider" title="Link to this section">&para;</a></h2>
 <p>A deployment that filters what goes out reads it here. No outbound redirect is followed, whoever asks, but
 two, each to the one host the application names: a download of MaxMind is followed to its storage, and a
-revocation list of the test service of the FIDO Alliance to the host that serves it. The image sends no text,
-installing no bridge of <code>symfony/notifier</code>, whatever <code>BEFFROI_SMS_DSN</code> names.</p>
+revocation list of the test service of the FIDO Alliance to the host that serves it. A text leaves for Sweego
+alone, the one bridge of <code>symfony/notifier</code> the image installs.</p>
 <table>
 <thead>
 <tr>
@@ -4540,6 +4542,11 @@ installing no bridge of <code>symfony/notifier</code>, whatever <code>BEFFROI_SM
 <td>When a backchannel request waits on a person whose address is marked verified</td>
 </tr>
 <tr>
+<td>The worker</td>
+<td>The API of Sweego, <code>api.sweego.io</code> unless the DSN names another host, when <code>BEFFROI_SMS_DSN</code> names one</td>
+<td>When a backchannel request waits on a person whose phone number is marked verified</td>
+</tr>
+<tr>
 <td>The worker, the console</td>
 <td>The metadata of the SAML peers given by URL</td>
 <td>Every hour, and on <code>beffroi:saml:*:refresh</code></td>
@@ -4581,7 +4588,7 @@ installing no bridge of <code>symfony/notifier</code>, whatever <code>BEFFROI_SM
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:44:26 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:44:50 UTC">November 22, 2026</span>
   </span>
 
     

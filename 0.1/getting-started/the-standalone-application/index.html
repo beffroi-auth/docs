@@ -4137,14 +4137,22 @@ worker is created and left stopped, because it refuses to start without one.</p>
 <p><code>castor provision</code> is what a first start needs, in order, and it can be run again at will:</p>
 <ol>
 <li>it writes into <code>apps/beffroi/.env.local</code> what is missing there: the key management service, a sodium key
-   generated in place unless <code>--kms file</code>, <code>--kms vault</code> or <code>--kms aws</code> names another backend, the secrets of
-   the clients the stack declares, and the password of the development user;</li>
+   generated in place unless <code>--kms file</code>, <code>--kms vault</code> or <code>--kms aws</code> names another backend, with sodium or Vault
+   a second key in <code>BEFFROI_KMS_DSN_SECOND</code> for a move of the data keys, the secrets of the clients the stack
+   declares, the password of the development user, the origin of the host that asks for a client certificate,
+   <code>BEFFROI_MTLS_ORIGIN=https://mtls.op.localhost</code>, and the open registration of clients,
+   <code>BEFFROI_REGISTRATION_MODE=open</code>. Whatever the file held, it sets the public key sets of the clients of the FAPI
+   2.0 and FAPI-CIBA conformance plans, of the issuer of assertions the stack trusts and of the authority whose
+   software statements the tenant accepts to what their keys publish, and under Vault it writes a new token into
+   <code>BEFFROI_KMS_DSN</code> when the one there no longer works;</li>
 <li>it plays the migrations;</li>
 <li>it writes the row of the tenant with <code>beffroi:tenant:synchronize</code>;</li>
 <li>it draws the keys of the tenant, the key messages are sealed to first, or checks with the key management
    service that the keys already there still open;</li>
-<li>it creates the user <code>alice</code> with a verified email address, describes her with the claims of the
-   <code>profile</code>, <code>phone</code> and <code>address</code> scopes, and sets her password;</li>
+<li>it creates the user <code>alice</code> with a verified email address, describes her with the claims of the <code>profile</code>,
+   <code>phone</code> and <code>address</code> scopes, sets her password, writes her subject into <code>.env.local</code> as
+   <code>BEFFROI_DEV_USER_SUBJECT</code>, and says she is the subject <code>alice@issuer.demo.localhost</code> at the issuer of
+   assertions the stack trusts;</li>
 <li>it issues the client certificate of the stack, on the machine, under <code>var/mtls/</code>;</li>
 <li>it starts the worker.</li>
 </ol>
@@ -4270,7 +4278,7 @@ development stack draws both.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 22:31:46 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:59:39 UTC">November 22, 2026</span>
   </span>
 
     

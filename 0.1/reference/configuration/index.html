@@ -4872,7 +4872,7 @@ key of the tenant but its SAML keys, which take theirs from <a href="#samlkeys">
 <td><code>BEFFROI_MTLS_ORIGIN</code></td>
 <td>string</td>
 <td>empty: no mutual TLS</td>
-<td>The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as <code>https://mtls.op.example.com</code>. The endpoints are announced under it in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, the provider serves no mutual TLS: <code>tls_client_auth</code> and <code>self_signed_tls_client_auth</code> are not wired, and no token is bound to a certificate. A deployment whose listener writes the certificate in <code>SSL_CLIENT_CERT</code> on the host of the issuer itself, which the site of <code>SERVER_NAME</code> never does, names that host</td>
+<td>The scheme and the authority, without a path, of the host whose TLS listener asks for a client certificate, as <code>https://mtls.op.example.com</code>. Six endpoints are announced under it in <code>mtls_endpoint_aliases</code> (RFC 8705 §5). Empty, the provider serves no mutual TLS: <code>tls_client_auth</code> and <code>self_signed_tls_client_auth</code> are not wired, and no token is bound to a certificate. A deployment whose listener writes the certificate in <code>SSL_CLIENT_CERT</code> on the host of the issuer itself, which the site of <code>SERVER_NAME</code> never does, names that host</td>
 </tr>
 </tbody>
 </table>
@@ -5290,7 +5290,7 @@ verifies.</p>
 <td><code>BEFFROI_SMS_DSN</code></td>
 <td>string, not empty</td>
 <td>empty: none, no text</td>
-<td>The texter transport of <code>symfony/notifier</code> a text leaves through, by the scheme of a bridge the application installs, the number or the name it is sent from among its options. Naming one turns SMS on, to the phone number of a person marked verified and to no other. The image installs no bridge, so a deployment of it sends no text: a DSN no installed factory reads sends nothing, and the log says why at each one</td>
+<td>The texter transport of <code>symfony/notifier</code> a text leaves through, by the scheme of a bridge the application installs, the number or the name it is sent from among its options. Naming one turns SMS on, to the phone number of a person marked verified and to no other. The image installs the bridge of Sweego and no other, <code>sweego://API_KEY@default?region=FR&amp;campaign_type=transac&amp;shorten_urls=false</code>, where <code>shorten_urls=false</code> keeps the links of a text as the provider wrote them: a DSN no installed factory reads sends nothing, and the log says why at each one</td>
 </tr>
 </tbody>
 </table>
@@ -5627,7 +5627,7 @@ one</a>).</p>
 <td><code>require_sender_constrained_tokens</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td><em>Deployment.</em> A token request of the client proves a certificate (RFC 8705 §3) or a key (RFC 9449 §5), or it is refused rather than answered with bearer tokens (FAPI 2.0 Security Profile §5.3.1)</td>
+<td><em>Deployment.</em> A token request of the client proves a certificate its tokens are bound to (RFC 8705 §3) or a DPoP key (RFC 9449 §5), or it is refused rather than answered with bearer tokens (FAPI 2.0 Security Profile §5.3.2.1)</td>
 </tr>
 <tr>
 <td><code>tls_client_certificate_bound_access_tokens</code></td>
@@ -5639,7 +5639,7 @@ one</a>).</p>
 <td><code>dpop_bound_access_tokens</code></td>
 <td>boolean</td>
 <td><code>false</code></td>
-<td>The client always proves a key of its own with DPoP when it asks for a token (RFC 9449 §5.2): a token request of it that carries no DPoP proof is refused with <code>invalid_request</code>, before anything it came to spend is read. A declaration that names it beside <code>tls_client_certificate_bound_access_tokens</code>, or for a client that authenticates with a certificate, is refused: a token is bound to one thing</td>
+<td>The client always proves a key of its own with DPoP when it asks for a token (RFC 9449 §5.2): a token request of it that carries no DPoP proof is refused with <code>invalid_request</code>, before anything it came to spend is read. <code>true</code> beside <code>tls_client_certificate_bound_access_tokens: true</code>, or for a client that authenticates with a certificate, is refused: a token is bound to one thing</td>
 </tr>
 <tr>
 <td><code>require_signed_request_object</code></td>
@@ -5657,13 +5657,13 @@ one</a>).</p>
 <td><code>id_token_encrypted_response_alg</code></td>
 <td>string</td>
 <td>none</td>
-<td>The JWE key management algorithm the signed ID token is encrypted to a key of the client with (OIDC Core §3.1.3.7), among the wired ones: <code>ECDH-ES+A256KW</code> and <code>RSA-OAEP-256</code> in the application. Named with <code>id_token_encrypted_response_enc</code> or not at all. Left out, the ID token is signed and not encrypted</td>
+<td>The JWE key management algorithm the signed ID tokens and logout tokens are encrypted to a key of the client with (OIDC Core §3.1.3.7, Back-Channel Logout 1.0 §2.4), among the wired ones: <code>ECDH-ES+A256KW</code> and <code>RSA-OAEP-256</code> in the application. Named with <code>id_token_encrypted_response_enc</code> or not at all. Left out, both are signed and not encrypted</td>
 </tr>
 <tr>
 <td><code>id_token_encrypted_response_enc</code></td>
 <td>string</td>
 <td>none</td>
-<td>The JWE content encryption algorithm of that ID token, among the wired ones: <code>A256GCM</code> in the application. OIDC Registration §2 defaults it to an algorithm the application does not wire, so it is written whenever <code>id_token_encrypted_response_alg</code> is</td>
+<td>The JWE content encryption algorithm of those tokens, among the wired ones: <code>A256GCM</code> in the application. OIDC Registration §2 defaults it to an algorithm the application does not wire, so it is written whenever <code>id_token_encrypted_response_alg</code> is</td>
 </tr>
 <tr>
 <td><code>userinfo_signed_response_alg</code></td>
@@ -6285,7 +6285,7 @@ providers</a> is how one is declared.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:44:26 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:59:39 UTC">November 22, 2026</span>
   </span>
 
     

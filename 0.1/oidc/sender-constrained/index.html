@@ -3953,12 +3953,12 @@ bearer grant is bound to what the token request proved. An ID token carries no b
 the same member in its record, which <a href="../introspection-and-revocation/">introspection</a> returns. A resource
 server that verifies an <code>at+jwt</code> offline reads the binding in the token; one that introspects reads it in the
 answer.</p>
-<p><strong>A token is bound to one thing.</strong> A token request that proves a certificate the tokens would be bound to, and
-a DPoP key as well, is refused with <code>invalid_dpop_proof</code>, status <code>400</code>, rather than arbitrated: a token names
-one thing in its <code>cnf</code>, and the provider does not choose for the client. A certificate presented only because
-the listener asked for one binds
-nothing (see <a href="mutual-tls/#tokens-bound-to-the-certificate">mutual TLS</a>), so a client that authenticates
-another way may send a DPoP proof over that connection.</p>
+<p><strong>A token is bound to one thing.</strong> A token request that proves a certificate the tokens would be bound to, and a
+DPoP key as well, is refused with <code>invalid_dpop_proof</code>, status <code>400</code>, rather than arbitrated: a token names one
+thing in its <code>cnf</code>, a single proof-of-possession key (RFC 7800 §3.1), and the provider does not choose for the
+client. A certificate presented only because the listener asked for one binds nothing (see <a href="mutual-tls/#tokens-bound-to-the-certificate">mutual
+TLS</a>), so a client that authenticates another way may send a DPoP
+proof over that connection.</p>
 <h2 id="refresh-tokens">Refresh tokens<a class="headerlink" href="#refresh-tokens" title="Link to this section">&para;</a></h2>
 <p>The refresh token of a <strong>public client</strong> is bound to what the token request proved, key or certificate, and
 it is refreshed only by a request that proves the same thing again: any other request is answered
@@ -3995,7 +3995,7 @@ refuse with <code>invalid_request</code>, status <code>400</code>.</p>
 <tr>
 <td><code>dpop_bound_access_tokens</code></td>
 <td>A DPoP key (RFC 9449 §5.2)</td>
-<td>The client, when it registers. It is refused beside <code>tls_client_certificate_bound_access_tokens</code> and beside a method that authenticates with a certificate, whose tokens are bound to the certificate</td>
+<td>The client, when it registers. <code>true</code> is refused beside <code>tls_client_certificate_bound_access_tokens: true</code> and beside a method that authenticates with a certificate, whose tokens are bound to the certificate</td>
 </tr>
 </tbody>
 </table>
@@ -4011,7 +4011,7 @@ initial access token (<a href="../dynamic-registration/">dynamic registration</a
 </span></code></pre></div>
 <p>Its token requests go to the token endpoint of the host that asks for a certificate, the ordinary host asking
 for none (<a href="mutual-tls/#the-endpoint-aliases">mutual TLS</a>). Until <code>BEFFROI_MTLS_ORIGIN</code> names that host,
-such a registration is refused with <code>invalid_client_metadata</code> (RFC 8705 §3.4). Once it names it, the
+such a registration is refused with <code>invalid_client_metadata</code> (RFC 7591 §3.2.2). Once it names it, the
 deployment serves the host with <code>CADDY_EXTRA_CONFIG</code> and <code>MTLS_SERVER_NAME</code>, or every token request of such a
 client is refused with <code>invalid_request</code>.
 <code>tls_client_certificate_bound_access_tokens</code> and <code>dpop_bound_access_tokens</code> default to <code>false</code>, and no
@@ -4029,8 +4029,10 @@ TLS</a> say what each one compares.</p>
 <p><strong>What the provider announces.</strong> The discovery document always carries <code>dpop_signing_alg_values_supported</code>,
 the signature algorithms the provider is wired with. It carries <code>tls_client_certificate_bound_access_tokens</code>
 set to <code>true</code> while a client authentication method that proves a certificate is wired, which the application
-does while <code>BEFFROI_MTLS_ORIGIN</code> names a host, and to <code>false</code> otherwise. The bare challenge of UserInfo, answered to a request that carries no token at all, is what
-is read from the bindings themselves, both wired in the application: <code>WWW-Authenticate: Bearer, DPoP</code>.</p>
+does while <code>BEFFROI_MTLS_ORIGIN</code> names a host, and to <code>false</code> otherwise. The bare challenge of UserInfo,
+answered to a request that carries no token at all, names the schemes of the two bindings, both wired in the
+application, with the algorithms of <code>dpop_signing_alg_values_supported</code> in <code>algs</code>:
+<code>WWW-Authenticate: Bearer, DPoP algs="..."</code>.</p>
 
 
 
@@ -4051,7 +4053,7 @@ is read from the bindings themselves, both wired in the application: <code>WWW-A
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 15:14:43 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:59:39 UTC">November 22, 2026</span>
   </span>
 
     

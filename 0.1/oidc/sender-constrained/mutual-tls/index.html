@@ -3997,16 +3997,15 @@
 
 
 <h1 id="mutual-tls">Mutual TLS<a class="headerlink" href="#mutual-tls" title="Link to this section">&para;</a></h1>
-<p>RFC 8705 has two halves, and the provider serves both while <code>BEFFROI_MTLS_ORIGIN</code> names a host. A client authenticates with the certificate it
-presents at the TLS handshake (§2), and the tokens it receives are bound to that certificate (§3), so that a
-token presented over a connection without it is refused wherever the binding is checked. The certificate is
-the one the TLS listener of the deployment received, handed to PHP by that listener and never read from a
-header of the request.</p>
+<p>RFC 8705 has two halves, and the provider serves both while <code>BEFFROI_MTLS_ORIGIN</code> names a host. A client
+authenticates with the certificate it presents at the TLS handshake (§2), and the tokens it receives are bound
+to that certificate (§3), so that a token presented over a connection without it is refused wherever the
+binding is checked. The certificate is the one the TLS listener of the deployment received, handed to PHP by
+that listener and never read from a header of the request.</p>
 <h2 id="authenticating-with-a-certificate">Authenticating with a certificate<a class="headerlink" href="#authenticating-with-a-certificate" title="Link to this section">&para;</a></h2>
 <p>Two methods recognise a client by its certificate, and both are wired in the application while
-<code>BEFFROI_MTLS_ORIGIN</code> names a host. Either way the
-request names the client in <code>client_id</code> and presents the certificate at the handshake: a request without a
-certificate presents neither method.</p>
+<code>BEFFROI_MTLS_ORIGIN</code> names a host. Either way the request names the client in <code>client_id</code> and presents the
+certificate at the handshake: a request without a certificate presents neither method.</p>
 <table>
 <thead>
 <tr>
@@ -4145,21 +4144,24 @@ other origin, for six endpoints.</p>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>The issuer does not change, and neither does anything else the document says: an alias is another way to
-the same provider. The backchannel authentication endpoint reads a certificate as well, and is not among the
-aliases. The two methods that read a certificate are wired with the origin and only with it, so the document
-announces <code>tls_client_certificate_bound_access_tokens</code> as <code>true</code> with an origin and as <code>false</code> without one.</p>
+<p>The issuer does not change: an alias is another way to the same provider. The backchannel authentication
+endpoint reads a certificate as well, and is not among the aliases. The two methods that read a certificate
+are wired with the origin and only with it, so with an origin the document lists them in
+<code>token_endpoint_auth_methods_supported</code>, <code>revocation_endpoint_auth_methods_supported</code> and
+<code>introspection_endpoint_auth_methods_supported</code> and announces <code>tls_client_certificate_bound_access_tokens</code> as
+<code>true</code>; without one it lists neither and announces <code>false</code>.</p>
 <h2 id="how-the-certificate-reaches-the-application">How the certificate reaches the application<a class="headerlink" href="#how-the-certificate-reaches-the-application" title="Link to this section">&para;</a></h2>
 <p>The application reads the certificate in one place, the server variable <code>SSL_CLIENT_CERT</code>, named after the one
 mod_ssl sets: the leaf certificate in its PEM envelope, set by the TLS listener from the handshake it carried
 out. An empty envelope, or no variable, is a request made without a certificate. A client controls every
 header of its request and no variable of the process that serves it, so no header is ever read in its place.</p>
 <p><strong>A certificate in a header is refused.</strong> A request that carries <code>Ssl-Client-Cert</code>, <code>X-Ssl-Client-Cert</code>,
-<code>X-Client-Cert</code> or <code>X-Forwarded-Client-Cert</code> is somebody trying, and is refused rather than served without
-its certificate, so that a deployment placed behind a proxy that forwards one learns it on its first request.
-The refusal is <code>invalid_request</code>, status <code>400</code>, at the seven endpoints that read a certificate: <code>/token</code>,
-<code>/par</code>, <code>/introspect</code>, <code>/revoke</code>, <code>/userinfo</code>, <code>/device_authorization</code> and <code>/backchannel_authentication</code>. So
-is a variable that does not hold a PEM certificate, the listener being misconfigured then.</p>
+<code>X-Client-Cert</code> or <code>X-Forwarded-Client-Cert</code> is somebody trying, and is refused rather than served without its
+certificate, so that a deployment placed behind a proxy that forwards one learns it on its first request. The
+refusal is <code>invalid_request</code>, status <code>400</code>, at the seven endpoints of the provider that read one: <code>/token</code>,
+<code>/par</code>, <code>/introspect</code>, <code>/revoke</code>, <code>/userinfo</code>, <code>/device_authorization</code> and <code>/backchannel_authentication</code>, and
+at every request of the administration API, which reads one as well. So is a variable that does not hold a PEM
+certificate, the listener being misconfigured then.</p>
 <p>The image carries a second site block, <code>/etc/frankenphp/mtls.Caddyfile</code>, for the host whose listener asks
 for a certificate. A deployment turns it on with three variables, and the host of <code>SERVER_NAME</code> keeps asking
 for nothing.</p>
@@ -4185,7 +4187,7 @@ for nothing.</p>
 <tr>
 <td><code>BEFFROI_MTLS_ORIGIN</code></td>
 <td>The application</td>
-<td>The origin of that host, which the discovery document announces the aliases under</td>
+<td>The origin of that host, which the discovery document announces the aliases under, and which wires the two methods that read a certificate and the binding of a token to one</td>
 </tr>
 </tbody>
 </table>
@@ -4228,7 +4230,7 @@ taught to trust: the image carries this one alone.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 15:14:43 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 19:29:47 UTC">November 22, 2026</span>
   </span>
 
     

@@ -4151,13 +4151,13 @@
 
 
 <h1 id="logout">Logout<a class="headerlink" href="#logout" title="Link to this section">&para;</a></h1>
-<p>Three specifications, and they are not interchangeable. RP-Initiated Logout 1.0 is a client asking for a
-session to end; Front-Channel Logout 1.0 tells the other clients of that session through the browser; and
-Back-Channel Logout 1.0 tells them server to server, with a signed logout token. A provider that implements
-only the first one has not logged anybody out of anywhere else. The provider implements the three, and
-announces them in its discovery document: <code>end_session_endpoint</code>, and <code>frontchannel_logout_supported</code>,
-<code>frontchannel_logout_session_supported</code>, <code>backchannel_logout_supported</code> and
-<code>backchannel_logout_session_supported</code> set to <code>true</code>.</p>
+<p>Three specifications, and they are not interchangeable. RP-Initiated Logout 1.0 is a client asking for a session
+to end; Front-Channel Logout 1.0 tells the other clients of that session through the browser; and
+Back-Channel Logout 1.0 tells them server to server, with a logout token, signed, and encrypted for a client
+that encrypts its ID tokens. A provider that implements only the first one has not logged anybody out of
+anywhere else. The provider implements the three, and announces them in its discovery document:
+<code>end_session_endpoint</code>, and <code>frontchannel_logout_supported</code>, <code>frontchannel_logout_session_supported</code>,
+<code>backchannel_logout_supported</code> and <code>backchannel_logout_session_supported</code> set to <code>true</code>.</p>
 <h2 id="the-end-session-endpoint">The end session endpoint<a class="headerlink" href="#the-end-session-endpoint" title="Link to this section">&para;</a></h2>
 <p><code>GET</code> or <code>POST</code> at <code>/logout</code>, a page of the interaction plane (RP-Initiated Logout 1.0 §2). The parameters
 are read from the query of a <code>GET</code> and from the form body of a <code>POST</code>.</p>
@@ -4265,6 +4265,12 @@ announcement is made on the end of the session, never on the request that asked 
 <code>id_token_signed_response_alg</code>, or the algorithm the provider signs with by default when it registered none,
 since that is the one the client knows how to verify (§2.6). Its header names <code>typ: logout+jwt</code>, <code>alg</code> and
 <code>kid</code>.</p>
+<p>A client that registered the encryption of its ID tokens, <code>id_token_encrypted_response_alg</code> and
+<code>id_token_encrypted_response_enc</code>, receives it signed, then encrypted with that <code>alg</code>, that <code>enc</code> and the key
+its ID tokens are encrypted to (§2.4, §2.6), since §2.6 says such a client should reject a logout token in
+clear: a nested JWT, the header of the JWE saying <code>cty: JWT</code> (RFC 7519 §5.2) and replicating <code>iss</code> (RFC 7519 §5.3).
+Every other client receives it signed only. Its registration alone decides: nothing of the logout token is
+registered or set on its own.</p>
 <table>
 <thead>
 <tr>
@@ -4311,9 +4317,19 @@ since that is the one the client knows how to verify (§2.6). Its header names <
 the JWK Set at least until that <code>exp</code>, so a client that receives the token late but in time can still verify
 it (<a href="../discovery-and-jwks/">discovery and JWKS</a>).</p>
 <h3 id="its-delivery">Its delivery<a class="headerlink" href="#its-delivery" title="Link to this section">&para;</a></h3>
-<p>The token is minted on the lane of the events once the session has ended, and carried to the client on the
-lane of the notifications: a client that cannot be reached holds no logout back, and nothing a client does
-reaches the person, whose session is already closed.</p>
+<p>A token is minted on the lane of the events once the session has ended, or on the lane of the notifications for a
+client whose key could not be obtained then, and is carried to the client on the lane of the notifications: a
+client that cannot be reached holds no logout back, and nothing a client does reaches the person, whose session is
+already closed.</p>
+<p><strong>A token that cannot be encrypted is not sent in clear.</strong> When the key of a client that encrypts its ID
+tokens cannot be obtained as the session ends, its <code>jwks_uri</code> unreadable or its set holding no key the
+registered <code>alg</code> can be addressed to, the other clients of the session are told, and issuing that
+client's token is left to the lane of the notifications, tried again on the schedule of a delivery below and
+given up as a delivery is. A token issued late carries its own <code>iat</code>, and an <code>exp</code> one budget later. A set that was
+read and holds no fitting key is kept as <a href="../tokens/encryption/#the-key-it-is-encrypted-to">encryption</a> says,
+so such a client is in practice given up once the schedule runs out; a <code>jwks_uri</code> that could not be read is read
+again at each attempt. A client the provider no longer serves, or a session it no longer holds, receives
+nothing.</p>
 <p><strong>One request per attempt:</strong> a <code>POST</code> of <code>application/x-www-form-urlencoded</code> whose only parameter is
 <code>logout_token</code> (§2.5), with no cookie and no authentication, read for its status code and nothing else. No
 redirect is followed: the URI a client registered is where the token goes, and nobody else moves it.</p>
@@ -4343,7 +4359,8 @@ redirect is followed: the URI a client registered is where the token goes, and n
 </tr>
 </tbody>
 </table>
-<p>A client that refuses the token is given up on, and that is said, never kept quiet: an act of the journal,
+<p>A client that refuses the token, one still out of reach when the schedule runs out, and one whose token could
+not be issued by then are given up on, and that is said, never kept quiet: an act of the journal,
 <code>logout_token.given_up</code>, naming the client and the person, so that somebody can see that a client was left
 believing its user signed in.</p>
 <p>Five variables set the schedule of the delivery, here at the values of the image
@@ -4508,7 +4525,7 @@ played.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:07:49 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:59:39 UTC">November 22, 2026</span>
   </span>
 
     

@@ -4055,7 +4055,7 @@ it back for a person.</p>
 <tr>
 <td><code>BackChannelLogoutHandler</code></td>
 <td><code>session.ended</code></td>
-<td>Mints a logout token for each client of the session that registered a back-channel logout URI (Back-Channel Logout 1.0 §2.6), each one raising <code>logout_token.issued</code></td>
+<td>Mints a logout token for each client of the session that registered a back-channel logout URI (Back-Channel Logout 1.0 §2.6), each one raising <code>logout_token.issued</code>, and hands a client whose key cannot be obtained to the notifications lane, which issues its token later</td>
 </tr>
 <tr>
 <td><code>RevokeTheTokensOfTheSessionHandler</code></td>
@@ -4104,9 +4104,10 @@ it back for a person.</p>
 </tr>
 </tbody>
 </table>
-<p>A logout token its client refuses is given up at once. One that cannot be delivered is tried again on the
-schedule of <code>beffroi.back_channel_logout</code>, and goes to the failure transport once that schedule runs out. Either
-way, <code>logout_token.given_up</code> is raised.</p>
+<p>A logout token its client refuses is given up at once. One that cannot be delivered is tried again on the schedule
+of <code>beffroi.back_channel_logout</code>, and goes to the failure transport once that schedule runs out, and so does the
+message that issues one for a client whose key cannot be obtained, tried again on the same schedule. Either way,
+<code>logout_token.given_up</code> is raised.</p>
 <h2 id="the-events-of-the-core">The events of the core<a class="headerlink" href="#the-events-of-the-core" title="Link to this section">&para;</a></h2>
 <table>
 <thead>
@@ -4486,7 +4487,7 @@ way, <code>logout_token.given_up</code> is raised.</p>
 <tr>
 <td><code>logout_token.given_up</code></td>
 <td><code>LogoutTokenGivenUp</code></td>
-<td>A logout token is refused by its client, or could not be delivered within the retries (Back-Channel Logout 1.0 §2.8)</td>
+<td>A logout token is refused by its client (Back-Channel Logout 1.0 §2.8), or could not be delivered, or issued for a client whose key could not be obtained, within the retries</td>
 <td>The client, the subject, the session, what the last attempt came back with; never the token</td>
 <td>A person, a client</td>
 </tr>
@@ -4609,7 +4610,7 @@ is. The reason of <code>pushed_request.refused</code> is one of <code>unknown_re
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 17:07:32 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:59:39 UTC">November 22, 2026</span>
   </span>
 
     

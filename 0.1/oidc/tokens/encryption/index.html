@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The three documents the provider encrypts for a client that asks, the algorithms it encrypts with, the key it encrypts to, and what happens when that key cannot be read.">
+        <meta name="description" content="The documents the provider encrypts for a client that asks, the algorithms it encrypts with, the key it encrypts to, and what happens when that key cannot be read.">
       
       
         <meta name="author" content="The Beffroi contributors">
@@ -82,7 +82,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Beffroi">
   <meta property="og:title" content="Encryption">
-  <meta property="og:description" content="The three documents the provider encrypts for a client that asks, the algorithms it encrypts with, the key it encrypts to, and what happens when that key cannot be read.">
+  <meta property="og:description" content="The documents the provider encrypts for a client that asks, the algorithms it encrypts with, the key it encrypts to, and what happens when that key cannot be read.">
   <meta property="og:image" content="https://doc.beffroi.tech/0.1/assets/images/beffroi-og-image-1200x630.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3998,8 +3998,9 @@
 
 <h1 id="encryption">Encryption<a class="headerlink" href="#encryption" title="Link to this section">&para;</a></h1>
 <p>A client may ask for three of the documents the provider hands it to be encrypted to a key of its own: its ID
-token, its UserInfo answer, and its signed authorization responses. The provider encrypts for the client that
-registered it and for nobody else, and a client that registered nothing receives its documents unencrypted.</p>
+token, its UserInfo answer, and its signed authorization responses. Its logout tokens follow its ID tokens. The
+provider encrypts for the client that registered it and for nobody else, and a client that registered nothing
+receives its documents unencrypted.</p>
 <table>
 <thead>
 <tr>
@@ -4024,10 +4025,16 @@ registered it and for nobody else, and a client that registered nothing receives
 <td><code>authorization_encrypted_response_alg</code>, <code>authorization_encrypted_response_enc</code></td>
 <td>Always</td>
 </tr>
+<tr>
+<td><a href="../../logout/#the-logout-token">Logout token</a> (Back-Channel Logout 1.0 §2.4, §2.6)</td>
+<td>None of its own: the pair of the ID token, and the key the ID tokens are encrypted to</td>
+<td>Always</td>
+</tr>
 </tbody>
 </table>
-<p>Access tokens, refresh tokens and logout tokens are never encrypted. A logout token is signed with the
-algorithm the client registered for its ID tokens, and travels in clear.</p>
+<p>Access tokens and refresh tokens are never encrypted. A logout token is signed with the algorithm the client
+registered for its ID tokens, then encrypted when the client registered their encryption, the header of the JWE
+replicating <code>iss</code> (Back-Channel Logout 1.0 §2.4, RFC 7519 §5.3).</p>
 <p><strong>Signed, then encrypted, never the other way round</strong> (OIDC Core §16.14). The signature says who wrote the
 document and travels inside what hides it, so that a client that opens the JWE finds something to verify
 rather than something to trust. A signed document inside a JWE is a nested JWT, and the header of the JWE
@@ -4106,10 +4113,13 @@ the assertion of <code>private_key_jwt</code> or a request object, reads it agai
 <code>BEFFROI_JWKS_URI_REFETCH_COOLDOWN</code>, 300 seconds in the image. A client that replaces its encryption key
 publishes the new one and keeps the private half of the old one for <code>BEFFROI_JWKS_URI_TTL</code> after that.</p>
 <h2 id="when-the-key-cannot-be-read">When the key cannot be read<a class="headerlink" href="#when-the-key-cannot-be-read" title="Link to this section">&para;</a></h2>
-<p><strong>No document leaves in clear.</strong> When the set behind the <code>jwks_uri</code> cannot be read, or holds no key the
-registered algorithm can be addressed to, the provider writes nothing for that client, and the request that
-was to carry the document fails: the token request that was to carry the ID token, once the code, the device
-code or the <code>auth_req_id</code> it presented has been spent, the UserInfo request, or the authorization response.</p>
+<p><strong>No document leaves in clear.</strong> When the set behind the <code>jwks_uri</code> cannot be read, or holds no key the registered
+algorithm can be addressed to, the provider writes nothing for that client, and the request that was to carry the
+document fails: the token request that was to carry the ID token, before the code, the device code, the
+<code>auth_req_id</code> or the refresh token it presented is spent, so that the client can present it again, in a new
+request, while it is still valid; the UserInfo request; or the authorization response. A logout token is issued
+later: the other clients of the session are told, and issuing that client's token is tried again on the schedule of
+a delivery and given up as one is (<a href="../../logout/#its-delivery">logout</a>).</p>
 <p>A read is given <code>BEFFROI_JWKS_URI_TIMEOUT</code> seconds, 3 in the image, and <code>BEFFROI_JWKS_URI_MAX_SIZE</code> bytes,
 65536 in the image, before it counts as a set that cannot be read
 (<a href="../../../application/configuration/#clients-and-their-requests">configuration</a>).</p>
@@ -4133,7 +4143,7 @@ code or the <code>auth_req_id</code> it presented has been spent, the UserInfo r
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:08:14 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 20:59:39 UTC">November 22, 2026</span>
   </span>
 
     
