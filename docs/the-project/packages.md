@@ -78,6 +78,30 @@ deployed from its image, `ghcr.io/beffroi-auth/beffroi`.
     sha256sum --check --ignore-missing SHA256SUMS
     ```
 
+    `beffroi-tui --version` prints the release a file was built from, and the client shows it on its home page
+    and in its instance section. When the administration opens, before any sign-in, a release looks once for a
+    newer release of its line, `0.1.*` for `0.1.0`, in the GitHub API and without any credential, and the
+    screen names it with the command that installs it. Nothing turns that look off; on a machine that cannot
+    reach GitHub, the screen says the update was not checked.
+
+    ``` bash
+    beffroi-tui self-update
+    ./beffroi-tui-linux-x86_64 self-update      # an executable kept under its own name
+    ```
+
+    `self-update` replaces the PHAR or the executable that runs by the same file of the newest release of its
+    line, and runs the verification above for you: `gpgv` checks `SHA256SUMS.asc` under the release key the
+    client carries, never one fetched at run time, before the file is downloaded, and the file must match its
+    line of `SHA256SUMS`, or nothing is replaced. It needs `gpgv` on the `PATH` and write access to the
+    directory the program sits in, asks for no more privileges, and has no option: a copy in a directory only
+    root writes to, such as `/usr/local/bin`, is refused. It never moves to another line, where a `0.x`
+    version may break what it talks to: the next line is a new download. A copy installed by Composer is
+    updated by Composer, and a build of anything but a release does not replace itself.
+
+    The client reaches `api.github.com` for the list of releases and `github.com` for their files, which GitHub
+    answers with one redirection to the host it stores them on. That redirection is followed once, to an
+    `https` address only; no other request of the client follows one.
+
     [:beffroi-arrow-right: The administration plane](../reference/endpoints.md#the-administration-plane)
 
 ## What depends on what
