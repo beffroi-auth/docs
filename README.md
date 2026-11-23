@@ -42,7 +42,7 @@ docker run --rm -p 8000:8000 -v "$PWD":/docs squidfunk/mkdocs-material
 
 ## One branch per version
 
-A branch of this repository is a version of the packages: `0.0`, `0.1`, then `1.0`, `1.1`, and so on. A
+A branch of this repository is a version of the packages: `0.1`, `0.2`, then `1.0`, `1.1`, and so on. A
 push to one of them publishes it under its own name, and the newest version the code repository has
 released, a branch `X.Y` once it carries a tag `X.Y.Z`, also carries the `latest` alias, which the root of the
 site redirects to. The selector at the top of the page switches between them.

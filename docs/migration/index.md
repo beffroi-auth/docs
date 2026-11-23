@@ -9,7 +9,7 @@ description: What changes between versions, and what to do about it.
 This section holds one page per version that asks something of you, with the changes listed and the way to
 make them.
 
-There is nothing here yet: `0.0.0` is the first release, so no version has to be migrated from. The first
+There is nothing here yet: `0.1.0` is the first release, so no version has to be migrated from. The first
 page will appear with the first release that changes a public interface.
 
 ## What to expect
