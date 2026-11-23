@@ -47,8 +47,8 @@ entrypoint does three things when `.env` names a `DATABASE_URL`, which the one o
    server starts. The migrations of the application, in `migrations/`, are written for PostgreSQL and refuse
    any other platform;
 3. it writes the row of the tenant its environment describes, `beffroi:tenant:synchronize`, which changes
-   only what changed. A configuration that moved the issuer of the tenant stops the container before it
-   serves.
+   only what changed. A configuration the tenant refuses, or that moved its issuer, stops the container
+   before it serves, at every start.
 
 The health check of the image asks the metrics endpoint of the Caddy admin API inside the container,
 `http://localhost:2019/metrics`, with PHP, the image carrying no `curl`, after a start period of sixty
@@ -88,9 +88,9 @@ provider, in this order, which is the order it takes them in:
 bin/console messenger:consume scheduler_beffroi async_notifications async_priority_high async_priority_medium async_priority_low --time-limit=3600 --memory-limit=256M
 ```
 
-Started with `bin/console`, the entrypoint waits for the database as it does for the server, and plays no
-migration: the server is the process that migrates, and the development stack starts the worker once the server
-reports healthy. The consumer stops after an hour, or once it holds 256 MB, and the restart policy of the stack
+Started with `bin/console`, the entrypoint waits for the database as it does for the server, plays no
+migration and writes no tenant: the server does both, and the development stack starts the worker once the
+server reports healthy. The consumer stops after an hour, or once it holds 256 MB, and the restart policy of the stack
 starts it again.
 
 | Transport | What it carries |
@@ -151,8 +151,9 @@ pool on `cache.app` as well: they are shared as these pools are.
 
 **The session of a browser is in the database**, in `beffroi_session`, which every process reaches. The server
 keeps it on the connection of Doctrine, under advisory locks of PostgreSQL, each row under the SHA-256 of the
-identifier its cookie carries and its data sealed under a data key of the tenant, as personal data is. So a
-deployment may run several servers behind one proxy, each reading the sessions the others wrote, and a
+identifier its cookie carries and its data sealed under a data key of the tenant, as personal data is. So the
+session no longer ties a browser to the server that opened it: servers behind one proxy that share the
+database, the volumes above and the key management service each read the sessions the others wrote, and a
 redeployment that replaces them one at a time signs nobody out.
 
 ## TLS and the hosts

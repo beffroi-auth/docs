@@ -65,7 +65,8 @@ right after the migrations. Every request, command and message compares the row 
 the environment of its process: while the two differ, each one that reads the tenant fails, and the log names
 the setting that differs, `look` for the logo and the colours, `passkey_attestation` for the enrolment of a
 passkey, while the timed steps wait. Changing one of the seven is therefore a restart of every process with
-the new value, the server writing the row as it starts. The issuer is the one thing the command never changes: every
+the new value, the server of the image writing the row as it starts, or the command run by hand where the
+application runs outside the image. The issuer is the one thing the command never changes: every
 token a tenant issued names it, so the command refuses another, and another issuer is another tenant, under
 another slug. What a command decides with a date, the floor of its logins below, is written on the row and
 nowhere else, and so is what an administrator decides through the administration API, [the contact it gives its
@@ -97,7 +98,7 @@ ones that are wired, and `phr` or `phrh` on a predicate that is not their meanin
 forbids using a registered name in another sense. So is a policy with no class on `single_factor`, the one
 predicate every login satisfies, since every session has an `acr`, and so is the name `0`. What the discovery
 document announces in `acr_values_supported` is the classes of this policy the tenant can actually prove. The
-classes are written in [the row](#its-row), which the server writes as it starts.
+classes are written in [the row](#its-row), which the server of the image writes as it starts.
 
 ## The floor of its logins
 

@@ -25,8 +25,8 @@ like everything else it sets:
 | `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR` | The colour of what is written on them, named with the one above or not at all |
 
 A change of one of them is written to [the row of the tenant](../core/tenants.md#its-row) by
-`beffroi:tenant:synchronize`, which the server runs as it starts; until it is, a request that needs the tenant
-fails, naming the field that disagrees.
+`beffroi:tenant:synchronize`, which the server of the image runs as it starts; until it is, a request that
+needs the tenant fails, naming the field that disagrees.
 
 [:beffroi-arrow-right: The variables of the tenant](configuration.md#the-tenant)
 
