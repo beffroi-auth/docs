@@ -149,12 +149,12 @@ Its header gives the first start in the order below, the worker started last.
 The order is the one of `castor provision`, and two of its constraints hold for every deployment: the tenant
 has a row before it has a key, and its first key is the one messages are sealed to.
 
-1. **The schema.** The container that serves HTTP waits for the database and plays the migrations before
-   FrankenPHP starts, every time it starts.
-2. **The tenant and its keys**, in a container of the image:
+1. **The schema and the tenant.** The container that serves HTTP waits for the database, plays the
+   migrations and writes the row of the tenant its environment describes (`beffroi:tenant:synchronize`)
+   before FrankenPHP starts, every time it starts.
+2. **The keys of the tenant**, in a container of the image:
 
     ``` bash
-    bin/console beffroi:tenant:synchronize
     bin/console beffroi:keys:generate --algorithm=MESSAGE-SEAL
     bin/console beffroi:keys:generate
     ```

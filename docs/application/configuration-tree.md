@@ -85,7 +85,7 @@ claims it names included. A refusal names the option and, where the wiring decid
 with, so a misspelt algorithm is answered with the algorithms that exist. What reads a declaration first is
 what meets its refusal:
 
-- `bin/console beffroi:tenant:synchronize` builds the tenant;
+- the start of the server, which runs `beffroi:tenant:synchronize`, builds the tenant;
 - the discovery document, `/.well-known/openid-configuration` under the issuer, builds the rest once the
   tenant is synchronized: the scopes the tenant hands out, the trusted issuers, and the policy of
   registration, its authorities of software statements and its default scope included, which no `beffroi:`
@@ -93,7 +93,7 @@ what meets its refusal:
 - `bin/console beffroi:saml:service-provider:refresh` and `bin/console beffroi:saml:identity-provider:refresh`
   build the peers of each SAML role, as the hourly refresh of their metadata does.
 
-A deployment that runs `beffroi:tenant:synchronize`, reads the discovery document and refreshes the metadata
+A deployment that starts its server, reads the discovery document and refreshes the metadata
 of its SAML peers has met every one of these refusals before a client asks anything. Otherwise the first
 request that needs the object meets it, and the policy of registration is also built by the timed step that
 removes the clients nobody uses.
@@ -181,8 +181,8 @@ from another origin than the pages is named in no file of the application. Its h
 `/consent`, `/logout`, `/device` and `/initiate-login`, served under `Cross-Origin-Embedder-Policy:
 require-corp`, asks of an image from another origin.
 
-The row of the tenant follows the variables through `bin/console beffroi:tenant:synchronize`, which is safe to
-run at every deployment and refuses another issuer than the one the row was written with: [the
+The row of the tenant follows the variables through `beffroi:tenant:synchronize`, which the server of the image
+runs every time it starts and which refuses another issuer than the one the row was written with: [the
 tenant](configuration.md#the-tenant) says which values it writes there.
 
 [:beffroi-arrow-right: Tenants](../core/tenants.md)

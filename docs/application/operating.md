@@ -21,13 +21,14 @@ container of the image, or with `castor console` on the development stack.
    has nothing to take from a value in the clear.
 2. **The row of the tenant** follows the environment: `beffroi:tenant:synchronize` creates it, or writes on it
    what the environment says of its name, its `acr` policy, its look, the claims its people may change of
-   themselves and what the enrolment of a passkey asks, then prints the row. The provider serves nothing while
+   themselves and what the enrolment of a passkey asks, then prints the row. The server of the image runs it
+   every time it starts, right after the migrations. The provider serves nothing while
    the row and the environment of a process disagree, and a request then fails with an exception naming the
    field that differs. A change of `BEFFROI_TENANT_NAME`, `BEFFROI_TENANT_LOGO_URI`,
    `BEFFROI_TENANT_PRIMARY_COLOR`, `BEFFROI_TENANT_PRIMARY_CONTENT_COLOR`, `BEFFROI_TENANT_SELF_SERVED_CLAIMS`,
    `BEFFROI_TENANT_AUTHENTICATION_CLASSES` or one of the four `BEFFROI_TENANT_PASSKEY_*` is therefore a restart
-   of every process with the new value and the command run in one of them. A changed `BEFFROI_ISSUER` is
-   refused: the issuer of a tenant does not change, every token issued so far names it, and another issuer is
+   of every process with the new value, the first server that starts writing the row. A changed
+   `BEFFROI_ISSUER` is refused, and stops the server before it serves: the issuer of a tenant does not change, every token issued so far names it, and another issuer is
    another tenant, under another `BEFFROI_TENANT_SLUG`.
 3. **Two questions for the pipeline**, both of which write nothing and fail when the answer is no:
    `beffroi:keys:list --check` opens the keys in use and the ones about to be with the key management

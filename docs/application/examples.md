@@ -64,12 +64,11 @@ docker compose run --rm --no-deps --entrypoint cat op var/kms/beffroi-default.ke
 - **`BEFFROI_REGISTRATION_MODE` is what lets a client exist**, the image declaring none.
 
 The first start is the one of [the standalone application](../getting-started/the-standalone-application.md#the-first-start-in-order):
-the server first, which waits for the database and plays the migrations; then the tenant, its keys and a
-person; then the worker, once the key it opens messages with exists.
+the server first, which waits for the database, plays the migrations and writes the row of the tenant; then
+the keys of the tenant and a person; then the worker, once the key it opens messages with exists.
 
 ``` bash
 docker compose up -d --wait op
-docker compose exec op bin/console beffroi:tenant:synchronize
 docker compose exec op bin/console beffroi:keys:generate --algorithm=MESSAGE-SEAL
 docker compose exec op bin/console beffroi:keys:generate
 docker compose exec op bin/console beffroi:keys:generate --algorithm=VAPID
@@ -189,5 +188,6 @@ x-deployment: &deployment
 An attribute named under the default format, `uri`, is named by an absolute URI (SAML Core §8.2.2), the OID of
 `mail` and of `displayName` here. `{}` or `[]` is a list with nothing in it. An empty variable is no JSON
 document at all, and is refused when the service it reaches is built. The first two lists are written in the
-row of the tenant, so a change to either is followed by `beffroi:tenant:synchronize`:
+row of the tenant, so a change to either is followed by a restart of the processes, the server writing the
+row as it starts:
 [the tenant](configuration.md#the-tenant).

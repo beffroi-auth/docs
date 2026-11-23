@@ -40,6 +40,7 @@ it belongs to, by a foreign key on `tenant_id`.
     | `beffroi_group`, `beffroi_group_membership` | The groups of the tenant and who belongs to them, each with its source |
     | `beffroi_push_subscription` | A browser of a person the provider can reach by [web push](web-push.md) |
     | `beffroi_authentication_session` | A session: what it proved, from where it was opened and last seen, when it ends and why it ended |
+    | `beffroi_session` | The session of a browser, which carries the link to its authentication session: the SHA-256 of the identifier its cookie carries, its data sealed under a data key of the tenant, and when it was last written. No mapping describes it: it is the table of the session handler of the application, created by a migration and declared to the schema the ORM assembles |
     | `beffroi_journal` | One act of the provider |
     | `beffroi_claim_change` | What a claim of a person said before they or an administrator changed it, what it says now, and the administrator who changed it when one did |
     | `beffroi_personal_archive` | The archive a person asked for of everything the provider holds of them |
