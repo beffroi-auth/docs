@@ -81,7 +81,8 @@ When you cannot sign in at all, your organisation can send you a link that sets 
 one. It opens the page **Set up a new authenticator app**, which names your account, says **This link works only
 once.** and warns **The previous app will stop working and all your sessions will end.** The two steps are the same
 as above. Once the code is confirmed, the page **Your backup codes** says **Your new authenticator app is set up and
-your sessions have ended.**, shows your ten backup codes once, and offers **Sign in**.
+your sessions have ended.**, shows your ten backup codes once with **Copy them all** under them where your browser
+allows it, and offers **Sign in**.
 
 The link works once, within 72 hours, and a new one makes the previous one stop working. A link that no longer
 works opens a page that says **This link was already used or has expired. Ask for a new one.**

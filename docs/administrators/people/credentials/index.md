@@ -115,7 +115,10 @@ them:
 The application puts what the port is handed on the lane of notifications, which hands it to every class
 implementing `App\Credential\CredentialChangeChannelInterface` and tagged `beffroi.credential_change_channel`, none
 in the application, then to [web push](../../../operators/application/web-push.md#a-way-of-signing-in-changed) while web push is
-on: its page says what the notice carries, [the contact of the
+on, to mail while `BEFFROI_MAIL_DSN` names a transport, and to SMS while `BEFFROI_SMS_DSN` names one. Mail goes
+to an address marked verified and SMS to a number marked verified. The person cannot turn this notice off: it goes
+out on every channel the deployment wires.
+The page of web push says what the notice carries, [the contact of the
 tenant](../../../operators/tenant/tenants.md#the-contact-it-gives-its-people) among it.
 
 ## Adding a kind
