@@ -34,6 +34,8 @@ The page shows the logo of the application when it has one, **You are signed in 
 An application can also ask for one detail by its name, such as **Date of birth**, and for other things, listed
 after **also asks to:**. Links under the list open, in a new tab, the pages the application gave about itself: for
 an application named Billing, **How Billing uses your data**, **Billing terms of service** and **Billing website**.
+A logo or a link only the application itself vouches for is shown only when it is on the site the application sends
+you back to.
 
 - **Allow** records your agreement and takes you on to the application. Agreeing to a new request adds what it
   asked to what you had agreed to before.
@@ -66,11 +68,12 @@ table has one line per application:
 
 ## Taking it back
 
-Press **Revoke access** on the list, or on the page of the application, which adds **It will ask for your
-permission again next time.**
+Press **Revoke access** on the list, or beside the title of the page of the application, where **Its current access**
+says **It will ask for your permission again next time.**
 
 The application can no longer extend its access, and what the sign-in service gave it on the strength of your
-agreement is withdrawn. As the page says, **Access already issued stays valid until it expires, even if you revoke
+agreement is withdrawn. The requests it made that wait for your answer are withdrawn too, and leave [Pending
+requests](requests.md). As the page says, **Access already issued stays valid until it expires, even if you revoke
 it.** The next time the application asks, the page **Authorise** asks you again.
 
 Agreeing and taking back are both listed in [Account activity](activity.md), as **Application allowed** and

@@ -20,6 +20,7 @@ code. There is no `insecure_` setting, no compatibility mode, and no global swit
 | `iss` is in every authorization response | A client must be able to tell which provider answered. RFC 9207 |
 | Access tokens are `at+jwt` or opaque references, never an ambiguous shape | A resource server must know what it is validating. RFC 9068 |
 | No redirect is followed outbound | Fetching a client's metadata or keys must not become a request to an address the client chose |
+| A request to an address a client, a registrant or a person chose reaches no private network of the deployment | A key set, a sector document, a request object, a logout or a notification sent to a client, and a push to a browser go where a third party says. Every private, loopback, link-local or reserved address is refused once the name is resolved, on the address the request connects to, so that nobody reads the services behind the provider through it |
 | No boolean from a third party is ever cast | A missing claim and a false claim are not the same thing, and `(bool)` makes them one |
 | Every secret string comes from a cryptographic source, every secret comparison is constant time | |
 | A password is compared against a list of compromised values before it is written | A password can be long, varied and still known to everybody. NIST SP 800-63B §3.1.1.2 asks for the list, and what the list holds is refused rather than warned about |
@@ -33,8 +34,8 @@ code. There is no `insecure_` setting, no compatibility mode, and no global swit
 
 ## Where an exception exists
 
-An exception is named, bounded and written down where it applies, for one client or for one tenant, and
-never a global switch. The shape they take:
+An exception is named, bounded and written down where it applies, for one client, for one tenant or for the
+networks a deployment names, and never a global switch. The shape they take:
 
 - **PKCE can be waived for a confidential client, never for a public one.** A client the configuration
   declares is waived with `requires_pkce: false`, and the clients a tenant lets register themselves are
@@ -50,6 +51,9 @@ never a global switch. The shape they take:
   `client_registration.mode` has no registration endpoint at all, in its discovery document as on the
   wire. One that names a mode says who may register: whoever holds an initial access token it issued,
   whoever presents a statement of an authority it pinned, or anybody.
+- **A deployment whose clients answer on its own networks names those networks.** It lists them, as IP addresses
+  or CIDR networks, in `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS`, empty in the image, and a request a third
+  party aims reaches those and no other private address.
 - **An unsigned SAML request is accepted from one service provider at a time.** A service provider that
   cannot sign its `AuthnRequest`, as Microsoft Entra ID federating its guests cannot, is declared so, and
   its unsigned requests are then accepted when its own metadata do not say it signs. Nothing turns the
@@ -65,7 +69,8 @@ says what it changes.
 
 Signing keys and the data keys that protect personal data are held by a key management service, never by
 the application: the application asks for an operation and never holds the master key. Keys rotate
-without a restart and without breaking a token already in flight.
+without a restart and without breaking a token already in flight, except the rotation of a compromised key,
+which takes every other key of its algorithm out of the JWK Set at once.
 
 Personal data is sealed in its column, with blind indexes for the lookups that must still work. A dump of
 the database is searched byte by byte by a test that fails when it finds a value it should not, and the

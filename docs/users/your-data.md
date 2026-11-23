@@ -39,6 +39,9 @@ Press **Ask for my data**, beside the title. Under **Your request**, the page th
 Until the file is ready, the page also says when you asked, **Asked for on**. Once it is ready, it says when it was
 **Prepared on** and until when it is **Available until**.
 
+You can ask for a file five times an hour. Beyond that, nothing is prepared, and the page says **Too many attempts.
+Wait a moment, then try again.**
+
 ## Downloading it
 
 - **Download your data** downloads the file as it was prepared.

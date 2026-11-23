@@ -33,6 +33,17 @@ organisation followed by **a change to how you sign in**.
 If you did not make the change: look at [Account activity](activity.md), end the sessions you do not recognise on
 [Open sessions](sessions.md), and contact your organisation.
 
+## A message that could not be delivered
+
+A channel that cannot deliver the message of a change tries again for a while. When it gives up, [Account
+activity](activity.md) lists **Change notification not delivered**, and the pages tell you once, after you sign in:
+**A change to how you sign in could not be notified to you. If it was not you, check your account activity.**
+
+- On the way to some applications, the page **A change could not be notified** comes right after you sign in. Its
+  link **Account activity** opens, in a new tab, the lines **Change notification not delivered**, and **Continue**
+  takes you on to the application.
+- **Your account** says it above its cards, with the same link.
+
 ## Browsers
 
 Your organisation may let the sign-in service show notifications in your browsers. **A browser added here gets a
@@ -41,6 +52,8 @@ notification when a request waits for your answer and when how you sign in chang
 1. Open **Notifications** in the browser you want to add, and press **Add this browser**.
 2. Your browser asks whether the page may show notifications: allow it.
 3. The browser is listed as **New browser**. Type the name you want in its line, and press **Rename**.
+
+Your account keeps ten browsers at most: adding an eleventh removes the one added longest ago.
 
 A notification shows the name of your organisation and the message. Clicking it opens **Pending requests** for a
 request, and the home of your account for a change.
@@ -59,6 +72,7 @@ request, and the home of your account for a change.
 | **This browser sent an invalid subscription. Try again.** | Press **Add this browser** again |
 | **This browser does not support notifications.** | Use another browser |
 | **Browser notifications are not available.** | Your organisation does not send notifications to browsers |
+| **Give the browser a name of 1 to 255 characters.** | The name was empty, too long, or held a line break, a control character or an invisible formatting character other than the joiners some scripts need |
 
 ## Choosing the channels
 

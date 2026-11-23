@@ -76,6 +76,10 @@ If your organisation checks passwords against lists of passwords published after
 the pages take you to **Your password** first each time you sign in to your account, and on the way to some
 applications, until you change it. [Your password](password.md#a-password-found-in-a-data-breach) says what to do.
 
+If a message telling you of a change to how you sign in could not be delivered, the page **A change could not be
+notified** comes once after you sign in, on the way to some applications.
+[Notifications](notifications.md#a-message-that-could-not-be-delivered) says what it offers.
+
 ## How long you stay signed in
 
 A sign-in lasts at most twelve hours on that browser, counted from when you signed in, and signing in again during
