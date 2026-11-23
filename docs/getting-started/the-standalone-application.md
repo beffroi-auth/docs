@@ -27,7 +27,7 @@ code and configuration, in its own directories.
 | The controllers, the security, the persistence and the console commands | `src/` |
 | The Doctrine mapping of the model of the packages, and the migrations | `config/beffroi/doctrine/`, `migrations/` |
 | The pages, their layout and their stylesheet, Tailwind and DaisyUI, built by the standalone Tailwind binary it pins | `templates/beffroi/`, `templates/layout/`, `assets/styles/app.css` |
-| Every sentence of the pages and the messages, in the seven languages the application ships | `translations/` |
+| Every sentence of the pages and the messages, in the thirty-one languages the application ships | `translations/` |
 | The theme a visitor reads the pages in, light, dark or the one of their system, chosen by a form posted to `/theme` | `src/Theme/` |
 | The firewall of the interaction pages, with its four logins: a password, a passkey, a code, and an upstream SAML identity provider | `config/packages/security.yaml` |
 | The headers a deployment answers with, and the name and attributes of the session cookie | `config/packages/nelmio_security.yaml`, `nelmio_cors.yaml`, `framework.yaml` |

@@ -6,8 +6,13 @@ description: Every string translated, the two lists of languages, and how a page
 # Translations
 
 Every user-facing string goes through the translator, in XLIFF with `intl-icu` for plurals and parameters,
-in the `beffroi` domain. The application holds one catalogue per language it ships, seven of them: English
-(`en`), French (`fr`), German (`de`), Spanish (`es`), Italian (`it`), Dutch (`nl`) and Polish (`pl`):
+in the `beffroi` domain. The application holds one catalogue per language it ships, thirty-one of them. They
+are the official languages of the European Union but Irish and Maltese, English being official in Ireland and
+Malta: Bulgarian (`bg`), Croatian (`hr`), Czech (`cs`), Danish (`da`), Dutch (`nl`), English (`en`), Estonian
+(`et`), Finnish (`fi`), French (`fr`), German (`de`), Greek (`el`), Hungarian (`hu`), Italian (`it`), Latvian
+(`lv`), Lithuanian (`lt`), Polish (`pl`), Portuguese (`pt`), Romanian (`ro`), Slovak (`sk`), Slovenian (`sl`),
+Spanish (`es`) and Swedish (`sv`). Then Albanian (`sq`), Bosnian (`bs`), Catalan (`ca`), Icelandic (`is`),
+Macedonian (`mk`), Norwegian Bokmål (`nb`), Serbian (`sr`), Turkish (`tr`) and Ukrainian (`uk`):
 
 ```
 translations/beffroi+intl-icu.en.xlf
@@ -20,6 +25,10 @@ The catalogues are code of the application, like its templates: adding a languag
 the same domain, holding every key of the English one and nothing else, its name in itself under
 `language.<code>` in every catalogue, which is how the language control names it, and
 `framework.enabled_locales` naming it in `config/packages/translation.yaml`.
+
+The English of the catalogue is British and its Portuguese that of Portugal, and a date is written as
+`en_GB` and `pt_PT` write one: "23 Nov 2026, 14:05 UTC" in English. Serbian is written in Cyrillic. The font of
+the pages draws every one of these languages, Greek and Cyrillic included.
 
 A deployment serves every language the application ships, or those `BEFFROI_LOCALES` names, as a JSON list
 (`'["fr","en"]'`). `DEFAULT_LOCALE` is the one a page falls back to, and it is one of them: a list that leaves
