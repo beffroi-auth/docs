@@ -1,0 +1,300 @@
+---
+title: Dynamic registration
+description: 'A client the provider has never seen, RFC 7591 and RFC 7592: closed by default, the three modes a tenant opens it in, what a registration may and may not ask for, and how a client reads, replaces and deletes itself.'
+---
+
+# Dynamic registration
+
+A client may register itself at `/register` (RFC 7591), and then read, replace and delete its own
+registration at the URI it was handed (RFC 7592). It is how a client reaches a deployment of the image, which
+declares none. Registration is closed by default: a deployment opens it by naming a mode, which decides what
+authorises a registration. A client that registers itself is read by the reader of [every client](clients.md),
+under its rules, and is held besides to what its tenant offers.
+
+## Opening it
+
+A deployment opens registration with the variables of its environment, given to both processes
+([configuration](../../operators/application/configuration.md#registration)):
+
+``` dotenv
+BEFFROI_REGISTRATION_MODE=initial_access_token
+BEFFROI_REGISTRATION_DEFAULT_SCOPE='openid profile email'
+```
+
+| Variable | In the image | What it decides |
+|---|---|---|
+| `BEFFROI_REGISTRATION_MODE` | empty | What authorises a registration: `initial_access_token`, `software_statement` or `open`. Empty, the tenant registers nobody and announces no registration endpoint |
+| `BEFFROI_REGISTRATION_DEFAULT_SCOPE` | empty | What a client that names no `scope` is registered with (RFC 7591 §2), space-delimited. Empty, `openid` alone. It is held to what the tenant hands out like every registered scope, so a scope named here that the tenant does not offer refuses every registration that names no scope |
+| `BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR` | `7776000` | Seconds a client that was used may go unused before it is deleted, ninety days |
+| `BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR` | `604800` | Seconds a client that was never used lives at all, seven days |
+| `BEFFROI_REGISTRATION_STATEMENT_ISSUERS` | `{}` | The authorities whose software statements the tenant accepts, for the `software_statement` mode |
+| `BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME` | `300` | Seconds ahead of the request the `exp` of a software statement may be |
+| `BEFFROI_REGISTRATION_STATEMENT_LEEWAY` | `30` | Seconds allowed of the clock of an authority, both ways |
+| `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_TIMEOUT` | `3` | Seconds one read of a `sector_identifier_uri` is given, connection included |
+| `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_MAX_SIZE` | `65536` | Bytes a `sector_identifier_uri` may answer before the read stops |
+
+The policy of a tenant may also exempt the confidential clients it registers from PKCE, and no variable does:
+every client of the image is registered with PKCE required ([what the image does not
+set](clients.md#what-the-image-does-not-set)).
+
+**Closed is the absence of the endpoint, not a mode that refuses.** A tenant that names no mode answers a
+registration, a `POST` to `/register`, with a `404`, as it answers a path it does not serve, and its
+discovery document has no `registration_endpoint`. A tenant that names a mode announces the endpoint, and its
+endpoint answers. `/register` takes a `POST` and no other method, whether the tenant registers or not. A mode
+nothing wired serves is a mistake of the deployment: the first registration fails on it, naming the modes
+that are wired.
+
+## The three modes
+
+=== "An initial access token"
+
+    `BEFFROI_REGISTRATION_MODE=initial_access_token` registers a client presented by an initial access token
+    the tenant issued (RFC 7591 §1.2): a credential for the team that integrates, named, worth a number of
+    registrations and no more, expiring, and revocable. It opens no other endpoint and carries no scope. It
+    says that whoever holds it may register a client with this tenant, and what the tenant gives every client
+    it registers: the resources, the shape of access token, the binding, the token exchange and the `may_act`
+    it was issued with ([what the image does not set](clients.md#what-the-image-does-not-set)), and whether
+    they are clients of the administration API of the tenant.
+
+    ``` http
+    POST /register HTTP/1.1
+    Host: op.example.com
+    Content-Type: application/json
+    Authorization: Bearer 0NM8Z6ijkVrFDzEaMPwCLWmTvdFxNsRwBCzu8UxS4pQ
+
+    {"client_name": "Billing", "redirect_uris": ["https://billing.example.com/oidc/callback"]}
+    ```
+
+    The token is spent in the request it authorises, before the metadata is read: a token worth one
+    registration registers one, whether the registration that followed was written or refused. A token
+    unknown, spent, expired or revoked is answered exactly as a request that carries none, so that whoever
+    does not hold a token of this tenant learns nothing about the one they presented.
+
+    ``` bash
+    bin/console beffroi:client:token:issue 'Billing team' --registrations=1 --days=30
+    bin/console beffroi:client:token:list
+    bin/console beffroi:client:token:revoke 0192f1a4-6c1e-7b8a-9c3d-2e4f5a6b7c8d
+    ```
+
+    `beffroi:client:token:issue` prints the value once, and the provider keeps its SHA-256 and never the
+    value: a token that was lost is replaced by issuing another. It is worth one registration and thirty days
+    unless the command says otherwise, a day at least. Its options name what it gives the clients it
+    registers: `--resource`, once per API (RFC 8707 §2); `--access-token-format`;
+    `--require-sender-constrained-tokens`; `--exchange-subject-token-type`, once per type (RFC 8693 §3), with
+    `--exchange-for-a-user` when they may exchange a token somebody signed in for; and
+    `--may-act` (RFC 8693 §4.4). What a token gives is read when it is issued, and a token that gives what the
+    provider does not serve is not issued. `beffroi:client:token:list` shows what each token has served of
+    what it is worth, what it gives, and whether it still authorises anything. `beffroi:client:token:revoke`
+    takes one back at once, and the clients it registered stay.
+
+    `--administration` issues a token for the administration of the tenant, which a tenant that names no
+    administration API refuses. The clients it registers authenticate with a key, `private_key_jwt` or a
+    certificate, and a registration that names a method proving a secret, or none at all, is refused with
+    `invalid_client_metadata`. They hold the [administration API](resources.md#the-administration-api) of the
+    tenant and no other resource, so such a token names no `--resource`. `beffroi:client:token:list` says of
+    each token whether it is one. An administrator issues, lists and revokes initial access tokens through
+    the administration API as well.
+
+=== "A software statement"
+
+    `BEFFROI_REGISTRATION_MODE=software_statement` registers a client presented by a statement an authority
+    the tenant pins signed (RFC 7591 §2.3), in the `software_statement` member of the body. The provider
+    issues nothing: the proof is the authority's, which is what lets a registration cross the boundary of an
+    organisation.
+
+    ``` dotenv
+    BEFFROI_REGISTRATION_MODE=software_statement
+    BEFFROI_REGISTRATION_STATEMENT_ISSUERS='{"https://authority.example.org": {"jwks": {"keys": [<the public JWK of the authority>]}, "signing_algorithms": ["ES256"]}}'
+    ```
+
+    An authority is keyed by the `iss` it signs with, an absolute URI compared byte for byte, and pins its
+    public keys inline, a JWK Set, and the algorithms it signs with, among those the provider verifies. The
+    key comes from this variable and never from the statement: a key or a `jwks_uri` the statement names is
+    never read (RFC 8725 §3.10). A tenant that pins no authority accepts no statement.
+
+    The statement is verified before any of it is read as metadata. Its signature is checked against the keys
+    of the authority its `iss` names, under one of the algorithms pinned for it. Its `aud` names the issuer of
+    the tenant, once. Its `exp` is present, not past, and no further ahead than
+    `BEFFROI_REGISTRATION_STATEMENT_MAX_LIFETIME`. Its `iat` is present and not in the future. Its `jti` is
+    present and never seen before, remembered until the `exp`, so one statement registers one client. RFC 7591
+    §2.3 asks none of this of a statement; the provider asks it of every signed thing it takes back. Whatever
+    fails, the answer is the same `invalid_software_statement`.
+
+    **What a statement says outranks what the client sent** (RFC 7591 §3.1.1): a member both carry is the
+    statement's, so the registration is written with the `client_name` and the `logo_uri` the authority
+    signed. A statement is held to what the tenant offers as a body is: one that names a scope, a grant or a
+    method the tenant does not offer is refused with `invalid_client_metadata`, as a body naming it would be.
+    The claims of RFC 7519 §4.1 of the statement describe the statement and are not metadata. A
+    [replacement](#reading-replacing-and-deleting-itself) of the registration reads no new statement, and what
+    the statement of the registration signed still outranks what the replacement sends.
+
+    The statement is the credential of this mode, and it travels in the body: a body that is not a JSON
+    object is refused with `invalid_client_metadata` before anything else is read, and a JSON object that
+    carries no statement is answered `401`.
+
+=== "Open"
+
+    `BEFFROI_REGISTRATION_MODE=open` registers whoever asks, with no credential at all (RFC 7591 §3):
+    nothing authorises, so nothing is read and nothing is refused before the metadata is, and everything else,
+    the reader, the policy and the refusals, is the same. A credential presented anyway is read by nothing and
+    spent by nothing.
+
+    A client nobody vouched for chooses the name and the logo a person reads on the consent page, and a tenant
+    that names this mode for its real users lets anybody write them. The development stack names it, for the
+    conformance suite to register its clients.
+
+## The request
+
+``` http
+POST /register HTTP/1.1
+Host: op.example.com
+Content-Type: application/json
+Authorization: Bearer 0NM8Z6ijkVrFDzEaMPwCLWmTvdFxNsRwBCzu8UxS4pQ
+
+{
+    "client_name": "Billing",
+    "redirect_uris": ["https://billing.example.com/oidc/callback"],
+    "token_endpoint_auth_method": "private_key_jwt",
+    "jwks_uri": "https://billing.example.com/.well-known/jwks.json",
+    "scope": "openid profile email"
+}
+```
+
+The body is one JSON object whose members are the metadata of the client, the members [clients](clients.md)
+lists, read by the same reader under the same rules. A body that is not a JSON object carries no metadata
+and is refused with `invalid_client_metadata`: in the `initial_access_token` mode once the token has been
+read, and in the `software_statement` mode before anything, the statement being in the body.
+
+What a client may register is what the specifications define, and what the tenant offers:
+
+- **The members this provider defines for itself are not a client's to send**: `requires_consent`,
+  `requires_pkce`, `access_token_format`, `resources`, `token_exchange`, `may_act` and
+  `require_sender_constrained_tokens` are exceptions and privileges. A body that carries one is refused, and a
+  software statement does not grant one either. A client that registers itself obtains five of them,
+  `resources`, `access_token_format`, `require_sender_constrained_tokens`, `token_exchange` and `may_act`, from
+  the initial access token it registered with alone, and `requires_consent` and `requires_pkce` from nothing a
+  deployment of the image sets ([what the image does not set](clients.md#what-the-image-does-not-set)).
+- **A member nobody reads is refused**, `client_id` and `client_secret` included: the provider draws both.
+- **What a member names is one the provider is wired with**: a grant, a method, an algorithm, a mode of
+  delivery, a kind of subject, a type of authorization detail.
+- **A scope is one the tenant hands out**, the ones its discovery document lists in `scopes_supported`.
+- **What the provider signs for the client, it holds a key for**: an algorithm named in
+  `id_token_signed_response_alg`, `authorization_signed_response_alg` or `userinfo_signed_response_alg` is one
+  the tenant holds an active key for, at the registration and at every replacement. An algorithm left out is
+  the default one, whose key is the deployment's to draw and never a reason to refuse the client.
+- **A `sector_identifier_uri` is proven**: the provider reads the document behind it once, with one `GET`,
+  no redirect followed, within the seconds and the bytes the two `BEFFROI_REGISTRATION_SECTOR_IDENTIFIER_*`
+  variables give it, and the document
+  is the JSON array of URIs of OIDC Registration §5 that lists every redirect URI of the client, or its
+  `jwks_uri` when it registers no redirect URI (CIBA Core §4). A document that cannot be read, or that leaves
+  one out, refuses the registration ([pairwise subjects](pairwise-subjects.md)).
+
+What a client leaves out takes the defaults of RFC 7591 §2: the `authorization_code` grant alone, the `code`
+response type that goes with it, and `client_secret_basic`. A scope left out is the `default_scope` of the
+tenant, `BEFFROI_REGISTRATION_DEFAULT_SCOPE`, or `openid` alone. The registration policy writes beside the
+registration what it grants, the default scope on a registration that named none, and that is read back
+before what the client sent, until the policy writes the registration again.
+
+## The answer
+
+``` http
+HTTP/1.1 201 Created
+Content-Type: application/json
+Cache-Control: no-cache, no-store
+Pragma: no-cache
+
+{
+    "client_id": "s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg",
+    "client_id_issued_at": 1793001600,
+    "registration_access_token": "Yx9o3Wq1fPz7kL2mN8rT4vB6cD0eF5gH1jK3lM9nQ2s",
+    "registration_client_uri": "https://op.example.com/register/s6Bh3dRkqt3Hm9vBkrnfeR7_xU2ZyQ4lJaN0cP8TwYg",
+    "client_name": "Billing",
+    "redirect_uris": ["https://billing.example.com/oidc/callback"],
+    "token_endpoint_auth_method": "private_key_jwt",
+    "jwks_uri": "https://billing.example.com/.well-known/jwks.json",
+    "scope": "openid profile email"
+}
+```
+
+The `client_id` is drawn by the provider, 256 random bits in base64url, and a client cannot choose it. When
+the method the client registered proves a secret, `client_secret_basic`, `client_secret_post` or
+`client_secret_jwt`, the answer also carries a `client_secret` drawn the same way and `client_secret_expires_at`
+at `0`, which says the secret does not expire (RFC 7591 §3.2.1). The metadata follow, as the client sent
+them, a member a statement signed standing in place of the one the client sent, and the `scope` the
+registration policy wrote on a registration that named none (RFC 7591 §3.2.1). The members of the deployment
+are never answered, neither the PKCE exemption of the policy nor what an initial access token gave: a client
+sends back what it was answered to replace itself (RFC 7592 §2.2), and a body that carries one of them is
+refused.
+
+**A secret and a registration access token are said once.** The provider keeps a hash of the secret, or the
+secret sealed for `client_secret_jwt`, and the SHA-256 of the token, and answers neither again: a read of the
+registration carries neither.
+
+The registration is written before the answer is sent, so the client leaves with an identifier that exists.
+
+## Reading, replacing and deleting itself
+
+The `registration_client_uri` answers the three methods of RFC 7592 §2, with the registration access token as
+a bearer credential and no other:
+
+| Request | Answer |
+|---|---|
+| `GET` | `200`, the registration with the members an answer carries, without the secret and without the token |
+| `PUT` | `200`, the registration replaced whole (RFC 7592 §2.2) |
+| `DELETE` | `204`, and the client is gone |
+| Another method | `405` |
+
+**A replacement is whole and never a patch**: a member the request leaves out is a member the client no longer
+registers. The replacement is read by the reader, under the policy of the tenant and the rules a registration
+body is read under, so it names nothing a registration body could not; it is read from the request, whatever
+the mode, with what a statement signed at the registration in front of it, which still outranks what the
+request sends, and with what the initial access token gave. The request names the client in `client_id`, the
+one the URI answers for; it carries none of `client_id_issued_at`, `client_secret_expires_at`,
+`registration_access_token` and `registration_client_uri`, which the provider assigned; and a `client_secret`
+it echoes is the one it holds.
+What the provider assigned stays: the identifier, the date and the token, which is not rotated, and so do the
+members a statement signed and the ones an initial access token gave. The secret is the one thing that may
+change: a client that registers a method proving a secret where it held none, or one its kept secret does not
+suit, is handed a new one, said once, and a client that registers a method proving none keeps no secret.
+
+**A deleted client is gone at once**, with its token: a request that presents it afterwards is answered as a
+token nobody holds. What the client was issued, consents, grants and refresh tokens, is left where it is and
+can no longer be spent, since nothing resolves the client it names. The sessions of the people who used it are
+not touched.
+
+A token that reads no client, a value nobody was handed, one drawn for another client, a client of another
+tenant or a client that deleted itself, is answered `401` with `invalid_token` and the same description, so
+the endpoint tells nobody which clients exist. The credential is read before the body: an unreadable body
+presented with a token that reads nothing is a `401`, not a `400`. These endpoints are not announced in the
+discovery document: a client holds the URI it was handed.
+
+## The clients nobody uses
+
+A registered client carries the date it was last used, an authorization code issued for it or tokens issued
+to it at the token endpoint, and the provider deletes the ones nobody uses any more, on a timed step that
+runs every hour: a client used, but not for `BEFFROI_REGISTRATION_KEEP_A_CLIENT_UNUSED_FOR` seconds, and a
+client never used and registered more than `BEFFROI_REGISTRATION_KEEP_A_CLIENT_NEVER_USED_FOR` seconds ago.
+One run deletes a hundred clients at most, and the next run takes the rest; what it deleted is written to the
+log. A tenant that registers nobody deletes nothing, and a client the configuration declares, which the image
+holds none of, is never deleted.
+
+Each deletion, by the step, by the client itself, by `beffroi:client:delete` or by an administrator through the
+administration API, emits the same `RegisteredClientDeleted` event, which names the administrator when one
+deleted it. The administration API refuses a client the configuration declares, as the command does, and the
+client the administrator acts through.
+
+## Refusals
+
+| Answer | When |
+|---|---|
+| `404` | A registration, at a tenant that registers nobody |
+| `401`, `invalid_token`, `WWW-Authenticate: Bearer` | Nothing the request presents authorises it: no token, or one that authorises nothing; no statement in the `software_statement` mode; no registration access token of this client at its URI |
+| `400`, `invalid_client_metadata` | A member that does not hold, is not read, is not the client's to send, names what the provider or the tenant does not offer, or a body that is not a JSON object |
+| `400`, `invalid_redirect_uri` | A value of `redirect_uris` or `post_logout_redirect_uris` that is not an address a client may register, or the redirect URIs and the grants disagreeing. Every other address, and the rule the loopback addresses of a public client follow, answer `invalid_client_metadata` |
+| `400`, `invalid_software_statement` | A statement the tenant does not accept, whatever the reason |
+
+What these endpoints answer themselves, a registration, a read, a replacement, a deletion and their
+refusals, carries `Cache-Control: no-cache, no-store` and `Pragma: no-cache`. The description of a `400` is
+the sentence of the refusal, in ASCII (RFC 7591 §3.2.2).
+
+[:beffroi-arrow-right: Clients](clients.md) and [pairwise subjects](pairwise-subjects.md)

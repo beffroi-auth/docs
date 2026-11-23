@@ -38,6 +38,7 @@ theme:
         name: Switch to the light theme
   features:
     - navigation.instant
+    - navigation.tabs
     - navigation.instant.progress
     - navigation.tracking
     - navigation.indexes
@@ -70,7 +71,99 @@ plugins:
       fallback_to_build_date: true
   - redirects:
       redirect_maps:
-        getting-started/a-symfony-relying-party.md: getting-started/symfony.md
+        getting-started/a-symfony-relying-party.md: developers/connect/symfony.md
+        application/account.md: operators/application/account.md
+        application/configuration-tree.md: operators/application/configuration-tree.md
+        application/configuration.md: operators/application/configuration.md
+        application/console-commands.md: operators/application/console-commands.md
+        application/deployment.md: operators/application/deployment.md
+        application/examples.md: operators/application/examples.md
+        application/index.md: operators/application/index.md
+        application/key-management.md: operators/application/key-management.md
+        application/messenger.md: operators/application/messenger.md
+        application/observability.md: operators/application/observability.md
+        application/operating.md: operators/application/operating.md
+        application/pages.md: operators/application/pages.md
+        application/persistence.md: operators/application/persistence.md
+        application/profiler.md: developers/profiler.md
+        application/routes-and-planes.md: operators/application/routes-and-planes.md
+        application/security.md: operators/application/security.md
+        application/translations.md: operators/application/translations.md
+        application/web-push.md: operators/application/web-push.md
+        core/authentication-sessions.md: administrators/people/authentication-sessions.md
+        core/credentials/backup-codes.md: administrators/people/credentials/backup-codes.md
+        core/credentials/index.md: administrators/people/credentials/index.md
+        core/credentials/passkeys.md: administrators/people/credentials/passkeys.md
+        core/credentials/passwords.md: administrators/people/credentials/passwords.md
+        core/credentials/totp.md: administrators/people/credentials/totp.md
+        core/events.md: developers/core/events.md
+        core/groups.md: administrators/people/groups.md
+        core/index.md: developers/core/index.md
+        core/keys.md: operators/tenant/keys.md
+        core/linked-identities.md: administrators/people/linked-identities.md
+        core/personal-data.md: operators/tenant/personal-data.md
+        core/ports.md: developers/core/ports.md
+        core/tenants.md: operators/tenant/tenants.md
+        core/users.md: administrators/people/users.md
+        getting-started/installation.md: operators/getting-started/installation.md
+        getting-started/laravel.md: developers/connect/laravel.md
+        getting-started/symfony.md: developers/connect/symfony.md
+        getting-started/tenant-and-keys.md: operators/getting-started/tenant-and-keys.md
+        getting-started/the-standalone-application.md: operators/getting-started/the-standalone-application.md
+        getting-started/your-first-client.md: developers/connect/your-first-client.md
+        oidc/authorization-details.md: developers/oidc/authorization-details.md
+        oidc/authorization-request.md: developers/oidc/authorization-request.md
+        oidc/client-authentication.md: developers/oidc/client-authentication.md
+        oidc/clients.md: developers/oidc/clients.md
+        oidc/consent.md: developers/oidc/consent.md
+        oidc/discovery-and-jwks.md: developers/oidc/discovery-and-jwks.md
+        oidc/dynamic-registration.md: developers/oidc/dynamic-registration.md
+        oidc/errors.md: developers/oidc/errors.md
+        oidc/grants/authorization-code.md: developers/oidc/grants/authorization-code.md
+        oidc/grants/backchannel-authentication.md: developers/oidc/grants/backchannel-authentication.md
+        oidc/grants/client-credentials.md: developers/oidc/grants/client-credentials.md
+        oidc/grants/device-code.md: developers/oidc/grants/device-code.md
+        oidc/grants/index.md: developers/oidc/grants/index.md
+        oidc/grants/jwt-bearer.md: developers/oidc/grants/jwt-bearer.md
+        oidc/grants/refresh-token.md: developers/oidc/grants/refresh-token.md
+        oidc/grants/token-exchange.md: developers/oidc/grants/token-exchange.md
+        oidc/index.md: developers/oidc/index.md
+        oidc/interactions.md: developers/oidc/interactions.md
+        oidc/introspection-and-revocation.md: developers/oidc/introspection-and-revocation.md
+        oidc/logout.md: developers/oidc/logout.md
+        oidc/pairwise-subjects.md: developers/oidc/pairwise-subjects.md
+        oidc/ports.md: developers/oidc/ports.md
+        oidc/pushed-authorization-requests.md: developers/oidc/pushed-authorization-requests.md
+        oidc/request-objects.md: developers/oidc/request-objects.md
+        oidc/resources.md: developers/oidc/resources.md
+        oidc/response-modes.md: developers/oidc/response-modes.md
+        oidc/scopes-and-claims.md: developers/oidc/scopes-and-claims.md
+        oidc/sender-constrained/dpop.md: developers/oidc/sender-constrained/dpop.md
+        oidc/sender-constrained/index.md: developers/oidc/sender-constrained/index.md
+        oidc/sender-constrained/mutual-tls.md: developers/oidc/sender-constrained/mutual-tls.md
+        oidc/tokens/access-tokens.md: developers/oidc/tokens/access-tokens.md
+        oidc/tokens/encryption.md: developers/oidc/tokens/encryption.md
+        oidc/tokens/id-tokens.md: developers/oidc/tokens/id-tokens.md
+        oidc/tokens/index.md: developers/oidc/tokens/index.md
+        oidc/tokens/refresh-tokens.md: developers/oidc/tokens/refresh-tokens.md
+        oidc/userinfo.md: developers/oidc/userinfo.md
+        reference/configuration.md: operators/reference/configuration.md
+        reference/console-commands.md: operators/reference/console-commands.md
+        reference/endpoints.md: developers/reference/endpoints.md
+        reference/events.md: developers/reference/events.md
+        reference/specifications.md: developers/reference/specifications.md
+        saml/federated-sign-in.md: operators/saml/federated-sign-in.md
+        saml/identity-provider.md: operators/saml/identity-provider.md
+        saml/index.md: operators/saml/index.md
+        saml/microsoft-entra-id.md: operators/saml/microsoft-entra-id.md
+        saml/packages.md: developers/saml/packages.md
+        saml/service-providers.md: operators/saml/service-providers.md
+        saml/single-logout.md: operators/saml/single-logout.md
+        saml/single-sign-on.md: operators/saml/single-sign-on.md
+        saml/upstream-identity-providers.md: operators/saml/upstream-identity-providers.md
+        scim/index.md: administrators/scim/index.md
+        the-project/contributing.md: developers/contributing.md
+        the-project/packages.md: developers/packages.md
 
 markdown_extensions:
   - abbr
@@ -151,114 +244,138 @@ extra:
       name: Beffroi on LinkedIn
 
 nav:
-  - Beffroi: index.md
-  - The project:
+  - Beffroi:
+      - index.md
       - the-project/what-is-beffroi.md
-      - the-project/packages.md
       - the-project/secure-by-default.md
       - the-project/conformance.md
       - the-project/versions.md
-      - the-project/contributing.md
-  - Getting started:
-      - getting-started/installation.md
-      - getting-started/the-standalone-application.md
-      - getting-started/tenant-and-keys.md
-      - getting-started/your-first-client.md
-      - getting-started/symfony.md
-      - getting-started/laravel.md
-  - Identity core:
-      - core/index.md
-      - core/tenants.md
-      - core/users.md
-      - Credentials:
-          - core/credentials/index.md
-          - core/credentials/passwords.md
-          - core/credentials/passkeys.md
-          - core/credentials/totp.md
-          - core/credentials/backup-codes.md
-      - core/authentication-sessions.md
-      - core/groups.md
-      - core/linked-identities.md
-      - core/keys.md
-      - core/personal-data.md
-      - core/ports.md
-      - core/events.md
-  - OAuth 2.0 and OpenID Connect:
-      - oidc/index.md
-      - oidc/clients.md
-      - oidc/client-authentication.md
-      - oidc/authorization-request.md
-      - oidc/interactions.md
-      - oidc/consent.md
-      - Grants:
-          - oidc/grants/index.md
-          - oidc/grants/authorization-code.md
-          - oidc/grants/refresh-token.md
-          - oidc/grants/client-credentials.md
-          - oidc/grants/device-code.md
-          - oidc/grants/backchannel-authentication.md
-          - oidc/grants/token-exchange.md
-          - oidc/grants/jwt-bearer.md
-      - Tokens:
-          - oidc/tokens/index.md
-          - oidc/tokens/access-tokens.md
-          - oidc/tokens/id-tokens.md
-          - oidc/tokens/refresh-tokens.md
-          - oidc/tokens/encryption.md
-      - oidc/scopes-and-claims.md
-      - oidc/resources.md
-      - oidc/authorization-details.md
-      - oidc/pushed-authorization-requests.md
-      - oidc/request-objects.md
-      - oidc/response-modes.md
-      - Sender-constrained tokens:
-          - oidc/sender-constrained/index.md
-          - oidc/sender-constrained/dpop.md
-          - oidc/sender-constrained/mutual-tls.md
-      - oidc/userinfo.md
-      - oidc/introspection-and-revocation.md
-      - oidc/discovery-and-jwks.md
-      - oidc/logout.md
-      - oidc/dynamic-registration.md
-      - oidc/pairwise-subjects.md
-      - oidc/errors.md
-      - oidc/ports.md
-  - SAML 2.0:
-      - saml/index.md
-      - saml/identity-provider.md
-      - saml/service-providers.md
-      - saml/single-sign-on.md
-      - saml/single-logout.md
-      - saml/upstream-identity-providers.md
-      - saml/federated-sign-in.md
-      - saml/microsoft-entra-id.md
-      - saml/packages.md
-  - The application:
-      - application/index.md
-      - application/deployment.md
-      - application/configuration.md
-      - application/examples.md
-      - application/configuration-tree.md
-      - application/routes-and-planes.md
-      - application/persistence.md
-      - application/security.md
-      - application/key-management.md
-      - application/pages.md
-      - application/translations.md
-      - application/account.md
-      - application/messenger.md
-      - application/web-push.md
-      - application/console-commands.md
-      - application/operating.md
-      - application/observability.md
-      - application/profiler.md
-  - SCIM:
-      - scim/index.md
-  - Reference:
-      - reference/endpoints.md
-      - reference/configuration.md
-      - reference/console-commands.md
-      - reference/events.md
-      - reference/specifications.md
-  - Migration:
       - migration/index.md
+  - Developers:
+      - developers/index.md
+      - Connect an application:
+          - developers/connect/your-first-client.md
+          - developers/connect/symfony.md
+          - developers/connect/laravel.md
+      - OAuth 2.0 and OpenID Connect:
+          - developers/oidc/index.md
+          - developers/oidc/clients.md
+          - developers/oidc/client-authentication.md
+          - developers/oidc/authorization-request.md
+          - developers/oidc/interactions.md
+          - developers/oidc/consent.md
+          - Grants:
+              - developers/oidc/grants/index.md
+              - developers/oidc/grants/authorization-code.md
+              - developers/oidc/grants/refresh-token.md
+              - developers/oidc/grants/client-credentials.md
+              - developers/oidc/grants/device-code.md
+              - developers/oidc/grants/backchannel-authentication.md
+              - developers/oidc/grants/token-exchange.md
+              - developers/oidc/grants/jwt-bearer.md
+          - Tokens:
+              - developers/oidc/tokens/index.md
+              - developers/oidc/tokens/access-tokens.md
+              - developers/oidc/tokens/id-tokens.md
+              - developers/oidc/tokens/refresh-tokens.md
+              - developers/oidc/tokens/encryption.md
+          - developers/oidc/scopes-and-claims.md
+          - developers/oidc/resources.md
+          - developers/oidc/authorization-details.md
+          - developers/oidc/pushed-authorization-requests.md
+          - developers/oidc/request-objects.md
+          - developers/oidc/response-modes.md
+          - Sender-constrained tokens:
+              - developers/oidc/sender-constrained/index.md
+              - developers/oidc/sender-constrained/dpop.md
+              - developers/oidc/sender-constrained/mutual-tls.md
+          - developers/oidc/userinfo.md
+          - developers/oidc/introspection-and-revocation.md
+          - developers/oidc/discovery-and-jwks.md
+          - developers/oidc/logout.md
+          - developers/oidc/dynamic-registration.md
+          - developers/oidc/pairwise-subjects.md
+          - developers/oidc/errors.md
+          - developers/oidc/ports.md
+      - The packages:
+          - developers/packages.md
+          - Identity core:
+              - developers/core/index.md
+              - developers/core/ports.md
+              - developers/core/events.md
+          - developers/saml/packages.md
+      - developers/profiler.md
+      - Reference:
+          - developers/reference/endpoints.md
+          - developers/reference/events.md
+          - developers/reference/specifications.md
+      - developers/contributing.md
+  - Operators:
+      - operators/index.md
+      - Getting started:
+          - operators/getting-started/installation.md
+          - operators/getting-started/the-standalone-application.md
+          - operators/getting-started/tenant-and-keys.md
+      - The application:
+          - operators/application/index.md
+          - operators/application/deployment.md
+          - operators/application/configuration.md
+          - operators/application/examples.md
+          - operators/application/configuration-tree.md
+          - operators/application/routes-and-planes.md
+          - operators/application/persistence.md
+          - operators/application/security.md
+          - operators/application/key-management.md
+          - operators/application/pages.md
+          - operators/application/translations.md
+          - operators/application/account.md
+          - operators/application/messenger.md
+          - operators/application/web-push.md
+          - operators/application/console-commands.md
+          - operators/application/operating.md
+          - operators/application/observability.md
+      - The tenant:
+          - operators/tenant/tenants.md
+          - operators/tenant/keys.md
+          - operators/tenant/personal-data.md
+      - SAML 2.0:
+          - operators/saml/index.md
+          - operators/saml/identity-provider.md
+          - operators/saml/service-providers.md
+          - operators/saml/single-sign-on.md
+          - operators/saml/single-logout.md
+          - operators/saml/upstream-identity-providers.md
+          - operators/saml/federated-sign-in.md
+          - operators/saml/microsoft-entra-id.md
+      - Reference:
+          - operators/reference/configuration.md
+          - operators/reference/console-commands.md
+  - Administrators:
+      - administrators/index.md
+      - administrators/terminal-client.md
+      - People:
+          - administrators/people/users.md
+          - Credentials:
+              - administrators/people/credentials/index.md
+              - administrators/people/credentials/passwords.md
+              - administrators/people/credentials/passkeys.md
+              - administrators/people/credentials/totp.md
+              - administrators/people/credentials/backup-codes.md
+          - administrators/people/authentication-sessions.md
+          - administrators/people/groups.md
+          - administrators/people/linked-identities.md
+      - SCIM:
+          - administrators/scim/index.md
+  - Users:
+      - users/index.md
+      - users/signing-in.md
+      - users/passkeys.md
+      - users/two-factor.md
+      - users/password.md
+      - users/requests.md
+      - users/applications.md
+      - users/sessions.md
+      - users/information.md
+      - users/notifications.md
+      - users/activity.md
+      - users/your-data.md

@@ -30,7 +30,7 @@ docker run --rm -p 8000:8000 -v "$PWD":/docs squidfunk/mkdocs-material
 | Path | What it is |
 |---|---|
 | `mkdocs.yml` | The site: theme, extensions, plugins, and the whole navigation |
-| `docs/` | The pages, one directory per section of the navigation |
+| `docs/` | The pages: `developers/`, `operators/`, `administrators/` and `users/`, one directory per documentation, beside the home, `the-project/` and `migration/` |
 | `docs/assets/stylesheets/beffroi.css` | The look, from the brand guidelines. The tokens at the top of the file carry the colours, the type, the rules and the cuts |
 | `docs/assets/fonts/`, `docs/assets/images/` | The typefaces with their licences, the logo, the favicons and the share image, copied from the brand kit |
 | `docs/overrides/` | Theme partials: the logo in the colourway of the ground, and the head of every page |
