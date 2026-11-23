@@ -4369,10 +4369,9 @@ answered with a page of the provider's own origin that posts the same form again
 order. The second post is made from the provider's origin, carries the cookie and is not posted again; it is
 read, judged and refused exactly as the first would have been. Nothing is decided on that page, and nothing of
 the request is spent by the first post, a pushed reference included. The page submits itself where scripts
-run, and where they do not it says "Your browser came from another site without your session. Use the button
-below to continue.", in the language the <code>ui_locales</code> of the posted form asks for, or else the browser. A
-browser that sends no <code>Sec-Fetch-Site</code> is answered as it always was, and a request in the query is never
-touched.</p>
+run, and where they do not it shows a Continue button, in the language the <code>ui_locales</code> of the posted form
+asks for, or else the browser. A browser that sends no <code>Sec-Fetch-Site</code> is answered as it always was, and a
+request in the query is never touched.</p>
 <p>Beside it, no answer of a page of the interaction plane to such a request, a <code>POST</code> or any method but <code>GET</code>
 and <code>HEAD</code> from another site without the session cookie, carries a new session cookie: the one the session
 listener would have written is taken off the response.</p>
@@ -4399,7 +4398,7 @@ authorization requests</a></p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 23:12:06 UTC">November 17, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 08:21:26 UTC">November 23, 2026</span>
   </span>
 
     
