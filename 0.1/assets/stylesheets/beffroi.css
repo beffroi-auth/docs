@@ -188,6 +188,35 @@ html :focus-visible {
   color: var(--bf-text);
 }
 
+/* One tab per documentation, on the ground of the header and closed by the same rule. The documentation
+   being read is the active page of the site: accent text over a rule of the accent. */
+.md-tabs {
+  background-color: var(--bf-bg);
+  border-bottom: var(--bf-rule) solid var(--bf-text);
+  color: var(--bf-text);
+}
+
+.md-tabs__link {
+  border-bottom: var(--bf-rule) solid transparent;
+  color: var(--bf-muted);
+  font-family: var(--bf-font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 0.6rem;
+  opacity: 1;
+  padding-bottom: 0.45rem;
+}
+
+.md-tabs__link:focus,
+.md-tabs__link:hover {
+  color: var(--bf-text);
+}
+
+.md-tabs__item--active .md-tabs__link {
+  border-bottom-color: var(--bf-accent);
+  color: var(--bf-accent-text);
+}
+
 /* The lockup is the name: the site name next to it would spell it a second time. The theme writes the version
    selector into the same topic, so only the name goes. */
 .md-header__title .md-header__topic:first-child > .md-ellipsis {
