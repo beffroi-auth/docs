@@ -4086,6 +4086,25 @@ terminal through <code>stty</code>.</p>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>gpg<span class="w"> </span>--verify<span class="w"> </span>SHA256SUMS.asc<span class="w"> </span>SHA256SUMS
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>sha256sum<span class="w"> </span>--check<span class="w"> </span>--ignore-missing<span class="w"> </span>SHA256SUMS
 </span></code></pre></div>
+<p><code>beffroi-tui --version</code> prints the release a file was built from, and the client shows it on its home page
+and in its instance section. When the administration opens, before any sign-in, a release looks once for a
+newer release of its line, <code>0.1.*</code> for <code>0.1.0</code>, in the GitHub API and without any credential, and the
+screen names it with the command that installs it. Nothing turns that look off; on a machine that cannot
+reach GitHub, the screen says the update was not checked.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>beffroi-tui<span class="w"> </span>self-update
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>./beffroi-tui-linux-x86_64<span class="w"> </span>self-update<span class="w">      </span><span class="c1"># an executable kept under its own name</span>
+</span></code></pre></div>
+<p><code>self-update</code> replaces the PHAR or the executable that runs by the same file of the newest release of its
+line, and runs the verification above for you: <code>gpgv</code> checks <code>SHA256SUMS.asc</code> under the release key the
+client carries, never one fetched at run time, before the file is downloaded, and the file must match its
+line of <code>SHA256SUMS</code>, or nothing is replaced. It needs <code>gpgv</code> on the <code>PATH</code> and write access to the
+directory the program sits in, asks for no more privileges, and has no option: a copy in a directory only
+root writes to, such as <code>/usr/local/bin</code>, is refused. It never moves to another line, where a <code>0.x</code>
+version may break what it talks to: the next line is a new download. A copy installed by Composer is
+updated by Composer, and a build of anything but a release does not replace itself.</p>
+<p>The client reaches <code>api.github.com</code> for the list of releases and <code>github.com</code> for their files, which GitHub
+answers with one redirection to the host it stores them on. That redirection is followed once, to an
+<code>https</code> address only; no other request of the client follows one.</p>
 <p><a href="../../reference/endpoints/#the-administration-plane"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The administration plane</a></p>
 </div>
@@ -4166,7 +4185,7 @@ buys.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 22, 2026 16:08:27 UTC">November 22, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 10:31:32 UTC">November 23, 2026</span>
   </span>
 
     
