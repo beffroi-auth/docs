@@ -39,7 +39,8 @@ per key and per worker rather than once per signature.
 ## The HTTP server
 
 The command of the image is `frankenphp run --config /etc/frankenphp/Caddyfile`. Before it starts, the
-entrypoint does three things when `.env` names a `DATABASE_URL`, which the one of the application does:
+entrypoint checks the sizes that bound a request, below, then does three things when `.env` names a
+`DATABASE_URL`, which the one of the application does:
 
 1. it waits for the database, sixty attempts one second apart, and stops at once on an error it cannot
    recover from;
@@ -56,6 +57,20 @@ whose request line and headers go over the bound, as the Go server Caddy is buil
 whether its length is announced or it is chunked. The defaults let through the largest SAML message the
 provider reads from a posted form, and the largest S/MIME key with its certificates the administration API
 takes: [the variables of the web server](configuration.md#the-web-server).
+
+Caddy keeps a size as a whole number of bytes, and starts on one that bounds nothing: zero bytes in any unit,
+such as `0`, `0KiB` or `0.4B`, or 8 EiB and more, which wraps below zero. A body is then read whatever its
+size, and the headers are held to the bound Caddy applies when it is given none. The entrypoint therefore has
+Caddy read each of `CADDY_MAX_HEADER_SIZE`, `CADDY_REQUEST_BODY_MAX_SIZE` and
+`CADDY_ADMINISTRATION_REQUEST_BODY_MAX_SIZE` the environment sets, and stops the container on such a size,
+with one line on its error output:
+
+``` text
+CADDY_REQUEST_BODY_MAX_SIZE=0 is not a bound: give it a size of 1B or more, below 8EiB.
+```
+
+A value Caddy cannot read as a size, an empty one, `-1`, or 16 EiB and more, is left to Caddy, which refuses
+it as it starts.
 
 ### The health check
 
@@ -117,9 +132,9 @@ provider, in this order, which is the order it takes them in:
 bin/console messenger:consume scheduler_beffroi async_notifications async_priority_high async_priority_medium async_priority_low --time-limit=3600 --memory-limit=256M
 ```
 
-Started with `bin/console`, the entrypoint waits for the database as it does for the server, plays no
-migration and writes no tenant: the server does both, and the development stack starts the worker once the
-server reports healthy. The consumer stops after an hour, or once it holds 256 MB, and the restart policy of the stack
+Started with `bin/console`, the entrypoint waits for the database as it does for the server, and checks no
+size, plays no migration and writes no tenant: the server does all three, and the development stack starts
+the worker once the server reports healthy. The consumer stops after an hour, or once it holds 256 MB, and the restart policy of the stack
 starts it again.
 
 | Transport | What it carries |

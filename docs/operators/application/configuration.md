@@ -255,6 +255,10 @@ These are read by Caddy and FrankenPHP, not by the kernel.
 | `FRANKENPHP_CONFIG` | Directives of the `frankenphp` block. The production image sets `import worker.Caddyfile`, which is worker mode |
 | `FRANKENPHP_WORKER_CONFIG` | Directives added to each `worker` block, the one of `worker.Caddyfile` and the one of the administration API: the `watch` lines of the development stack, nothing in production |
 
+`CADDY_MAX_HEADER_SIZE`, `CADDY_REQUEST_BODY_MAX_SIZE` and `CADDY_ADMINISTRATION_REQUEST_BODY_MAX_SIZE` take
+a size of `1B` or more, below `8EiB`: the server of the image does not start on one Caddy reads as no bound
+([the HTTP server](deployment.md#the-http-server)).
+
 ## The key management service
 
 The DSN and the key identifier are what change from one backend to the next: the code and the envelope are
