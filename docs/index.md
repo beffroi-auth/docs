@@ -20,10 +20,10 @@ Beffroi paints that last box the same colour as the other two.</p>
 
 </div>
 
-!!! warning "Development version"
+!!! info "Beffroi is 0.x"
 
-    These pages document `0.1.x`, where the next minor version is written. The released versions and their
-    support are on [the versions page](the-project/versions.md).
+    These pages document `0.1.x`, released as `0.1.0`. Until `1.0`, the public API may change between minor
+    versions, and only the latest release is supported ([versions](the-project/versions.md)).
 
 <div class="grid cards" markdown>
 
