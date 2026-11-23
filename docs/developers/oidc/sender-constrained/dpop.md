@@ -23,7 +23,8 @@ the tokens are bound to.
 |---|---|---|
 | Header | `typ` | `dpop+jwt` (RFC 9449 §4.2) |
 | Header | `alg` | One of `dpop_signing_alg_values_supported`: the signature algorithms the provider is wired with, `RS256`, `PS256`, `ES256` and `EdDSA` in the application. No MAC algorithm is among them |
-| Header | `jwk` | The public key the proof is signed with. A key that carries a private member (`d`, `p`, `q`, `dp`, `dq`, `qi`, or the `k` of a symmetric key) is refused. `kid`, `jku` and `x5c` are not read, and nothing is looked up anywhere |
+| Header | `jwk` | The public key the proof is signed with. A key that carries a private member (`d`, `p`, `q`, `dp`, `dq`, `qi`, or the `k` of a symmetric key) is refused, and so is an `RSA` key whose modulus is under 2048 bits (RFC 7518 §3.3, §3.5). `kid`, `jku` and `x5c` are not read, and nothing is looked up anywhere |
+| Header | `crit`, `b64` | Absent: the provider understands no extension of JOSE (RFC 7515 §4.1.11, RFC 7797 §6) |
 | Claims | `jti` | A non-empty string, accepted once for that key |
 | Claims | `htm` | The method of the request, compared exactly: `POST` is not `post` |
 | Claims | `htu` | The URL of the endpoint, as below |
@@ -147,9 +148,10 @@ of UserInfo under `DPoP` names in `algs`.
     share it by sharing that directory, which the Compose file of the image mounts on the server and on the
     worker as one volume ([what the processes share](../../../operators/application/deployment.md#what-the-processes-share)).
     Two servers that do not share it each keep their own: a proof replayed on the other is not recognised as
-    a replay there, and a nonce one of them issued is refused by the other. The pool tells a hit from a miss
-    and not an insertion from a replacement, so two presentations of one proof arriving in the same instant
-    may both be taken; what a replay needs is a wider window than that.
+    a replay there, and a nonce one of them issued is refused by the other. A proof is read and remembered
+    under a lock every process of the deployment shares, an advisory lock of the PostgreSQL database, so of
+    two presentations of one proof arriving in the same instant at processes that share the pool, exactly one
+    is taken.
 
 ## What a resource server checks
 

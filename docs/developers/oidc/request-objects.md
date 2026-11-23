@@ -40,21 +40,23 @@ what it carried, so the authorization endpoint reads a pushed request as it read
 |---|---|
 | `request_object_signing_alg` absent | Signed under any algorithm the provider verifies: `RS256`, `PS256`, `ES256` or `EdDSA`. Never unsigned |
 | `request_object_signing_alg` naming one of those | Signed under that algorithm and no other. The client publishes its keys in `jwks` or behind a `jwks_uri` |
-| `request_object_signing_alg: none` | Unsigned, and read all the same: the one exception, registered client by client, never a switch of the deployment, and never beside `require_signed_request_object` |
+| `request_object_signing_alg: none` | Unsigned, and read all the same: the one exception, written client by client by the configuration that declares the client, never a switch of the deployment, never beside `require_signed_request_object`, and refused to a client that [registers itself](dynamic-registration.md), in its body as in a software statement |
 | `request_uris` | The URLs its objects may be read back from, compared byte for byte, fragment included |
 | `require_signed_request_object` | Its authorization requests are read from a request object and from nothing else (RFC 9101 §10.5), signed as its `request_object_signing_alg` says, which names an algorithm or is left out: beside `none`, the registration is refused. A request without one is refused on a page, with `invalid_request`, before its redirect URI is read. Its backchannel authentication requests are read from an object it signed, and from nothing else |
 
 An object signed under an algorithm the client did not register is refused unread, whatever its signature is
 worth. The discovery document lists in `request_object_signing_alg_values_supported` the algorithms the
-provider verifies, and `none` beside them only when a client of the tenant registered it: the member says what
-a client of this tenant may register, not what any client is read under.
+provider verifies, and `none` beside them only when a client the configuration of the tenant declares reads
+its objects unsigned, which no client of the image does.
 
 ## What is checked
 
-The key is one the client publishes, named by the `kid` of the header or, without one, tried among all of
-them; a key that names another `alg`, or a `use` other than `sig`, is not tried, and `jwk`, `jku` and `x5c` in
-the header are ignored (RFC 8725 §3.10). Keys behind a `jwks_uri` are read as they are for a [client
-assertion](client-authentication.md). Once the signature verifies:
+The key is one the client publishes, named by the `kid` of the header or, without one, the one key of the
+client that could have signed the object, which is refused when several could, by their type, their `alg`
+and their `use` (OIDC Core §10.1); a key that names another `alg`, or a `use` other than `sig`, is not tried, and `jwk`, `jku` and `x5c`
+in the header are ignored (RFC 8725 §3.10). A header that carries `crit` or `b64` is refused, the provider
+understanding no extension of JOSE (RFC 7515 §4.1.11). Keys behind a `jwks_uri` are read as they are for a
+[client assertion](client-authentication.md#an-assertion). Once the signature verifies:
 
 | Claim | What it has to say |
 |---|---|
@@ -64,13 +66,14 @@ assertion](client-authentication.md). Once the signature verifies:
 | `nbf` | Present, and not in the future |
 | `exp` | Present, not past, and no more than the maximum lifetime after `nbf` |
 
-These are asked of every signed object, whatever the client. An unsigned object, from a client that
-registered `none`, is held to the `client_id` rule alone, OIDC Core §6.1 leaving the other claims optional
+These are asked of every signed object, whatever the client. An unsigned object, from a client declared with
+`none`, is held to the `client_id` rule alone, OIDC Core §6.1 leaving the other claims optional
 for an object whoever wrote it could have written. The authorization endpoint and the pushed authorization
 request endpoint do not read `iat` and `jti`. The backchannel authentication endpoint asks both of a signed
-object, and remembers the `jti` until the `exp` of the object, so one signed backchannel request is made once
-(CIBA Core §7.1.1): an object without them, or with a `jti` already used, is refused there with
-`invalid_request`.
+object, and remembers the `jti` until the `exp` of the object plus `BEFFROI_REQUEST_OBJECT_LEEWAY`, the last
+instant the object is accepted, under a lock every process of the deployment shares, so one signed
+backchannel request is made once (CIBA Core §7.1.1): an object without them, or with a `jti` already used, is
+refused there with `invalid_request`.
 
 Four variables bound an object and the read of one, here at the values of the image
 ([configuration](../../operators/application/configuration.md#clients-and-their-requests)):
@@ -116,6 +119,7 @@ client did not register is refused before any request leaves the provider, which
 
 The fragment, which OIDC Core §6.2 defines as the hash of the content, is not sent: the URL is read without
 it, with one `GET` that sends `Accept: application/oauth-authz-req+jwt, application/jwt`, follows no redirect,
+reaches no private network of the deployment it does not name in `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS`,
 and refuses any status but `2xx`, an answer longer than `BEFFROI_REQUEST_OBJECT_MAX_SIZE` bytes and a read
 longer than `BEFFROI_REQUEST_OBJECT_TIMEOUT` seconds. What comes back is read as an object sent by value would
 be. The hash in the fragment is not compared with it.
@@ -131,7 +135,7 @@ with, which the discovery document announces in `request_object_encryption_alg_v
 names no key, a key that signs or a key that has retired is refused.
 
 What the JWE carries is the signed object, read and verified as one sent in clear: being encrypted says who
-may read the request, never who wrote it (OIDC Core §16.14). For a client that registered `none`, the JWE may
+may read the request, never who wrote it (OIDC Core §16.14). For a client declared with `none`, the JWE may
 carry the claims themselves, read as an unsigned object.
 
 ## Refusals

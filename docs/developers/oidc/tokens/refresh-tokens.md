@@ -57,7 +57,7 @@ the family ends.
 ## Rotation and reuse
 
 A refresh token is told from a copy of itself by the authentication of a confidential client, by the key or
-the certificate it is bound to, or by rotation (RFC 9700 §4.13.2), and one of the three is enough. So the
+the certificate it is bound to, or by rotation (RFC 9700 §4.14.2), and one of the three is enough. So the
 provider replaces a token at each use exactly where the first two are missing, the token of a public client
 bound to nothing, and lets every other token stand: replacing it would add nothing, and would lock out a
 client that lost the answer to a refresh.
@@ -65,7 +65,8 @@ client that lost the answer to a refresh.
 A replaced token presented again is a reuse. The provider cannot tell the client from whoever copied the
 token, so it revokes the whole family, the successor the client holds included, refuses the request with
 `invalid_grant`, and writes the act `refresh_token.reuse_detected` in the journal of the person. The client
-goes back to the person for a new authorization.
+goes back to the person for a new authorization. A token is replaced once: of two requests presenting it at
+once, the one that comes second presented a replaced token, and is a reuse like any other.
 
 ## Binding
 
@@ -89,11 +90,15 @@ tokens of each refresh are bound to whatever that request binds them to
 | The person is disabled | Every refresh token issued for them, refused at its next use |
 | The client revokes it at the revocation endpoint (RFC 7009 §2.1) | That token, and the opaque access tokens of its grant |
 
-**The grant reads the session, and not only the token.** It refuses a token whose session has ended from the
-instant the session ended, whatever the token's own state, while the revocation of the tokens of that session
-is written on the lane of the events and dated by the end. A token that a refresh in flight saved after that
-revocation ran is refused all the same, and revoked at its first use. A session that merely expired, without
-anybody ending it, stops no refresh.
+**The grant reads the session and the authorization, and not only the token.** It refuses a token whose
+session has ended from the instant the session ended, whatever the token's own state, while the revocation of
+the tokens of that session is written on the lane of the events and dated by the end. A token that a refresh in
+flight saved after that revocation ran is refused all the same, and revoked at its first use. It refuses as
+well a token whose authorization was revoked, by a consent taken back or a code presented twice, whether the
+token itself was revoked yet or not. A session that merely expired, without anybody ending it, stops no
+refresh, save one whose access token is for the [administration API](../resources.md#the-administration-api)
+of the tenant: that refresh is refused with `invalid_grant` once the session the person signed in with has
+expired.
 
 A token revoked keeps the date of its first revocation. [Introspection and
 revocation](../introspection-and-revocation.md) describes the revocation endpoint, which answers the same

@@ -55,15 +55,17 @@ so that a client guessing learns nothing of which check it failed.
 
 1. The code is one this provider issued, and it was not presented before.
 2. It was issued to the client that authenticated.
-3. It has not expired.
-4. `redirect_uri` is the redirect URI of the authorization request, compared as a string (RFC 6749 §4.1.3).
-5. PKCE holds (RFC 7636 §4.6): the `code_verifier`, transformed with `S256`, is the `code_challenge` of the
+3. The grant it stands for has not been revoked, as the person taking back their consent to the client
+   revokes it.
+4. It has not expired.
+5. `redirect_uri` is the redirect URI of the authorization request, compared as a string (RFC 6749 §4.1.3).
+6. PKCE holds (RFC 7636 §4.6): the `code_verifier`, transformed with `S256`, is the `code_challenge` of the
    request. A code issued without a challenge is refused when a `code_verifier` comes with it (RFC 9700
    §4.8.2). Only a confidential client exempted from PKCE obtains such a code, and no client of the image is
    ([what the image does not set](../clients.md#what-the-image-does-not-set)).
-6. A code the request reserved for a key, with `dpop_jkt` or by the DPoP proof of its pushed request, is spent
+7. A code the request reserved for a key, with `dpop_jkt` or by the DPoP proof of its pushed request, is spent
    by a request whose DPoP proof is signed by that key (RFC 9449 §10), and by no other.
-7. The session the code was issued in is still active: it has not ended, and it has not expired.
+8. The session the code was issued in is still active: it has not ended, and it has not expired.
 
 A missing `code` or `redirect_uri` is `invalid_request`, answered before the code is read, which leaves it
 unspent. A `code_verifier` that is not 43 to 128 unreserved characters (RFC 7636 §4.1) is refused. Other

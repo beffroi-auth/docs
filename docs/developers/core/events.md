@@ -22,21 +22,22 @@ Every event implements `DomainEventInterface`, and so carries four things:
 | `tenant` | The tenant it happened in |
 | `context` | The provenance of the request it came from: when the request was received, the address and the user agent. A command of the console names itself, the user of the shell and the host in place of a user agent, `beffroi-console/<command> (<user>@<host>)`, and a timed step names the schedule and the host, `beffroi-scheduler/beffroi (<host>)`, both with no address |
 
-Three interfaces say more of an event that means more:
+Four interfaces say more of an event that means more:
 
 | Interface | What it adds | Read by |
 |---|---|---|
 | `ConcernsAPersonInterface` | `subject()`, the person the act concerns, by the subject their account carries and never by the `sub` a client was given, a pairwise one included. Null where the act named nobody: a login refused on an identifier no account answers happened to no one this provider knows | The journal, which files the act under that person |
 | `SessionProvenanceInterface` | `sessionId()`, the session whose row holds the very provenance the event carries | The enrichment that finds the place of that provenance and writes it on the row of the session |
 | `NamesItsAuthorInterface` | `author()`, the administrator who did the act through the administration API, by the subject their account carries. Null when the person, the operator at the console or nobody did it | The journal, which writes it beside the person |
+| `SaysWhyItWasRefusedInterface` | `refusalReason()` and `refusedMethod()`, the reason of a refusal and the method it refused, both words this provider gives them and never a value the request carried | The journal, which writes both beside the act |
 
 **An event that names a domain object carries it whole**, as its row holds it: a credential with its hash or its
-envelope and the person it belongs to, a session with its two provenances, a key with its sealed private half.
-That is why the body of every message is sealed on its way out. What reaches the journal of the acts is the act,
-its date, its provenance, sealed, the subject, the client and the author, and nothing else of what the event
-carries. An event that names facts carries the facts and no more: `person.provisioned` carries the subject and
-the name of the provider, never what the provider said, and an archive is named by its identifier and never
-carried.
+envelope and the person it belongs to, a session with its two provenances, a key with its sealed private half. That
+is why the body of every message is sealed on its way out. What reaches the journal of the acts is the act, its
+date, its provenance, sealed, the subject, the client, the author, and for a refusal its reason and its method, and
+nothing else of what the event carries. An event that names facts carries the facts and no more:
+`person.provisioned` carries the subject and the name of the provider, never what the provider said, and an archive
+is named by its identifier and never carried.
 
 ## The events
 
@@ -70,6 +71,7 @@ page of a code says apart when too many codes have been tried.
 | `password.changed` | `PasswordChanged` | A person replaces their own password, on their account or with a ticket | The credential |
 | `password.rehashed` | `PasswordRehashed` | A password is stored again under the current algorithm and parameters | The credential |
 | `backup_codes.renewed` | `BackupCodesRenewed` | A person draws another set of backup codes | The credential, and never a code |
+| `credential_change.not_told` | `CredentialChangeNotTold` | A channel gives up on the notice of a change to the ways a person signs in, every attempt of its schedule spent; the person is told of it once, at the sign-in that follows | The subject, the act the change was written under, the channel, and why its last attempt failed |
 | `enrolment_ticket.issued` | `EnrolmentTicketIssued` | An enrolment ticket is issued, at the console or through the administration API | The ticket, which holds a hash of its value, and the administrator who issued it through the API |
 | `password_ticket.issued` | `PasswordTicketIssued` | A password ticket is issued | The same |
 | `totp_ticket.issued` | `TotpTicketIssued` | A ticket for an authenticator application is issued | The same |
@@ -83,6 +85,10 @@ page of a code says apart when too many codes have been tried.
 | `person.disabled` | `PersonDisabled` | A person is disabled, at the console or through the administration API | The subject, and the administrator who disabled them |
 | `person.enabled` | `PersonEnabled` | A person is enabled again | The same |
 | `person.described_themselves` | `PersonDescribedThemselves` | A person says something of themselves on their account | The user, the name of the claim, and whether they took it back |
+| `address.confirmation_sent` | `AddressConfirmationSent` | A confirmation is sent to an address a person gave, by mail or by text, to establish that it is theirs | The user and the name of the claim; never the address nor the code |
+| `address.confirmation_withheld` | `AddressConfirmationWithheld` | A confirmation a person asked for is not sent, the budget of the person or of the address spent | The user and the name of the claim; never the address |
+| `address.established` | `AddressEstablished` | A person gives back the confirmation sent to an address of theirs | The user and the name of the claim; never the address |
+| `notification_channels.chosen` | `NotificationChannelsChosen` | A person chooses the channels that tell them, and the choice changes something | The subject, and the names of what changed; never the channels |
 | `archive.asked` | `PersonAskedForTheirArchive` | A person asks for their archive | The identifier of the archive and the subject of the person |
 | `archive.taken` | `PersonTookTheirArchive` | A person downloads their archive | The same |
 | `archive.dropped` | `PersonDroppedTheirArchive` | A person has their archive dropped | The same |
@@ -100,6 +106,9 @@ page of a code says apart when too many codes have been tried.
 | Act | Class | Raised when | Carries beyond the four |
 |---|---|---|---|
 | `tenant.contact_changed` | `TenantContactChanged` | An administrator sets or takes back, through the administration API, [the contact the tenant gives its people](../../operators/tenant/tenants.md#the-contact-it-gives-its-people) | The administrator who changed it. It concerns no person |
+| `tenant.mail_signing_key_set` | `MailSigningKeySet` | An administrator sets, through the administration API, the key of a format the tenant signs its mail with, the key it replaces signing nothing from then on | The format, `smime` or `pgp`, the fingerprint of the key, and the administrator. It concerns no person |
+| `tenant.mail_signing_key_removed` | `MailSigningKeyRemoved` | An administrator removes one of those keys the same way | The same |
+| `tenant.chain_signed_anew` | `ChainSignedAnew` | A chain of the tenant, the journal, the history of the claims or what clients were given, is linked and signed again as the database holds it, with `beffroi:chain:sign-anew`, once a person has read what its check found | The name of the chain, and the first and the last positions linked again. It concerns no person |
 
 ### Keys and data keys
 

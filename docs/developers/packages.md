@@ -108,6 +108,7 @@ come from [`web-token/jwt-library`](https://github.com/web-token/jwt-framework),
 [`web-auth/webauthn-lib`](https://github.com/web-auth/webauthn-framework), TOTP from
 [`spomky-labs/otphp`](https://github.com/Spomky-Labs/otphp), certificates from
 [`spomky-labs/pki-framework`](https://github.com/Spomky-Labs/pki-framework), and key management from
-`symfony/key-management`. The XML of SAML is the exception, written here on purpose, because no library of
+`symfony/key-management`. The packages require `web-token/jwt-library` 4.2.7 and `web-auth/webauthn-lib` 5.3.15
+at least, below which published advisories apply. The XML of SAML is the exception, written here on purpose, because no library of
 the PHP ecosystem reads it safely by construction: [the SAML packages](saml/packages.md) say what that
 buys.

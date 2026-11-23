@@ -51,7 +51,9 @@ The client registers with:
 ```
 
 The answer carries the `client_id` the provider drew, and no secret, `private_key_jwt` proving no shared
-secret.
+secret. A client of this flow authenticates at both of its endpoints (CIBA Core §7.1, §10.1): a public
+client, `token_endpoint_auth_method: none`, is refused the grant at registration with
+`invalid_client_metadata`, and with `invalid_client` at the backchannel authentication endpoint.
 
 | Member | What it decides |
 |---|---|
@@ -69,8 +71,11 @@ Two rules follow from registering the grant. A client that authenticates with an
 or `client_secret_jwt`, may name in its `aud` the issuer, the URL of the token endpoint or the URL of the
 backchannel authentication endpoint, the three CIBA Core §7.1 lets it choose from, and those URLs on the host
 that asks for a certificate when the deployment serves one; a client of no backchannel grant names the issuer
-alone. And a client that takes [pairwise subjects](../pairwise-subjects.md), registers no redirect URI and no
-`sector_identifier_uri` is of the sector of the host of its `jwks_uri` (CIBA Core §4).
+alone. And a client that takes [pairwise subjects](../pairwise-subjects.md) proves its sector with a key: it
+authenticates with `private_key_jwt` or `self_signed_tls_client_auth` under a key it publishes behind a
+`jwks_uri`, and is of the sector of the host of that `jwks_uri`, or of the `sector_identifier_uri` it
+names, whose document then lists that `jwks_uri` (CIBA Core §4). A client that authenticates any other way is
+refused pairwise subjects with `invalid_client_metadata`.
 
 ## The request
 
@@ -91,10 +96,12 @@ endpoint, then:
 
 A signed request object is read and verified as at the authorization endpoint ([request
 objects](../request-objects.md)), and it carries an `iat` and a `jti` besides: the `jti` is remembered until
-the `exp` of the object, so that one signed request is made once.
+the `exp` of the object plus `BEFFROI_REQUEST_OBJECT_LEEWAY`, 30 seconds in the image, the last instant the
+object is accepted, so that one signed request is made once.
 
 | Refusal | Error |
 |---|---|
+| A public client | `invalid_client` |
 | The client is not registered for the grant, or registered no delivery mode | `unauthorized_client` |
 | No `scope` | `invalid_request` |
 | No `openid` in it, a scope the client did not register, or a `scope` that is not a list of scope tokens | `invalid_scope` |
@@ -134,7 +141,7 @@ since it has to present both when it pings.
 | Hint | How it is read |
 |---|---|
 | `login_hint` | As `BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT` says, below |
-| `id_token_hint` | An ID token this provider issued to this very client, whose `sub` names the person; its `exp` is not looked at, a hint describing a past sign-in being the ordinary case. A token of another issuer, or issued to another client, is `invalid_request` |
+| `id_token_hint` | An ID token this provider issued to this very client, whose `sub` names the person; its `exp` is not looked at, a hint describing a past sign-in being the ordinary case. Any other JWT, another token of the tenant, a token of another issuer or one issued to another client, is `invalid_request` ([what a hint is](../tokens/id-tokens.md#where-an-id-token-comes-back)) |
 | `login_hint_token` | Read by nothing the application wires, so `invalid_request` |
 
 `BEFFROI_BACKCHANNEL_AUTHENTICATION_LOGIN_HINT` names what a `login_hint` is, one of three values:
@@ -216,11 +223,12 @@ The person signs in first, then sees the requests made for them that are still w
 nothing else: there is no code to type and no link that carries a request, the requests being found by who
 is signed in. Each one shows the provider that is asking, the client, its binding message, where the request
 came from, by its address and what its user agent says, every scope of the request, and a warning that
-whoever did not start it refuses it.
+whoever did not start it refuses it. A request revoked by the person taking back their [consent](../consent.md)
+to that client is not listed.
 
 - **Allow and Refuse** are a `POST` with the form token of the page, naming the request by a handle of that
-  very list. A request that was answered, has expired or was never this person's is not answerable, and the
-  page says that nothing is waiting there any more, answered `400`.
+  very list. A request that was answered, has expired, was revoked or was never this person's is not
+  answerable, and the page says that nothing is waiting there any more, answered `400`.
 - **A class the client asked for** with `acr_values` that the session proves none of, when a credential of
   the person would, sends them to the login of the provider for one more proof, and back to the page to
   answer. A class nothing of theirs could ever reach is asked of nobody: the request is approved with the
@@ -249,6 +257,9 @@ Content-Type: application/json
 - **It leaves on the notifications lane**, never in the request of the person, with no cookie and no
   redirect followed. Each call is given `BEFFROI_CLIENT_NOTIFICATION_TIMEOUT` seconds, `3` in the image,
   connection included.
+- **It reaches no private network of the deployment.** An endpoint that resolves to a private, loopback,
+  link-local or reserved address is not called, unless `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS` names
+  its network, and is tried again as an endpoint that did not answer.
 - **A `2xx` is done.** A redirection and a `400`, `401`, `403`, `404`, `405` or `501` are given up at once, the
   same answer coming back at every try. Any other answer, or none, is tried again under the retry policy of
   the lane, which `BEFFROI_BACK_CHANNEL_LOGOUT_RETRIES`, `BEFFROI_BACK_CHANNEL_LOGOUT_RETRY_DELAY`,
@@ -272,10 +283,14 @@ The client sends `POST /token` with `grant_type=urn:openid:params:grant-type:cib
 | `invalid_grant` | The `auth_req_id` is unknown, or was issued to another client |
 | `expired_token` | The request is past its lifetime: the client starts a new one |
 | `access_denied` | The person refused |
+| `invalid_grant` | The request was revoked, answered or not, by the person taking back their consent to the client |
 | `slow_down` | Nobody has answered yet, and the client polled sooner than its interval allows: the interval grows by five seconds, for this request and for every poll after it |
 | `authorization_pending` | Nobody has answered yet |
 | `invalid_grant` | The person allowed, and the `auth_req_id` was spent already, or the session they allowed with has ended or is past its expiry |
 | The tokens | The person allowed |
+
+A `ping` client is not called back when its request is revoked: it learns `invalid_grant` when it next asks
+the token endpoint, or `expired_token` once the request has expired.
 
 Every poll is recorded, the refused ones included, and a request that has an answer is answered however soon
 it is asked, which is what a `ping` client needs, the ping coming sooner than its interval. The `auth_req_id`

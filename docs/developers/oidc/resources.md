@@ -26,7 +26,10 @@ registered with gives, which the console issues with `--resource`, once per reso
 replaces its registration ([what the image does not set](clients.md#what-the-image-does-not-set)). A token
 issued with `--administration` names no resource: the clients it registers hold the administration API, the
 one `BEFFROI_TENANT_ADMINISTRATION_RESOURCE` names when the client is read. A client that holds none asks for
-none.
+none. A client never holds its own `client_id` as a resource: a token asked for it would be addressed to the
+client itself, which reads UserInfo with its tokens (RFC 8707 §2, OIDC Core §5.3). A registration that names
+it among its resources is refused with `invalid_client_metadata`, and a client the deployment declares that
+does fails when the provider starts.
 
 ``` bash
 bin/console beffroi:client:token:issue 'Billing team' --resource=https://api.example.com/
@@ -119,6 +122,9 @@ reserves nothing, and refuses to issue such a token.
   `client_credentials` and the JWT bearer grant, which have nobody signed in behind them, obtain none, and a
   refresh is refused once the person has left the group. The refusal is `invalid_target`, whose description
   says that the resource is reserved and nothing of the person.
+- **No such token outlives the session that proved `phishing_resistant`.** Once that session has ended or
+  expired, a refresh is refused with `invalid_grant`, and the administration API refuses an access token
+  issued under it with `invalid_token`, where a token for any other resource keeps its own lifetime.
 - **The discovery document never announces it**, below.
 
 ## What the tenant announces

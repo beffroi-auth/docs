@@ -27,7 +27,9 @@ stands for.
 | Any other | Nothing the provider serves: a scope a client registered, which travels in the `scope` of the access token for the resource server that reads it |
 
 **A client asks for what it registered.** `scope` is a list of scope tokens separated by single spaces
-(RFC 6749 §3.3), each made of visible ASCII other than `"` and `\`, and a scope named twice counts once. The
+(RFC 6749 §3.3), each made of visible ASCII other than `"` and `\`, and a scope named twice counts once. A
+`scope` names a hundred scopes at most, counted before any is read, in a request as in a registration: a
+longer one is refused with `invalid_scope` in a request, `invalid_client_metadata` in a registration. The
 `scope` a client registered is the closed list of what it may ask for: scopes are compared byte for byte, and
 a request that names one outside the list is refused with `invalid_scope`.
 
@@ -74,9 +76,10 @@ that is not JSON is refused with `invalid_request` at the redirect URI. `claims_
 What is asked for is served by name when a scope the client registered stands for it, whether or not the
 request names that scope, when the person agreed to it, by name or with a scope that stands for it, and when
 the person has a value for it.
-`essential`, `value` and `values` say nothing to the provider of claims; the one claim they decide is `acr`,
+`essential`, `value` and `values` say nothing to the provider of claims; the two claims they decide are `acr`,
 whose `values` name the classes of authentication a client accepts and whose `essential` makes the request
-binding ([interactions](interactions.md)).
+binding, and `sub` in `id_token`, whose `value` names the person the ID token must be about, read for the
+client as an `id_token_hint` is ([interactions](interactions.md#what-decides-a-login)).
 
 ## Where a claim is read from
 
@@ -89,6 +92,15 @@ The claims of OIDC Core §5.1 are read from the account of the person in the cor
 | `phone_number`, `phone_number_verified` | The phone number of the account, and whether it was verified |
 | `address` | The postal address of the account, as an object of the members it holds among `formatted`, `street_address`, `locality`, `region`, `postal_code` and `country` (OIDC Core §5.1.1) |
 | `updated_at` | When the account last changed, in seconds since the epoch |
+
+Whoever writes it, the person, an administrator, an upstream provider or the console, a value is held to the
+same rules before it is kept. `profile`, `picture` and `website` are absolute `https` or `http` URLs of 2048
+characters at most, never `javascript:` or `data:`. `name`, `given_name`, `family_name`, `middle_name`,
+`nickname`, `preferred_username`, `gender`, `zoneinfo` and `locale` are plain text of 255 characters at most,
+with no control, format, line or paragraph separator character but the zero-width non-joiner and joiner; so
+are the parts of the address, `formatted` and `street_address` taking line feeds and 1024 characters; and so
+is the phone number, of 64 characters at most. A client is never handed a value that reorders or hides a part
+of the line it is shown on.
 
 A claim the account holds no value for is left out, its verification flag with it; a flag beside a value is a
 JSON boolean, `true` or `false`, never a string. `sub` is not among them: it comes from the kind of subject

@@ -20,11 +20,11 @@ are read from the query of a `GET` and from the form body of a `POST`.
 
 | Parameter | What the provider does with it |
 |---|---|
-| `id_token_hint` | An ID token the provider issued: signed by a key the tenant publishes, its `iss` the issuer, a `sub`, and a `sid` when it carries one. Its `exp` is not read, a hint describing a session that may be long past. It names the client, by the first of its audiences that is a client of the tenant |
+| `id_token_hint` | An ID token the provider issued: signed by a key the tenant publishes, with no `typ` in its header, its `iss` the issuer, a `sub`, an `exp`, an `iat` and an `auth_time`, and a `sid` when it carries one ([ID tokens](tokens/id-tokens.md#where-an-id-token-comes-back)). Its `exp` is not compared with the clock, a hint describing a session that may be long past. It names the client, by the first of its audiences that is a client of the tenant |
 | `client_id` | The client, when the request names it. With a hint, it must be one of the audiences of the hint |
 | `post_logout_redirect_uri` | Where the browser goes once the logout is done: one of the `post_logout_redirect_uris` the client registered, compared byte for byte (§3). It needs a client, named by the hint or by `client_id` |
 | `state` | Given back with the redirection, printable ASCII |
-| `ui_locales` | The language of the pages the browser is shown |
+| `ui_locales` | The language of the pages the browser is shown, 100 language tags at most |
 | `logout_hint` | Read as text without control characters, and carried to the confirmation page. It decides nothing |
 
 **What is refused is a page, never a redirection** (§4): a hint that is not a signed compact JWT, or whose
@@ -34,9 +34,9 @@ of the wrong shape. The browser is shown the error page of the provider, status 
 `invalid_request` and its description; nothing reaches the client.
 
 **A hint the provider cannot verify is read as no hint.** A hint signed by a key the tenant no longer
-publishes, or one that does not say what an ID token of the provider says, names no client: the person is
-asked, and a `post_logout_redirect_uri` that only that hint could have justified is dropped rather than
-refused (§6).
+publishes, or one that does not say what an ID token of the provider says, an access token or a logout token
+of the tenant among them, names no client: the person is asked, and a `post_logout_redirect_uri` that only
+that hint could have justified is dropped rather than refused (§6).
 
 ### What happens to the session
 
@@ -143,18 +143,21 @@ client that cannot be reached holds no logout back, and nothing a client does re
 already closed.
 
 **A token that cannot be encrypted is not sent in clear.** When the key of a client that encrypts its ID
-tokens cannot be obtained as the session ends, its `jwks_uri` unreadable or its set holding no key the
-registered `alg` can be addressed to, the other clients of the session are told, and issuing that
-client's token is left to the lane of the notifications, tried again on the schedule of a delivery below and
-given up as a delivery is. A token issued late carries its own `iat`, and an `exp` one budget later. A set that was
-read and holds no fitting key is kept as [encryption](tokens/encryption.md#the-key-it-is-encrypted-to) says,
-so such a client is in practice given up once the schedule runs out; a `jwks_uri` that could not be read is read
-again at each attempt. A client the provider no longer serves, or a session it no longer holds, receives
-nothing.
+tokens cannot be obtained as the session ends, its `jwks_uri` unreadable, its set holding no key the
+registered `alg` can be addressed to, or the key it holds receiving no JWE under the registered pair, the
+other clients of the session are told, and issuing that client's token is left to the lane of the
+notifications, tried again on the schedule of a delivery below and given up as a delivery is. A token issued
+late carries its own `iat`, and an `exp` one budget later. A set that was read is kept as
+[encryption](tokens/encryption.md#the-key-it-is-encrypted-to) says, and a `jwks_uri` that could not be read is
+not read again before `BEFFROI_JWKS_URI_REFETCH_COOLDOWN`, 300 seconds in the image, longer than the whole
+schedule: with the values of the image, such a client is in practice given up once the schedule runs out. A
+client the provider no longer serves, or a session it no longer holds, receives nothing.
 
 **One request per attempt:** a `POST` of `application/x-www-form-urlencoded` whose only parameter is
 `logout_token` (§2.5), with no cookie and no authentication, read for its status code and nothing else. No
-redirect is followed: the URI a client registered is where the token goes, and nobody else moves it.
+redirect is followed: the URI a client registered is where the token goes, and nobody else moves it. A URI
+that resolves to a private, loopback, link-local or reserved address is not called, unless
+`BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS` names its network, and counts as a client that did not answer.
 
 | The client answers | What the provider does |
 |---|---|
@@ -165,8 +168,8 @@ redirect is followed: the URI a client registered is where the token goes, and n
 
 A client that refuses the token, one still out of reach when the schedule runs out, and one whose token could
 not be issued by then are given up on, and that is said, never kept quiet: an act of the journal,
-`logout_token.given_up`, naming the client and the person, so that somebody can see that a client was left
-believing its user signed in.
+`logout_token.given_up`, naming the client and the person, and the administrator who ended the session when
+one did, so that somebody can see that a client was left believing its user signed in.
 
 Five variables set the schedule of the delivery, here at the values of the image
 ([configuration](../../operators/application/configuration.md#notifications)):
@@ -206,6 +209,9 @@ A session ends:
 - on [the pages of the account](../../operators/application/account.md), when its person ends it, ends every other
   session, or changes their password, which ends every other session;
 - with `beffroi:user:revoke-session`, at the console;
+- through the administration API, by an administrator who ends it, past its expiry or not;
+- with every session of its person, when that person is disabled, at the console or through the
+  administration API, or spends a ticket that replaces their password or their authenticator application;
 - by a `LogoutRequest` of a SAML service provider, at the [single logout service](../../operators/saml/single-logout.md);
 - when another person signs in on the browser that held it.
 
@@ -215,7 +221,9 @@ the single logout service, go through the front-channel page and the SAML servic
 
 **A session that reaches its expiry is not ended.** It is no longer active, so an authorization code issued
 under it and not exchanged yet is refused with `invalid_grant`. But nothing is announced to its clients, and
-the access tokens and the refresh tokens issued under it keep their own lifetimes.
+the access tokens and the refresh tokens issued under it keep their own lifetimes, save those for the
+[administration API](resources.md#the-administration-api), which do not outlive it. An administrator, or an
+operator at the console, may still end it, and its end is then announced as any other.
 
 ## Every end of a session revokes what was issued under it
 
@@ -265,9 +273,10 @@ A client told by both channels registers with ([dynamic registration](dynamic-re
 
 ## What a logout can promise
 
-- **A session ended without its browser tells its clients only by the back channel.** The console, the page
-  of the account read on another browser, the other sessions closed or a password changed, a new person
-  signing in: no frame is loaded and no SAML service provider is told, SOAP being out of scope.
+- **A session ended without its browser tells its clients only by the back channel.** The console, the
+  administration API, the page of the account read on another browser, the other sessions closed or a
+  password changed, a new person signing in: no frame is loaded and no SAML service provider is told, SOAP
+  being out of scope.
 - **The front channel reaches the clients the browser lets it reach**, and says so.
 - **A logout token is good for two hundred and thirty-five seconds in the image**: a client the provider cannot
   reach within that time is left believing its user signed in, and a client that refuses the token is

@@ -11,9 +11,11 @@ wants the documents written for it. A client of a deployment of the image regist
 [registration endpoint](dynamic-registration.md): the image declares none. The configuration of the
 application can declare clients too, and only the configurations of its development stack and of its own suite
 do, for the conformance suite, the demonstrations and the tests. Every client is read by the same reader under
-the same rules, so a member means the same thing wherever it was written. A registration is held to two rules
-more, when it is written: the scopes it names are ones its tenant hands out, and a `sector_identifier_uri` it
-names is backed by the document behind it ([pairwise subjects](pairwise-subjects.md)).
+the same rules, so a member means the same thing wherever it was written. A registration is held to four
+rules more, when it is written: the scopes it names are ones its tenant hands out, an algorithm it names for
+what the provider signs for it is one its tenant holds an active key for, a `sector_identifier_uri` it names is
+backed by the document behind it ([pairwise subjects](pairwise-subjects.md)), and its request objects are
+never read unsigned.
 
 ## Registering one
 
@@ -78,10 +80,16 @@ set](#what-the-image-does-not-set) says what every client of the image has other
 
 | Member | What it decides |
 |---|---|
-| `client_name` | The name the consent page shows. A client that registers none is shown under its `client_id` |
+| `client_name` | The name the consent page shows, plain text of a hundred characters at most. A client that registers none is shown under its `client_id` |
 | `logo_uri` | The image the consent page shows. The browser of the person loads it from the client, with no referrer, and the provider never fetches it |
 | `policy_uri`, `tos_uri`, `client_uri` | The pages the consent page links to, in that order |
-| `contacts` | Ways to reach the people responsible for the client. No page shows them |
+| `contacts` | Ways to reach the people responsible for the client, each plain text of 255 characters at most. No page shows them |
+
+**A client that registers itself shows its pages from its own host.** Its `logo_uri`, `client_uri`,
+`policy_uri` and `tos_uri` are shown only when each is on the scheme and the host of one of its redirect URIs
+(RFC 7591 §5). One elsewhere, a logo served from another host for instance, is kept in the registration and
+shown nowhere, each member decided on its own, and the consent page shows the name alone when none is left. A
+page the configuration declares, or a software statement signs, is shown wherever it is.
 
 ### Where a browser goes
 
@@ -89,7 +97,7 @@ set](#what-the-image-does-not-set) says what every client of the image has other
 |---|---|
 | `redirect_uris` | Where the answer of the authorization endpoint may go, compared byte for byte with the `redirect_uri` of a request (RFC 6749 §3.1.2.3) |
 | `post_logout_redirect_uris` | Where a browser may be sent after a logout, compared the same way |
-| `initiate_login_uri` | Where the provider sends a browser to have this client begin a login (OIDC Core §4), from `/initiate-login?client_id=...`. HTTPS, on a loopback host as anywhere else |
+| `initiate_login_uri` | Where the provider sends a browser to have this client begin a login (OIDC Core §4), from `/initiate-login?client_id=...`, with the `iss` of the tenant, and the `sub` of the person signed in as `login_hint` only when the client may be told of her: she gave it a consent still in force, or the configuration declares it `requires_consent: false`. HTTPS, on a loopback host as anywhere else |
 
 ### What it may ask for
 
@@ -106,8 +114,8 @@ set](#what-the-image-does-not-set) says what every client of the image has other
 | Member | What it decides |
 |---|---|
 | `token_endpoint_auth_method` | The one method it authenticates with, among those the provider is wired with. See [client authentication](client-authentication.md) |
-| `jwks`, `jwks_uri` | Its public keys, inline or behind a URL, one or the other and never both. A symmetric key (`kty: oct`) is refused |
-| `tls_client_auth_subject_dn`, `tls_client_auth_san_dns`, `tls_client_auth_san_uri`, `tls_client_auth_san_ip`, `tls_client_auth_san_email` | What names it in its certificate (RFC 8705 §2.1.2), exactly one of the five, for `tls_client_auth` and for no other method |
+| `jwks`, `jwks_uri` | Its public keys, inline or behind a URL, one or the other and never both: a JWK Set of a hundred keys at most. A symmetric key (`kty: oct`) is refused, and so is a key that carries a private member (`d`, `p`, `q`, `dp`, `dq`, `qi` or `oth`, OIDC Registration §2) or an RSA key whose modulus is shorter than 2048 bits (RFC 7518 §3.3, §4.3) |
+| `tls_client_auth_subject_dn`, `tls_client_auth_san_dns`, `tls_client_auth_san_uri`, `tls_client_auth_san_ip`, `tls_client_auth_san_email` | What names it in its certificate (RFC 8705 §2.1.2), exactly one of the five, for `tls_client_auth` and for no other method. That method is wired, and so registered, only while the deployment names the host that asks for a certificate and the authorities that issue them ([a certificate](client-authentication.md#a-certificate)) |
 
 ### How its requests are made
 
@@ -116,7 +124,7 @@ set](#what-the-image-does-not-set) says what every client of the image has other
 | `requires_pkce` | *Deployment.* `true` by default. `false` is accepted for a confidential client only, which may then send no `code_challenge`; a challenge it sends is verified all the same |
 | `require_pushed_authorization_requests` | Its authorization requests are only read from a [pushed request](pushed-authorization-requests.md) (RFC 9126 §6) |
 | `require_signed_request_object` | Its authorization requests are only read from a [request object](request-objects.md), whose signature is what `request_object_signing_alg` says, and its backchannel authentication requests only from an object it signed |
-| `request_object_signing_alg` | The one algorithm its request objects are signed with, or `none` for unsigned objects. Left out, any algorithm the provider verifies, and never an unsigned object |
+| `request_object_signing_alg` | The one algorithm its request objects are signed with. Left out, any algorithm the provider verifies, and never an unsigned object. `none`, which reads its objects unsigned, is written only by the configuration that declares a client: a client that registers itself is refused it, in its body as in a software statement |
 | `request_uris` | The URLs a request object of this client may be read back from, compared byte for byte, fragment included |
 
 ### What it receives
@@ -160,7 +168,7 @@ about encryption](tokens/encryption.md).
 
 | Member | What it decides |
 |---|---|
-| `software_id`, `software_version` | Registration only: what the software the client is an instance of calls itself, and its version (RFC 7591 §2) |
+| `software_id`, `software_version` | Registration only: what the software the client is an instance of calls itself, and its version (RFC 7591 §2), each plain text of 255 characters at most |
 | `software_statement` | Registration only: read by the registration mode that takes one, never as metadata. See [dynamic registration](dynamic-registration.md) |
 
 ## What the image does not set
@@ -221,11 +229,21 @@ its grants do not call for, or call for and lack; the rule a public client's loo
   `client_credentials` or of the token exchange is named where a subject is expected, the `sub` of its own
   tokens or the `act` of an exchanged one, so its identifier is 1 to 255 visible ASCII characters with no
   space at all (OIDC Core §2).
-- The `client_name` is not empty, and neither is any of the `contacts`.
+- The `client_name` is not empty, and neither is any of the `contacts`. The name, the `contacts`, the
+  `software_id` and the `software_version` are plain text: valid UTF-8, with no control, format, line or
+  paragraph separator character but the zero-width non-joiner and joiner, which Persian and the Indic scripts
+  write words with. The provider writes them into its own pages and messages, so nothing in them may break,
+  reorder or hide a part of the line they are shown on.
+- Every list a client registers holds a hundred values at most, counted before any is read: its redirect
+  URIs, its logout redirect URIs, its `request_uris`, its `contacts`, its grants, its response types, its
+  resources, its types of authorization detail and the token types of its `token_exchange`. Its `scope`
+  names a hundred scopes at most.
 - A method that proves a shared secret has one, and any other method has none.
 - `jwks` and `jwks_uri` are never both there. One of them is, for `private_key_jwt`,
   `self_signed_tls_client_auth`, a `request_object_signing_alg` naming an algorithm, and any encrypted
-  response. An inline `jwks` holds a key every encryption the client registered can be addressed to.
+  response. An inline `jwks` holds a key every encryption the client registered can be addressed to, and
+  that key receives a JWE under it: a key whose curve, point or size the algorithm does not take is refused
+  (RFC 7518 §4).
 - `tls_client_auth` comes with exactly one of the five certificate values, and every other method with none.
 - `tls_client_certificate_bound_access_tokens: true` (RFC 8705 §3.4) is refused while `BEFFROI_MTLS_ORIGIN`
   names no host, no method that reads a certificate being wired then.
@@ -237,10 +255,12 @@ its grants do not call for, or call for and lack; the rule a public client's loo
   `authorization_code`, the device code or the backchannel grant.
 - A client of `authorization_code` registers at least one redirect URI, and a client of no grant that sends a
   browser back registers none, and no `response_types` either.
-- A grant that requires client authentication, `client_credentials`, the JWT bearer grant or the token
-  exchange, is refused to a public client, which proves nothing.
+- A grant that requires client authentication, `client_credentials`, the JWT bearer grant, the token
+  exchange or the backchannel grant, is refused to a public client, which proves nothing.
 - The token exchange grant and the `token_exchange` member come together or not at all, and the token types
   it names are ones the provider reads.
+- The client does not name its own `client_id` among its `resources`: a token asked for a resource is never
+  one addressed to the client (RFC 8707 §2).
 - `requires_pkce: false` is refused to a public client.
 - A client with `require_signed_request_object` (RFC 9101 §10.5) does not register
   `request_object_signing_alg: none`, the one value under which an unsigned request object is read.
@@ -248,8 +268,9 @@ its grants do not call for, or call for and lack; the rule a public client's loo
   `frontchannel_logout_session_required` a `frontchannel_logout_uri`.
 - An encryption names its `alg` and its `enc` together. OIDC Registration §2 would default the `enc` to
   `A128CBC-HS256`, which the provider is not wired with, so it takes no default.
-- A `pairwise` client has a sector: its `sector_identifier_uri`, its redirect URIs all on one host, or, when
-  it registers no redirect URI, its `jwks_uri`.
+- A `pairwise` client has a sector: its `sector_identifier_uri`, its redirect URIs and its
+  `initiate_login_uri` all on one host, or the host of a `jwks_uri` whose key it authenticates with
+  ([pairwise subjects](pairwise-subjects.md#the-sector)).
 - Every name is one the provider is wired with: a grant, a method, an algorithm, an access token shape, a
   delivery mode, a kind of subject, a type of authorization detail. The refusal lists the wired names.
 
@@ -259,8 +280,8 @@ A client is **public** when it registered `token_endpoint_auth_method: none`: it
 nothing, as a native or a browser application cannot keep a secret. Everything else is **confidential**.
 What protects the code of a public client is PKCE, which is mandatory for it, and the exact redirect URI.
 Besides the loopback exception above, the difference shows where a rule asks for a client that proves
-itself: the grants that require client authentication, `client_credentials`, the JWT bearer grant and the
-token exchange, are refused to a public client at its registration, the [introspection
+itself: the grants that require client authentication, `client_credentials`, the JWT bearer grant, the
+token exchange and the backchannel grant, are refused to a public client at its registration, the [introspection
 endpoint](introspection-and-revocation.md) refuses it, and a refresh token reaches it only when it asks for
 `offline_access` ([refresh tokens](tokens/refresh-tokens.md)).
 

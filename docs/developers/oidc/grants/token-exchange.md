@@ -24,9 +24,10 @@ member:
 - `subject_token_types`, the types of token the client may present as a `subject_token` or an `actor_token`
   (RFC 8693 §3), at least one. The provider reads one type, `urn:ietf:params:oauth:token-type:access_token`,
   an access token of this provider in either shape.
-- `may_act_for_a_user`, whether the client may present a token issued on a sign-in at this provider, `false`
-  when left out. A token that carries no sign-in, one a client holds for itself or one of a [JWT
-  bearer](jwt-bearer.md) assertion, is presented without it.
+- `may_act_for_a_user`, whether the client may present a token that names a person, `false` when left out: a
+  token issued on a sign-in at this provider, and a token of a [JWT bearer](jwt-bearer.md) assertion, which
+  names a person nobody signed in for here. A token a client holds for itself names nobody, and is presented
+  without it.
 
 The grant and the member come together or not at all. The `client_id` of a client of the grant is one a `sub`
 can be, one to 255 visible ASCII characters and no space, since it is named where a subject is expected, and a
@@ -67,18 +68,21 @@ good, and not which of those questions it failed (RFC 8693 §2.2.2).
 
 A client not registered for the exchange is refused with `unauthorized_client`. A `requested_token_type` of
 another type, a token type the provider does not read or the client did not register, a presented token it
-does not honour, a token issued on a sign-in presented by a client without `may_act_for_a_user`, an actor
-token issued to another client than the one presenting it, and a party `may_act` does not name are
+does not honour, a token that names a person presented by a client without `may_act_for_a_user`, an actor
+token that is not one the presenting client holds for itself, and a client `may_act` does not name are
 `invalid_request`. A scope the presented token does not carry, or the client did not register, is
 `invalid_scope`; a resource the presented token is not addressed to, or the client did not register, and a
-presented token addressed to its own client, are `invalid_target`.
+presented token addressed to its own client or to something that is not a resource, are `invalid_target`.
 
 ## Delegation and impersonation
 
 The two cases of RFC 8693 §1.1 are told apart by the request and by nothing else. With an `actor_token`, the
 exchange is a delegation: the new token names who acts for the subject in an `act` claim (RFC 8693 §4.1),
-whose `sub` is the subject of the actor token, which has to be a token issued to the client that presents it.
-An `act` the presented token already carried is nested inside the new one, the most recent actor outermost.
+and the one who acts is the client that presents the actor token (RFC 8693 §2.1). The actor token is
+therefore one that client holds for itself, issued to it under its own `client_id` by a grant such as
+[client credentials](client-credentials.md), naming no person, and the `sub` of the `act` is that
+`client_id`. An `act` the presented token already carried is nested inside the new one, the most recent actor
+outermost.
 Without one, it is an impersonation: the new token says nothing of anybody acting beyond what the presented
 token said, and carries its `act`, if any, unchanged.
 
@@ -87,10 +91,10 @@ token said, and carries its `act`, if any, unchanged.
 `may_act` is the word of the subject's side (RFC 8693 §4.4). Registered on a client, it names the one party
 that may act for the subject of a token issued to that client: it is written on every self-contained token
 that client receives, and an exchange of a token of that client is refused with `invalid_request` for anybody
-else, the party compared being the outermost actor the new token would name or, when it would name none, the
-client that asked. It is a member of the deployment too, which a client of the image carries when the initial
-access token it registered with was issued with `--may-act` ([what the image does not
-set](../clients.md#what-the-image-does-not-set)).
+else, the party compared being the client that asks for the exchange and will hold the new token, which is
+the actor of a delegation and acts in the strongest sense in an impersonation. It is a member of the
+deployment too, which a client of the image carries when the initial access token it registered with was
+issued with `--may-act` ([what the image does not set](../clients.md#what-the-image-does-not-set)).
 
 ## What the issued token says
 

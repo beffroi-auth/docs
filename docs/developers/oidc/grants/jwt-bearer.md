@@ -25,7 +25,7 @@ BEFFROI_TRUSTED_ISSUERS='{"https://issuer.example.com": {"jwks_uri": "https://is
 | Member | What it decides |
 |---|---|
 | The key | The `iss` the issuer signs with, an absolute URI without a fragment, compared byte for byte. An issuer nobody declared is unknown |
-| `jwks` or `jwks_uri` | Its keys, written down as a JWK Set or read back from a URL, one or the other and never both, nor neither. A URL is HTTPS, or plain HTTP on a loopback host, and is read with one `GET`, no redirect followed. The keys read are kept in a pool the workers share, and read again at most once per cooldown when an assertion names a `kid` the kept set does not hold, which is how an issuer that rotates its keys is followed. These keys are the only ones an assertion is verified against, whatever its header names (RFC 8725 §3.10) |
+| `jwks` or `jwks_uri` | Its keys, written down as a JWK Set or read back from a URL, one or the other and never both, nor neither. A set holds 100 public keys at most, no symmetric key and no private member, and an RSA key of a modulus of 2048 bits at least (RFC 7518 §3.3, §3.5); a set read from a URL that breaks this is a set that cannot be read. A URL is HTTPS, or plain HTTP on a loopback host, and is read with one `GET`, no redirect followed, never on a private, loopback, link-local or reserved address that `BEFFROI_OUTBOUND_REACHABLE_PRIVATE_NETWORKS` does not name. The keys read are kept in a pool the workers share, and read again at most once per cooldown when an assertion names a `kid` the kept set does not hold, which is how an issuer that rotates its keys is followed; a read that fails is kept too, so a URL that answered nothing is not read again before the cooldown either. These keys are the only ones an assertion is verified against, whatever its header names (RFC 8725 §3.10) |
 | `signing_algorithms` | The algorithms an assertion of the issuer may be signed with, at least one, among those the provider is wired with: `RS256`, `PS256`, `ES256`, `EdDSA` |
 | `clients` | The clients that may present its assertions, at least one, by the `client_id` the provider drew for each when it [registered](#registering-the-client). An issuer trusted for a gateway is not thereby trusted for every client of the tenant |
 | `identity_provider` | The source of the linked identities its subjects name: a `sub` is a person of the tenant only when a linked identity of that source says so |
@@ -114,20 +114,24 @@ this provider accepts as an authorization (RFC 7523 section 3).` Whoever present
 was not accepted and nothing else: not whether the issuer is known, not whether the client may present its
 assertions, not whether the subject resolves.
 
-1. It is a compact JWS.
+1. It is a compact JWS whose claims are a JSON object, and whose header names no extension of JOSE: a `crit`
+   (RFC 7515 §4.1.11) or a `b64` (RFC 7797 §6) is this refusal.
 2. Its `iss` is an issuer the tenant declares, and the client is among the `clients` of that issuer. Nothing of
    the assertion is verified before that: which keys would verify it is the declaration's answer, never the
    assertion's.
 3. Its signature verifies against the keys of that issuer, under one of its `signing_algorithms`, the `kid` of
-   the header choosing among those keys only. Keys behind a `jwks_uri` that cannot be read are this same
-   refusal.
-4. Its `aud` is one value, the issuer identifier of the tenant.
+   the header choosing among those keys only. An assertion that names no `kid` is verified only when one key
+   of the issuer could have signed it, by its type, its `alg` and its `use`, and refused when several could
+   (OIDC Core §10.1). Keys behind a `jwks_uri` that cannot be read are this same refusal.
+4. Its `aud` is one value, the issuer identifier of the tenant, as a string or a list of that one string: an
+   `aud` of any other shape names no audience.
 5. It has an `exp`, which is still in the future and no further ahead than
    `BEFFROI_CLIENT_ASSERTION_MAX_LIFETIME`, 300 seconds in the image, both allowing
    `BEFFROI_CLIENT_ASSERTION_LEEWAY`, 30 seconds, of the clock of the issuer.
-6. It has an `iat`, no further in the future than the leeway.
-7. It has a `jti` this provider has not seen from that issuer before: the `jti` is remembered until the `exp`,
-   so that an assertion is spent once.
+6. It has an `iat`, no further in the future than the leeway, and an `nbf`, when it has one, an integer
+   number of seconds no further in the future than the leeway either (RFC 7519 §4.1.5).
+7. It has a `jti` this provider has not seen from that issuer before: the `jti` is remembered until the `exp`
+   plus the leeway, the last instant the assertion is accepted, so that an assertion is spent once.
 8. It has a `sub`, which a linked identity of the source of the issuer resolves to a person whose account is
    enabled.
 
