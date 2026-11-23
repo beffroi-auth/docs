@@ -5308,7 +5308,8 @@ takes, so a signing key opened with the key management service stays open in it,
 per key and per worker rather than once per signature.</p>
 <h2 id="the-http-server">The HTTP server<a class="headerlink" href="#the-http-server" title="Link to this section">&para;</a></h2>
 <p>The command of the image is <code>frankenphp run --config /etc/frankenphp/Caddyfile</code>. Before it starts, the
-entrypoint does three things when <code>.env</code> names a <code>DATABASE_URL</code>, which the one of the application does:</p>
+entrypoint checks the sizes that bound a request, below, then does three things when <code>.env</code> names a
+<code>DATABASE_URL</code>, which the one of the application does:</p>
 <ol>
 <li>it waits for the database, sixty attempts one second apart, and stops at once on an error it cannot
    recover from;</li>
@@ -5325,6 +5326,16 @@ whose request line and headers go over the bound, as the Go server Caddy is buil
 whether its length is announced or it is chunked. The defaults let through the largest SAML message the
 provider reads from a posted form, and the largest S/MIME key with its certificates the administration API
 takes: <a href="../configuration/#the-web-server">the variables of the web server</a>.</p>
+<p>Caddy keeps a size as a whole number of bytes, and starts on one that bounds nothing: zero bytes in any unit,
+such as <code>0</code>, <code>0KiB</code> or <code>0.4B</code>, or 8 EiB and more, which wraps below zero. A body is then read whatever its
+size, and the headers are held to the bound Caddy applies when it is given none. The entrypoint therefore has
+Caddy read each of <code>CADDY_MAX_HEADER_SIZE</code>, <code>CADDY_REQUEST_BODY_MAX_SIZE</code> and
+<code>CADDY_ADMINISTRATION_REQUEST_BODY_MAX_SIZE</code> the environment sets, and stops the container on such a size,
+with one line on its error output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>CADDY_REQUEST_BODY_MAX_SIZE=0 is not a bound: give it a size of 1B or more, below 8EiB.
+</span></code></pre></div>
+<p>A value Caddy cannot read as a size, an empty one, <code>-1</code>, or 16 EiB and more, is left to Caddy, which refuses
+it as it starts.</p>
 <h3 id="the-health-check">The health check<a class="headerlink" href="#the-health-check" title="Link to this section">&para;</a></h3>
 <p>The <code>HEALTHCHECK</code> of the production image runs <code>/usr/local/bin/docker-healthcheck</code>, a PHP script, with a start
 period of sixty seconds. It asks the site of <code>SERVER_NAME</code> for a document the provider serves, over the
@@ -5403,11 +5414,11 @@ that plane whatever <code>BEFFROI_PLANE</code> the container sets.</p>
 <h2 id="the-worker">The worker<a class="headerlink" href="#the-worker" title="Link to this section">&para;</a></h2>
 <p>The worker is the same image, running the consumer of Messenger on the schedule and the four lanes of the
 provider, in this order, which is the order it takes them in:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bin/console<span class="w"> </span>messenger:consume<span class="w"> </span>scheduler_beffroi<span class="w"> </span>async_notifications<span class="w"> </span>async_priority_high<span class="w"> </span>async_priority_medium<span class="w"> </span>async_priority_low<span class="w"> </span>--time-limit<span class="o">=</span><span class="m">3600</span><span class="w"> </span>--memory-limit<span class="o">=</span>256M
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>bin/console<span class="w"> </span>messenger:consume<span class="w"> </span>scheduler_beffroi<span class="w"> </span>async_notifications<span class="w"> </span>async_priority_high<span class="w"> </span>async_priority_medium<span class="w"> </span>async_priority_low<span class="w"> </span>--time-limit<span class="o">=</span><span class="m">3600</span><span class="w"> </span>--memory-limit<span class="o">=</span>256M
 </span></code></pre></div>
-<p>Started with <code>bin/console</code>, the entrypoint waits for the database as it does for the server, plays no
-migration and writes no tenant: the server does both, and the development stack starts the worker once the
-server reports healthy. The consumer stops after an hour, or once it holds 256 MB, and the restart policy of the stack
+<p>Started with <code>bin/console</code>, the entrypoint waits for the database as it does for the server, and checks no
+size, plays no migration and writes no tenant: the server does all three, and the development stack starts
+the worker once the server reports healthy. The consumer stops after an hour, or once it holds 256 MB, and the restart policy of the stack
 starts it again.</p>
 <table>
 <thead>
@@ -5580,9 +5591,9 @@ and the processes of the host of <code>SERVER_NAME</code> never load them. That 
 the snippet above: Caddy serves it with the certificate it holds or obtains for that name, under its own
 defaults, and behind a proxy that terminates TLS the variable names a plain HTTP address, such as <code>:81</code>. A
 deployment that does not import the file serves no administration API.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>ADMINISTRATION_SERVER_NAME=admin.example.com
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>CADDY_EXTRA_CONFIG='import administration.Caddyfile'
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>BEFFROI_TENANT_ADMINISTRATION_RESOURCE=https://admin.example.com
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ADMINISTRATION_SERVER_NAME=admin.example.com
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>CADDY_EXTRA_CONFIG='import administration.Caddyfile'
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>BEFFROI_TENANT_ADMINISTRATION_RESOURCE=https://admin.example.com
 </span></code></pre></div>
 <p><a href="../configuration/#the-web-server"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M3 12H20M14 6L20 12L14 18"/></svg>
 </span> The variables of the web server</a></p>
@@ -5754,7 +5765,7 @@ alone, the one bridge of <code>symfony/notifier</code> the image installs.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 17:39:48 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 18:08:09 UTC">November 23, 2026</span>
   </span>
 
     
