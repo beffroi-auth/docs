@@ -20,7 +20,8 @@ sign out again. The last part of the guide protects an API with the access token
 ## What you need
 
 - A Beffroi OP served over HTTPS, and access to its console (`bin/console`).
-- A Symfony 8.2 or higher application.
+- A Symfony 8.2 or higher application. Symfony 8.2 is in beta, so its `composer.json` sets
+  `"minimum-stability": "beta"` and `"prefer-stable": true`.
 - The address of your application, for instance `https://app.example.com`.
 
 ## 1. Register your application in Beffroi
@@ -80,6 +81,12 @@ composer require symfony/security-bundle symfony/http-client web-token/jwt-libra
 
 The authenticator reaches Beffroi with the HTTP client, and checks what Beffroi signed with
 `web-token/jwt-library`.
+
+!!! note "Symfony 8.2 is in beta"
+
+    `oidc_login` and the `oidc` user provider come with `symfony/security-bundle` 8.2, published only as
+    pre-releases until Symfony 8.2.0 is out. Until then, an application whose `composer.json` does not set
+    `"minimum-stability": "beta"` and `"prefer-stable": true` gets Symfony 8.1, which has neither.
 
 ## 3. Configure the firewall
 
