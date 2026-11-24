@@ -73,6 +73,8 @@
   --bf-cut-hero: 18px;
   --bf-sidebar-width: 15.5rem;
   --bf-content-width: 46rem;
+  /* A line of text holds 60 to 75 characters (p. 26); code blocks and tables keep the whole column. */
+  --bf-measure: 26rem;
 }
 
 /* The roles, on paper. */
@@ -659,6 +661,13 @@ html :focus-visible {
   line-height: 1.65;
 }
 
+.md-typeset p,
+.md-typeset li,
+.md-typeset dd {
+  max-width: var(--bf-measure);
+  text-wrap: pretty;
+}
+
 .md-typeset strong {
   font-weight: 600;
 }
@@ -1052,7 +1061,9 @@ html :focus-visible {
   color: var(--bf-accent-text);
 }
 
+/* Material dims the label with an opacity, which would take the muted text under 4.5:1 (p. 22). */
 .md-footer__direction {
+  opacity: 1;
   color: var(--bf-muted);
   font-family: var(--bf-font-mono);
   font-size: 0.55rem;
