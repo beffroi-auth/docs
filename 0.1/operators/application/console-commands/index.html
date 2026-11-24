@@ -5406,10 +5406,14 @@ read what its check found: whatever was changed, added or removed before cannot 
 so it prints what the whole walk finds first, and refuses until the slug of the tenant is typed back. The act
 <code>tenant.chain_signed_anew</code> names the positions linked again. It rewrites the links of the chain, which a role
 granted by <a href="#the-role-of-the-database"><code>beffroi:database:grant</code></a> cannot do: on a deployment whose processes run
-as such a role, it is run with <code>DATABASE_URL</code> naming the role that owns the tables.</p>
+as such a role, it is run with <code>DATABASE_URL</code> naming the role that owns the tables. Under a role that may not
+delete a link, it refuses before it links a row again: "The role "beffroi_runtime" this process connects as
+may not rewrite the links of a chain, which beffroi:database:grant withholds from the role of the processes:
+sign the chain anew with DATABASE_URL naming the role that owns the tables."</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>bin/console<span class="w"> </span>beffroi:chain:sign-anew<span class="w"> </span>journal<span class="w"> </span>default
 </span></code></pre></div>
-<p>A chain found broken is cut by no retention until one of two things is done: the database and the key storage
+<p>A chain found broken is cut by no retention, and no signature is taken while the row its last signature names,
+or a row written since, does not follow, until one of two things is done: the database and the key storage
 restored from the same backup, or the chain signed anew.</p>
 <h2 id="the-role-of-the-database">The role of the database<a class="headerlink" href="#the-role-of-the-database" title="Link to this section">&para;</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>bin/console<span class="w"> </span>beffroi:database:grant<span class="w"> </span>beffroi_runtime
@@ -5480,7 +5484,7 @@ another schedule, or to no lane at all.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:02:25 UTC">November 23, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:26:54 UTC">November 23, 2026</span>
   </span>
 
     
