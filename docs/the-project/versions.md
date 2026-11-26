@@ -51,6 +51,7 @@ true.
 
 | Version | Documentation | State |
 |---|---|---|
+| 0.2 | [doc.beffroi.tech/0.2](https://doc.beffroi.tech/0.2/) | in development on `0.2.x`, not released |
 | 0.1 | [doc.beffroi.tech/0.1](https://doc.beffroi.tech/0.1/) | released as `0.1.0`, supported |
 
 Until `1.0`, only the latest release is supported: a fix ships in the next release, and an earlier `0.x`
