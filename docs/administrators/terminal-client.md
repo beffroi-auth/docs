@@ -33,7 +33,7 @@ Download `release`, `SHA256SUMS` and `SHA256SUMS.asc` beside the file, and check
 === "Linux"
 
     ``` bash
-    curl -fsSL https://raw.githubusercontent.com/beffroi-auth/beffroi/HEAD/apps/tui/resources/release-signing-key.gpg | gpg --import
+    curl -fsSL https://raw.githubusercontent.com/beffroi-auth/beffroi/0.2.x/apps/tui/resources/release-signing-key.gpg | gpg --import
     gpg --verify SHA256SUMS.asc SHA256SUMS
     sha256sum --check --ignore-missing SHA256SUMS
     cat release
@@ -43,7 +43,7 @@ Download `release`, `SHA256SUMS` and `SHA256SUMS.asc` beside the file, and check
 === "macOS"
 
     ``` bash
-    curl -fsSL https://raw.githubusercontent.com/beffroi-auth/beffroi/HEAD/apps/tui/resources/release-signing-key.gpg | gpg --import
+    curl -fsSL https://raw.githubusercontent.com/beffroi-auth/beffroi/0.2.x/apps/tui/resources/release-signing-key.gpg | gpg --import
     gpg --verify SHA256SUMS.asc SHA256SUMS
     shasum -a 256 --check --ignore-missing SHA256SUMS
     cat release

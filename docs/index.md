@@ -22,7 +22,7 @@ Beffroi paints that last box the same colour as the other two.</p>
 
 !!! info "Beffroi is 0.x"
 
-    These pages document `0.1.x`, released as `0.1.0`. Until `1.0`, the public API may change between minor
+    These pages document `0.2.x`, not released yet. Until `1.0`, the public API may change between minor
     versions, and only the latest release is supported ([versions](the-project/versions.md)).
 
 <div class="grid cards" markdown>
