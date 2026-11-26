@@ -21,7 +21,7 @@ the monorepo, because the application installs the packages beside it through pa
 | `frankenphp_base` | The extensions, `gpg`, the PHP settings of the application, the entrypoint and the Caddy configuration |
 | `frankenphp_dev` | The development image, into which the stack mounts the monorepo, running FrankenPHP with `--watch` |
 | `frankenphp_prod_builder` | Where the production image is built: the packages are copied to `/src` and the application to `/app`, installed without the development dependencies, with an authoritative class map, the `.env` of the repository compiled for production, the stylesheet built and the assets compiled |
-| `frankenphp_prod` | The production image, on `debian:13.7-slim`: FrankenPHP, PHP, the extensions and the libraries they load, `gpg`, the packages and the application, and no compiler, Composer or Node. Every process runs as `www-data`, uid 33 |
+| `frankenphp_prod` | The production image, on `debian:13.8-slim`: FrankenPHP, PHP, the extensions and the libraries they load, `gpg`, the packages and the application, and no compiler, Composer or Node. Every process runs as `www-data`, uid 33 |
 
 Each base image is named by its version and pinned by the digest of that tag, so a build of a commit takes the
 PHP, FrankenPHP and Debian that commit names, and a rebuild of the same tag upstream reaches the image as a
