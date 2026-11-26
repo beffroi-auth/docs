@@ -5,7 +5,7 @@ site_author: The Beffroi contributors
 copyright: Released under the MIT licence
 repo_url: https://github.com/beffroi-auth/beffroi
 repo_name: beffroi-auth/beffroi
-edit_uri: https://github.com/beffroi-auth/docs/edit/0.1/docs/
+edit_uri: https://github.com/beffroi-auth/docs/edit/0.2/docs/
 
 docs_dir: docs
 site_dir: site
