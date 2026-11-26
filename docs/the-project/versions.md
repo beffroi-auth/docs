@@ -16,6 +16,9 @@ oldest branch it applies to and is merged forward; a feature goes to the newest.
 Until `1.0`, which ships with Symfony 8.4, the public API may change between minor versions, and what changes
 is written in the [migration guide](../migration/index.md) of the version that changes it.
 
+`0.1.0` is the alpha of Beffroi, announced as `0.1.0-ALPHA`. That name is the one of the announcement: the
+tag, the packages on Packagist, the image and the terminal client carry `0.1.0`.
+
 ## The image
 
 The application is published as `ghcr.io/beffroi-auth/beffroi`, for `linux/amd64` and `linux/arm64`, under these
@@ -52,7 +55,7 @@ true.
 | Version | Documentation | State |
 |---|---|---|
 | 0.2 | [doc.beffroi.tech/0.2](https://doc.beffroi.tech/0.2/) | in development on `0.2.x`, not released |
-| 0.1 | [doc.beffroi.tech/0.1](https://doc.beffroi.tech/0.1/) | released as `0.1.0`, supported |
+| 0.1 | [doc.beffroi.tech/0.1](https://doc.beffroi.tech/0.1/) | released as `0.1.0`, the alpha, supported |
 
 Until `1.0`, only the latest release is supported: a fix ships in the next release, and an earlier `0.x`
 release is not patched.
