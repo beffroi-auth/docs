@@ -1,0 +1,6150 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The interfaces the outside implements for the core, one capability each, what each one answers, and what implements it in the core and in the application.">
+      
+      
+        <meta name="author" content="The Beffroi contributors">
+      
+      
+        <link rel="canonical" href="https://doc.beffroi.tech/0.2/developers/core/ports/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../events/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.svg">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.8.2">
+    
+    
+      
+        <title>The ports of the core - Beffroi</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+  
+  
+  
+  
+  <style>:root{--md-annotation-icon:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20d%3D%22M17%2013h-4v4h-2v-4H7v-2h4V7h2v4h4m-5-9A10%2010%200%200%200%202%2012a10%2010%200%200%200%2010%2010%2010%2010%200%200%200%2010-10A10%2010%200%200%200%2012%202%22/%3E%3C/svg%3E');}</style>
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/beffroi.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+  <script>
+    window.op=window.op||function(){var n=[];return new Proxy(function(){arguments.length&&n.push([].slice.call(arguments))},{get:function(t,r){return"q"===r?n:function(){n.push([r].concat([].slice.call(arguments)))}} ,has:function(t,r){return"q"===r}}) }();
+    window.op('init', {
+      apiUrl: 'https://opapi-lxpbmuuveqhdtlx4cxyr00fy.coolify.kloude.fr',
+      clientId: '524fe6e1-582c-4796-9e63-419b0fc665ae',
+      trackScreenViews: true,
+      trackOutgoingLinks: true,
+      trackAttributes: true,
+      // sessionReplay: {
+      //   enabled: true,
+      // },
+    });
+  </script>
+  <script src="https://openpanel.dev/op1.js" defer async></script>
+
+    
+  <link rel="icon" href="../../../assets/images/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="../../../assets/images/apple-touch-icon.png">
+  <meta name="theme-color" content="#f2f4f6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c1016" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Beffroi">
+  <meta property="og:title" content="The ports of the core">
+  <meta property="og:description" content="The interfaces the outside implements for the core, one capability each, what each one answers, and what implements it in the core and in the application.">
+  <meta property="og:image" content="https://doc.beffroi.tech/0.2/assets/images/beffroi-og-image-1200x630.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#the-ports-of-the-core" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Beffroi" class="md-header__button md-logo" aria-label="Beffroi" data-md-component="logo">
+      <img class="bf-logo bf-logo--paper" src="../../../assets/images/beffroi-lockup-S-bichrome.svg" alt="">
+<img class="bf-logo bf-logo--ink" src="../../../assets/images/beffroi-lockup-S-bichrome-dark.svg" alt="">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Beffroi
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              The ports of the core
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to the dark theme"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to the dark theme" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to the light theme"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to the light theme" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/beffroi-auth/beffroi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    beffroi-auth/beffroi
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../.." class="md-tabs__link">
+          
+  
+  
+    
+  
+  Beffroi
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Developers
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../operators/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Operators
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../administrators/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Administrators
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../users/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Users
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Beffroi" class="md-nav__button md-logo" aria-label="Beffroi" data-md-component="logo">
+      <img class="bf-logo bf-logo--paper" src="../../../assets/images/beffroi-lockup-S-bichrome.svg" alt="">
+<img class="bf-logo bf-logo--ink" src="../../../assets/images/beffroi-lockup-S-bichrome-dark.svg" alt="">
+    </a>
+    Beffroi
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/beffroi-auth/beffroi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    beffroi-auth/beffroi
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../.." class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beffroi
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Beffroi
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../the-project/what-is-beffroi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is Beffroi?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../the-project/secure-by-default/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Secure by default
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../the-project/conformance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conformance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../the-project/versions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Versions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migration
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    </span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developers
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connect an application
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Connect an application
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../connect/your-first-client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your first client
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../connect/symfony/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Add sign-in to a Symfony application
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../connect/laravel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Add sign-in to a Laravel application
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../oidc/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OAuth 2.0 and OpenID Connect
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OAuth 2.0 and OpenID Connect
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/clients/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clients
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/client-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/authorization-request/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization request
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/interactions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interactions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/consent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../oidc/grants/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grants
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3_7" id="__nav_2_3_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Grants
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/grants/authorization-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/grants/refresh-token/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refresh token
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/grants/client-credentials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client credentials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/grants/device-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Device code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/grants/backchannel-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backchannel authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/grants/token-exchange/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token exchange
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/grants/jwt-bearer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JWT bearer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../oidc/tokens/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tokens
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3_8" id="__nav_2_3_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tokens
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/tokens/access-tokens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Access tokens
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/tokens/id-tokens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ID tokens
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/tokens/refresh-tokens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refresh tokens
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/tokens/encryption/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Encryption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/scopes-and-claims/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scopes and claims
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/authorization-details/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authorization details
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/pushed-authorization-requests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pushed authorization requests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/request-objects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Request objects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/response-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Response modes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_15" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../oidc/sender-constrained/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sender-constrained tokens
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3_15" id="__nav_2_3_15_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_3_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sender-constrained tokens
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/sender-constrained/dpop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPoP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/sender-constrained/mutual-tls/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mutual TLS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/userinfo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UserInfo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/introspection-and-revocation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introspection and revocation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/discovery-and-jwks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discovery and JWKS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/logout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/dynamic-registration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic registration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/pairwise-subjects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pairwise subjects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../oidc/ports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The ports of the protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The packages
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    The packages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity core
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The ports of the core
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The ports of the core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#where-the-implementations-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where the implementations live
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groups
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sessions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys-and-sealing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys and sealing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-journal-the-archive-and-the-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The journal, the archive and the rest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-else-the-bridge-of-the-core-ships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What else the bridge of the core ships
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The events of the core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../saml/packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The SAML packages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The profiler panel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/endpoints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Endpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/specifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../operators/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operators
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operators
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/getting-started/the-standalone-application/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running the application
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/getting-started/tenant-and-keys/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The tenant and its keys
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../operators/application/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The application
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    The application
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/configuration-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/routes-and-planes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Routes and planes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/persistence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Persistence
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/key-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/pages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/account/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The account pages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/messenger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messenger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/web-push/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web push
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/console-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/operating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating it
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/application/observability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The tenant
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    The tenant
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/tenant/tenants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tenants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/tenant/keys/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keys
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/tenant/personal-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Personal data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../operators/saml/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SAML 2.0
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SAML 2.0
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/saml/identity-provider/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The identity provider
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/saml/service-providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/saml/single-sign-on/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Single sign-on
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/saml/single-logout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Single logout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/saml/upstream-identity-providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upstream identity providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/saml/federated-sign-in/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signing in through an organisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/saml/microsoft-entra-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Microsoft Entra ID
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/reference/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../operators/reference/console-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../administrators/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Administrators
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Administrators
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../administrators/terminal-client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The terminal client
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    People
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    People
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../administrators/people/users/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Users
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../administrators/people/credentials/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Credentials
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_3_2" id="__nav_4_3_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Credentials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../administrators/people/credentials/passwords/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passwords
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../administrators/people/credentials/passkeys/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passkeys
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../administrators/people/credentials/totp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TOTP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../administrators/people/credentials/backup-codes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backup codes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../administrators/people/authentication-sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication sessions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../administrators/people/groups/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Groups
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../administrators/people/linked-identities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linked identities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../administrators/scim/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SCIM
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--draft" title="This page is a stub, the section it belongs to is not written yet">
+    </span>
+  
+
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SCIM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../users/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Users
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Users
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/signing-in/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signing in
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/passkeys/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your passkeys
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/two-factor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Two-factor authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/password/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your password
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/requests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pending requests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Allowed applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/sessions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Open sessions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your information
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/activity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Account activity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users/your-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Your data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#where-the-implementations-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where the implementations live
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groups
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sessions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keys-and-sealing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keys and sealing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-journal-the-archive-and-the-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The journal, the archive and the rest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-else-the-bridge-of-the-core-ships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What else the bridge of the core ships
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/beffroi-auth/docs/edit/0.2/docs/developers/core/ports.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor"><path d="M4 20V16L16 4L20 8L8 20Z"/><path d="M13 7L17 11"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="the-ports-of-the-core">The ports of the core<a class="headerlink" href="#the-ports-of-the-core" title="Link to this section">&para;</a></h1>
+<p>The core asks the outside for what it cannot do itself: storage, randomness, a hasher, the key management
+service, the ceremonies of WebAuthn. Each of these is a port, an interface of <code>Beffroi\Core\Port</code>, and each port
+has one to five methods, so a caller sees what it calls and nothing more. When two callers need disjoint halves of
+a store, the store has two ports: a person's page reads <code>CanPageCredentialsInterface</code>, where a login reads
+<code>CredentialRepositoryInterface</code>.</p>
+<p>Where a port says what its implementations throw, it says it in its contract, as <code>@throws</code>: <code>JwsSignerInterface</code>
+throws when the tenant has no active key or when the key management service does not answer, and
+<code>GeoLocatorInterface</code> never throws at all, an address nothing knows being no place.</p>
+<p>Beside its ports, the core reads two PSR interfaces it is handed: a clock (PSR-20), which its use cases read the
+time from, and an event dispatcher (PSR-14), which the application binds to its event bus (<a href="../events/">events</a>).</p>
+<h2 id="where-the-implementations-live">Where the implementations live<a class="headerlink" href="#where-the-implementations-live" title="Link to this section">&para;</a></h2>
+<p>Most ports have one implementation, which the application aliases the interface to; a name in the tables below
+is that implementation, in the bridge of the core (<code>Beffroi\Core\Bridge</code>) or in the application (<code>App</code>). Where
+the tables name a class of the application, an integration of one's own around the components implements the
+port itself. The sources of the model of an authenticator are a list the wiring names in order, the FIDO
+metadata before the list of the community, and so are the families of keys a thread of the server and the
+worker open when they start. Every other list of several implementations of one interface, a
+port, an interface of the model or an interface of the bridge, is fed by a tag, every service carrying the tag
+being in it, and a list a role switches takes as well the services of that role while the role is on:</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>What the class implements</th>
+<th>What reads the tagged list</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beffroi.password_algorithm</code></td>
+<td><code>PasswordAlgorithmInterface</code></td>
+<td><code>WiredPasswordAlgorithms</code>, the hasher of the first wired making every new hash</td>
+</tr>
+<tr>
+<td><code>beffroi.password_hasher</code></td>
+<td><code>AlgorithmPasswordHasherInterface</code></td>
+<td><code>PasswordHasherRegistry</code>, which hands each hash to the hasher that supports its algorithm</td>
+</tr>
+<tr>
+<td><code>beffroi.retirement_hold</code></td>
+<td><code>RetirementHoldInterface</code></td>
+<td><code>KeyRetirement</code>, which leaves in service a key one of them still needs, unless an operator forces its retirement</td>
+</tr>
+<tr>
+<td><code>beffroi.chain</code></td>
+<td><code>ChainInterface</code></td>
+<td>The step that signs the head of every chain, and the commands that name one</td>
+</tr>
+<tr>
+<td><code>beffroi.authentication_predicate</code></td>
+<td><code>AuthenticationPredicateInterface</code></td>
+<td><code>WiredAuthenticationPredicates</code>, which the <code>acr</code> vocabulary and the floor of a tenant name predicates from</td>
+</tr>
+<tr>
+<td><code>beffroi.passkey_attestation_policy</code></td>
+<td><code>PasskeyAttestationPolicyInterface</code></td>
+<td><code>WiredPasskeyAttestationPolicies</code>, which the policy of passkey attestation of a tenant is named from</td>
+</tr>
+<tr>
+<td><code>beffroi.archive_chapter</code></td>
+<td><code>ArchiveChapterInterface</code></td>
+<td>The archive a person asks for, one chapter per class</td>
+</tr>
+<tr>
+<td><code>beffroi.dead_records</code></td>
+<td><code>DeadRecordsInterface</code></td>
+<td>The hourly step that drops the rows that can no longer do anything</td>
+</tr>
+<tr>
+<td><code>beffroi.key_bound_artifact</code></td>
+<td><code>KeyBoundArtifactInterface</code></td>
+<td>The retirement window of a key</td>
+</tr>
+<tr>
+<td><code>beffroi.signature_algorithm</code></td>
+<td><code>JoseSignatureAlgorithmInterface</code></td>
+<td><code>JoseSignatureAlgorithms</code>, the first wired being the default signature algorithm</td>
+</tr>
+<tr>
+<td><code>beffroi.key_encryption_algorithm</code></td>
+<td><code>JoseKeyEncryptionAlgorithmInterface</code></td>
+<td><code>JoseKeyEncryptionAlgorithms</code></td>
+</tr>
+<tr>
+<td><code>beffroi.content_encryption_algorithm</code></td>
+<td><code>JoseContentEncryptionAlgorithmInterface</code></td>
+<td><code>JoseContentEncryptionAlgorithms</code></td>
+</tr>
+<tr>
+<td><code>beffroi.message_sealing_algorithm</code></td>
+<td><code>JoseMessageSealingAlgorithmInterface</code></td>
+<td><code>JoseMessageSealingAlgorithms</code></td>
+</tr>
+<tr>
+<td><code>beffroi.application_server_algorithm</code></td>
+<td><code>JoseApplicationServerAlgorithmInterface</code></td>
+<td><code>JoseApplicationServerAlgorithms</code>: the services carrying the tag, none in the application, and <code>Vapid</code> while web push is on, which <code>BEFFROI_WEB_PUSH_SUBJECT</code> decides</td>
+</tr>
+<tr>
+<td><code>beffroi.claim</code></td>
+<td><code>ClaimInterface</code></td>
+<td><code>WiredClaims</code>, the claims a person may describe themselves with and an upstream profile may fill</td>
+</tr>
+</tbody>
+</table>
+<h2 id="identity">Identity<a class="headerlink" href="#identity" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UserRepositoryInterface</code></td>
+<td><code>find</code>, <code>findBySubject</code>, <code>findByUsername</code>, <code>findAllByEmail</code>, <code>save</code></td>
+<td>The users of a tenant, a username and an address being found by their blind indexes</td>
+<td><code>DoctrineUserRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>TenantRepositoryInterface</code></td>
+<td><code>save</code></td>
+<td>Where what a tenant decided of itself is written, the floor of its logins and the contact it gives its people</td>
+<td><code>DoctrineTenantRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>AmbientTenantInterface</code></td>
+<td><code>provide</code></td>
+<td>The tenant of the unit of work in progress, for what is not a use case, such as a column type; it names that tenant or throws</td>
+<td><code>TenantProvider</code> (application)</td>
+</tr>
+<tr>
+<td><code>LinkedIdentityRepositoryInterface</code></td>
+<td><code>find</code>, <code>save</code></td>
+<td>A linked identity by its provider and its subject</td>
+<td><code>DoctrineLinkedIdentityRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>LinkedIdentitiesOfAPersonInterface</code></td>
+<td><code>of</code></td>
+<td>The linked identities of one person, for their archive</td>
+<td><code>DoctrineLinkedIdentityRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>UpstreamProvidersInterface</code></td>
+<td><code>of</code></td>
+<td>The upstream providers a tenant declares, whatever their protocol</td>
+<td><code>SamlUpstreamProviders</code> (application)</td>
+</tr>
+<tr>
+<td><code>ClaimsInterface</code></td>
+<td><code>named</code></td>
+<td>A claim a person is described with in this deployment, by its name of OIDC Core §5.1, or nothing when nothing wired answers that name: what a profile written at the console is held to</td>
+<td><code>WiredClaims</code> (application)</td>
+</tr>
+<tr>
+<td><code>ClaimHistoryInterface</code></td>
+<td><code>record</code></td>
+<td>Where a change of a claim is written, taking the next position of the chain of the history of its tenant</td>
+<td><code>DoctrineClaimHistory</code> (application)</td>
+</tr>
+<tr>
+<td><code>ChangesOfAPersonInterface</code></td>
+<td><code>lastOf</code>, <code>everyChangeOf</code></td>
+<td>The changes of one person, the last few or all of them in pages</td>
+<td><code>DoctrineClaimHistory</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanPageChangesOfAPersonInterface</code></td>
+<td><code>pageOfChanges</code></td>
+<td>One page of those changes, over a period</td>
+<td><code>DoctrineClaimHistory</code> (application)</td>
+</tr>
+<tr>
+<td><code>AtomicWritesInterface</code></td>
+<td><code>atomically</code></td>
+<td>Several writes that are one fact, all of them kept or none</td>
+<td><code>DoctrineAtomicWrites</code> (application)</td>
+</tr>
+<tr>
+<td><code>UuidGeneratorInterface</code></td>
+<td><code>timeOrdered</code>, <code>opaque</code></td>
+<td>A UUID version 7 for a row, a version 4 for a value a party sees, a subject above all</td>
+<td><code>SymfonyUuidGenerator</code> (core)</td>
+</tr>
+<tr>
+<td><code>RandomnessInterface</code></td>
+<td><code>bytes</code></td>
+<td>The bytes of the secret values drawn through it, an authorization code, a refresh token, a TOTP secret and a backup code among them</td>
+<td><code>PlatformRandomness</code> (core)</td>
+</tr>
+<tr>
+<td><code>CanCountUsersInterface</code></td>
+<td><code>countUsersIn</code></td>
+<td>How many people a tenant has, whatever their state, and nothing of anybody: the statistics of the instance</td>
+<td><code>DoctrineUserRepository</code> (application)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="groups">Groups<a class="headerlink" href="#groups" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GroupRepositoryInterface</code></td>
+<td><code>findByName</code>, <code>save</code></td>
+<td>The groups of a tenant, by their exact name</td>
+<td><code>DoctrineGroupRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>GroupMembershipRepositoryInterface</code></td>
+<td><code>save</code>, <code>remove</code></td>
+<td>Where a membership is written and taken back</td>
+<td><code>DoctrineGroupMembershipRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>GroupsOfAPersonInterface</code></td>
+<td><code>of</code></td>
+<td>The memberships of one person with their sources</td>
+<td><code>DoctrineGroupMembershipRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>GroupsOfATenantInterface</code></td>
+<td><code>of</code>, <code>find</code></td>
+<td>The groups of a tenant, all of them or one by its identifier</td>
+<td><code>DoctrineGroupRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>MembersOfAGroupInterface</code></td>
+<td><code>membersOf</code>, <code>countMembersOf</code></td>
+<td>The members of one group a page at a time, or how many it holds, which delivers none of them</td>
+<td><code>DoctrineGroupMembershipRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>AdministratorGroupsInterface</code></td>
+<td><code>groupsAdministering</code></td>
+<td>The names of the groups whose members <a href="../../../administrators/people/groups/#who-administers-the-tenant">administer a tenant</a>, none for a tenant nobody administers</td>
+<td><code>ConfigurationAdministratorGroups</code> (core), from <code>tenant.administrators</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="credentials">Credentials<a class="headerlink" href="#credentials" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CredentialRepositoryInterface</code></td>
+<td><code>findByUser</code>, <code>find</code>, <code>findByExternalId</code>, <code>save</code></td>
+<td>The credentials of a person, of one kind or of all, the revoked ones included</td>
+<td><code>DoctrineCredentialRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanPageCredentialsInterface</code></td>
+<td><code>pageOfCredentials</code></td>
+<td>One page of the credentials of one kind a person holds</td>
+<td><code>DoctrineCredentialRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanForgetCredentialsInterface</code></td>
+<td><code>credentialsOf</code>, <code>forget</code></td>
+<td>Every credential of a tenant, and the removal of one, for the floor that forgets them</td>
+<td><code>DoctrineCredentialRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>PasswordHasherInterface</code></td>
+<td><code>hash</code>, <code>verify</code>, <code>needsRehash</code></td>
+<td>What a use case does with a password</td>
+<td><code>PasswordHasherRegistry</code> (core)</td>
+</tr>
+<tr>
+<td><code>AlgorithmPasswordHasherInterface</code></td>
+<td><code>supports</code>, <code>hash</code>, <code>verify</code>, <code>needsRehash</code></td>
+<td>A hasher of named algorithms, which only the registry calls</td>
+<td><code>NativePasswordHasher</code> and <code>Pbkdf2PasswordHasher</code>, which verifies the PBKDF2 hashes an import brings and makes none (core), tagged</td>
+</tr>
+<tr>
+<td><code>PasswordAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code>, <code>defaultAlgorithm</code></td>
+<td>The algorithms a hash may name, the first naming the hasher of every new one</td>
+<td><code>WiredPasswordAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>PasswordAttemptLimiterInterface</code></td>
+<td><code>attempt</code>, <code>reset</code></td>
+<td>How many passwords may be tried on a person in a window, counted atomically and shared by every process of a deployment</td>
+<td><code>RateLimitedAttempts</code> (application), five a minute, under the locks of the database</td>
+</tr>
+<tr>
+<td><code>CodeAttemptLimiterInterface</code></td>
+<td><code>mayAttempt</code>, <code>attempt</code></td>
+<td>How many codes a person may try in a window, counted the same way</td>
+<td><code>RateLimitedAttempts</code> (application), five a minute, under the locks of the database</td>
+</tr>
+<tr>
+<td><code>TotpUsesInterface</code></td>
+<td><code>acceptStep</code>, <code>spendBackupCode</code></td>
+<td>The use of a code of an authenticator application or of a backup code, recorded atomically: of two requests presenting one code at once, one is accepted and the other refused as replayed (RFC 6238 §5.2)</td>
+<td><code>DoctrineTotpUses</code> (application)</td>
+</tr>
+<tr>
+<td><code>PasskeyUsesInterface</code></td>
+<td><code>recordUse</code></td>
+<td>The use of a passkey and its sign count, recorded atomically: of two assertions carrying one counter at once, one signs in (WebAuthn Level 3 §6.1.1)</td>
+<td><code>DoctrinePasskeyUses</code> (application)</td>
+</tr>
+<tr>
+<td><code>BreachedPasswordsInterface</code></td>
+<td><code>looksUp</code>, <code>timesSeen</code></td>
+<td>What a list of compromised passwords says of a digest</td>
+<td><code>PwnedPasswords</code> (application)</td>
+</tr>
+<tr>
+<td><code>PasskeyRegistrarInterface</code></td>
+<td><code>creationOptions</code>, <code>verifyAttestation</code></td>
+<td>The registration ceremony of WebAuthn Level 3 §7.1</td>
+<td><code>WebauthnPasskeyRegistrar</code> (core)</td>
+</tr>
+<tr>
+<td><code>PasskeyAuthenticatorInterface</code></td>
+<td><code>requestOptions</code>, <code>verifyAssertion</code></td>
+<td>The authentication ceremony of WebAuthn Level 3 §7.2</td>
+<td><code>WebauthnPasskeyAuthenticator</code> (core)</td>
+</tr>
+<tr>
+<td><code>PasskeyAttestationPoliciesInterface</code></td>
+<td><code>named</code></td>
+<td>The policy of passkey attestation a tenant names, what its enrolment asks of an authenticator (WebAuthn Level 3 §5.4.7), or a refusal naming the wired ones</td>
+<td><code>WiredPasskeyAttestationPolicies</code> (core)</td>
+</tr>
+<tr>
+<td><code>AttestationRootReaderInterface</code></td>
+<td><code>read</code></td>
+<td>A root of passkey attestations a tenant pins, read from its PEM, the certificate of no certificate authority refused (RFC 5280 §4.2.1.9)</td>
+<td><code>PkiAttestationRootReader</code> (core)</td>
+</tr>
+<tr>
+<td><code>MetadataBlobStoreInterface</code></td>
+<td><code>write</code>, <code>readAll</code></td>
+<td>The FIDO metadata the ceremonies read</td>
+<td><code>FileMetadataBlobStore</code> (application)</td>
+</tr>
+<tr>
+<td><code>AuthenticatorListStoreInterface</code></td>
+<td><code>write</code>, <code>read</code></td>
+<td>The list of passkey providers the community keeps, as the console downloaded it, which names models and nothing else</td>
+<td><code>FileAuthenticatorListStore</code> (application)</td>
+</tr>
+<tr>
+<td><code>AuthenticatorModelSourceInterface</code></td>
+<td><code>model</code></td>
+<td>The make and model a source names for the AAGUID a passkey declared, or nothing; read by the page of the passkeys and the console, by no ceremony</td>
+<td><code>MetadataAuthenticatorModels</code>, then <code>StoredAuthenticatorList</code> (core), asked in that order by <code>AuthenticatorModels</code></td>
+</tr>
+<tr>
+<td><code>TotpAlgorithmInterface</code></td>
+<td><code>codeAt</code>, <code>provisioningUri</code></td>
+<td>The code of a time step (RFC 6238 §4.2), and the URI an application scans</td>
+<td><code>OtphpTotpAlgorithm</code> (core)</td>
+</tr>
+<tr>
+<td><code>SecretSealerInterface</code></td>
+<td><code>seal</code>, <code>unseal</code></td>
+<td>The secret of a TOTP, sealed by the key management service of the tenant</td>
+<td><code>EnvelopeSecretSealer</code> (core), one per purpose: what the provider keeps under one, and each sort of secret that leaves it under its own, so that an envelope opens as no other sort</td>
+</tr>
+<tr>
+<td><code>TicketRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>holdsSpent</code>, <code>save</code>, <code>forget</code></td>
+<td>The tickets of one kind, found by identifier only, the row holding a hash of the value, and whether the store holds one spent since it was read; the three ports below are this one for their kind</td>
+<td><code>DoctrineTicketRepository</code> (application), one per kind</td>
+</tr>
+<tr>
+<td><code>EnrolmentTicketRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>holdsSpent</code>, <code>save</code>, <code>forget</code></td>
+<td>The enrolment tickets of a person</td>
+<td><code>DoctrineEnrolmentTicketRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>PasswordTicketRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>holdsSpent</code>, <code>save</code>, <code>forget</code></td>
+<td>The password tickets of a person</td>
+<td><code>DoctrinePasswordTicketRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>TotpTicketRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>holdsSpent</code>, <code>save</code>, <code>forget</code></td>
+<td>The tickets of a person for an authenticator application</td>
+<td><code>DoctrineTotpTicketRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>AddressConfirmationRepositoryInterface</code></td>
+<td><code>find</code>, <code>unspentOf</code>, <code>save</code>, <code>forget</code></td>
+<td>The confirmations of one kind of address a person asked for, each kind in a store of its own</td>
+<td><code>DoctrineEmailConfirmationRepository</code> and <code>DoctrinePhoneNumberConfirmationRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>AddressConfirmationSenderInterface</code></td>
+<td><code>send</code></td>
+<td>Where the code and the link of a confirmation go, to the address they establish and to it alone</td>
+<td><code>QueuedAddressConfirmationSender</code> (application), which puts it on the lane of notifications</td>
+</tr>
+<tr>
+<td><code>ConfirmationSendLimiterInterface</code></td>
+<td><code>spend</code></td>
+<td>How many confirmations go out for a person and to an address, each counted on a budget of its own, atomically and for every process of a deployment</td>
+<td><code>RateLimitedConfirmationSends</code> (application), from the <code>BEFFROI_CONFIRMATION_SENDS_*</code> variables</td>
+</tr>
+<tr>
+<td><code>CredentialChangeNotifierInterface</code></td>
+<td><code>tell</code></td>
+<td>Where a change to the ways a person signs in is handed once it is done, to be <a href="../../../administrators/people/credentials/#what-the-person-is-told">told to that person</a>: the act, the kind of the credential when it changed one, when, and the person, and no identifier of what changed</td>
+<td><code>QueuedCredentialChangeNotifier</code> (application), which puts it on the lane of notifications</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sessions">Sessions<a class="headerlink" href="#sessions" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AuthenticationSessionRepositoryInterface</code></td>
+<td><code>find</code>, <code>findActiveByUser</code>, <code>save</code></td>
+<td>The sessions of the provider</td>
+<td><code>DoctrineAuthenticationSessionRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanPageActiveSessionsInterface</code></td>
+<td><code>pageOfActiveSessions</code></td>
+<td>One page of the sessions open in the name of a person</td>
+<td><code>DoctrineAuthenticationSessionRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanCountActiveSessionsInterface</code></td>
+<td><code>countActiveSessionsIn</code></td>
+<td>How many sessions of a tenant are open at a moment, neither ended nor expired, and nothing of whose they are</td>
+<td><code>DoctrineAuthenticationSessionRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanFindUnendedSessionsInterface</code></td>
+<td><code>findUnendedByUser</code></td>
+<td>The sessions of one person that nothing has ended, those past their expiry included, for what ends every session of a person but the one it keeps, and for the administration API, which lists them</td>
+<td><code>DoctrineAuthenticationSessionRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>SubjectsOfSessionsInterface</code></td>
+<td><code>of</code></td>
+<td>The subject of the person a session names, read where the store keeps it in the clear, so that announcing a replayed code, a reused refresh token or a token a client gave back asks nothing of the key management service</td>
+<td><code>DoctrineAuthenticationSessionRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>AuthenticationPredicatesInterface</code></td>
+<td><code>named</code></td>
+<td>A predicate of the <code>acr</code> policy by its name, refused when nothing wired carries it</td>
+<td><code>WiredAuthenticationPredicates</code> (core)</td>
+</tr>
+<tr>
+<td><code>GeoLocatorInterface</code></td>
+<td><code>locate</code></td>
+<td>The place of an address, on the lane and never on the path of a request</td>
+<td><code>GeoLite2GeoLocator</code> (application)</td>
+</tr>
+<tr>
+<td><code>UserAgentParserInterface</code></td>
+<td><code>parse</code></td>
+<td>A device read from a user agent</td>
+<td><code>NullUserAgentParser</code> (core), which reads none</td>
+</tr>
+</tbody>
+</table>
+<h2 id="keys-and-sealing">Keys and sealing<a class="headerlink" href="#keys-and-sealing" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TenantKeyRepositoryInterface</code></td>
+<td><code>find</code>, <code>findActive</code>, <code>findInService</code>, <code>findAll</code>, <code>save</code></td>
+<td>The keys of a tenant, whatever they are for</td>
+<td><code>FileTenantKeyRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>KeyPairGeneratorInterface</code></td>
+<td><code>generate</code></td>
+<td>A key pair for a wired algorithm, its <code>kid</code> the RFC 7638 thumbprint</td>
+<td><code>JwtLibraryKeyPairGenerator</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeySealerInterface</code></td>
+<td><code>seal</code>, <code>unseal</code></td>
+<td>The private JWK of a key in an envelope of the key management service, bound to the tenant</td>
+<td><code>EnvelopeKeySealer</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeyAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code></td>
+<td>Every algorithm a key may be drawn for</td>
+<td><code>JoseKeyAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>SignatureAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code>, <code>defaultAlgorithm</code></td>
+<td>The JWS algorithms the provider signs with</td>
+<td><code>JoseSignatureAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeyEncryptionAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code></td>
+<td>The JWE key management algorithms a client encrypts to the provider with</td>
+<td><code>JoseKeyEncryptionAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>ContentEncryptionAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code></td>
+<td>The JWE content encryption algorithms the provider opens</td>
+<td><code>JoseContentEncryptionAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>ApplicationServerAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>named</code></td>
+<td>The algorithms of the keys handed to browsers for web push</td>
+<td><code>JoseApplicationServerAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>MessageSealingAlgorithmsInterface</code></td>
+<td><code>all</code>, <code>defaultAlgorithm</code>, <code>named</code></td>
+<td>The algorithm of the key message bodies are sealed to</td>
+<td><code>JoseMessageSealingAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>RotationSchedulesInterface</code></td>
+<td><code>of</code></td>
+<td>The staging delay and the age of the family of an algorithm</td>
+<td><code>JoseKeyAlgorithms</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeyBoundArtifactInterface</code></td>
+<td><code>keyUse</code>, <code>longestLifetime</code></td>
+<td>A kind of artifact bound to a key, and how long it stays usable</td>
+<td>Six kinds of <code>beffroi/oidc</code>, tagged</td>
+</tr>
+<tr>
+<td><code>SigningKeyProviderInterface</code></td>
+<td><code>activeKey</code></td>
+<td>The active key of a signature algorithm, opened</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>SigningKeyOpenerInterface</code></td>
+<td><code>open</code></td>
+<td>The active key of a signature algorithm opened first, before a caller spends what it cannot get back, and what signs under it afterwards without asking the key management service anything</td>
+<td><code>JwtLibraryJwsSigner</code> (core)</td>
+</tr>
+<tr>
+<td><code>DecryptionKeyProviderInterface</code></td>
+<td><code>decryptionKey</code></td>
+<td>The published key a JWE names, opened</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>PublicKeySetProviderInterface</code></td>
+<td><code>publicKeys</code></td>
+<td>The JWK Set of the tenant, which opens nothing</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeptSigningKeyProviderInterface</code></td>
+<td><code>activeKeptSigningKey</code></td>
+<td>The active key of a kept algorithm that signs, the SAML key</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>KeptDecryptionKeyProviderInterface</code></td>
+<td><code>keptDecryptionKeys</code></td>
+<td>The kept keys a peer encrypts to, the keys of an upstream SAML identity provider</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>ApplicationServerKeyProviderInterface</code></td>
+<td><code>activeApplicationServerKey</code>, <code>applicationServerKey</code></td>
+<td>The key a browser is handed, and the key a subscription was made under</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>MessageKeyProviderInterface</code></td>
+<td><code>sealingKey</code>, <code>messageKey</code></td>
+<td>The key a body is sealed to, and the key a sealed body names</td>
+<td><code>SealedKeyProvider</code> (core)</td>
+</tr>
+<tr>
+<td><code>RetirementHoldInterface</code></td>
+<td><code>holds</code>, <code>name</code></td>
+<td>What still needs a retiring key past its window, whose retirement waits for it</td>
+<td><code>FailedMessagesSealedTo</code> (application), tagged: a message waiting in the failure transport holds the message key it is sealed to</td>
+</tr>
+<tr>
+<td><code>MailSigningKeyRepositoryInterface</code></td>
+<td><code>current</code>, <code>ofKind</code>, <code>save</code>, <code>remove</code></td>
+<td>The keys a tenant signs its mail with, the current one of each format and the ones it replaced</td>
+<td><code>FileMailSigningKeyRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>OpenableKeysInterface</code></td>
+<td><code>open</code></td>
+<td>A family of keys of a tenant a process opens when it starts, through the port a request would open them with</td>
+<td><code>ActiveSigningKeys</code>, <code>PublishedDecryptionKeys</code>, <code>ActiveKeptSigningKeys</code>, <code>KeptDecryptionKeysInService</code>, <code>MessageKeysInService</code>, <code>ApplicationServerKeysInService</code> (core, use cases of <code>Beffroi\Core\Application\Key</code>) and <code>DataKeysOfTheTenant</code> (application)</td>
+</tr>
+<tr>
+<td><code>JwsSignerInterface</code></td>
+<td><code>sign</code></td>
+<td>A compact JWS signed by the active key of an algorithm</td>
+<td><code>JwtLibraryJwsSigner</code> (core)</td>
+</tr>
+<tr>
+<td><code>JwsVerifierInterface</code></td>
+<td><code>verify</code></td>
+<td>A compact JWS verified against the published keys of the tenant</td>
+<td><code>JwtLibraryJwsVerifier</code> (core)</td>
+</tr>
+<tr>
+<td><code>HeldKeyJwsVerifierInterface</code></td>
+<td><code>verify</code></td>
+<td>A compact JWS the provider signed for itself and keeps, the signed head of a chain, verified against every signing key the tenant holds, retired ones included; never one a third party presents</td>
+<td><code>JwtLibraryHeldKeyJwsVerifier</code> (core)</td>
+</tr>
+<tr>
+<td><code>JweDecrypterInterface</code></td>
+<td><code>decrypt</code></td>
+<td>A compact JWE encrypted to a published key, opened</td>
+<td><code>JwtLibraryJweDecrypter</code> (core)</td>
+</tr>
+<tr>
+<td><code>MessageBodySealerInterface</code></td>
+<td><code>seal</code></td>
+<td>The body of a message sealed to the message key, without asking the key management service anything</td>
+<td><code>JwtLibraryMessageBodySealer</code> (core)</td>
+</tr>
+<tr>
+<td><code>MessageBodyOpenerInterface</code></td>
+<td><code>open</code></td>
+<td>A sealed body opened by the process that consumes it</td>
+<td><code>JwtLibraryMessageBodyOpener</code> (core)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-journal-the-archive-and-the-rest">The journal, the archive and the rest<a class="headerlink" href="#the-journal-the-archive-and-the-rest" title="Link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Methods</th>
+<th>What it answers</th>
+<th>Wired to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>JournalInterface</code></td>
+<td><code>record</code></td>
+<td>Where an act is written, taking the next position of the chain of the journal of its tenant</td>
+<td><code>DoctrineJournal</code> (application)</td>
+</tr>
+<tr>
+<td><code>ActsOfAPersonInterface</code></td>
+<td><code>lastOf</code>, <code>everyActOf</code></td>
+<td>The acts of one person, the last of some names or all of them in pages</td>
+<td><code>DoctrineJournal</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanPageActsOfAPersonInterface</code></td>
+<td><code>pageOfActs</code></td>
+<td>One page of the journal of a person</td>
+<td><code>DoctrineJournal</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanCountActsInterface</code></td>
+<td><code>countActsSince</code></td>
+<td>How many acts of each name the journal of a tenant holds since a moment, and nothing of whose they are</td>
+<td><code>DoctrineJournal</code> (application)</td>
+</tr>
+<tr>
+<td><code>ChainOfRowsInterface</code></td>
+<td><code>lockedHead</code>, <code>head</code>, <code>linkedAfter</code>, <code>rowsOutsideTheChain</code>, <code>forgetUpTo</code></td>
+<td>The three chains of a tenant, the journal, the history of the claims and what clients were given: each row linked to the one before it, its head locked while a row is appended, read back to be checked, and forgotten from its start past its retention</td>
+<td><code>DoctrineChains</code> (application)</td>
+</tr>
+<tr>
+<td><code>RelinkableChainsInterface</code></td>
+<td><code>relink</code></td>
+<td>A chain linked again as the database holds it, once a person has read what its check found; refused when the store may not rewrite its links</td>
+<td><code>DoctrineChains</code> (application)</td>
+</tr>
+<tr>
+<td><code>SignedCheckpointsInterface</code></td>
+<td><code>last</code>, <code>keep</code></td>
+<td>The last signed head of each chain, kept where the role of the database cannot write</td>
+<td><code>FileChainCheckpoints</code> (application), beside the keys of the tenant</td>
+</tr>
+<tr>
+<td><code>CheckpointCopiesInterface</code></td>
+<td><code>copy</code></td>
+<td>Where a signed head leaves the instance, so that a copy outlives whoever holds the database and the keys</td>
+<td><code>LoggedCheckpointCopies</code> (application), a line of the log channel <code>chain</code></td>
+</tr>
+<tr>
+<td><code>PersonalArchiveRepositoryInterface</code></td>
+<td><code>find</code>, <code>latestOf</code>, <code>save</code>, <code>forget</code>, <code>forgetExpired</code></td>
+<td>The archives people asked for</td>
+<td><code>DoctrinePersonalArchiveRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>ArchiveChapterInterface</code></td>
+<td><code>name</code>, <code>of</code></td>
+<td>One chapter of an archive, read in the clear</td>
+<td>Seven chapters of the core and two of <code>beffroi/oidc</code>, tagged</td>
+</tr>
+<tr>
+<td><code>ArchiveContainerInterface</code></td>
+<td><code>mediaType</code>, <code>extension</code>, <code>wrap</code></td>
+<td>The archive wrapped under the passphrase a person chose</td>
+<td><code>ZipArchiveContainer</code> (application)</td>
+</tr>
+<tr>
+<td><code>DeadRecordsInterface</code></td>
+<td><code>forgetWhatIsDead</code></td>
+<td>The rows of a store that can no longer do anything, dropped and counted</td>
+<td>Thirteen stores of the application, tagged</td>
+</tr>
+<tr>
+<td><code>PushSubscriptionRepositoryInterface</code></td>
+<td><code>findActiveByUser</code>, <code>findByEndpoint</code>, <code>find</code>, <code>save</code></td>
+<td>The browsers of a person the provider may push to</td>
+<td><code>DoctrinePushSubscriptionRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>CanPageActiveSubscriptionsInterface</code></td>
+<td><code>pageOfActiveSubscriptions</code></td>
+<td>One page of those browsers</td>
+<td><code>DoctrinePushSubscriptionRepository</code> (application)</td>
+</tr>
+<tr>
+<td><code>ExclusiveSectionsInterface</code></td>
+<td><code>exclusively</code></td>
+<td>What runs alone among every process of a deployment, under a name: the redemption of a ticket, so that of two requests redeeming one ticket at once, one writes what it opens and the other is refused</td>
+<td><code>LockedSections</code> (application), under the locks of the database</td>
+</tr>
+<tr>
+<td><code>MonotonicClockInterface</code></td>
+<td><code>now</code>, <code>waitFor</code></td>
+<td>A duration measured and waited out, so that a password checked against a hash the hasher would replace takes at least the time of the decoy hash</td>
+<td><code>PlatformMonotonicClock</code> (core)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-else-the-bridge-of-the-core-ships">What else the bridge of the core ships<a class="headerlink" href="#what-else-the-bridge-of-the-core-ships" title="Link to this section">&para;</a></h2>
+<p>The bridge of the core holds nineteen stores in memory, for tests and for an integration of one's own that wires
+the core without the stores of the application: <code>InMemoryUserRepository</code>, <code>InMemoryCredentialRepository</code>,
+<code>InMemoryAuthenticationSessionRepository</code>, <code>InMemoryTenantKeyRepository</code> and their siblings; the journal and the
+chains have none. Beside them, <code>InMemoryTotpUses</code> and <code>InMemoryPasskeyUses</code> record the use of a code or a passkey
+on the credential they are handed. The bridge holds three implementations that answer nothing, <code>NullBreachedPasswords</code>,
+which asks no list, <code>NullGeoLocator</code>, which finds no place, and <code>NullUserAgentParser</code>, which reads no device, two
+sources fixed for tests, <code>FixedUuidGenerator</code> and <code>FixedRandomness</code>, and the clock of the platform,
+<code>PlatformMonotonicClock</code>. The protocol has ports of its own, which <a href="../../oidc/ports/">the ports of the protocol</a>
+list.</p>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 23, 2026 22:26:54 UTC">November 23, 2026</span>
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Identity core">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Identity core
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../events/" class="md-footer__link md-footer__link--next" aria-label="Next: The events of the core">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                The events of the core
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Released under the MIT licence
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://beffroi.tech" target="_blank" rel="noopener" title="The website of Beffroi" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/beffroi-auth" target="_blank" rel="noopener" title="Beffroi on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://packagist.org/packages/beffroi/" target="_blank" rel="noopener" title="The packages on Packagist" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M320 104.5c171.4 0 303.2 72.2 303.2 151.5S491.3 407.5 320 407.5c-171.4 0-303.2-72.2-303.2-151.5S148.7 104.5 320 104.5m0-16.8C143.3 87.7 0 163 0 256s143.3 168.3 320 168.3S640 349 640 256 496.7 87.7 320 87.7M218.2 242.5c-7.9 40.5-35.8 36.3-70.1 36.3l13.7-70.6c38 0 63.8-4.1 56.4 34.3M97.4 350.3h36.7l8.7-44.8c41.1 0 66.6 3 90.2-19.1 26.1-24 32.9-66.7 14.3-88.1-9.7-11.2-25.3-16.7-46.5-16.7h-70.7zm185.7-213.6h36.5l-8.7 44.8c31.5 0 60.7-2.3 74.8 10.7 14.8 13.6 7.7 31-8.3 113.1h-37c15.4-79.4 18.3-86 12.7-92-5.4-5.8-17.7-4.6-47.4-4.6l-18.8 96.6h-36.5zM505 242.5c-8 41.1-36.7 36.3-70.1 36.3l13.7-70.6c38.2 0 63.8-4.1 56.4 34.3M384.2 350.3H421l8.7-44.8c43.2 0 67.1 2.5 90.2-19.1 26.1-24 32.9-66.7 14.3-88.1-9.7-11.2-25.3-16.7-46.5-16.7H417z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://bsky.app/profile/beffroi.tech" target="_blank" rel="noopener" title="Beffroi on Bluesky" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M407.8 294.7c-3.3-.4-6.7-.8-10-1.3 3.4.4 6.7.9 10 1.3M288 227.1c-26.1-50.7-97.1-145.2-163.1-191.8C61.6-9.4 37.5-1.7 21.6 5.5 3.3 13.8 0 41.9 0 58.4S9.1 194 15 213.9c19.5 65.7 89.1 87.9 153.2 80.7 3.3-.5 6.6-.9 10-1.4-3.3.5-6.6 1-10 1.4-93.9 14-177.3 48.2-67.9 169.9C220.6 589.1 265.1 437.8 288 361.1c22.9 76.7 49.2 222.5 185.6 103.4 102.4-103.4 28.1-156-65.8-169.9-3.3-.4-6.7-.8-10-1.3 3.4.4 6.7.9 10 1.3 64.1 7.1 133.6-15.1 153.2-80.7C566.9 194 576 75 576 58.4s-3.3-44.7-21.6-52.9c-15.8-7.1-40-14.9-103.2 29.8C385.1 81.9 314.1 176.4 288 227.1"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/company/beffroi-auth" target="_blank" rel="noopener" title="Beffroi on LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.instant.progress", "navigation.tracking", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>
