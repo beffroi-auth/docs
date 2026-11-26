@@ -20,10 +20,11 @@ Beffroi paints that last box the same colour as the other two.</p>
 
 </div>
 
-!!! info "Beffroi is 0.x"
+!!! info "Beffroi 0.1.0-ALPHA"
 
-    These pages document `0.1.x`, released as `0.1.0`. Until `1.0`, the public API may change between minor
-    versions, and only the latest release is supported ([versions](the-project/versions.md)).
+    These pages document `0.1.x`, released as `0.1.0`, the alpha of Beffroi, announced as `0.1.0-ALPHA`. Until
+    `1.0`, the public API may change between minor versions, and only the latest release is supported
+    ([versions](the-project/versions.md)).
 
 <div class="grid cards" markdown>
 
