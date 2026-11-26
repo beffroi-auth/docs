@@ -313,6 +313,6 @@ a signed answer and verified offline; a token bound by DPoP, introspected or ver
 obtained by exchange and addressed to that route (RFC 8693).
 
 From a working copy of the monorepo with oidc-demo checked out beside it, `castor demo` points it at
-[the development stack](../../operators/getting-started/the-standalone-application.md#on-your-machine) and starts it on
+[the development stack](../../operators/getting-started/the-standalone-application.md#from-the-sources) and starts it on
 `https://localhost:8002`. `castor demo --check` signs in as the development user, opens `/profile` and signs
 out, from the command line.
